@@ -1,0 +1,480 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | CTS 设备管理之自动检测设备 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">CTS 设备管理之自动检测设备</h1>
+  <div class="info leader">
+    <a class="node" href="node42">Android CTS</a>
+     · 
+    <a data-author="true" data-name="doctorq" href="../doctorq">doctorq</a>
+     · 
+    于<abbr class="timeago" title="2015-01-13T23:02:38+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="doctorq" href="../doctorq">doctorq</a> 于<abbr class="timeago" title="2015-01-14T09:56:09+08:00"></abbr>回复
+     · 
+    219次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>感慨</h4>
+<p>经过三个月的蹉跎，项目终于可以推出1.0版本。中间经历过很多坑，中途我们的主程离职走了，我硬着头皮接替了他的工作，从cts框架的启动开始，一点一点地研究源码，debug来debug去，一点一点的理解其中的思想，到现在已经能在cts的框架的基础上做二次开发，能简单的认识到cts处理方式。很有幸我一进入自动化领域首先认识的是cts这套框架，随着研究的深入越来越佩服开发这套框架的google工程师们。我想说的是，做自动化框架开发的人都应该好好研究这个框架，肯定会受益匪浅。其实在学习的时候，我就已经写过好几篇文章，我也将其整理成合集，放到了<a href="1808" target="_blank">testerhome</a>上。但那个时候毕竟还是懵懂时期，也没有跳出框架从全局来考虑，现在刚好有点时间，慢慢的把这几个月的研究成果总结一下。</p>
+<h4>设备管理的重要性</h4>
+<p>做Android自动化工具开发的都了解，你首先要解决的问题是设备管理问题，在支持 Mult Device的工具中尤其重要。新设备的加入、已有设备的断线离线，在执行case的过程中遇到设备离线了如何去恢复等等，都是在设备管理范畴之内的。那么cts是如何做到的？</p>
+<h4>1.包裹ADB</h4><pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">tradefed</span><span class="o">.</span><span class="na">device</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.android.ddmlib.AndroidDebugBridge</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.ddmlib.IDevice</span><span class="o">;</span>
+
+<span class="cm">/**
+ * A wrapper that directs {@link IAndroidDebugBridge} calls to the 'real'
+ * {@link AndroidDebugBridge}.
+ */</span>
+<span class="kd">class</span> <span class="nc">AndroidDebugBridgeWrapper</span> <span class="kd">implements</span> <span class="n">IAndroidDebugBridge</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">AndroidDebugBridge</span> <span class="n">mAdbBridge</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="cm">/**
+     * Creates a {@link AndroidDebugBridgeWrapper}.
+     */</span>
+    <span class="n">AndroidDebugBridgeWrapper</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * {@inheritDoc}
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">IDevice</span><span class="o">[]</span> <span class="n">getDevices</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mAdbBridge</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">"getDevices called before init"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">mAdbBridge</span><span class="o">.</span><span class="na">getDevices</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * {@inheritDoc}
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">addDeviceChangeListener</span><span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">AndroidDebugBridge</span><span class="o">.</span><span class="na">addDeviceChangeListener</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * {@inheritDoc}
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">removeDeviceChangeListener</span><span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">AndroidDebugBridge</span><span class="o">.</span><span class="na">removeDeviceChangeListener</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * {@inheritDoc}
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">init</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">clientSupport</span><span class="o">,</span> <span class="n">String</span> <span class="n">adbOsLocation</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">AndroidDebugBridge</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">clientSupport</span><span class="o">);</span>
+        <span class="n">mAdbBridge</span> <span class="o">=</span> <span class="n">AndroidDebugBridge</span><span class="o">.</span><span class="na">createBridge</span><span class="o">(</span><span class="n">adbOsLocation</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * {@inheritDoc}
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">terminate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">AndroidDebugBridge</span><span class="o">.</span><span class="na">terminate</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * {@inheritDoc}
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">disconnectBridge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">AndroidDebugBridge</span><span class="o">.</span><span class="na">disconnectBridge</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+
+<p>这里实际上用到了代理模式。cts中自定义的类<code>AndroidDebugBridgeWrapper</code>包裹了<code>AndroidDebugBridge</code>，我们只需要和<code>AndroidDebugBridgeWrapper</code>交互就行了。然后在<code>AndroidDebugBridge</code>的基础上自定义了一些方法。继承的方法中重要的是<code>addDeviceChangeListener</code>和<code>removeDeviceChangeListener</code>这两个方法，待会我们就要用到。</p>
+<h4>2.启动ADB</h4><pre class="highlight java">
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeviceManager</span> <span class="kd">implements</span> <span class="n">IDeviceManager</span> <span class="o">{</span>
+
+    <span class="o">......</span>
+    <span class="kd">private</span> <span class="n">IAndroidDebugBridge</span> <span class="n">mAdbBridge</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">ManagedDeviceListener</span> <span class="n">mManagedDeviceListener</span><span class="o">;</span>
+    <span class="o">......</span>
+    <span class="cm">/**
+     * The DeviceManager should be retrieved from the {@link GlobalConfiguration}
+     */</span>
+    <span class="kd">public</span> <span class="n">DeviceManager</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * Initialize the device manager. This must be called once and only once before any other
+     * methods are called.
+     */</span>
+    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="n">init</span><span class="o">(</span><span class="n">IDeviceSelection</span> <span class="n">globalDeviceFilter</span><span class="o">,</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">IDeviceMonitor</span><span class="o">&gt;</span> <span class="n">globalDeviceMonitors</span><span class="o">,</span> <span class="n">IManagedTestDeviceFactory</span> <span class="n">deviceFactory</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">......</span>
+        <span class="n">mAdbBridge</span> <span class="o">=</span> <span class="n">createAdbBridge</span><span class="o">();</span>
+        <span class="n">mManagedDeviceListener</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ManagedDeviceListener</span><span class="o">();</span>
+        <span class="o">......</span>
+        <span class="n">mAdbBridge</span><span class="o">.</span><span class="na">addDeviceChangeListener</span><span class="o">(</span><span class="n">mManagedDeviceListener</span><span class="o">);</span>
+       <span class="o">......</span>
+        <span class="n">mAdbBridge</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="kc">false</span> <span class="cm">/* client support */</span><span class="o">,</span> <span class="s">"adb"</span><span class="o">);</span>
+        <span class="o">......</span>
+    <span class="o">}</span>
+    <span class="cm">/**
+     * Creates the {@link IAndroidDebugBridge} to use.
+     * &lt;p/&gt;
+     * Exposed so tests can mock this.
+     * @returns the {@link IAndroidDebugBridge}
+     */</span>
+    <span class="kd">synchronized</span> <span class="n">IAndroidDebugBridge</span> <span class="n">createAdbBridge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">AndroidDebugBridgeWrapper</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</pre>
+
+<p>在<code>DeviceManage</code>类的<code>init</code>方法中，首先通过<code>createAdbBridge()</code>方法创建一个 <code>IAndroidDebugBridge</code>对象，其实质是刚才定义的<code>AndroidDebugBridgeWrapper</code>对象。这样的话我们就得到了该对象的一个实例，接着我们调用了该实例的<code>init</code>方法(其实有2行代码我故意忽略了，后面会隆重登场)，这样<code>ADB</code>的初始化工作就完成了。</p>
+<h4>3.状态监听器</h4><pre class="highlight java"><span class="kd">private</span> <span class="kd">class</span> <span class="nc">ManagedDeviceListener</span> <span class="kd">implements</span> <span class="n">IDeviceChangeListener</span> <span class="o">{</span>
+
+        <span class="cm">/**
+         * {@inheritDoc}
+         */</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceChanged</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">idevice</span><span class="o">,</span> <span class="kt">int</span> <span class="n">changeMask</span><span class="o">)</span> <span class="o">{</span>   
+        <span class="o">......</span>
+        <span class="o">}</span>
+
+        <span class="cm">/**
+         * {@inheritDoc}
+         */</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceConnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">idevice</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="o">......</span>        
+        <span class="o">}</span>
+
+        <span class="cm">/**
+         * {@inheritDoc}
+         */</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceDisconnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">disconnectedDevice</span><span class="o">)</span> <span class="o">{</span>
+         <span class="o">......</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</pre>
+
+<p>在<code>DeviceManager</code>类中定义了一个私有类<code>ManagedDeviceListener</code>，该类实现了<code>ADB</code>中的接口<code>IDeviceChangeListener</code>。该接口实际上是观察者模式中的一个抽象观察者，我们定义的<code>ManagedDeviceListener</code>类是一个具体观察者。当我们注册为设备状态的观察者后，设备状态发生变化后，我们会被通知到。这个时候我们隆重请出刚才我们忽略的2行代码：</p>
+<pre class="highlight java">        <span class="n">mManagedDeviceListener</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ManagedDeviceListener</span><span class="o">();</span>
+        <span class="o">......</span>
+        <span class="n">mAdbBridge</span><span class="o">.</span><span class="na">addDeviceChangeListener</span><span class="o">(</span><span class="n">mManagedDeviceListener</span><span class="o">);</span>
+</pre>
+
+<p>这两行代码首先初始化了一个设备状态的具体观察者对象的实例，然后将其添加到通知列表中，这个时候<code>ADB</code>设备发生改变后，就会通知我们的对象，其中相应的三个方法<code>deviceChanged</code>,<code>deviceConnected</code>,<code>deviceDisconnected</code>会被调用，这个时候我们就可以通过一些处理得到新加入的设备，或者已有设备中离线的设备，然后将其删除。这样我们就能很好的监听着设备状态的改变。</p>
+<h4>4.得到设备</h4>
+<p>既然我们能准确的监听着设备状态的改变，我们就要用一个(或许是多个)容器去保存这些设备。具体的操作流程我觉得单独写一篇文章来讲比较好，这样才能对得起它良好的设计。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='CTS 设备管理之自动检测设备 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1858#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1858#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1858#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1858#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1858#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1858#reply1">1楼</a> · <abbr class="timeago" title="2015-01-14T08:45:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11579" data-state="" data-type="Reply" href="1858#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1858/replies/11579/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1858#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>cts 的确被很多人忽略了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="doctorq" href="../doctorq">doctorq</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1858#reply2">2楼</a> · <abbr class="timeago" title="2015-01-14T09:03:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11581" data-state="" data-type="Reply" href="1858#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1011" href="http://testerhome.com/topics/1858/replies/11581/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="doctorq" href="1858#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1858#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 做rom的公司会意识到这个工具，其实做工具的，不管是针对app还是rom，应该都能从中找到有用的东西。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1858#reply3">3楼</a> · <abbr class="timeago" title="2015-01-14T09:54:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11586" data-state="" data-type="Reply" href="1858#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1858/replies/11586/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="1858#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1858#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../doctorq" class="at_user" title="@doctorq"><i>@</i>doctorq</a> CTS里面有很多的代码和架构很值得学习啊～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="doctorq" href="../doctorq">doctorq</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1858#reply4">4楼</a> · <abbr class="timeago" title="2015-01-14T09:56:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11587" data-state="" data-type="Reply" href="1858#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1011" href="http://testerhome.com/topics/1858/replies/11587/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="doctorq" href="1858#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1858#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 是啊，前辈，所以我想着写点文字把这些东西放到大家的面前，让大家了解了解。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @chuyaoyao 希望父母身体健康，攒钱涨工资把父母接到身边照顾
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1914" title="求留下 testerhome">求留下 testerhome</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1858#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

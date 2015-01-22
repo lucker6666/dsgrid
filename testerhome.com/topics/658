@@ -1,0 +1,795 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | SVN+Jenkins+Maven+Appium+TestNG+ReportNG 实战 Android 自动化测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../summer"><img alt="174" class="uface" src="../user/large_avatar/174.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">SVN+Jenkins+Maven+Appium+TestNG+ReportNG 实战 Android 自动化测试</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../summer">summer</a>
+     · 
+    于<abbr class="timeago" title="2014-04-04T19:05:02+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="2014maggie" href="../2014maggie">2014maggie</a> 于<abbr class="timeago" title="2014-11-24T09:31:34+08:00"></abbr>回复
+     · 
+    4282次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>好吧,标题写得好长.<br>
+言归正传,本文主要是讲述如何使用这些工具来整合流程,实现Android平台的自动化测试.<br>
+首先说下背景,因为我测试的东西面向多个国家,对于不同的地域可能有不同的功能,对应不一样的发行渠道,需要测试工具有便捷的case管理功能,能方便地面对不同的发行渠道选择不同的case.而TestNG可以很方便地配置这些,所以选择这个框架.<br>
+这里直接使用Appium源码中自带的testng项目示例.位置在源码目录中的</p>
+<pre class="highlight shell">/sample-code/examples/java/testng
+</pre>
+<p>1.改造Report的呈现方式<br>
+示例Project用Maven来组织项目,所以这里就不改项目架构了,喜欢ant的同学自己去实践吧.<br>
+因为示例中用的是TestNG自己生成的测试报告,比较难看,这里用ReportNG来美化一下.<br>
+编辑pom.xml,在依赖中添加ReportNG的依赖:</p>
+<pre class="highlight shell">        &lt;dependency&gt;
+            &lt;groupId&gt;org.uncommons&lt;/groupId&gt;
+            &lt;artifactId&gt;reportng&lt;/artifactId&gt;
+            &lt;version&gt;1.1.4&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.testng&lt;/groupId&gt;
+                    &lt;artifactId&gt;testng&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.google.inject&lt;/groupId&gt;
+            &lt;artifactId&gt;guice&lt;/artifactId&gt;
+            &lt;version&gt;3.0&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+</pre>
+<p>ReportNG还得注册一下监听器,这个放在testng.xml中去注册,就不写在POM里了.maven-surefire-plugin插件里配置一个参数,用于接收不同的testng.xml</p>
+<pre class="highlight shell">            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.17&lt;/version&gt;
+                &lt;configuration&gt;
+                &lt;suiteXmlFiles&gt;
+                    &lt;suiteXmlFile&gt;res/<span class="k">${</span><span class="nv">xmlFileName</span><span class="k">}</span>&lt;/suiteXmlFile&gt;
+                &lt;/suiteXmlFiles&gt;
+        &lt;/configuration&gt;
+            &lt;/plugin&gt;
+</pre>
+<p>pom里面的值留空:</p>
+<pre class="highlight shell">    &lt;properties&gt;
+        &lt;xmlFileName&gt;&lt;/xmlFileName&gt;
+    &lt;/properties&gt;
+</pre>
+<p>2.使用不同的testng.xml配置文件来配置不同的渠道测试case<br>
+在项目根目录建个res文件夹,把testng.xml放进去,testng.xml文件内容如下</p>
+<pre class="highlight shell">&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">"UTF-8"</span>?&gt;
+&lt;!DOCTYPE suite SYSTEM <span class="s2">"http://testng.org/testng-1.0.dtd"</span> &gt;
+&lt;suite
+    <span class="nv">name</span><span class="o">=</span><span class="s2">"Suite"</span>
+    <span class="nv">verbose</span><span class="o">=</span><span class="s2">"1"</span> &gt;
+    &lt;<span class="nb">test </span><span class="nv">name</span><span class="o">=</span><span class="s2">"Project_V3023"</span> &gt;
+        &lt;packages&gt;
+            &lt;package <span class="nv">name</span><span class="o">=</span><span class="s2">"com.saucelabs.appium"</span> /&gt;
+        &lt;/packages&gt;
+    &lt;/test&gt;
+    &lt;listeners&gt;
+        &lt;listener class-name<span class="o">=</span><span class="s2">"org.uncommons.reportng.HTMLReporter"</span> /&gt;
+        &lt;listener class-name<span class="o">=</span><span class="s2">"org.uncommons.reportng.JUnitXMLReporter"</span> /&gt;
+    &lt;/listeners&gt;
+    &lt;usedefaultlisteners <span class="nv">name</span><span class="o">=</span><span class="s2">"false"</span> /&gt;
+&lt;/suite&gt;
+</pre>
+<p>这个文件用来配置选择不同的渠道需要选择的case,res文件夹下可以扔很多testng.xml文件用于不同的渠道.比如A渠道可以用testng1.xml,B渠道可以用testng2.xml,另外在这里面注册一下ReportNG的监听器.<br>
+最后修改一下Project的项目文件结构,最后变成这个样子(为了演示方便,只保留了一个测试类):<br><img src="../photo/2014/0ae3a6b5b74e3c67534d5e6cd3372dde.jpg" alt=""><br>
+3.配置Jenkins<br>
+勾选参数化构建,创建2个参数<br>
+第1个参数是创建一个文件夹,并且返回文件夹路径,这个在后面发邮件要用到.<br><img src="../photo/2014/10e5e2054e5be560de8eca92b62d3c5f.jpg" alt=""><br>
+第2个参数是返回testng.xml的名字,这里因为我只有一个,所以直接返回了,后面这里面可以自己加条件判断是返回哪个testng.xml的名字.比如1\3\5跑testng1.xml,2\4\6跑testng2.xml<br><img src="../photo/2014/efee1ca85d5799dad34d78e388da0b1a.jpg" alt=""></p>
+
+<p>用SVN来管理测试代码<br><img src="../photo/2014/a4148735723c0c5427a94f7c548933a9.jpg" alt=""></p>
+
+<p>构建触发器使用定时触发方式,不截图了.</p>
+
+<p>使用Maven构建项目,并且接收一个参数<br><img src="../photo/2014/2b0b89d490af8fb2f45252598476db0f.jpg" alt=""></p>
+
+<p>构建后运行一下Python的脚本,用途是拷贝文件,将生成的ReportNG报告拷贝到上面由参数1创建的目录下.而这个目录同时也是Apache的网站目录,这样就可以直接通过URL看到测试报告了.<br><img src="../photo/2014/9f59af4fcab9b2e5d7fc6d2bbb9dfc8b.jpg" alt=""></p>
+
+<p>最后用邮件插件发一下邮件,我这里都是引用的系统配置里的内容<br><img src="../photo/2014/8d3f7928544e59e89cf3d20dcb769470.jpg" alt=""></p>
+
+<p>收到的邮件是这个样子<br><img src="../photo/2014/b4daf08c2004e59619aaf715a0462210.jpg" alt=""></p>
+
+<p>点开链接,看到测试报告<br><img src="../photo/2014/966052ed91ed2153b5ee20c8b4568c44.jpg" alt=""></p>
+
+<p>最后,总结一下<br>
+用SVN管理管理代码,Jenkins做持续集成,项目组织用Maven,测试框架用Appium+TestNG,报告呈现用ReportNG.<br>
+好吧,撇去Appium不谈,其他都是大家用来用去的东西了.<br>
+现在的问题:<br>
+1.Jenkins的触发方式现在是每天晚上定时触发,因为我拿不到源码,开发的编译系统用的也不是Jenkins,我不知道要如何才能更好地使用持续集成.各位小伙伴的持续集成又是怎么做的呢?<br>
+2.选择testng.xml不够灵活,不能根据项目特征自动选择对应的testng.xml,比如我想拿渠道号来区分,可Jenkins怎么拿到渠道号?<br>
+3.Appium支持多个设备同时运行吗?之前用Robotium时使用Spoon就可以同时在多个设备上运行.</p>
+
+<p>扩展一下:<br>
+网易上个月出了一个TestNG的小插件,实现了失败用例重跑,失败自动截图,展示用例运行次数等等功能,很好很实用,就只有一个缺点,生成的报告是改造了TestNG自带的emailable-report.html,实在是太-丑-了~~这个看能不能把功能移植到ReportNG上去.有兴趣的小伙伴可以关注.<br>
+项目地址:<a href="https://github.com/NetEase/arrow" rel="nofollow" target="_blank">https://github.com/NetEase/arrow</a></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='SVN+Jenkins+Maven+Appium+TestNG+ReportNG 实战 Android 自动化测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="658#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="658#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="658#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="658#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="658#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>18</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply1">1楼</a> · <abbr class="timeago" title="2014-04-05T02:31:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3605" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/658/replies/3605/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>1 我们以前是10分钟，check 一次 ，看有没有人提交代码，有提交就跑一次。一般来说出 build，简单的 bvt 就可以了。如果做验收，一晚一次不为过，你可以做两个 job。一个一直跑迭代，一个做每天的验收。</p>
+
+<p>2 渠道啥意思？ 项目特征自动选择对应的testng.xml 这个可以做到，可以咨询用过的人</p>
+
+<p>3 <a href="https://github.com/appium/appium/issues/462" rel="nofollow" target="_blank">https://github.com/appium/appium/issues/462</a> 不是很理想</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply2">2楼</a> · <abbr class="timeago" title="2014-04-06T00:00:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3618" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/658/replies/3618/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="young" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>谢谢 分享</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../kevinkong"><img alt="770ea388c1468346fa92ff164c34d4ca" class="uface" src="../avatar/770ea388c1468346fa92ff164c34d4ca.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kevinkong">kevinkong</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply3">3楼</a> · <abbr class="timeago" title="2014-04-07T21:24:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3628" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="162" href="http://testerhome.com/topics/658/replies/3628/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="kevinkong" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞，很详细，对TestNG插件Arrow感兴趣的小伙伴们，欢迎继续扩展</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../hwwh1410"><img alt="242e4fee6a66f4ba824ace7f45488ef4" class="uface" src="../avatar/242e4fee6a66f4ba824ace7f45488ef4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄" href="../hwwh1410">hwwh1410</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply4">4楼</a> · <abbr class="timeago" title="2014-04-08T10:16:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3642" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="687" href="http://testerhome.com/topics/658/replies/3642/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="hwwh1410" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>目前也在时间appium的持续集成。。。求交流</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply5">5楼</a> · <abbr class="timeago" title="2014-04-09T16:03:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3723" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/658/replies/3723/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="532589730" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习了，考虑使用testng+maven+appium的整合工具</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply6">6楼</a> · <abbr class="timeago" title="2014-04-16T09:39:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3912" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/658/replies/3912/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="tspring" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../summer" class="at_user" title="@summer"><i>@</i>summer</a>  麻烦把project发给我，我邮箱是：tspring2014@sina.com。我对    &lt;properties&gt;<br>
+        &lt;xmlFileName&gt;&lt;/xmlFileName&gt;<br>
+    &lt;/properties&gt;添加到哪里不确定。我是直接运行testng.xml 但测试报告没有美化。麻烦发给我project，谢谢。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../zhouxiaoyagirl"><img alt="634" class="uface" src="../user/large_avatar/634.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="周晓亚" href="../zhouxiaoyagirl">zhouxiaoyagirl</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply7">7楼</a> · <abbr class="timeago" title="2014-04-18T10:24:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4016" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="634" href="http://testerhome.com/topics/658/replies/4016/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="zhouxiaoyagirl" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="658#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../532589730" class="at_user" title="@532589730"><i>@</i>532589730</a> appium+maven+testng整合工具你那边使用了，怎么用的，我现在卡住，麻烦指导下。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply8">8楼</a> · <abbr class="timeago" title="2014-04-22T18:00:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4107" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/658/replies/4107/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="532589730" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="658#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../zhouxiaoyagirl" class="at_user" title="@zhouxiaoyagirl"><i>@</i>zhouxiaoyagirl</a> <br>
+还没用，主要是卡在java在ios7拖不动元素。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../rosepotato"><img alt="39feef9a84530b99cd3601866b61759f" class="uface" src="../avatar/39feef9a84530b99cd3601866b61759f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="liliu" href="../rosepotato">rosepotato</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply9">9楼</a> · <abbr class="timeago" title="2014-04-30T15:06:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4341" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="710" href="http://testerhome.com/topics/658/replies/4341/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="rosepotato" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../summer" class="at_user" title="@summer"><i>@</i>summer</a> ，你好我正在用appium+maven+testng+jenkins做自动化开发。我现在遇到个问题，我将我的测试放在groups = iosTest中，并创建一个testng.xml, 我在命令行中用调用mvn test -Dtests=testng.xml, 运行总是失败，iPhonesimulator都没起来。但是我用mvn test -Dtest=MyTestClass#myTestMethod 时，测试是成功的。请问你有没有遇到过这个情况，如何解决的。<br>
+我的testng.xml 如下：<br>quot;<a href="http://testng.org/testng-1.0.dtd" rel="nofollow" target="_blank">http://testng.org/testng-1.0.dtd</a>" &gt;</p>
+
+<p>&lt;suite name="Suite1" verbose="1"&gt;<br>
+    &lt;test name="Regression1"&gt;<br>
+        &lt;groups&gt;<br>
+            &lt;run&gt;<br>&lt;!--&lt;include name=&quot;sampleTest1&quot;  /&gt;--><br>&lt;!-- &lt;include name=&quot;sampleTest2&quot;  /&gt;--><br>
+                &lt;include name="iosTest"  /&gt;<br>
+            &lt;/run&gt;<br>
+        &lt;/groups&gt;</p>
+
+<p>&lt;classes&gt;<br>
+            &lt;class name="com.saucelabs.appium.IosLoginTest"/&gt;<br>&lt;!--&lt;class name=&quot;com.saucelabs.appium.Sample1Test&quot;/&gt;&lt;br/>
+            &lt;class name=&quot;com.saucelabs.appium.Sample2Test&quot;/&gt;--><br>
+        &lt;/classes&gt;<br>
+    &lt;/test&gt;</p>
+
+<p>&lt;/suite&gt;<br>
+pop.xml 中定义如下：<br>
+     &lt;plugin&gt;<br>
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;<br>
+                &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;</p>
+
+<p>&lt;configuration&gt;<br>&lt;!--&lt;forkCount&gt;2&lt;/forkCount&gt;--><br>
+                    &lt;suiteXmlFiles&gt;<br>
+                        &lt;suiteXmlFile&gt;testng.xml&lt;/suiteXmlFile&gt;<br>
+                    &lt;/suiteXmlFiles&gt;<br>&lt;!--&lt;groups&gt;iosTest&lt;/groups&gt;--><br>
+                    &lt;properties&gt;<br>
+                        &lt;property&gt;<br>
+                        &lt;name&gt;usedefaultlisteners&lt;/name&gt;<br>
+                        &lt;value&gt;false&lt;/value&gt; &lt;!-- disabling default listeners is optional --><br>
+                        &lt;/property&gt;<br>
+                        &lt;property&gt;<br>
+                            &lt;name&gt;reporter&lt;/name&gt;<br>
+                            &lt;value&gt;org.testng.reporters.XMLReporter&lt;/value&gt;<br>
+                        &lt;/property&gt;<br>
+                    &lt;/properties&gt;<br>
+                &lt;/configuration&gt;<br>
+            &lt;/plugin&gt;</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../zhouxiaoyagirl"><img alt="634" class="uface" src="../user/large_avatar/634.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="周晓亚" href="../zhouxiaoyagirl">zhouxiaoyagirl</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply10">10楼</a> · <abbr class="timeago" title="2014-05-05T18:01:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4451" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="634" href="http://testerhome.com/topics/658/replies/4451/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="zhouxiaoyagirl" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="658#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> 麻烦告知下，appium+maven+testNg是怎样用的，我的运行了之后没有反应。是不是pom中除了添加testNG之外还要添加其他的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply11">11楼</a> · <abbr class="timeago" title="2014-05-12T21:27:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4727" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/658/replies/4727/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="young" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>再次来学习下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply12">12楼</a> · <abbr class="timeago" title="2014-06-12T16:21:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5727" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/658/replies/5727/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="532589730" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主能否分享下pom.xml和testng.xml?</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply13">13楼</a> · <abbr class="timeago" title="2014-08-17T21:13:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7743" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/658/replies/7743/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="link1220" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个很牛x的分享，Mark学习！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../jacky"><img alt="212" class="uface" src="../user/large_avatar/212.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jacky">jacky</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply14">14楼</a> · <abbr class="timeago" title="2014-09-03T16:17:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8318" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="212" href="http://testerhome.com/topics/658/replies/8318/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="jacky" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>悲剧了，第一次使用是把jenkins.war 放到TomCat里面，启动tomcat后打开jenkins，不知点了什么东西，需要登陆，但是我还没注册呢。<br>
+把Jenkins文件夹删掉，重启Tomcat，再次打开，还是需要登陆。。。怎么才能回到初始状态呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../loyo4test"><img alt="25227995bca965102fac75b0ffaacf8a" class="uface" src="../avatar/25227995bca965102fac75b0ffaacf8a.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="loyo" href="../loyo4test">loyo4test</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply15">15楼</a> · <abbr class="timeago" title="2014-09-21T14:54:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8765" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1614" href="http://testerhome.com/topics/658/replies/8765/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="loyo4test" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>牛叉 赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply16">16楼</a> · <abbr class="timeago" title="2014-11-10T14:16:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9753" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/658/replies/9753/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="wangcityboy" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="658#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <img src="../photo/2014/a237d91de22c58a74706fc036d1a3ef1.png" alt=""><br>
+乱码的问题怎么解决？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../jennyhui"><img alt="1505" class="uface" src="../user/large_avatar/1505.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jennyhui">jennyhui</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply17">17楼</a> · <abbr class="timeago" title="2014-11-18T10:08:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9888" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1505" href="http://testerhome.com/topics/658/replies/9888/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="jennyhui" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>干货！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../2014maggie"><img alt="1697" class="uface" src="../user/large_avatar/1697.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../2014maggie">2014maggie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="658#reply18">18楼</a> · <abbr class="timeago" title="2014-11-24T09:31:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10004" data-state="" data-type="Reply" href="658#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1697" href="http://testerhome.com/topics/658/replies/10004/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="2014maggie" href="658#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>/sample-code/examples/java/testng   <a href="https://github.com/appium" rel="nofollow" target="_blank">https://github.com/appium</a>这个网址上面找不到呀? </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @roytest001: 在一个地方呆的太久了，希望能换个新环境，找一个自动化测试的工作
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="658#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

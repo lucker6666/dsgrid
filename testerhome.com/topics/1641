@@ -1,0 +1,641 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Robotium 专题（一）：Robotium 测试---正确地为安装包重新签名 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Robotium 专题（一）：Robotium 测试---正确地为安装包重新签名</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="" href="../bill">bill</a>
+     · 
+    于<abbr class="timeago" title="2014-12-02T09:38:14+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="chin" href="../chin">chin</a> 于<abbr class="timeago" title="2014-12-05T16:46:48+08:00"></abbr>回复
+     · 
+    658次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>各位同学，今天专门开辟个Robotium的专题，主要是我自己在学习和研究Robotium过程中遇到的一些问题以及解决方法，有些资料的内容是来源于网络的，但都是为了更好地学习和工作，所以，请大家给点鼓励！<br>
+最近一直在看有关Robotium对安卓APP进行自动化测试的内容，结合网上所说的APK重新签名的问题，现将个人的实际操作汇总如下：</p>
+
+<p>1、去除签名</p>
+
+<p>将apk文件后缀改为.zip，然后从winrar中删除META-INF文件夹，删除后重新将文件名改成apk的后缀，这样就去除签名了。</p>
+
+<p>2、JDK为1.6，</p>
+
+<p>手动去除签名后然后用下面的命令进行签名：<br>
+注意下面的部分内容需要根据自己的debug.keystore的位置，和待签名apk的位置进行设置</p>
+
+<blockquote>
+<p>jarsigner -keystore D:\Android\avd.android\debug.keystore -storepass android -keypass android D:\Android\apk\02-AndroidCalculator-unsign.apk androiddebugkey<br>
+zipalign 4 D:\Android\apk\02-AndroidCalculator-unsign.apk D:\Android\apk\02-AndroidCalculator-sign.apk<br>
+zipalign能够使apk文件中未压缩的数据在4个字节边界上对齐（4个字节是一个性能很好的值）</p>
+</blockquote>
+
+<p>3、JDK为1.7（含1.7）以上，签名稍有区别，需要加上参数：-digestalg SHA1 -sigalg MD5withRSA</p>
+
+<blockquote>
+<p>jarsigner -digestalg SHA1 -sigalg MD5withRSA -keystore D:\Android\avd.android\debug.keystore -storepass android -keypass android D:\Android\apk\plingm\com.freephoo.android_1180-unsign.apkandroiddebugkey<br>
+zipalign 4 D:\Android\apk\plingm\com.freephoo.android_1180-unsign.apkD:\Android\apk\plingm\com.freephoo.android_1180-sign.apk<br>
+由于我装的是JDK1.7版本，故上述“ -digestalg SHA1 -sigalg MD5withRSA”的命令必须加上，这点非常重要，一定要看清楚本机安装的JDK版本！</p>
+</blockquote>
+
+<p>这些是我在做Robotium时的一些经验总结，希望对大家能有所帮助！</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Robotium 专题（一）：Robotium 测试---正确地为安装包重新签名 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1641#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1641#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1641#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1641#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1641#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>16</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply1">1楼</a> · <abbr class="timeago" title="2014-12-02T11:48:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10188" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1641/replies/10188/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不用删除文件也可以重签名吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply2">2楼</a> · <abbr class="timeago" title="2014-12-02T12:37:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10190" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10190/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 可以，用re-sign.jar也可以，这是另外的方式。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply3">3楼</a> · <abbr class="timeago" title="2014-12-02T17:40:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10201" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1641/replies/10201/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../bill" class="at_user" title="@bill"><i>@</i>bill</a> 也许是我out了， 我一直以为jarsigner是自动重签的， 没认证研究过。 你试过是必须删除文件才能重签是吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply4">4楼</a> · <abbr class="timeago" title="2014-12-03T10:02:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10227" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10227/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我文章里说的，是删除了签名文件后再用命令进行的重签名，re-sign.jar的方式，是不需要删除任何文件的，只是在JDK1.7的时候会出现不成功的情况，所以我又着重说了1.7的情况。呵呵，可能也有遗漏。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../chin"><img alt="1747" class="uface" src="../user/large_avatar/1747.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chin" href="../chin">chin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply5">5楼</a> · <abbr class="timeago" title="2014-12-04T16:19:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10296" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1747" href="http://testerhome.com/topics/1641/replies/10296/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="chin" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../bill" class="at_user" title="@bill"><i>@</i>bill</a> re-sign.jar我用的时候只是帮我去除了签名生成了一个叫-debug的apk，然后我还是要用命令重签名的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply6">6楼</a> · <abbr class="timeago" title="2014-12-04T16:53:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10299" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10299/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../chin" class="at_user" title="@chin"><i>@</i>chin</a> 这个就可以了，不需要重新签名</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../paris_love_u"><img alt="536" class="uface" src="../user/large_avatar/536.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="沈思之" href="../paris_love_u">paris_love_u</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply7">7楼</a> · <abbr class="timeago" title="2014-12-04T17:35:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10303" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="536" href="http://testerhome.com/topics/1641/replies/10303/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="paris_love_u" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>没有收藏帖子的功能吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply8">8楼</a> · <abbr class="timeago" title="2014-12-04T21:47:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10313" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10313/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../paris_love_u" class="at_user" title="@paris_love_u"><i>@</i>paris_love_u</a> 什么意思？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../chin"><img alt="1747" class="uface" src="../user/large_avatar/1747.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chin" href="../chin">chin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply9">9楼</a> · <abbr class="timeago" title="2014-12-05T10:08:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10315" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1747" href="http://testerhome.com/topics/1641/replies/10315/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="chin" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../bill" class="at_user" title="@bill"><i>@</i>bill</a> 我用过re-sign.jar，光拖进去生成的那个是不行的，必须重新签</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply10">10楼</a> · <abbr class="timeago" title="2014-12-05T11:31:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10323" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10323/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../chin" class="at_user" title="@chin"><i>@</i>chin</a> 你说的重新签，指的是什么？re-sign.jar这个签名工具，签名后是debug的，如果你需要正式签名的，那肯定需要重新签名。如果只是使用robotium测试，那么debug这个签名的就可以了！我曾经尝试过很多种签名，所以re-sign.jar签名后的APP直接装到机器或者虚拟机中即可通过robotium进行测试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply11">11楼</a> · <abbr class="timeago" title="2014-12-05T12:23:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10327" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1641/replies/10327/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="shixue33" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>resigner.jar是可以重签名的，只是它默认使用的key在user/.android/debug.keystore，如果这个地址没有这个文件，就只会去签名而已。adt-bundle的包在某个版本后，它包含的eclipse默认的debug签名位置变成了bundle的位置，所以造成了很多人使用resigner.jar不成功。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply12">12楼</a> · <abbr class="timeago" title="2014-12-05T14:50:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10333" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10333/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 正解！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply13">13楼</a> · <abbr class="timeago" title="2014-12-05T15:19:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10336" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1641/replies/10336/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="shixue33" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../bill" class="at_user" title="@bill"><i>@</i>bill</a> 期待你的系列文章！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply14">14楼</a> · <abbr class="timeago" title="2014-12-05T16:16:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10340" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1641/replies/10340/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="bill" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 谢谢！我也是在学习当中，大家互相学习，互相进步！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../chin"><img alt="1747" class="uface" src="../user/large_avatar/1747.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chin" href="../chin">chin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply15">15楼</a> · <abbr class="timeago" title="2014-12-05T16:46:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10343" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1747" href="http://testerhome.com/topics/1641/replies/10343/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="chin" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1641#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 原来是这样！点赞！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../jiguanghover"><img alt="Bf5d767c4465c28e82b899a6cfb104d1" class="uface" src="../avatar/bf5d767c4465c28e82b899a6cfb104d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hover" href="../jiguanghover">jiguanghover</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1641#reply16">16楼</a> · <abbr class="timeago" title="2014-12-19T09:18:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10696" data-state="" data-type="Reply" href="1641#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="342" href="http://testerhome.com/topics/1641/replies/10696/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="jiguanghover" href="1641#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我尝试过我们公司自己的apk包，改成zip文件后删除签名文件，然后重新签名安装后会有问题，其实在linux环境下可以用aapt命令删除apk文件中的内容，然后添加进去进行重新签名，不知道有人尝试过吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1898" title="在运行测试时遇到 Test run failed: Instrumentation run failed due to &#39;Process crashed.&#39;，有人遇到过吗，求解答">在运行测试时遇到 Test run failed: I...</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+    <li><a href="1826" title=" 史上最简单 Robotium 跨进程操作实践——基于 ADB 框架"> 史上最简单 Robotium 跨进程操作实践——基于...</a></li>
+    <li><a href="1786" title="robotium 在同一个布局里面，第一个控件可以访问，第二个空间却不能访问">robotium 在同一个布局里面，第一个控件可以访问...</a></li>
+    <li><a href="1783" title="怎么触发多个层级嵌套下的最底层控件(id 一样时)，且没有源码">怎么触发多个层级嵌套下的最底层控件(id 一样时)，且...</a></li>
+    <li><a href="1746" title="ROBOTIUM 实现简单的图像识别。~">ROBOTIUM 实现简单的图像识别。~</a></li>
+    <li><a href="1745" title="请问如何访问 listviewinscrollview 这个控件">请问如何访问 listviewinscrollview...</a></li>
+    <li><a href="1722" title="有没有大神在 ROBOTIUM 上做过图片相似度对比的内容？请教一下啊？">有没有大神在 ROBOTIUM 上做过图片相似度对比的...</a></li>
+    <li><a href="1715" title="使用 robotium 执行测试用例时提示 &#39;java.lang.ClassNotFoundException&#39;">使用 robotium 执行测试用例时提示 &#39;java...</a></li>
+    <li><a href="1714" title="求教，ROBOTIUM 下的 GETWEBELEMENTS 方法的使用~多谢！">求教，ROBOTIUM 下的 GETWEBELEMEN...</a></li>
+    <li><a href="1705" title="robotium 怎么获取多层布局嵌套下的控件呢？">robotium 怎么获取多层布局嵌套下的控件呢？</a></li>
+    <li><a href="1701" title="Robotium 专题（五）：Robotium 升级到 5.1 后的一些改进">Robotium 专题（五）：Robotium 升级到...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1641#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

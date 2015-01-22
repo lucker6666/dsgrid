@@ -1,0 +1,1456 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium 自动化测试演示 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium 自动化测试演示</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="GUO" href="../guo">guo</a>
+     · 
+    于<abbr class="timeago" title="2013-11-15T10:26:08+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="seasoncool2011" href="../seasoncool2011">seasoncool2011</a> 于<abbr class="timeago" title="2014-09-29T10:23:35+08:00"></abbr>回复
+     · 
+    2102次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>经验就是:<br>
+每两次操作之间,一定要间隔几秒,不然可能会由于加载不完全,导致操作异常<br>
+初始隐藏的控件,要判断状态,等显示后再操作</p>
+
+<p>最后输出:<br>
+测试截图的相似度百分比（之前某一次结果）,用来做正确性验证,基本上相似度小余90%的都有点问题</p>
+
+<p><a href="http://v.youku.com/v_show/id_XNjM0ODIxNTUy.html" rel="nofollow" target="_blank">http://v.youku.com/v_show/id_XNjM0ODIxNTUy.html</a></p>
+
+<p>密码：testerhome.com</p>
+
+<p>PS:<br>
+原来不支持嵌入视频啊<br>
+相似度计算是看的 <a href="http://blog.csdn.net/gzlaiyonghao/article/details/2325027" rel="nofollow" target="_blank">http://blog.csdn.net/gzlaiyonghao/article/details/2325027</a></p>
+
+<p>现在搞不太清楚的就是怎么判断当前的位置，是在什么窗口下面，和如何打印出当前位置的所有控件</p>
+
+<p>贴下代码</p>
+<pre class="highlight python"><span class="c"># coding:utf8</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">histsimilar</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">WebDriverException</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">file</span><span class="n">name</span><span class="o">=</span><span class="s">'log.txt'</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">success</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">desired_caps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'browserName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'iOS'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'platform'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Mac'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'version'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'6.1'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'app'</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="nb">abs</span><span class="n">path</span><span class="p">(</span><span class="s">'测试app的位置'</span><span class="p">)</span>
+
+<span class="c">#def is_alert_present(wd):</span>
+<span class="c">#    try:</span>
+<span class="c">#        wd.switch_to_alert().text</span>
+<span class="c">#        return True</span>
+<span class="c">#    except:</span>
+<span class="c">#        return False</span>
+
+
+
+<span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="s">' time click '</span> <span class="o">+</span> <span class="n">wd</span><span class="o">.</span><span class="n">page_source</span><span class="p">)</span>
+    <span class="n">screenshot</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="s">' time click '</span> <span class="o">+</span> <span class="n">wd</span><span class="o">.</span><span class="n">page_source</span><span class="p">)</span>
+    <span class="n">screenshot</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="n">wd</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">screenshot</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">mk_new_dir</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">path</span><span class="p">,</span> <span class="n">base</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="s">'截图存放的位置'</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="s">'0/'</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="nb">listdir</span><span class="p">(</span><span class="n">base</span><span class="p">)))</span> <span class="o">+</span> <span class="s">'/'</span>
+
+
+<span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">screenshot</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">c</span><span class="p">,</span> <span class="n">path</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">wd</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="s">'.png'</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">compare</span><span class="p">():</span>
+    <span class="nb">dir</span><span class="n">s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="nb">dir</span><span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="nb">listdir</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="nb">dir</span><span class="n">name</span><span class="p">):</span>
+            <span class="nb">dir</span><span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="nb">dir</span><span class="n">name</span><span class="p">),</span> <span class="nb">dir</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">dir</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="nb">dir</span><span class="n">s</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="nb">dir</span><span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nb">dir</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="nb">dir</span><span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nb">dir</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">new</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> <span class="nb">file</span><span class="n">name</span><span class="p">),</span> <span class="nb">file</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="nb">file</span><span class="n">name</span> <span class="ow">in</span>
+             <span class="n">os</span><span class="o">.</span><span class="nb">listdir</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">new</span><span class="p">)]</span>
+    <span class="n">names</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">'.'</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">previous</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">print</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">' similarity : '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">histsimilar</span><span class="o">.</span><span class="n">calc_similar_by_path</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">new</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                     <span class="n">base</span> <span class="o">+</span> <span class="n">previous</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="o">+</span> <span class="s">'</span><span class="si">%</span><span class="s">'</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">mk_new_dir</span><span class="p">()</span>
+    <span class="n">wd</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://0.0.0.0:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+    <span class="n">wd</span><span class="o">.</span><span class="n">implicitly_wait</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">'点击开启'</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">button</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">():</span>
+            <span class="c">#screenshot()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">click</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">WebDriverException</span><span class="p">,</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">'没有开机动画'</span><span class="p">)</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/tableview[1]/cell[1]/button[1]"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">" 返回"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/tableview[1]/cell[1]/button[2]"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">" 返回"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">"游记"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">"qunar login"</span><span class="p">))</span>
+    <span class="n">send_keys</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/image[2]/textfield[1]"</span><span class="p">),</span> <span class="s">"lvtu@yopmail.com"</span><span class="p">)</span>
+    <span class="n">send_keys</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/image[3]/secure[1]"</span><span class="p">),</span> <span class="s">"lvtu@yopmail.com"</span><span class="p">)</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">"登录"</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/button[3]"</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">'没上传提示'</span><span class="p">)</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/tableview[1]/cell[1]/text[1]"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/tableview[1]/cell[1]"</span><span class="p">))</span>
+    <span class="n">execute_script</span><span class="p">(</span><span class="s">"mobile: swipe"</span><span class="p">,</span>
+                   <span class="p">{</span><span class="s">"touchCount"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"startX"</span><span class="p">:</span> <span class="mi">157</span><span class="p">,</span> <span class="s">"startY"</span><span class="p">:</span> <span class="mi">529</span><span class="p">,</span> <span class="s">"endX"</span><span class="p">:</span> <span class="mi">156</span><span class="p">,</span> <span class="s">"endY"</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span> <span class="s">"duration"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">" 返回"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">" 返回"</span><span class="p">))</span>
+    <span class="n">click</span><span class="p">(</span><span class="n">wd</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">"//window[1]/button[1]"</span><span class="p">))</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+        <span class="c">#raise Exception("Test failed.")</span>
+        <span class="n">compare</span><span class="p">()</span>
+        <span class="n">wd</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+
+</pre>
+<p><strong>计算图片相似度部分</strong></p>
+<pre class="highlight python"><span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">Image</span>
+
+
+<span class="k">def</span> <span class="nf">make_regalur_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">'RGB'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">split_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">part_size</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)):</span>
+    <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">pw</span><span class="p">,</span> <span class="n">ph</span> <span class="o">=</span> <span class="n">part_size</span>
+
+    <span class="k">assert</span> <span class="n">w</span> <span class="o">%</span> <span class="n">pw</span> <span class="o">==</span> <span class="n">h</span> <span class="o">%</span> <span class="n">ph</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">img</span><span class="o">.</span><span class="n">crop</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="n">pw</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">ph</span><span class="p">))</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> \
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pw</span><span class="p">)</span> \
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">ph</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">hist_similar</span><span class="p">(</span><span class="n">lh</span><span class="p">,</span> <span class="n">rh</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">lh</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">rh</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">r</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">r</span><span class="p">))</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span> <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lh</span><span class="p">,</span> <span class="n">rh</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">lh</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">calc_similar</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">ri</span><span class="p">):</span>
+<span class="c">#   return hist_similar(li.histogram(), ri.histogram())</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">hist_similar</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">histogram</span><span class="p">(),</span> <span class="n">r</span><span class="o">.</span><span class="n">histogram</span><span class="p">())</span> <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">split_image</span><span class="p">(</span><span class="n">li</span><span class="p">),</span> <span class="n">split_image</span><span class="p">(</span><span class="n">ri</span><span class="p">)))</span> <span class="o">/</span> <span class="mf">16.0</span>
+
+
+<span class="k">def</span> <span class="nf">calc_similar_by_path</span><span class="p">(</span><span class="n">lf</span><span class="p">,</span> <span class="n">rf</span><span class="p">):</span>
+    <span class="n">li</span><span class="p">,</span> <span class="n">ri</span> <span class="o">=</span> <span class="n">make_regalur_image</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">lf</span><span class="p">)),</span> <span class="n">make_regalur_image</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">rf</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">calc_similar</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">ri</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">make_doc_data</span><span class="p">(</span><span class="n">lf</span><span class="p">,</span> <span class="n">rf</span><span class="p">):</span>
+    <span class="n">li</span><span class="p">,</span> <span class="n">ri</span> <span class="o">=</span> <span class="n">make_regalur_image</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">lf</span><span class="p">)),</span> <span class="n">make_regalur_image</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">rf</span><span class="p">))</span>
+    <span class="n">li</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">lf</span> <span class="o">+</span> <span class="s">'_regalur.png'</span><span class="p">)</span>
+    <span class="n">ri</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">rf</span> <span class="o">+</span> <span class="s">'_regalur.png'</span><span class="p">)</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'stat.csv'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span>
+    <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="s">','</span> <span class="o">+</span> <span class="n">r</span> <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">li</span><span class="o">.</span><span class="n">histogram</span><span class="p">()),</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ri</span><span class="o">.</span><span class="n">histogram</span><span class="p">()))))</span>
+    <span class="c">#   print &gt;&gt;fd, '\n'</span>
+    <span class="c">#   fd.write(','.join(map(str, ri.histogram())))</span>
+    <span class="n">fd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="kn">import</span> <span class="nn">ImageDraw</span>
+
+    <span class="n">li</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">'RGB'</span><span class="p">)</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">li</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">64</span><span class="p">):</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">fill</span><span class="o">=</span><span class="s">'#ff0000'</span><span class="p">)</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="n">fill</span><span class="o">=</span><span class="s">'#ff0000'</span><span class="p">)</span>
+    <span class="n">li</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">lf</span> <span class="o">+</span> <span class="s">'_lines.png'</span><span class="p">)</span>
+
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium 自动化测试演示 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="201#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="201#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="201#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="201#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="201#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>43</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply1">1楼</a> · <abbr class="timeago" title="2013-11-15T10:31:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="679" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/201/replies/679/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>视频嵌入 应该可以做。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply2">2楼</a> · <abbr class="timeago" title="2013-11-15T10:48:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="680" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/680/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>滑动Splash后的产品介绍页面是如何做到的？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply3">3楼</a> · <abbr class="timeago" title="2013-11-15T11:32:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="682" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/201/replies/682/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我觉得这个问题在于怎么做很多的断言，关于操作不能看出来任何的优势啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply4">4楼</a> · <abbr class="timeago" title="2013-11-15T11:33:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="683" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/201/replies/683/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 是指滑动怎么做到的么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply5">5楼</a> · <abbr class="timeago" title="2013-11-15T11:36:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="684" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/684/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 是的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply6">6楼</a> · <abbr class="timeago" title="2013-11-15T12:01:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="685" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/201/replies/685/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 比如python的这个例子就可以实现。</p>
+<pre class="highlight ruby"><span class="n">js_snippet</span> <span class="o">=</span> <span class="s2">"mobile: swipe"</span>
+<span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'startX'</span><span class="p">:</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'startY'</span><span class="p">:</span><span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'startX'</span><span class="p">:</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'startY'</span><span class="p">:</span><span class="mi">0</span><span class="o">.</span><span class="mi">95</span><span class="p">,</span> <span class="s1">'tapCount'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'duration'</span><span class="p">:</span><span class="mi">10</span><span class="p">}</span>
+<span class="n">driver</span><span class="p">.</span><span class="nf">execute_script</span><span class="p">(</span><span class="n">js_snippet</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply7">7楼</a> · <abbr class="timeago" title="2013-11-15T12:06:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="686" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/686/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 没做断言，主要依靠最后的截图相似度来判断的，感觉写断言工作量有点大<br>
+有其他什么好办法没？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply8">8楼</a> · <abbr class="timeago" title="2013-11-15T12:07:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="687" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/687/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 说的对</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply9">9楼</a> · <abbr class="timeago" title="2013-11-15T12:16:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="690" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/690/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 打印当前的所有控件，有什么接口没？Inspector上能打印所有的控件，按说是应该有接口。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply10">10楼</a> · <abbr class="timeago" title="2013-11-15T12:50:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="691" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/691/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 可以先打印下page_source看看，不过打印出的格式比较乱<br>
+以Python为例<br>
+print  driver.page_source</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply11">11楼</a> · <abbr class="timeago" title="2013-11-15T12:50:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="692" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/692/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 谢谢，等一下试试</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply12">12楼</a> · <abbr class="timeago" title="2013-11-15T14:12:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="694" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/201/replies/694/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="seveniruby" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a>   我也在研究appium的定位和元素枚举, 他们这块实现的不是太好. 得需要我们封装下. <br>
+对比截图是一种方法,  还可以直接对比page_source, 这两个方法都可以使用. 他们对比可以发现不同层面的问题.</p>
+
+<p>等待的问题, 我建议不要sleep, 而是使用直接的元素定位, 每次操作元素前都尽量重新定位, 而不是使用之前定义好的一些元素. 操作前定位就可以让系统自己去等待元素的出现, 而不是强行的sleep.</p>
+
+<p>打印控件这种东西, 就算appium有接口, 也不要使用, 尽量通过webdriver协议来实现. 对于appium还没有完全实现的webdriver接口, 可以自己尝试封装出来.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply13">13楼</a> · <abbr class="timeago" title="2013-11-15T14:59:15+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="695" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/201/replies/695/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="lihuazhang" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 这个视频太棒了。 自动化脚本 和 测试app 能 share 么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply14">14楼</a> · <abbr class="timeago" title="2013-11-15T15:24:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="696" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/696/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 如果操作前不sleep的话，我这会出现WebDriverException: Message: u'An unknown server-side error occurred while processing the command.' 的错误。可能和app的过度动画效果有关系。<br>
+page_source还真能看所有控件，真全，连几格信哈都有<br>
+另外问下，有没有碰到UIAApplication的中文名显示乱码的问题，其他都没事，就这个东西是乱码的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply15">15楼</a> · <abbr class="timeago" title="2013-11-15T15:26:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="697" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/697/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 脚本行，很简单，等整理整理的。<br>
+app不行，你懂的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply16">16楼</a> · <abbr class="timeago" title="2013-11-15T15:44:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="698" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/698/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 你脚本语言用的是什么，如果是Python，在第一行加上'# coding=utf-8'试试</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply17">17楼</a> · <abbr class="timeago" title="2013-11-15T15:47:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="699" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/699/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 我的滑动还是没有效果，Appium报下面的信息： <br>
+Responding to client with success: {"status":0,"value":null,"sessionId":"a4f0725f-737f-47f1-b2c8-c14213f7283b"}<br>
+我的代码片段：</p>
+<pre class="highlight python"><span class="n">js_snippet</span> <span class="o">=</span> <span class="s">"mobile: swipe"</span>
+<span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s">'endX'</span><span class="p">:</span><span class="mf">0.95</span><span class="p">,</span> <span class="s">'endY'</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="s">'touchCount'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">'duration'</span><span class="p">:</span><span class="mf">1.8</span><span class="p">}</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">js_snippet</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply18">18楼</a> · <abbr class="timeago" title="2013-11-15T15:56:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="700" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/700/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 分享一下你的脚本吧，让大家大家学习学习</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply19">19楼</a> · <abbr class="timeago" title="2013-11-15T15:58:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="701" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/701/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> utf8这行加了，乱码是app安装到模拟器之后显示的名字是乱码的，用xcode就没事。<br>
+那个滑动，可以这样，用inspector录一下，这样位置代码都有了，我就这么搞的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply20">20楼</a> · <abbr class="timeago" title="2013-11-15T16:01:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="702" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/702/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 哦，我也碰到了这个问题，应用的名字是乱码的；关键是我的inspector Luanch不起来，你的那个产品介绍页面是从左向右滑动的吗，能否把你滑动的那部分代码让我看看？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply21">21楼</a> · <abbr class="timeago" title="2013-11-15T16:06:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="703" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/703/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 就最后查看照片详细的时候是从下向上滑动的，开始的引导页是自动滚动的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply22">22楼</a> · <abbr class="timeago" title="2013-11-15T16:09:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="704" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/704/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 你们开始的引导页是自动滚动的？本身程序就是这样的吗？我们的必须要手动滑三次</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply23">23楼</a> · <abbr class="timeago" title="2013-11-15T16:11:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="706" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/706/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply22" class="at_floor" data-floor="22">#22楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 对，不过这都不是重点，前一个版本也是划的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply24">24楼</a> · <abbr class="timeago" title="2013-11-15T16:23:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="707" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/201/replies/707/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="monkey" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>同意～求分享code～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply25">25楼</a> · <abbr class="timeago" title="2013-11-15T16:24:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="708" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/201/replies/708/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="monkey" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哈哈原来已经有了呀～～～感谢感谢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply26">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply26">26楼</a> · <abbr class="timeago" title="2013-11-15T16:25:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="709" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/201/replies/709/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="26" data-login="monkey" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>对了，关于图片的，我之前也有一些代码。也是用PIL库来实现的～～待会儿我也来贴下～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply27">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply27">27楼</a> · <abbr class="timeago" title="2013-11-15T16:34:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="710" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/710/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="27" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 闹了半天，原来Swipe在Xcode5和iOS7 上有问题<br><a href="https://github.com/appium/appium/issues/1296" rel="nofollow" target="_blank">https://github.com/appium/appium/issues/1296</a><br><a href="http://stackoverflow.com/questions/18792965/uiautomations-draginsidewithoptions-has-no-effect-on-ios7-simulator" rel="nofollow" target="_blank">http://stackoverflow.com/questions/18792965/uiautomations-draginsidewithoptions-has-no-effect-on-ios7-simulator</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply28">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply28">28楼</a> · <abbr class="timeago" title="2013-11-15T17:16:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="712" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/712/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="28" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply27" class="at_floor" data-floor="27">#27楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 不过我的环境就是xcode5和iOS7</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply29">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply29">29楼</a> · <abbr class="timeago" title="2013-11-15T17:18:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="713" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/713/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="29" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply28" class="at_floor" data-floor="28">#28楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 晕，这是怎么个回事</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply30">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply30">30楼</a> · <abbr class="timeago" title="2013-11-15T17:25:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="715" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/715/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="30" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply29" class="at_floor" data-floor="29">#29楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 刚升级iOS7那会是这样，不能滑动，后续就修复了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply31">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply31">31楼</a> · <abbr class="timeago" title="2013-11-18T10:30:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="723" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/723/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="31" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply29" class="at_floor" data-floor="29">#29楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 好像我搞错了，不能滑动的问题还是存在</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply32">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply32">32楼</a> · <abbr class="timeago" title="2013-11-18T11:05:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="725" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/201/replies/725/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="32" data-login="xiaomayi0323" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply31" class="at_floor" data-floor="31">#31楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 哦，那你现在的滑动是这么实现的？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply33">
+    <div class="pull-left face"><a href="../luyi0824"><img alt="240" class="uface" src="../user/large_avatar/240.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luyi0824">luyi0824</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply33">33楼</a> · <abbr class="timeago" title="2013-12-10T23:47:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1109" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="240" href="http://testerhome.com/topics/201/replies/1109/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="33" data-login="luyi0824" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 不用sleep，每次操作前怎么重新定位元素，能举例一下吗？菜鸟不懂哈</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply34">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply34">34楼</a> · <abbr class="timeago" title="2013-12-10T23:50:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1110" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/201/replies/1110/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="34" data-login="seveniruby" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply33" class="at_floor" data-floor="33">#33楼</a> <a href="../luyi0824" class="at_user" title="@luyi0824"><i>@</i>luyi0824</a> 就是使用find_element后直接操作, 最好是使用page object模式</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply35">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply35">35楼</a> · <abbr class="timeago" title="2013-12-11T11:45:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1119" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/1119/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="35" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply34" class="at_floor" data-floor="34">#34楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我sleep是在两次find之间,操作的话还是find后直接操作的,page object是什么意思?不懂</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply36">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply36">36楼</a> · <abbr class="timeago" title="2013-12-11T13:43:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1120" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/201/replies/1120/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="36" data-login="seveniruby" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply35" class="at_floor" data-floor="35">#35楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> page object模式可以参考下selenium的文档, </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply37">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply37">37楼</a> · <abbr class="timeago" title="2013-12-18T13:06:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1308" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/201/replies/1308/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="37" data-login="oscar" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>send_keys 这块要是传值汉字 怎么处理呢，我看都是传值的英文</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply38">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply38">38楼</a> · <abbr class="timeago" title="2013-12-18T14:40:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1310" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/201/replies/1310/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="38" data-login="guo" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply37" class="at_floor" data-floor="37">#37楼</a> <a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a> 没试过,好像看到过有人说有问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply39">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply39">39楼</a> · <abbr class="timeago" title="2014-01-02T18:56:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="1765" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/201/replies/1765/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="39" data-login="532589730" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>如果加断言怎么加?<br>
+在try段中，直接使用assertEqual()出现报错。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply40">
+    <div class="pull-left face"><a href="../yunmu"><img alt="418" class="uface" src="../user/large_avatar/418.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../yunmu">yunmu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply40">40楼</a> · <abbr class="timeago" title="2014-02-13T13:37:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2525" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="418" href="http://testerhome.com/topics/201/replies/2525/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="40" data-login="yunmu" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply39" class="at_floor" data-floor="39">#39楼</a> <a href="../532589730" class="at_user" title="@532589730"><i>@</i>532589730</a> <br>
+同问 断言怎么加呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply41">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply41">41楼</a> · <abbr class="timeago" title="2014-05-03T00:08:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4374" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/201/replies/4374/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="41" data-login="kevin_xu_v" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="201#reply38" class="at_floor" data-floor="38">#38楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 我想问下滑动目前实现没？我就在解决引导页怎么滑动的问题，头疼死了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply42">
+    <div class="pull-left face"><a href="../daisydaiyan"><img alt="96ec8c4071e0f1badaf7ff94d4037999" class="uface" src="../avatar/96ec8c4071e0f1badaf7ff94d4037999.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="多妈" href="../daisydaiyan">daisydaiyan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply42">42楼</a> · <abbr class="timeago" title="2014-07-25T16:16:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6929" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1238" href="http://testerhome.com/topics/201/replies/6929/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="42" data-login="daisydaiyan" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>视频需要密码哎</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply43">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="201#reply43">43楼</a> · <abbr class="timeago" title="2014-09-29T10:23:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8983" data-state="" data-type="Reply" href="201#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/201/replies/8983/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="43" data-login="seasoncool2011" href="201#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好贴，学习了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @rabbit 希望能够过上每天除了工作还有生活的日子~~惬意。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="201#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

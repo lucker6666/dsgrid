@@ -1,0 +1,771 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | gradle 集成修改 Android Manifest.xml 打多个包实践 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">gradle 集成修改 Android Manifest.xml 打多个包实践</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-12-19T16:21:14+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-12-30T14:07:33+08:00"></abbr>回复
+     · 
+    778次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>其实这次我想好好把gradle 构建android工程生成的文件好好看看的，但是实在太多了，而且网络上资料有限，故而就放在下次吧。</p>
+
+<p>这次做了一些新的尝试，然后也看了下一些之前没有关心的文件是啥用。</p>
+<h4>gradle-wrapper.jar</h4>
+<p>首先其实之前就看到有这个jar包，但是还没有去关心过到底是啥用。<br>
+  Gradle Wrapper 是一种更加方便的使用gradle的方法，他包括了为支持windows的批处理脚本和支持类unix的shell脚本。这些脚本是你，在不安装gradle时候，也可以用gradle。安装wrapper只需要在你的build.gradle文件中添加如果下代码。<br>
+  我们来看下结构</p>
+<pre class="highlight shell">└── initial
+    └── gradlew
+    └──gradlew.bat
+    └── gradle
+       └── wrapper
+           └── gradle-wrapper.jar
+           └── gradle-wrapper.properties
+</pre>
+
+<p>现在已经可以用Wrapper构建你的工程了。你将和之前一样，运行gradle build命令构建工程。<br>
+./gradlew build<br>
+第一行执行Gradle的版，他讲下载和缓存执行版本gradle的二进制文件。 Gradle Wrapper 文件将和代码一样提交给版本控制器，这样任何人，获取代码后，不用安装gradle，就可以构建工程。</p>
+
+<p>这个的确会非常方便，总体感觉以后再也不用编写什么打包脚本了。直接checkout，运行指定gradle命令即可。</p>
+<h4>多个项目</h4>
+<p>在gradle项目根目录下面我们也可以看到有一个<code>settings.gradle</code>的文件，默认是有<br>
+  <code>include ':app'</code><br>
+  假设我们有三个项目，分别是</p>
+<pre class="highlight shell">  MyProject/
+
+| settings.gradle
+
+app/
+| build.gradle
+
+app2/
+| build.gradle
+
+app3/
+| build.gradle
+</pre>
+
+<p>那么我们需要修改<code>settings.gradle</code>，变成<code>include ‘:app’, ‘:app2′, ‘:app3′</code></p>
+<h4>1.0 rc的坑（转）</h4>
+<ol>
+<li><p>Error:(26, 0) Gradle DSL method not found: 'runProguard()'问题，这里是runProguard()方法被替换了，把runProguard改为minifyEnabled即可，<a href="http://stackoverflow.com/questions/27016385/error26-0-gradle-dsl-method-not-found-runproguard" rel="nofollow" target="_blank">http://stackoverflow.com/questions/27016385/error26-0-gradle-dsl-method-not-found-runproguard</a></p></li>
+<li><p>“Could not find property 'packageApplication' on com.android.build.gradle.internal.api.ApplicationVariantImpl_Decorated”问题，这个属性被取消了，这里是替换要输出的APK的名称，<a href="http://stackoverflow.com/questions/27209188/could-not-find-property-packageapplication-on-com-android-build-gradle-interna" rel="nofollow" target="_blank">http://stackoverflow.com/questions/27209188/could-not-find-property-packageapplication-on-com-android-build-gradle-interna</a> </p></li>
+<li><p>“Could not find property 'processManifest' on com.android.build.gradle.internal.api.ApplicationVariantImpl”问题，这里是由于manifest merger改动了，解决方法如下：<a href="http://stackoverflow.com/questions/27302965/could-not-find-property-processmanifest-on-com-android-build-gradle-internal-a" rel="nofollow" target="_blank">http://stackoverflow.com/questions/27302965/could-not-find-property-processmanifest-on-com-android-build-gradle-internal-a</a> </p></li>
+<li><p>android studio中的plugin也发生了改变，将"apply plugin: 'android'"改为"apply plugin: 'com.android.application'"</p></li>
+</ol>
+
+<p>monkey：不过1.0坑真的很多，大家自己去尝试就知道了。主要是stackoverflow上面的东西太旧。</p>
+<h4>修改app和root project中两个build.gradle</h4>
+<p>我们创建好Android application之后，可以在app目录和根目录下都看到build.gradle文件，这两个文件分别会从app层面和多个project层面进行build的管控。<br>
+  我们先来看下根目录的gradle.build文件。</p>
+<pre class="highlight shell">//其实这里已经有了标识，告诉大家这个是可以管控多个模块的
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+//编译脚本
+buildscript <span class="o">{</span>
+    repositories <span class="o">{</span>
+//这里可以是maven，jcenter等
+        jcenter<span class="o">()</span>
+    <span class="o">}</span>
+    dependencies <span class="o">{</span>
+        classpath <span class="s1">'com.android.tools.build:gradle:1.0.0'</span>
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // <span class="k">in </span>the individual module build.gradle files
+    <span class="o">}</span>
+
+<span class="o">}</span>
+// 1.0 rc之后这个需要修改
+apply plugin: <span class="s1">'com.android.application'</span>
+
+
+android <span class="o">{</span>
+    compileSdkVersion 21
+    buildToolsVersion <span class="s2">"20.0.0"</span>
+
+//这里需要设置资源文件，否则会报错，文件找不到
+    sourceSets <span class="o">{</span>
+        main <span class="o">{</span>
+            manifest.srcFile <span class="s1">'AndroidManifest.xml'</span>
+            java.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            resources.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'src/main/res'</span><span class="o">]</span>
+            aidl.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            renderscript.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            res.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'res/main/res'</span><span class="o">]</span>
+            assets.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'assets'</span><span class="o">]</span>
+        <span class="o">}</span>
+        instrumentTest.setRoot<span class="o">(</span><span class="s1">'tests'</span><span class="o">)</span>
+    <span class="o">}</span>
+
+
+    defaultConfig <span class="o">{</span>
+        applicationId <span class="s2">"com.example.monkey.myapplication"</span>
+        minSdkVersion 10
+        targetSdkVersion 21
+        versionCode 1
+        versionName <span class="s2">"1.0"</span>
+    <span class="o">}</span>
+//增加混淆
+    buildTypes <span class="o">{</span>
+        release <span class="o">{</span>
+            minifyEnabled <span class="nb">false
+            </span>proguardFiles getDefaultProguardFile<span class="o">(</span><span class="s1">'proguard-android.txt'</span><span class="o">)</span>, <span class="s1">'proguard-rules.pro'</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+    //这个是解决lint报错的代码
+    lintOptions <span class="o">{</span>
+        abortOnError <span class="nb">false</span>
+    <span class="o">}</span>
+  // 增加签名
+    signingConfigs <span class="o">{</span>
+        myConfigs <span class="o">{</span>
+            storeFile file<span class="o">(</span><span class="s2">"/Users/monkey/.android/debug.keystore"</span><span class="o">)</span>
+            keyAlias <span class="s2">"..."</span>
+            keyPassword <span class="s2">"..."</span>
+            storePassword <span class="s2">"..."</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+<span class="o">}</span>
+
+
+allprojects <span class="o">{</span>
+    repositories <span class="o">{</span>
+        jcenter<span class="o">()</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+//替换AndroidManifest.xml的REPLACE_KEY字符串为渠道名称
+android.applicationVariants.all <span class="o">{</span> variant -&gt;
+    variant.outputs.each <span class="o">{</span> output -&gt;
+        output.processManifest.doLast <span class="o">{</span>
+            //v1.11之前这里用的copy<span class="o">{}</span>，我换成了文件操作，这样可以在v1.11版本正常运行，并保持文件夹整洁
+            //<span class="k">${</span><span class="nv">buildDir</span><span class="k">}</span>是指build文件夹
+            //<span class="k">${</span><span class="nv">variant</span><span class="p">.dirName</span><span class="k">}</span>是flavor/buildtype，例如GooglePlay/release，运行时会自动生成
+            //下面的路径是类似这样：build/intermediates/manifests/GooglePlay/release/AndroidManifest.xml
+            def manifestFile <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">buildDir</span><span class="k">}</span><span class="s2">/intermediates/manifests/full/</span><span class="k">${</span><span class="nv">variant</span><span class="p">.dirName</span><span class="k">}</span><span class="s2">/AndroidManifest.xml"</span>
+
+            //将字符串REPLACE_KEY替换成flavor的名字
+            def updatedContent <span class="o">=</span> new File<span class="o">(</span>manifestFile<span class="o">)</span>.getText<span class="o">(</span><span class="s1">'UTF-8'</span><span class="o">)</span>.replaceAll<span class="o">(</span><span class="s2">"REPLACE_KEY"</span>, <span class="s2">"</span><span class="k">${</span><span class="nv">variant</span><span class="p">.productFlavors[0].name</span><span class="k">}</span><span class="s2">"</span><span class="o">)</span>
+            new File<span class="o">(</span>manifestFile<span class="o">)</span>.write<span class="o">(</span>updatedContent, <span class="s1">'UTF-8'</span><span class="o">)</span>
+
+            //将此次flavor的AndroidManifest.xml文件指定为我们修改过的这个文件
+            variant.processResources.manifestFile <span class="o">=</span> file<span class="o">(</span><span class="s2">"</span><span class="k">${</span><span class="nv">buildDir</span><span class="k">}</span><span class="s2">/intermediates/manifests/full/</span><span class="k">${</span><span class="nv">variant</span><span class="p">.dirName</span><span class="k">}</span><span class="s2">/AndroidManifest.xml"</span><span class="o">)</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</pre>
+
+<p>接着看下app下面的build.gradle</p>
+<pre class="highlight shell">//增加application的apply
+apply plugin: <span class="s1">'com.android.application'</span>
+
+android <span class="o">{</span>
+//配置sdk版本
+    compileSdkVersion 21
+    buildToolsVersion <span class="s2">"20.0.0"</span>
+
+
+
+    defaultConfig <span class="o">{</span>
+        applicationId <span class="s2">"com.example.monkey.myapplication"</span>
+        minSdkVersion 10
+        targetSdkVersion 21
+        versionCode 1
+        versionName <span class="s2">"1.0"</span>
+    <span class="o">}</span>
+    buildTypes <span class="o">{</span>
+        release <span class="o">{</span>
+            minifyEnabled <span class="nb">false
+            </span>proguardFiles getDefaultProguardFile<span class="o">(</span><span class="s1">'proguard-android.txt'</span><span class="o">)</span>, <span class="s1">'proguard-rules.pro'</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    //这个是解决lint报错的代码
+    lintOptions <span class="o">{</span>
+        abortOnError <span class="nb">false</span>
+    <span class="o">}</span>
+    signingConfigs <span class="o">{</span>
+        myConfigs <span class="o">{</span>
+            storeFile file<span class="o">(</span><span class="s2">"/Users/monkey/.android/debug.keystore"</span><span class="o">)</span>
+            keyAlias <span class="s2">"..."</span>
+            keyPassword <span class="s2">"..."</span>
+            storePassword <span class="s2">"..."</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+//增加多个打包渠道配置
+    productFlavors <span class="o">{</span>
+        qqqq <span class="o">{</span>
+            applicationId <span class="o">=</span> <span class="s1">'com.monkey.qqq'</span>
+        <span class="o">}</span>
+        hhhhh <span class="o">{</span>
+            <span class="nv">applicationId</span><span class="o">=</span><span class="s1">'com.monkey.hhh'</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+
+
+dependencies <span class="o">{</span>
+    compile fileTree<span class="o">(</span>dir: <span class="s1">'libs'</span>, include: <span class="o">[</span><span class="s1">'*.jar'</span><span class="o">])</span>
+    compile <span class="s1">'com.android.support:appcompat-v7:21.0.3'</span>
+<span class="o">}</span>
+
+
+</pre>
+
+<p>我们使用gradlew进行编译之后，我们可以在如下目录下中找到分别为了打不同包所用的Android Manifest.xml文件。<br>
+<img src="../photo/2014/b246cf0346e80846398d2c8d3c9b4419.png" alt=""></p>
+
+<p>同时我们也可以在outputs中的apk看到我们编译出的多个apk，但这里只是package name不同，渠道的meta data并没有修改，但是方法是一样的。<br>
+<img src="../photo/2014/a229a05ad91c748a3b4ddb76655adf04.png" alt=""></p>
+
+<p>最后的给个编译report。</p>
+<pre class="highlight shell">ec2-54-67-1-101:monkeyApplication monkey<span class="nv">$ </span>./gradlew app:assembleDebug
+:app:preBuild
+:app:compileHhhhhDebugNdk UP-TO-DATE
+:app:preHhhhhDebugBuild
+:app:checkHhhhhDebugManifest
+:app:preHhhhhReleaseBuild
+:app:preQqqqDebugBuild
+:app:preQqqqReleaseBuild
+:app:prepareComAndroidSupportAppcompatV72103Library UP-TO-DATE
+:app:prepareComAndroidSupportSupportV42103Library UP-TO-DATE
+:app:prepareHhhhhDebugDependencies
+:app:compileHhhhhDebugAidl UP-TO-DATE
+:app:compileHhhhhDebugRenderscript UP-TO-DATE
+:app:generateHhhhhDebugBuildConfig UP-TO-DATE
+:app:generateHhhhhDebugAssets UP-TO-DATE
+:app:mergeHhhhhDebugAssets UP-TO-DATE
+:app:generateHhhhhDebugResValues UP-TO-DATE
+:app:generateHhhhhDebugResources UP-TO-DATE
+:app:mergeHhhhhDebugResources UP-TO-DATE
+:app:processHhhhhDebugManifest UP-TO-DATE
+:app:processHhhhhDebugResources UP-TO-DATE
+:app:generateHhhhhDebugSources UP-TO-DATE
+:app:compileHhhhhDebugJava UP-TO-DATE
+:app:preDexHhhhhDebug UP-TO-DATE
+:app:dexHhhhhDebug UP-TO-DATE
+:app:processHhhhhDebugJavaRes UP-TO-DATE
+:app:validateDebugSigning
+:app:packageHhhhhDebug UP-TO-DATE
+:app:zipalignHhhhhDebug UP-TO-DATE
+:app:assembleHhhhhDebug UP-TO-DATE
+:app:compileQqqqDebugNdk UP-TO-DATE
+:app:checkQqqqDebugManifest
+:app:prepareQqqqDebugDependencies
+:app:compileQqqqDebugAidl UP-TO-DATE
+:app:compileQqqqDebugRenderscript UP-TO-DATE
+:app:generateQqqqDebugBuildConfig UP-TO-DATE
+:app:generateQqqqDebugAssets UP-TO-DATE
+:app:mergeQqqqDebugAssets UP-TO-DATE
+:app:generateQqqqDebugResValues UP-TO-DATE
+:app:generateQqqqDebugResources UP-TO-DATE
+:app:mergeQqqqDebugResources UP-TO-DATE
+:app:processQqqqDebugManifest UP-TO-DATE
+:app:processQqqqDebugResources UP-TO-DATE
+:app:generateQqqqDebugSources UP-TO-DATE
+:app:compileQqqqDebugJava UP-TO-DATE
+:app:preDexQqqqDebug UP-TO-DATE
+:app:dexQqqqDebug UP-TO-DATE
+:app:processQqqqDebugJavaRes UP-TO-DATE
+:app:packageQqqqDebug UP-TO-DATE
+:app:zipalignQqqqDebug UP-TO-DATE
+:app:assembleQqqqDebug UP-TO-DATE
+:app:assembleDebug UP-TO-DATE
+
+BUILD SUCCESSFUL
+
+Total <span class="nb">time</span>: 8.73 secs
+
+</pre>
+
+<p>总体来讲，gradle的编译会比以往的mvn的pom配置文件来的更灵活，可配置性更强。关于更多的配置见之后的文章吧</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='gradle 集成修改 Android Manifest.xml 打多个包实践 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1708#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1708#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1708#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1708#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1708#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>11</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply1">1楼</a> · <abbr class="timeago" title="2014-12-19T16:24:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10711" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1708/replies/10711/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>一个新系列要诞生了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../uncle_mm"><img alt="1960" class="uface" src="../user/large_avatar/1960.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="uncle" href="../uncle_mm">uncle_mm</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply2">2楼</a> · <abbr class="timeago" title="2014-12-19T16:47:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10714" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1960" href="http://testerhome.com/topics/1708/replies/10714/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="uncle_mm" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>顶~  Android Studio下gradle也提供了很多功能，以后研究研究</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply3">3楼</a> · <abbr class="timeago" title="2014-12-19T16:47:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10715" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1708/replies/10715/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1708#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../uncle_mm" class="at_user" title="@uncle_mm"><i>@</i>uncle_mm</a> 嗯对的。结合Studio用法也很灵活。。太tmd多了。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply4">4楼</a> · <abbr class="timeago" title="2014-12-19T17:47:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10720" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1708/replies/10720/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="anikikun" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>点赞收藏=。=差不多我也要接手做release的工作了。。。。啊。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply5">5楼</a> · <abbr class="timeago" title="2014-12-19T17:49:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10721" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1708/replies/10721/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1708#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 我是属于课余学习。。。这边分工太细。。我其实根本管不到很多。。  ＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../jiguanghover"><img alt="Bf5d767c4465c28e82b899a6cfb104d1" class="uface" src="../avatar/bf5d767c4465c28e82b899a6cfb104d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hover" href="../jiguanghover">jiguanghover</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply6">6楼</a> · <abbr class="timeago" title="2014-12-22T09:27:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10737" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="342" href="http://testerhome.com/topics/1708/replies/10737/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="jiguanghover" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>gradle打包每一个渠道都会生成2个包，请问可以只打出一个正式包吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply7">7楼</a> · <abbr class="timeago" title="2014-12-22T10:47:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10740" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1708/replies/10740/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="monkey" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1708#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../jiguanghover" class="at_user" title="@jiguanghover"><i>@</i>jiguanghover</a> 一个是正式包，一个是没有签名的包。你是说不要没有签名的这个包么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../jiguanghover"><img alt="Bf5d767c4465c28e82b899a6cfb104d1" class="uface" src="../avatar/bf5d767c4465c28e82b899a6cfb104d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hover" href="../jiguanghover">jiguanghover</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply8">8楼</a> · <abbr class="timeago" title="2014-12-22T12:50:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10745" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="342" href="http://testerhome.com/topics/1708/replies/10745/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="jiguanghover" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>是的，因为我们的渠道包有1000多个，要是都打包2个的话，硬盘空间占用很多的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply9">9楼</a> · <abbr class="timeago" title="2014-12-22T14:37:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10747" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1708/replies/10747/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1708#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../jiguanghover" class="at_user" title="@jiguanghover"><i>@</i>jiguanghover</a> 嗯。这个设置的话。。我查查。这个目前我真的嗨不知道～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply10">10楼</a> · <abbr class="timeago" title="2014-12-30T14:07:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10941" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/1708/replies/10941/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="davidyang" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我们现在是Android Studio，自己挖坑打多种渠道包，以后多交流</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1708#reply11">11楼</a> · <abbr class="timeago" title="2014-12-30T14:07:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10942" data-state="" data-type="Reply" href="1708#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1708/replies/10942/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="monkey" href="1708#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1708#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../davidyang" class="at_user" title="@davidyang"><i>@</i>davidyang</a> 嗯啊～求项目实践经验～～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1708#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

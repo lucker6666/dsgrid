@@ -1,0 +1,734 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 使用 MonkeyRunner 做批量过渠道包的小工具 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">使用 MonkeyRunner 做批量过渠道包的小工具</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="黄伟东" href="../anikikun">anikikun</a>
+     · 
+    于<abbr class="timeago" title="2014-05-24T00:20:03+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="alfredhu" href="../alfredhu">alfredhu</a> 于<abbr class="timeago" title="2014-12-27T14:12:09+08:00"></abbr>回复
+     · 
+    1139次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>上周公司有同事抱怨说过渠道包太累，一下60多个包。由于某些安全机制，要检测每个包里面的一个视频播放功能是否可用，所有得一个个过下来，很累。<br>
+刚好看到<a href="../zouaiyong" class="at_user" title="@zouaiyong"><i>@</i>zouaiyong</a> 同学用MonkeyRunner写的代码，就借鉴改造了一下，随便折腾了一份批量测渠道包的代码。<br>
+这里我就放出 循环安装、打开应用、截图对比、卸载的代码。打开应用之后播放视频的操作就去掉了，毕竟都是一堆坐标。仅供大家参考参考。<br>
+扔多少个APK进去，就自动跑多少个，跑完出log，对比失败时自动停止。<br>
+不说了，看代码呗。</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env monkeyrunner</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">com.android.monkeyrunner</span> <span class="kn">import</span> <span class="n">MonkeyRunner</span><span class="p">,</span> <span class="n">MonkeyDevice</span><span class="p">,</span> <span class="n">MonkeyImage</span>
+
+<span class="c">#设置应用包名和入口Activity名</span>
+<span class="n">pakageName</span> <span class="o">=</span> <span class="s">'com.Your.www'</span>
+<span class="n">componentName</span> <span class="o">=</span> <span class="s">'com.Your.www/.MainActivity'</span>
+
+<span class="c">#APP启动时等待时间(秒)</span>
+<span class="n">startTime</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c">#获取年月日时分秒</span>
+<span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="nb">str</span><span class="n">ftime</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">Y-</span><span class="si">%</span><span class="s">m-</span><span class="si">%</span><span class="s">d-</span><span class="si">%</span><span class="s">H-</span><span class="si">%</span><span class="s">M-</span><span class="si">%</span><span class="s">S"</span><span class="p">)</span>
+
+<span class="c">#python中获取当前运行的文件的名字</span>
+<span class="n">name</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">"</span><span class="se">\\</span><span class="s">"</span><span class="p">)</span>
+<span class="nb">file</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c">#MonkeyRunner下获取运行的文件所在的路径</span>
+<span class="n">rootpath</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c">#指定位置</span>
+<span class="nb">dir</span> <span class="o">=</span> <span class="n">rootpath</span> <span class="o">+</span> <span class="s">"/apk/"</span>
+<span class="n">screenPath</span> <span class="o">=</span> <span class="n">rootpath</span> <span class="o">+</span> <span class="s">"/screenShot/"</span>
+<span class="n">logpath</span> <span class="o">=</span> <span class="n">rootpath</span> <span class="o">+</span> <span class="s">"/log/"</span>
+
+<span class="c">#获取待测APK个数</span>
+<span class="n">countPak</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="nb">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">))</span>
+
+<span class="c">#新建一个Log文件</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">logpath</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">logpath</span><span class="p">)</span>
+<span class="n">log</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span> <span class="n">logpath</span> <span class="o">+</span> <span class="nb">file</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s">"-log"</span> <span class="o">+</span><span class="n">now</span> <span class="o">+</span> <span class="s">".txt"</span> <span class="p">,</span> <span class="s">'w'</span><span class="p">)</span>
+
+<span class="c">#开始连接设备</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"Connecting..."</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">waitForConnection</span><span class="p">()</span>
+<span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"连接设备...</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c">#卸载应用</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Removing...'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">removePackage</span><span class="p">(</span><span class="n">pakageName</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">'Remove Successful!'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"初始化应用环境...</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="n">countOK</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c">#从dir路径下循环取出apk文件进行操作</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="nb">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Installing...&lt;</span><span class="si">%</span><span class="s">s&gt;'</span><span class="o">%</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"==========安装应用==========</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="nb">dir</span> <span class="o">+</span> <span class="s">'//'</span> <span class="o">+</span> <span class="n">i</span>
+    <span class="c">#安装应用</span>
+    <span class="n">device</span><span class="o">.</span><span class="n">installPackage</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Install Successful!'</span><span class="p">)</span>
+
+    <span class="c">#打开应用</span>
+    <span class="n">device</span><span class="o">.</span><span class="n">startActivity</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">componentName</span><span class="p">)</span>
+    <span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">startTime</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"启动App...</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="c">#截图</span>
+    <span class="n">result</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Take ScreenShot..."</span><span class="p">)</span>
+
+    <span class="c">#保存截图</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">screenPath</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s">'.png'</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+    <span class="c">#进行图片比较</span>
+    <span class="n">resultTrue</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="n">screenPath</span> <span class="o">+</span> <span class="s">r'basePic.png'</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">"Pic Comparing..."</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"对比图片中...</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">resultTrue</span><span class="p">,</span><span class="mf">0.9</span><span class="p">)):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">s is OK!"</span><span class="o">%</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"比较通过！--</span><span class="si">%</span><span class="s">s--包可用！</span><span class="se">\n</span><span class="s">"</span><span class="o">%</span><span class="n">i</span><span class="p">)</span>
+        <span class="c">#卸载应用</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'Removing...'</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"初始化应用环境，移除中...</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">device</span><span class="o">.</span><span class="n">removePackage</span><span class="p">(</span><span class="n">pakageName</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s">'Remove Successful!'</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"==========移除完毕==========</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">countOK</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"False!Please check </span><span class="si">%</span><span class="s">s!"</span><span class="o">%</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"比较失败！请检查安装包--</span><span class="si">%</span><span class="s">s--是否可用！</span><span class="se">\n</span><span class="s">"</span><span class="o">%</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">break</span>
+
+<span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"共测试 </span><span class="si">%</span><span class="s">s 个包，</span><span class="si">%</span><span class="s">d 个通过。"</span><span class="o">%</span><span class="p">(</span><span class="n">countPak</span><span class="p">,</span><span class="n">countOK</span><span class="p">))</span>
+</pre>
+<p>github地址：<a href="https://github.com/AnikiKun/MonkeyRunner_ApkTest" rel="nofollow" target="_blank">https://github.com/AnikiKun/MonkeyRunner_ApkTest</a><br>
+github上是我发给同事的文件夹，里面直接运行bat文件就可以开始自动跑了。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='使用 MonkeyRunner 做批量过渠道包的小工具 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="917#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="917#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="917#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="917#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="917#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>17</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../yumiko"><img alt="22d8a1d115bce21f04ebc0aea27cf0e0" class="uface" src="../avatar/22d8a1d115bce21f04ebc0aea27cf0e0.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="周晓军" href="../yumiko">yumiko</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply1">1楼</a> · <abbr class="timeago" title="2014-05-26T12:59:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5202" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="950" href="http://testerhome.com/topics/917/replies/5202/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="yumiko" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>最近在看monkeyrunner，刚好学习一下，感谢。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../haruko"><img alt="968" class="uface" src="../user/large_avatar/968.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="晴子" href="../haruko">haruko</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply2">2楼</a> · <abbr class="timeago" title="2014-05-26T23:08:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5227" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="968" href="http://testerhome.com/topics/917/replies/5227/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="haruko" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><img src="../assets/emojis/thumbsup.png" class="emoji" title=":thumbsup:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../mongnet"><img alt="727" class="uface" src="../user/large_avatar/727.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../mongnet">mongnet</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply3">3楼</a> · <abbr class="timeago" title="2014-05-27T13:12:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5263" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="727" href="http://testerhome.com/topics/917/replies/5263/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="mongnet" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>非常感谢<a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 同学的分享<img src="../assets/emojis/plus1.png" class="emoji" title=":+1:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../notalent"><img alt="D6af6127e0256bc13acf996787cdd9c9" class="uface" src="../avatar/d6af6127e0256bc13acf996787cdd9c9.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="壹头驴" href="../notalent">notalent</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply4">4楼</a> · <abbr class="timeago" title="2014-05-27T17:54:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5273" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="568" href="http://testerhome.com/topics/917/replies/5273/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="notalent" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 要检测每个包里面的一个视频播放功能是否可用,这个脚本只是启动图吧。。。我很想知道怎么检测播放功能是否OK的。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply5">5楼</a> · <abbr class="timeago" title="2014-05-27T18:08:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5274" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/917/replies/5274/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="anikikun" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../notalent" class="at_user" title="@notalent"><i>@</i>notalent</a> 我说了，是一堆点击坐标的代码，我去掉了。 就是使用touch、drag等模拟操作进去到打开视频，然后也是截取视频的第一页，与基线图对比是否一致。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../xingzunxi"><img alt="339" class="uface" src="../user/large_avatar/339.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xingzunxi" href="../xingzunxi">xingzunxi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply6">6楼</a> · <abbr class="timeago" title="2014-05-29T12:50:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5322" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="339" href="http://testerhome.com/topics/917/replies/5322/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="xingzunxi" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的不错。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply7">7楼</a> · <abbr class="timeago" title="2014-07-07T11:48:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6535" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/917/replies/6535/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="blue_momo2009" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我是想要测试渠道包的渠道号，要是手工的话把apk转成zip查看ttid就行了，monkeyrunner也可以实现吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply8">8楼</a> · <abbr class="timeago" title="2014-07-10T10:33:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6585" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/917/replies/6585/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="anikikun" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../blue_momo2009" class="at_user" title="@blue_momo2009"><i>@</i>blue_momo2009</a> 这个也没必要用monkeyrunner了。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../qiqi744"><img alt="Ba91ae21bc2610005b97582450348813" class="uface" src="../avatar/ba91ae21bc2610005b97582450348813.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../qiqi744">qiqi744</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply9">9楼</a> · <abbr class="timeago" title="2014-08-17T22:00:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7745" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="788" href="http://testerhome.com/topics/917/replies/7745/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="qiqi744" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>非常感谢，根据楼主的思路，我也把我们公司的渠道包自动化起来了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply10">10楼</a> · <abbr class="timeago" title="2014-08-25T12:56:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7921" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/917/replies/7921/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="anikikun" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../qiqi744" class="at_user" title="@qiqi744"><i>@</i>qiqi744</a> 嗯，能有帮助就好。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../lookatcn"><img alt="1693" class="uface" src="../user/large_avatar/1693.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lookatcn" href="../lookatcn">lookatcn</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply11">11楼</a> · <abbr class="timeago" title="2014-10-14T14:02:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9164" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1693" href="http://testerhome.com/topics/917/replies/9164/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="lookatcn" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> <br>
+谢谢，有启发！我在想如果要检测每个包的音频能否正常播放，应该怎么办呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply12">12楼</a> · <abbr class="timeago" title="2014-10-14T14:08:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9165" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/917/replies/9165/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="anikikun" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../lookatcn" class="at_user" title="@lookatcn"><i>@</i>lookatcn</a> 这种没有UI上的明显变化的，monkeyrunner的截图对比准确率会比较低。不过这种资源上的问题应该不会在渠道包上出现差异吧？<br>
+但思路还是有的，就是如果播放不成功，会不会有什么提示，可以以此为checkpoint。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../lookatcn"><img alt="1693" class="uface" src="../user/large_avatar/1693.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lookatcn" href="../lookatcn">lookatcn</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply13">13楼</a> · <abbr class="timeago" title="2014-10-14T14:16:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9166" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1693" href="http://testerhome.com/topics/917/replies/9166/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="lookatcn" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> <br>
+我不是用在测渠道包。<br>
+我们系统的每个版本出来后，需要做一套简单验证测试，针对每个重要应用，比如看看录音程序是否正常录放音，mp3 播放器是否正常播放，能否打电话，发短信，浏览网页。。。之类，我想能不能做个自动化的东西。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply14">14楼</a> · <abbr class="timeago" title="2014-10-14T14:17:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9167" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/917/replies/9167/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="anikikun" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="917#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../lookatcn" class="at_user" title="@lookatcn"><i>@</i>lookatcn</a> 可以啊。robotium</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../75281920"><img alt="428" class="uface" src="../user/large_avatar/428.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="雾山" href="../75281920">75281920</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply15">15楼</a> · <abbr class="timeago" title="2014-10-23T15:24:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9398" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="428" href="http://testerhome.com/topics/917/replies/9398/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="75281920" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习了，</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply16">16楼</a> · <abbr class="timeago" title="2014-11-19T10:44:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9916" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/917/replies/9916/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="davidyang" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>gradle就可以实现打渠道包了吧，不过这种方法值得借鉴</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../alfredhu"><img alt="2200" class="uface" src="../user/large_avatar/2200.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="乖乖胡" href="../alfredhu">alfredhu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="917#reply17">17楼</a> · <abbr class="timeago" title="2014-12-27T14:12:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10905" data-state="" data-type="Reply" href="917#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2200" href="http://testerhome.com/topics/917/replies/10905/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="alfredhu" href="917#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢<a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a>的分享，学习了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscarxie: 钱多事少离家近，哈哈哈，太贪心了，有其中2个也行
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="917#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

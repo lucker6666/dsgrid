@@ -1,0 +1,991 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【Monkeyrunner 小白入门示例】算是新秀的学习心得吧 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【Monkeyrunner 小白入门示例】算是新秀的学习心得吧</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="黄伟东" href="../anikikun">anikikun</a>
+     · 
+    于<abbr class="timeago" title="2014-10-10T23:58:34+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="anikikun" href="../anikikun">anikikun</a> 于<abbr class="timeago" title="2015-01-20T15:34:13+08:00"></abbr>回复
+     · 
+    1441次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>最近工作业务一直在忙，新技术研究较少，尚不能有所总结。<br>
+所以把早几个月写给团队的Monkeyrunner贡献一下，都是很基础的东西。</p>
+
+<p>准备工作<br>
+1、安装Android SDK<br>
+2、熟悉MonkeyRunner的API（<a href="http://article.yeeyan.org/view/37503/164523" rel="nofollow" target="_blank">http://article.yeeyan.org/view/37503/164523</a>）<br>
+3、一部Android手机或模拟器（手机与电脑连接，可以使用adb devices验证手机是否与电脑连接成功）<br>
+4、手机打开“指针位置”功能，可以方便我们定位坐标，打开方法：<br>
+ <img src="../photo/2014/8d780305dacbc8f283f61556e94e016e.png" alt=""></p>
+
+<p>SDK的安装过程我就不赘述了，直接开始一个简单的MonkeyRunner交互<br>
+1、    打开cmd，输入</p>
+<pre class="highlight shell">monkeyrunner
+</pre>
+
+<p>，回车，出现如图情况，则进入了MonkeyRunner的交互对话环境</p>
+
+<p>2、    输入</p>
+<pre class="highlight shell">from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice, MonkeyImage
+</pre>
+
+<p>，回车，导入MonkeyRunner运行所需要的模块，没有报错则成功</p>
+
+<p>3、    输入</p>
+<pre class="highlight shell">device <span class="o">=</span> MonkeyRunner.waitForConnection<span class="o">()</span>
+</pre>
+
+<p>回车，使MonkeyRunner与设备进入连接状态，没有报错则成功</p>
+
+<p>4、输入</p>
+<pre class="highlight shell">device.installPackage<span class="o">(</span>‘e:/hjclass.apk’<span class="o">)</span>
+</pre>
+
+<p>，回车，安装放在e盘下的hjclass.apk文件到手机中，这个apk文件是我提前准备好的应用，若返回True则安装成功</p>
+
+<p>5、    输入</p>
+<pre class="highlight shell">device.startActivity<span class="o">(</span>‘com.xx.xxx/.activity.xxxActivity’<span class="o">)</span> 
+</pre>
+
+<p>回车后可以直接看手机，如果APP被启动，则表示成功；<br>
+启动一个应用，其中(‘com.xx.xxx/.activity.xxxActivity’) 是APP的包名和启动Activity，这两个参数相当于Appium中需要用到的app-activity，可以问开发获取。也可以参考乙醇大大提供的方法：<a href="http://www.cnblogs.com/nbkhic/p/3806951.html" rel="nofollow" target="_blank">http://www.cnblogs.com/nbkhic/p/3806951.html</a></p>
+
+<p>===分割线  以下均以我测试的应用为准，仅供大家参考 ==== </p>
+
+<p>6、    在启动APP后，我们可以看到第一个界面，我们获取当前界面“创建”按钮的坐标，如图，按住手机上的该按钮，可以在手机顶部看到该按钮的坐标为（454，702）：<br>
+<img src="../photo/2014/9b2a815ce2c288cbaca7fab37bc2d3f2.png" alt=""></p>
+
+<p>7、    回到cmd，我们输入</p>
+<pre class="highlight shell">device.touch<span class="o">(</span>454,702,’DOWN_AND_UP’<span class="o">)</span>
+</pre>
+
+<p>回车后，就手机上就执行了点击的动作，我们可以看到手机上按钮被点击了。</p>
+
+<p>8、    进入到了欢迎页，这时候我们需要进行滑动操作，就要获取滑动前的坐标、滑动后的坐标，以同样的方法，我们获取到滑动的初始坐标为（670,700），结束坐标为（200,700），因此我们在cmd中输入</p>
+<pre class="highlight shell">device.drag<span class="o">((</span>670,700<span class="o">)</span>,<span class="o">(</span>200,700<span class="o">)</span>,3<span class="o">)</span>
+</pre>
+
+<p>回车后观察手机，发现滑动成功。总共有三个欢迎页，所以该命令执行2次。</p>
+
+<p>9、    到欢迎页最后一页，照旧，获得按钮的坐标，(400,1000)，输入</p>
+<pre class="highlight shell">device.touch<span class="o">(</span>400,1000,’DOWN_AND_UP’<span class="o">)</span>
+</pre>
+
+<p>进入到登录界面</p>
+
+<p>10、   获取用户名栏上的坐标，坐标获取为(400,550)，输入</p>
+<pre class="highlight shell">device.touch<span class="o">(</span>400,550,’DOWN_AND_UP’<span class="o">)</span>
+</pre>
+
+<p>回车<br>
+11、   光标定位到用户名输入栏后，我们需要输入用户名，则在cmd中输入如下命令，</p>
+<pre class="highlight shell">device.type<span class="o">(</span>‘username’<span class="o">)</span>
+</pre>
+
+<p>回车，type即输入文字<br>
+12、   用户名输入完，此时我们需要把光标定位到密码栏，获取到密码栏的坐标（430,430），输入</p>
+<pre class="highlight shell">device.touch<span class="o">(</span>430,430,’DOWN_AND_UP’<span class="o">)</span>
+</pre>
+
+<p>13、   输入密码</p>
+<pre class="highlight shell">device.type<span class="o">(</span>‘password’<span class="o">)</span>
+</pre>
+
+<p>回车<br>
+14、   照旧，获取登录按钮的坐标，并点击</p>
+
+<p>到此为止，一个应用的安装、打开、滑动、输入、登录的操作全部操作完了。<br>
+我们回顾一遍，其实刚刚我们从交互开始，全部代码整合一遍，整合成一个Python文件，是可以一次性执行完的。<br>
+整理完后：</p>
+<pre class="highlight python"><span class="kn">from</span> <span class="nn">com.android.monkeyrunner</span> <span class="kn">import</span> <span class="n">MonkeyRunner</span><span class="p">,</span> <span class="n">MonkeyDevice</span><span class="p">,</span> <span class="n">MonkeyImage</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">waitForConnection</span><span class="p">()</span>
+<span class="n">device</span><span class="o">.</span><span class="n">installPackage</span><span class="p">(</span><span class="s">'e:/hjclass.apk'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">startActivity</span><span class="p">(</span><span class="err">‘</span><span class="n">com</span><span class="o">.</span><span class="n">xx</span><span class="o">.</span><span class="n">xxx</span><span class="o">/.</span><span class="n">activity</span><span class="o">.</span><span class="n">xxxActivity</span><span class="err">’</span><span class="p">)</span> 
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">454</span><span class="p">,</span><span class="mi">702</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">drag</span><span class="p">((</span><span class="mi">670</span><span class="p">,</span><span class="mi">700</span><span class="p">),(</span><span class="mi">200</span><span class="p">,</span><span class="mi">700</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">drag</span><span class="p">((</span><span class="mi">670</span><span class="p">,</span><span class="mi">700</span><span class="p">),(</span><span class="mi">200</span><span class="p">,</span><span class="mi">700</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">550</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">'username'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">430</span><span class="p">,</span><span class="mi">430</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">'password'</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+</pre>
+
+<p>打开一个编辑器，并将你刚刚交互中所写的代码写到里面去，然后保存成一个Python文件，比如保存名字为monkeyrunner.py，放的e盘根目录。<br>
+执行文件的方法：<br>
+1、    打开cmd<br>
+2、    输入e: ，然后回车<br>
+3、    输入monkeyrunner e:/monkeyrunner.py ，回车后代码就开始执行了</p>
+
+<p>上面就代码就是一个简单的用例了，但是如果直接上面这段代码的话，会出现一些问题，因为上面的代码中没有等待时间，也许点击确定后，还没等手机反应过来，就已经执行了下一句代码了，导致用例执行失败。<br>
+所以我们要对这个代码进行修改，在操作当中插入等待时间：</p>
+<pre class="highlight python"><span class="kn">from</span> <span class="nn">com.android.monkeyrunner</span> <span class="kn">import</span> <span class="n">MonkeyRunner</span><span class="p">,</span> <span class="n">MonkeyDevice</span><span class="p">,</span> <span class="n">MonkeyImage</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">waitForConnection</span><span class="p">()</span>
+<span class="n">device</span><span class="o">.</span><span class="n">installPackage</span><span class="p">(</span><span class="s">'e:/hjclass.apk'</span><span class="p">)</span>
+<span class="c">#启动应用，然后等待6秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="n">startActivity</span><span class="p">(</span><span class="s">'com.hujiang.hjclass/.activity.SplashActivity'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="c">#点击创建，然后等待2秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">454</span><span class="p">,</span><span class="mi">702</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c">#滑动欢迎页2次，滑动一次后等待2秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="n">drag</span><span class="p">((</span><span class="mi">670</span><span class="p">,</span><span class="mi">700</span><span class="p">),(</span><span class="mi">200</span><span class="p">,</span><span class="mi">700</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">drag</span><span class="p">((</span><span class="mi">670</span><span class="p">,</span><span class="mi">700</span><span class="p">),(</span><span class="mi">200</span><span class="p">,</span><span class="mi">700</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c">#点击开始学习按钮，然后等待3两秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c">#点击用户名输入栏，等待1秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">550</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c">#输入用户名，等待1秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">'username'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c">#点击密码栏，等待1秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">430</span><span class="p">,</span><span class="mi">430</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c">#输入密码，等待1秒钟</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">'password'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c">#点击登录按钮</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【Monkeyrunner 小白入门示例】算是新秀的学习心得吧 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1466#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1466#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1466#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1466#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1466#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>25</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply1">1楼</a> · <abbr class="timeago" title="2014-10-11T00:02:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9074" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1466/replies/9074/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很好，同时也很好的遵守了编写规范～赞～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply2">2楼</a> · <abbr class="timeago" title="2014-10-11T00:11:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9076" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9076/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> <em>(:з」∠)</em>给Ye总回帖的速度也点个赞！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply3">3楼</a> · <abbr class="timeago" title="2014-10-11T07:44:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9077" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1466/replies/9077/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p> 我入门了~ 我一直不会用monkeyrunner</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply4">4楼</a> · <abbr class="timeago" title="2014-10-11T09:36:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9079" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9079/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 一些常规性测试的自动化还是挺有用的..</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../beerbox"><img alt="909" class="uface" src="../user/large_avatar/909.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="西门吹牛" href="../beerbox">beerbox</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply5">5楼</a> · <abbr class="timeago" title="2014-10-11T10:01:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9080" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="909" href="http://testerhome.com/topics/1466/replies/9080/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="beerbox" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我也入门了，稍微用了下就放弃了这款工具。<br>
+你这里面只是对控件的操作，而没有去验证，没有check point,实际没什么意义。<br>
+而且这个可以录制的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply6">6楼</a> · <abbr class="timeago" title="2014-10-11T10:10:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9084" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9084/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../beerbox" class="at_user" title="@beerbox"><i>@</i>beerbox</a> 说了只是入门示例。 里面还很多API，monkeyrunner本身也提供了图片比较的功能，可以进行验证操作。我觉得就针对Android系统上的操作而言，没有其他比MR更方便快捷的。<br>
+至于有没有实际作用，看你需要实现什么程度，需要做到什么事情。比如：<a href="917" rel="nofollow" target="_blank">http://testerhome.com/topics/917</a> ，这是包含了一个比较完整的思路。</p>
+
+<p>PS：使用过录制，真不如我要什么坐标，就去拿什么坐标来得快。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../jerome"><img alt="1146" class="uface" src="../user/large_avatar/1146.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lijingbo" href="../jerome">jerome</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply7">7楼</a> · <abbr class="timeago" title="2014-10-13T16:58:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9142" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1146" href="http://testerhome.com/topics/1466/replies/9142/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="jerome" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>支持，一直不知道该怎么学习Monkeyrunner，谢谢提供这么好的东西。请问下楼主是看的官网的文档学习的吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../chin"><img alt="1747" class="uface" src="../user/large_avatar/1747.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chin" href="../chin">chin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply8">8楼</a> · <abbr class="timeago" title="2014-10-21T18:03:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9345" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1747" href="http://testerhome.com/topics/1466/replies/9345/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="chin" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我在学Robotium，这个用坐标的，换个手机就麻烦了。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply9">9楼</a> · <abbr class="timeago" title="2014-10-21T20:07:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9352" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9352/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../chin" class="at_user" title="@chin"><i>@</i>chin</a> 嗯，应该说换了 个分辨率就麻烦了。这一直是monkeyrunner的劣势，所以我一般都用monkeyrunner来做一些常规的操作，而不是录屏</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply10">10楼</a> · <abbr class="timeago" title="2014-10-30T16:41:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9545" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/1466/replies/9545/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="blue_momo2009" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>device.startActivity(‘com.xx.xxx/.activity.xxxActivity’) <br>
+这一行后app没启动是什么原因啊？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply11">11楼</a> · <abbr class="timeago" title="2014-10-30T16:43:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9546" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9546/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../blue_momo2009" class="at_user" title="@blue_momo2009"><i>@</i>blue_momo2009</a> <br>
+确保你的包名和activity名字写对了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply12">12楼</a> · <abbr class="timeago" title="2014-10-30T16:44:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9547" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9547/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../jerome" class="at_user" title="@jerome"><i>@</i>jerome</a> 嗯，对着文档稍微摸索一下很快就上手了这种。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply13">13楼</a> · <abbr class="timeago" title="2014-10-30T16:59:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9550" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/1466/replies/9550/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="blue_momo2009" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] Error se<br>
+nding touch event: 645 120 DOWN_AND_UP<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice]java.net.<br>
+SocketException: Software caused connection abort: socket write error<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at java.<br>
+net.SocketOutputStream.socketWrite0(Native Method)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at java.<br>
+net.SocketOutputStream.socketWrite(SocketOutputStream.java:109)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at java.<br>
+net.SocketOutputStream.write(SocketOutputStream.java:153)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at sun.n<br>
+io.cs.StreamEncoder.writeBytes(StreamEncoder.java:221)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at sun.n<br>
+io.cs.StreamEncoder.implFlushBuffer(StreamEncoder.java:291)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at sun.n<br>
+io.cs.StreamEncoder.implFlush(StreamEncoder.java:295)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at sun.n<br>
+io.cs.StreamEncoder.flush(StreamEncoder.java:141)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at java.<br>
+io.OutputStreamWriter.flush(OutputStreamWriter.java:229)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at java.<br>
+io.BufferedWriter.flush(BufferedWriter.java:254)<br>
+141030 16:58:26.528:S [main] [com.android.chimpchat.adb.AdbChimpDevice] at com.a<br>
+ndroid.chimpchat.ChimpManager.sendMonkeyEventAndGetResponse(ChimpManager.java:18<br>
+7)<br>
+同样的代码有时候可以执行成功，有时候就会这种错误</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply14">14楼</a> · <abbr class="timeago" title="2014-10-30T19:18:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9561" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9561/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../blue_momo2009" class="at_user" title="@blue_momo2009"><i>@</i>blue_momo2009</a> 有给足够的等待时间么</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply15">15楼</a> · <abbr class="timeago" title="2014-10-31T10:35:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9572" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/1466/replies/9572/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="blue_momo2009" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 用log找了下，发现启动时是‘com.xx.xxx/.xxxActivity’，没有前面的.activity。去掉这个后就可以启动了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply16">16楼</a> · <abbr class="timeago" title="2014-10-31T13:45:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9576" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/1466/replies/9576/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="blue_momo2009" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>monkeyrunner test.py回车后完全没反应啊！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply17">17楼</a> · <abbr class="timeago" title="2014-10-31T13:48:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9577" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/9577/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../blue_momo2009" class="at_user" title="@blue_momo2009"><i>@</i>blue_momo2009</a> 怎么个没反应法？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply18">18楼</a> · <abbr class="timeago" title="2014-10-31T14:01:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9579" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/1466/replies/9579/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="blue_momo2009" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 就是回车后只有一个光标在闪了，等了很久都没反应，只能用ctrl C终止</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../zero"><img alt="2016" class="uface" src="../user/large_avatar/2016.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="张" href="../zero">zero</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply19">19楼</a> · <abbr class="timeago" title="2014-12-17T21:16:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10667" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2016" href="http://testerhome.com/topics/1466/replies/10667/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="zero" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习下，自己操作练习下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../paris_love_u"><img alt="536" class="uface" src="../user/large_avatar/536.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="沈思之" href="../paris_love_u">paris_love_u</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply20">20楼</a> · <abbr class="timeago" title="2014-12-23T17:53:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10797" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="536" href="http://testerhome.com/topics/1466/replies/10797/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="paris_love_u" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>device.startActivity(‘com.xx.xxx/.activity.xxxActivity’)<br><br>
+这里的XXX要填什么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply21">21楼</a> · <abbr class="timeago" title="2014-12-23T22:59:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10803" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/10803/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../paris_love_u" class="at_user" title="@paris_love_u"><i>@</i>paris_love_u</a> 说得很明白啊，启动一个应用，其中(‘com.xx.xxx/.activity.xxxActivity’) 是APP的包名和启动Activity</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../harryguo"><img alt="2259" class="uface" src="../user/large_avatar/2259.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="蹲在旮旯笑" href="../harryguo">harryguo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply22">22楼</a> · <abbr class="timeago" title="2015-01-19T11:22:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11772" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2259" href="http://testerhome.com/topics/1466/replies/11772/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="harryguo" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>如果出现了异常咋处理呢，比如要点击某个坐标，此时来了个电话，把原先的界面覆盖了，那之后的操作不就全部点不了吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply23">23楼</a> · <abbr class="timeago" title="2015-01-19T11:32:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11773" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/11773/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply22" class="at_floor" data-floor="22">#22楼</a> <a href="../harryguo" class="at_user" title="@harryguo"><i>@</i>harryguo</a> MonkeyRunner不知道你的电话是否进来了，它会继续进行点击等操作..那么如果受到干扰，会在你下一个图片对比的地方报错就是了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../harryguo"><img alt="2259" class="uface" src="../user/large_avatar/2259.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="蹲在旮旯笑" href="../harryguo">harryguo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply24">24楼</a> · <abbr class="timeago" title="2015-01-20T11:17:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11842" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2259" href="http://testerhome.com/topics/1466/replies/11842/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="harryguo" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> monkeyRunner只能通过坐标来点击某个控件吧。。如果是这样的话，那通过monkeyRunner主要是为了发现什么类型的bug呢，是不是只有稳定性bug，比如引起程序crash的bug</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1466#reply25">25楼</a> · <abbr class="timeago" title="2015-01-20T15:34:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11860" data-state="" data-type="Reply" href="1466#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1466/replies/11860/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="anikikun" href="1466#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1466#reply24" class="at_floor" data-floor="24">#24楼</a> <a href="../harryguo" class="at_user" title="@harryguo"><i>@</i>harryguo</a> 嗯，MR不适合拿来测APP。一般拿来做系统应用的测试多一点，恒温表示用得多。而且我拿MonkeyRunner都是做一些过渠道包等频繁安装卸载的工作</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @meiyu 有希望，有爱的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1466#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

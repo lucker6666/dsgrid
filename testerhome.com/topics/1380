@@ -1,0 +1,467 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 运行 appium 自带实例时遇到的小坑~ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../luckysunshine"><img alt="1397" class="uface" src="../user/large_avatar/1397.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">运行 appium 自带实例时遇到的小坑~</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../luckysunshine">luckysunshine</a>
+     · 
+    于<abbr class="timeago" title="2014-09-11T14:30:22+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="bingle" href="../bingle">bingle</a> 于<abbr class="timeago" title="2014-12-25T17:06:37+08:00"></abbr>回复
+     · 
+    983次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>1.在脚本中会有：from appium import webdriver<br>
+   第一次运行时可能会遇到这样的error：No module named appium<br>
+   之所以会报这样的error是因为没有装client<br>
+  client下载地址 ：<a href="https://github.com/appium/python-clienthttps://github.com/appium/python-clienthttps://github.com/appium/python-client" rel="nofollow" target="_blank">https://github.com/appium/python-clienthttps://github.com/appium/python-clienthttps://github.com/appium/python-client</a><br>
+   下载下来后，python setup.py install<br>
+     可能在安装过程中会遇到权限问题</p>
+<h4>2.ERROR: test_scroll (<strong>main</strong>.SimpleIOSTests)</h4>
+<p>Traceback (most recent call last):<br>
+  File "ios_simple.py", line 57, in test_scroll<br>
+    el = self.driver.find_element_by_accessibility_id('OK')<br>
+  File "build/bdist.macosx-10.9-intel/egg/appium/webdriver/webdriver.py", line 135, in find_element_by_accessibility_id<br>
+    return self.find_element(by=By.ACCESSIBILITY_ID, value=id)<br>
+  File "/Library/Python/2.7/site-packages/selenium-2.42.1-py2.7.egg/selenium/webdriver/remote/webdriver.py", line 662, in find_element<br>
+    {'using': by, 'value': value})['value']<br>
+  File "/Library/Python/2.7/site-packages/selenium-2.42.1-py2.7.egg/selenium/webdriver/remote/webdriver.py", line 173, in execute<br>
+    self.error_handler.check_response(response)<br>
+  File "build/bdist.macosx-10.9-intel/egg/appium/webdriver/errorhandler.py", line 29, in check_response<br>
+    raise wde<br>
+NoSuchElementException: Message: u'An element could not be located on the page using the given search parameters.' <br>
+ 这样的error是因为Python测试代码有问题，appium自带的代码和server不匹配，你可以更改一下代码中app的路径就ok了。</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='运行 appium 自带实例时遇到的小坑~ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1380#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1380#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1380#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1380#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1380#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply1">1楼</a> · <abbr class="timeago" title="2014-09-11T14:33:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8500" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1380/replies/8500/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主的分享是好的，但是不知道楼主发帖的时候有没有看右边的发帖规则呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../luckysunshine"><img alt="1397" class="uface" src="../user/large_avatar/1397.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luckysunshine">luckysunshine</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply2">2楼</a> · <abbr class="timeago" title="2014-09-11T14:36:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8501" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1397" href="http://testerhome.com/topics/1380/replies/8501/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="luckysunshine" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1380#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 囧  下次注意</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../hjj20040849"><img alt="148d5e77fbabc4da613fb7fe5e5cac71" class="uface" src="../avatar/148d5e77fbabc4da613fb7fe5e5cac71.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小学徒V" href="../hjj20040849">hjj20040849</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply3">3楼</a> · <abbr class="timeago" title="2014-11-12T18:19:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9797" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1890" href="http://testerhome.com/topics/1380/replies/9797/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="hjj20040849" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你好，我在运行官方给的例子的时出现了这个错误，但是不知道该怎么解决，能帮个忙吗？</p>
+<pre class="highlight python"><span class="n">kevindeMacBook</span><span class="o">-</span><span class="n">Pro</span><span class="p">:</span><span class="n">python</span> <span class="n">kevin</span><span class="err">$</span> <span class="n">python</span> <span class="n">ios_simple</span><span class="o">.</span><span class="n">py</span> 
+<span class="n">test_scroll</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">SimpleIOSTests</span><span class="p">)</span> <span class="o">...</span> <span class="n">ERROR</span>
+<span class="n">test_ui_computation</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">SimpleIOSTests</span><span class="p">)</span> <span class="o">...</span> <span class="n">ERROR</span>
+
+<span class="o">======================================================================</span>
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">test_scroll</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">SimpleIOSTests</span><span class="p">)</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">"ios_simple.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">57</span><span class="p">,</span> <span class="ow">in</span> <span class="n">test_scroll</span>
+    <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_accessibility_id</span><span class="p">(</span><span class="s">'OK'</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/appium/webdriver/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">135</span><span class="p">,</span> <span class="ow">in</span> <span class="n">find_element_by_accessibility_id</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ACCESSIBILITY_ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">662</span><span class="p">,</span> <span class="ow">in</span> <span class="n">find_element</span>
+    <span class="p">{</span><span class="s">'using'</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">'value'</span><span class="p">]</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">173</span><span class="p">,</span> <span class="ow">in</span> <span class="n">execute</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span><span class="o">.</span><span class="n">check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/appium/webdriver/errorhandler.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">29</span><span class="p">,</span> <span class="ow">in</span> <span class="n">check_response</span>
+    <span class="k">raise</span> <span class="n">wde</span>
+<span class="n">NoSuchElementException</span><span class="p">:</span> <span class="n">Message</span><span class="p">:</span> <span class="n">An</span> <span class="n">element</span> <span class="n">could</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">located</span> <span class="n">on</span> <span class="n">the</span> <span class="n">page</span> <span class="n">using</span> <span class="n">the</span> <span class="n">given</span> <span class="n">search</span> <span class="n">parameters</span><span class="o">.</span>
+
+
+<span class="o">======================================================================</span>
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">test_ui_computation</span> <span class="p">(</span><span class="n">__main__</span><span class="o">.</span><span class="n">SimpleIOSTests</span><span class="p">)</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">"ios_simple.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">42</span><span class="p">,</span> <span class="ow">in</span> <span class="n">test_ui_computation</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">()</span>
+  <span class="n">File</span> <span class="s">"ios_simple.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">32</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_populate</span>
+    <span class="n">els</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_ios_uiautomation</span><span class="p">(</span><span class="s">'elements()'</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/appium/webdriver/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">101</span><span class="p">,</span> <span class="ow">in</span> <span class="n">find_elements_by_ios_uiautomation</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">IOS_UIAUTOMATION</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">677</span><span class="p">,</span> <span class="ow">in</span> <span class="n">find_elements</span>
+    <span class="p">{</span><span class="s">'using'</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">'value'</span><span class="p">]</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">173</span><span class="p">,</span> <span class="ow">in</span> <span class="n">execute</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span><span class="o">.</span><span class="n">check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/Library/Python/2.7/site-packages/appium/webdriver/errorhandler.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">29</span><span class="p">,</span> <span class="ow">in</span> <span class="n">check_response</span>
+    <span class="k">raise</span> <span class="n">wde</span>
+<span class="n">WebDriverException</span><span class="p">:</span> <span class="n">Message</span><span class="p">:</span> <span class="n">An</span> <span class="n">error</span> <span class="n">occurred</span> <span class="k">while</span> <span class="n">executing</span> <span class="n">user</span> <span class="n">supplied</span> <span class="n">JavaScript</span><span class="o">.</span>
+
+
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Ran</span> <span class="mi">2</span> <span class="n">tests</span> <span class="ow">in</span> <span class="mf">23.224</span><span class="n">s</span>
+
+<span class="n">FAILED</span> <span class="p">(</span><span class="n">errors</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="向阳" href="../face_south">face_south</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply4">4楼</a> · <abbr class="timeago" title="2014-12-22T15:06:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10752" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2102" href="http://testerhome.com/topics/1380/replies/10752/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="face_south" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>No module named appium<br>
+之所以会报这样的error是因为没有装client；<br>
+这个client指的是什么，不明白，求指教</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="向阳" href="../face_south">face_south</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply5">5楼</a> · <abbr class="timeago" title="2014-12-22T15:12:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10753" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2102" href="http://testerhome.com/topics/1380/replies/10753/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="face_south" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1380#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../face_south" class="at_user" title="@face_south"><i>@</i>face_south</a> 明白了  Appium-Python-Client</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../bingle"><img alt="2182" class="uface" src="../user/large_avatar/2182.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bingle">bingle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply6">6楼</a> · <abbr class="timeago" title="2014-12-25T16:55:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10857" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2182" href="http://testerhome.com/topics/1380/replies/10857/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="bingle" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问”更改一下代码中app的路径“指的是更改</p>
+<pre class="highlight python"><span class="n">app</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span>
+                           <span class="s">'../../apps/TestApp/build/Release-iphonesimulator'</span><span class="p">,</span>
+                           <span class="s">'TestApp.app'</span><span class="p">)</span>
+
+</pre>
+
+<p>这里的吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../bingle"><img alt="2182" class="uface" src="../user/large_avatar/2182.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bingle">bingle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1380#reply7">7楼</a> · <abbr class="timeago" title="2014-12-25T17:06:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10858" data-state="" data-type="Reply" href="1380#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2182" href="http://testerhome.com/topics/1380/replies/10858/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="bingle" href="1380#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1380#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../hjj20040849" class="at_user" title="@hjj20040849"><i>@</i>hjj20040849</a> 哥们，同问这个，你解决了吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1380#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

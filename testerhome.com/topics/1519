@@ -1,0 +1,514 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 解决格式化字符输入的困扰--Android &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../zhycbd"><img alt="E78eb04f50dfa31f8c34fabafff2be34" class="uface" src="../avatar/e78eb04f50dfa31f8c34fabafff2be34.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">解决格式化字符输入的困扰--Android</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="最后一次被盗" href="../zhycbd">zhycbd</a>
+     · 
+    于<abbr class="timeago" title="2014-10-25T17:39:41+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lihuazhang" href="../lihuazhang">lihuazhang</a> 于<abbr class="timeago" title="2014-10-30T14:24:32+08:00"></abbr>回复
+     · 
+    554次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>项目需求：<br>
+我们有一个输入框，为了提高用户体验，会自动格式化输入的字符串，其实这些东西在各种电商APP上很常见，举个例子，<br>
+例如输入手机号：13323450000<br>
+输入过程中，APP会自动做判断，根据输入的长度做判断进而格式化例如变为：133 2345 0000<br>
+这期间的实现其实很简单，就是每当我们输入字符时，都会触发一个Event事件，如果当我们输入3个字符后，在输入第四个字符时，程序就会自动在其前面增加一个空格。<br>
+如果你们试验一下的话就是会发现，如果我们用sendkeys来输入的话，基本很难成功，输入的字符不是多几位就是少几位，反正就是各种错误，后来我想到是否可以分开输入，3，4，4节奏的输入，但是还是会失败，为什么呢？<br>
+下面贴一段代码，大家一看便知：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">io</span><span class="o">.</span><span class="na">appium</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">bootstrap</span><span class="o">.</span><span class="na">handler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.core.UiDevice</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.core.UiObjectNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.appium.android.bootstrap.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.json.JSONException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Hashtable</span><span class="o">;</span>
+
+<span class="cm">/**
+ * This handler is used to set text in elements that support it.
+ *
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SetText</span> <span class="kd">extends</span> <span class="n">CommandHandler</span> <span class="o">{</span>
+
+  <span class="cm">/*
+   * @param command The {@link AndroidCommand} used for this handler.
+   *
+   * @return {@link AndroidCommandResult}
+   *
+   * @throws JSONException
+   *
+   * @see io.appium.android.bootstrap.CommandHandler#execute(io.appium.android.
+   * bootstrap.AndroidCommand)
+   */</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="n">AndroidCommandResult</span> <span class="n">execute</span><span class="o">(</span><span class="kd">final</span> <span class="n">AndroidCommand</span> <span class="n">command</span><span class="o">)</span>
+      <span class="kd">throws</span> <span class="n">JSONException</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">command</span><span class="o">.</span><span class="na">isElementCommand</span><span class="o">())</span> <span class="o">{</span>
+      <span class="c1">// Only makes sense on an element</span>
+      <span class="k">try</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="na">params</span><span class="o">();</span>
+        <span class="kd">final</span> <span class="n">AndroidElement</span> <span class="n">el</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="na">getElement</span><span class="o">();</span>
+        <span class="kt">boolean</span> <span class="n">replace</span> <span class="o">=</span> <span class="n">Boolean</span><span class="o">.</span><span class="na">parseBoolean</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"replace"</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+        <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"text"</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span>
+        <span class="kt">boolean</span> <span class="n">pressEnter</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">text</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">"\\n"</span><span class="o">))</span> <span class="o">{</span>
+          <span class="n">pressEnter</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+          <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">"\\n"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+          <span class="n">Logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Will press enter after setting text"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="kt">boolean</span> <span class="n">unicodeKeyboard</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"unicodeKeyboard"</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">unicodeKeyboard</span> <span class="o">=</span> <span class="n">Boolean</span><span class="o">.</span><span class="na">parseBoolean</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"unicodeKeyboard"</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="n">String</span> <span class="n">currText</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+        <span class="k">new</span> <span class="n">Clear</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">el</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+          <span class="c1">// clear could have failed, or we could have a hint in the field</span>
+          <span class="c1">// we'll assume it is the latter</span>
+          <span class="n">Logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Text not cleared. Assuming remainder is hint text."</span><span class="o">);</span>
+          <span class="n">currText</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">replace</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">text</span> <span class="o">=</span> <span class="n">currText</span> <span class="o">+</span> <span class="n">text</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">result</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">text</span><span class="o">,</span> <span class="n">unicodeKeyboard</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">pressEnter</span><span class="o">)</span> <span class="o">{</span>
+          <span class="kd">final</span> <span class="n">UiDevice</span> <span class="n">d</span> <span class="o">=</span> <span class="n">UiDevice</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+          <span class="n">d</span><span class="o">.</span><span class="na">pressEnter</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">getSuccessResult</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">UiObjectNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">AndroidCommandResult</span><span class="o">(</span><span class="n">WDStatus</span><span class="o">.</span><span class="na">NO_SUCH_ELEMENT</span><span class="o">,</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// handle NullPointerException</span>
+        <span class="k">return</span> <span class="n">getErrorResult</span><span class="o">(</span><span class="s">"Unknown error"</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">getErrorResult</span><span class="o">(</span><span class="s">"Unable to set text without an element."</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</pre>
+
+<p>这就是bootstrap中的setText类，中间有一段代码“new Clear().execute(command);” 清除命令<br>
+Appium的实现都是通过bootstrap来和uiautomator做交互的，So 刚刚那个想法有点儿障碍，但是我没有屈服，我们是开源的所以我修改了这个类，但是实际操作后我发现貌似没有什么作用，在赋值时依然会先clear，这是为什么呢，没办法，再次向下追踪，刚刚已经说过，bootstrap是跟uiautomator做交互，实际上也就是说是最终通过uiautomator来操作我们的手机，所以我找到了uiautomator的源码，发现了一个我不愿意相信的事实，大家看下面的源码，是UiObject类的内容，截图了：<br>
+<img src="../photo/2014/aa783727fd3af302eee2cead1929df84.png" alt=""></p>
+
+<p>这个里面也会clear，so,我彻底死心了这个办法是无解了。<br>
+不过我们不会屈服的，对吧，哈哈，换个角度，如果我能够控制输入的速度，是不是就可以了呢，可是，Appium暴露给我们的只有一个sendKeys的API，怎么办呢？<br>
+继续解读bootstrap的源码，通过UiObject类中的那段代码我们可以看到，最终调用的是一个sendText的API,继续往下挖，我们会发现这个API无法再往下点了（通过ctrl + 单击），说明是隐藏的类，从Android sdk的source包中，我找到了这个方法的源码：</p>
+<pre class="highlight java"><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">sendText</span><span class="p">(</span><span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">DEBUG</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">LOG_TAG</span><span class="o">,</span> <span class="s">"sendText ("</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="s">")"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">KeyEvent</span><span class="o">[]</span> <span class="n">events</span> <span class="o">=</span> <span class="n">mKeyCharacterMap</span><span class="o">.</span><span class="na">getEvents</span><span class="o">(</span><span class="n">text</span><span class="o">.</span><span class="na">toCharArray</span><span class="o">());</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">events</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kt">long</span> <span class="n">keyDelay</span> <span class="o">=</span> <span class="n">Configurator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getKeyInjectionDelay</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">KeyEvent</span> <span class="n">event2</span> <span class="o">:</span> <span class="n">events</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// We have to change the time of an event before injecting it because</span>
+                <span class="c1">// all KeyEvents returned by KeyCharacterMap.getEvents() have the same</span>
+                <span class="c1">// time stamp and the system rejects too old events. Hence, it is</span>
+                <span class="c1">// possible for an event to become stale before it is injected if it</span>
+                <span class="c1">// takes too long to inject the preceding ones.</span>
+                <span class="n">KeyEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">changeTimeRepeat</span><span class="o">(</span><span class="n">event2</span><span class="o">,</span>
+                        <span class="n">SystemClock</span><span class="o">.</span><span class="na">uptimeMillis</span><span class="o">(),</span> <span class="mi">0</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(!</span><span class="n">injectEventSync</span><span class="o">(</span><span class="n">event</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">SystemClock</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">keyDelay</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>这里面我们发现了什么？对，有sleep，哈哈，好像看到希望了，先简单说一下它的工作原理，我们把一个string给这个API，它先把String分割为单个的KeyEvent，然后有一个for循环来依次执行，每次执行都会判断一下是否成功，并且会sleep一下。所以，我们控制一下这个keyDelay就能实现我们的愿望了，好激动，不过这个keyDelay是传人的，而是<br>
+“long keyDelay = Configurator.getInstance().getKeyInjectionDelay();”<br>
+那么我们需要继续深挖了，Configurator类源码不少，我贴几个重要的如下：<br>
+getKeyInjectionDelay API:</p>
+<pre class="highlight java"><span class="cm">/**
+     * Gets the current delay between key presses when injecting text input.
+     * See {@link UiObject#setText(String)}
+     *
+     * @return current delay in milliseconds
+     * @since API Level 18
+     */</span>
+    <span class="kd">public</span> <span class="kt">long</span> <span class="n">getKeyInjectionDelay</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">mKeyInjectionDelay</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>getKeyInjectionDelay API：</p>
+<pre class="highlight java"><span class="cm">/**
+     * Sets a delay between key presses when injecting text input.
+     * See {@link UiObject#setText(String)}
+     *
+     * @param delay Delay value in milliseconds
+     * @return self
+     * @since API Level 18
+     */</span>
+    <span class="kd">public</span> <span class="n">Configurator</span> <span class="n">setKeyInjectionDelay</span><span class="o">(</span><span class="kt">long</span> <span class="n">delay</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mKeyInjectionDelay</span> <span class="o">=</span> <span class="n">delay</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>mKeyInjectionDelay 成员变量</p>
+<pre class="highlight java"><span class="c1">// Default is inject as fast as we can</span>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="n">mKeyInjectionDelay</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="c1">// ms</span>
+</pre>
+
+<p>getInstance()</p>
+<pre class="highlight java"><span class="cm">/**
+     * Retrieves a singleton instance of Configurator.
+     *
+     * @return Configurator instance
+     * @since API Level 18
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Configurator</span> <span class="n">getInstance</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">sConfigurator</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sConfigurator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Configurator</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">sConfigurator</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>行了，这样大家应该可以看出来了，getInstance()可以获取一个实例，所以，我们可以在bootstrap做一些修改，找到我最上面贴的那段代码中加一行这样的代码：<br>
+Configurator.getInstance().setKeyInjectionDelay(500);<br>
+位置是在这行代码前面：<br>
+final boolean result = el.setText(text, unicodeKeyboard);<br>
+新增代码的意思就是将mKeyInjectionDelay设置为500毫秒，即：在每次执行KeyEvent时先等待500毫秒。<br>
+结果：我发现这个做法成功的几率也很低，因为它会拖慢整个Event执行的速度，只有在机器变的很慢时才会有效，当时我用的是红米手机，刷了4.4的原生Android系统的，so，这个办法也行不通，不过确让我了解了uiautomator的运行原理及部分源码的运行逻辑，虽然时间浪费了，不过还是值得的。<br>
+但是，问题没有解决，怎么办？<br>
+后来我再次去研究Appium提供的API，发现了一个sendKeyEvent的API,这次好像就没有那么大的激情了，不过只能死马当活马医了，这个方法是直接发送key值，关于key值，key值的Map网上有很多，在这里我给大家直接发一个源码文件吧，就不贴了，而且咱们论坛里已经有人发出来了，大家也可以去参考一下。<br>
+实现方法我大体说一下，其实很简单，先把String分割为单个的char，然后通过key的Map映射关系一一转换为key值，然后使用一个for循环，一一直接调用sendKeyEvent方法把key值传进去即可，中间设置一个sleep，我设置的是500毫秒，失败的几率很小，目前我的公司项目中是这么用的，没什么大问题，我把它封装成了一个方法，在某种意义上可以代替sendKeys方法了。</p>
+
+<p>最后，关于这个问题，我首先是从github上咨询的官方，但是官方一直没有什么具体的解决办法！<br>
+<a href="https://github.com/appium/appium/issues/3812#issuecomment-60433195" rel="nofollow" target="_blank">https://github.com/appium/appium/issues/3812#issuecomment-60433195</a><br>
+关于keyEvent 映射，贴一个本站的帖子：<br>
+<a href="http://www.testerhome.com/topics/1386" rel="nofollow" target="_blank">http://www.testerhome.com/topics/1386</a><br>
+当然如果有AndroidSDK源码的童鞋也可以去找一下这个类：KeyEvent.java（这是最权威的！）</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='解决格式化字符输入的困扰--Android via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1519#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1519#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1519#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1519#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1519#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1519#reply1">1楼</a> · <abbr class="timeago" title="2014-10-27T13:08:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9443" data-state="" data-type="Reply" href="1519#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1519/replies/9443/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="link1220" href="1519#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主的文采可谓激情四射，文采飞扬啊，拜读完毕！<br>
+为啥增加sleep就可以解决呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1519#reply2">2楼</a> · <abbr class="timeago" title="2014-10-28T01:52:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9462" data-state="" data-type="Reply" href="1519#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1519/replies/9462/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="1519#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的很精彩，大半夜我就决定先给你加精华了。<br>
+appium的实现并不完美，有些地方比如输入文本，就会自作聪明的clear， 所以有些时候是需要调用更底层的办法的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1519#reply3">3楼</a> · <abbr class="timeago" title="2014-10-30T13:45:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9514" data-state="" data-type="Reply" href="1519#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1519/replies/9514/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="umbrella1978" href="1519#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>分析的很精彩，希望能将这些点滴积累起来，形成社区的财富啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1519#reply4">4楼</a> · <abbr class="timeago" title="2014-10-30T14:24:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9517" data-state="" data-type="Reply" href="1519#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1519/replies/9517/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="1519#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1519#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 这个appium也是没办法，它想做一个全兼容。就选择了先clear。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1519#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

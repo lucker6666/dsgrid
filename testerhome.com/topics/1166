@@ -1,0 +1,642 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium-Python-Client 源码剖析（一） driver 的元素查找方法 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium-Python-Client 源码剖析（一） driver 的元素查找方法</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+     · 
+    于<abbr class="timeago" title="2014-07-23T18:28:40+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xie_0723" href="../xie_0723">xie_0723</a> 于<abbr class="timeago" title="2015-01-04T11:20:50+08:00"></abbr>回复
+     · 
+    1514次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>前言</h4>
+<p>Appium的实用方法都藏在Client的源码里，我尝试在这里剖析一下Client的源码，第一篇，我们直接从大家最关注的元素查找说起。<br>
+注意！对于driver和webelement实例，均有对应的元素查找方法（webelement查找的是下面的子元素），本文讨论的元素查找针对的是driver实例。</p>
+<h4>源码版本:0.9</h4><h4>结构图：</h4>
+<p><img src="../photo/2014/67db377d68f64246a7bae186e1754783.png" alt=""></p>
+<h4>mobileby.py</h4>
+<p>OK，现在假如我们需要自定义一些find方法，比如find_element_by_xxxx，我们该怎么做？我们看到，appium提供了一些扩展的find方法，它有它自己的一套方式，例如ACCESSIBILITY_ID等，要想自定义实现这些方法，appium首先做的就是：自定义一个MobileBy类，这个类从By类中继承，然后添加一些需要的属性，这些属性的value就是一些文本，不用担心他们不起作用，假如你熟悉webdriver的原理，应该会更好地理解。（不知道的同学可以戳这里：<a href="http://www.cnblogs.com/backpacker/archive/2012/11/22/2782686.html" rel="nofollow" target="_blank">http://www.cnblogs.com/backpacker/archive/2012/11/22/2782686.html</a> 或者 <a href="http://www.cnblogs.com/timsheng/archive/2012/06/12/2546957.html" rel="nofollow" target="_blank">http://www.cnblogs.com/timsheng/archive/2012/06/12/2546957.html</a>）</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+
+<span class="k">class</span> <span class="nc">MobileBy</span><span class="p">(</span><span class="n">By</span><span class="p">):</span> <span class="c">#这里显然是一个继承</span>
+    <span class="s">"""三个扩展属性,清清楚楚地罗列在这里"""</span>
+    <span class="n">IOS_UIAUTOMATION</span> <span class="o">=</span> <span class="s">'-ios uiautomation'</span>
+    <span class="n">ANDROID_UIAUTOMATOR</span> <span class="o">=</span> <span class="s">'-android uiautomator'</span>
+    <span class="n">ACCESSIBILITY_ID</span> <span class="o">=</span> <span class="s">'accessibility id'</span>
+</pre>
+
+<p>既然他继承自By类，我们直接戳到By类看一下，因为By类中还有一个classmethod下面会用到：</p>
+<pre class="highlight python"><span class="k">class</span> <span class="nc">By</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s">"""
+    Set of supported locator strategies.
+    """</span>
+
+    <span class="n">ID</span> <span class="o">=</span> <span class="s">"id"</span>
+    <span class="n">XPATH</span> <span class="o">=</span> <span class="s">"xpath"</span>
+    <span class="n">LINK_TEXT</span> <span class="o">=</span> <span class="s">"link text"</span>
+    <span class="n">PARTIAL_LINK_TEXT</span> <span class="o">=</span> <span class="s">"partial link text"</span>
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s">"name"</span>
+    <span class="n">TAG_NAME</span> <span class="o">=</span> <span class="s">"tag name"</span>
+    <span class="n">CLASS_NAME</span> <span class="o">=</span> <span class="s">"class name"</span>
+    <span class="n">CSS_SELECTOR</span> <span class="o">=</span> <span class="s">"css selector"</span>
+
+    <span class="nd">@classmethod</span> <span class="c">#好吧,我是一个类方法，下文中会用到我</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span> <span class="c">#cls是把类对象本身传进来</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span> <span class="c">#判断是不是可用的查找方式</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</pre>
+
+<p>这个MobileBy类在哪边起作用？我们去跟踪一下，来到这里：</p>
+<h4>appium的webdriver.py</h4><pre class="highlight python">    <span class="k">def</span> <span class="nf">find_element_by_ios_uiautomation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="s">"""Finds an element by uiautomation in iOS.
+
+        :Args:
+         - uia_string - The element name in the iOS UIAutomation library
+
+        :Usage:
+            driver.find_element_by_ios_uiautomation('.elements()[1].cells()[2]')
+        """</span>
+        <span class="c">#这里直接访问Appium自己定义的几个类属性</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">IOS_UIAUTOMATION</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_elements_by_ios_uiautomation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="s">"""Finds elements by uiautomation in iOS.
+
+        :Args:
+         - uia_string - The element name in the iOS UIAutomation library
+
+        :Usage:
+            driver.find_elements_by_ios_uiautomation('.elements()[1].cells()[2]')
+        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">IOS_UIAUTOMATION</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_element_by_android_uiautomator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="s">"""Finds element by uiautomator in Android.
+
+        :Args:
+         - uia_string - The element name in the Android UIAutomator library
+
+        :Usage:
+            driver.find_element_by_android_uiautomator('.elements()[1].cells()[2]')
+        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ANDROID_UIAUTOMATOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_elements_by_android_uiautomator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="s">"""Finds elements by uiautomator in Android.
+
+        :Args:
+         - uia_string - The element name in the Android UIAutomator library
+
+        :Usage:
+            driver.find_elements_by_android_uiautomator('.elements()[1].cells()[2]')
+        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ANDROID_UIAUTOMATOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_element_by_accessibility_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="s">"""Finds an element by accessibility id.
+
+        :Args:
+         - id - a string corresponding to a recursive element search using the
+         Id/Name that the native Accessibility options utilize
+
+        :Usage:
+            driver.find_element_by_accessibility_id()
+        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ACCESSIBILITY_ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_elements_by_accessibility_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="s">"""Finds elements by accessibility id.
+
+        :Args:
+         - id - a string corresponding to a recursive element search using the
+         Id/Name that the native Accessibility options utilize
+
+        :Usage:
+            driver.find_elements_by_accessibility_id()
+        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ACCESSIBILITY_ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+</pre>
+
+<p>所以，我们现在知道了，appium的这些扩展方法都是通过继承webdriver.Remote类来直接扩展的，appium扩展了webdriver.Remote来满足他的需求，我们尝试去追踪一下find_element和find_elements这两个核心方法！</p>
+<h4>selenium的webdriver.py</h4>
+<p>OK，我们终于来到实现的主体（核心）部分：find_element，find_elements：</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="s">"""
+        'Private' method used by the find_element_by_* methods.
+
+        :Usage:
+            Use the corresponding find_element_by_* instead of this.
+
+        :rtype: WebElement
+        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">By</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">"Invalid locator values passed in"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT</span><span class="p">,</span>
+                             <span class="p">{</span><span class="s">'using'</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">'value'</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="s">"""
+        'Private' method used by the find_elements_by_* methods.
+
+        :Usage:
+            Use the corresponding find_elements_by_* instead of this.
+
+        :rtype: list of WebElement
+        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">By</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">"Invalid locator values passed in"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS</span><span class="p">,</span>
+                             <span class="p">{</span><span class="s">'using'</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">'value'</span><span class="p">]</span>
+</pre>
+
+<p>OK，我们从头到尾再试着理一下：</p>
+
+<p>appium为了实现自己的find查找方式，首先自定义了一个MobileBy类，给这个类对象塞入了它定义的一些扩展属性，这些属性的值会通过webdriver协议推送到server端去识别和执行，为了让这些属性运用到find方法中，appium很好地继承和扩展了webdriver.Remote，然后通过调用driver实例的find_element和find_elements两个核心方法实现元素查找，所以，既然是扩展，appiumdriver实例可以使用seleniumdriver的所有关于元素查找的实例方法，他们的列表我们就可以整理出来了</p>
+<h4>seleniumdriver</h4>
+<p>find_element_by_id<br>
+find_elements_by_id<br>
+find_element_by_name<br>
+find_elements_by_name<br>
+find_element_by_link_text<br>
+find_elements_by_link_text<br>
+find_element_by_partial_link_text<br>
+find_elements_by_partial_link_text<br>
+find_element_by_tag_name<br>
+find_elements_by_tag_name<br>
+find_element_by_xpath<br>
+find_elements_by_xpath<br>
+find_element_by_class_name<br>
+find_elements_by_class_name<br>
+find_element_by_css_selector<br>
+find_elements_by_css_selector</p>
+<h4>appiumdriver</h4>
+<p>find_element_by_ios_uiautomation<br>
+find_elements_by_ios_uiautomation<br>
+find_element_by_android_uiautomator<br>
+find_elements_by_android_uiautomator<br>
+find_element_by_accessibility_id<br>
+find_elements_by_accessibility_id</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium-Python-Client 源码剖析（一） driver 的元素查找方法 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>10</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply1">1楼</a> · <abbr class="timeago" title="2014-07-24T11:48:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="6857" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1166/replies/6857/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我觉得你不讲下 WebDriver 的源码和机制，这个文章很快就讲不下去了。 比如 ：</p>
+<pre class="highlight plaintext"> return self._execute(Command.FIND_CHILD_ELEMENT,
+                             {"using": by, "value": value})['value']
+</pre>
+
+<p>execute 方法做了什么，<br>
+Command 是什么</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply2">2楼</a> · <abbr class="timeago" title="2014-07-24T12:15:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6859" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1166/replies/6859/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="qddegtya" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1166#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 是的，我正在准备写（一）的扩展篇，甚至是下面这些罗列的所有find方法，都细写一下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply3">3楼</a> · <abbr class="timeago" title="2014-07-24T13:09:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="6866" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1166/replies/6866/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在源代码中会有一个find方法，你漏掉了，看你能不能找出来。。呵呵</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply4">4楼</a> · <abbr class="timeago" title="2014-07-24T14:34:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6872" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1166/replies/6872/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="qddegtya" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1166#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 哦！？我看看~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../pt4847"><img alt="6dcc73ca59db25851882519bdf1dfcec" class="uface" src="../avatar/6dcc73ca59db25851882519bdf1dfcec.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="灰涩树" href="../pt4847">pt4847</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply5">5楼</a> · <abbr class="timeago" title="2014-07-28T16:00:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="6967" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1315" href="http://testerhome.com/topics/1166/replies/6967/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="pt4847" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>额，写的略深奥啊，我想很多人不一定想知道怎么实现的，只想知道怎么用的吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../pt4847"><img alt="6dcc73ca59db25851882519bdf1dfcec" class="uface" src="../avatar/6dcc73ca59db25851882519bdf1dfcec.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="灰涩树" href="../pt4847">pt4847</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply6">6楼</a> · <abbr class="timeago" title="2014-07-28T16:02:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="6968" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1315" href="http://testerhome.com/topics/1166/replies/6968/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="pt4847" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>比如find_element_by_android_uiautomator的用法实例，与find_elements_by_android_uiautomator又有什么不同，控件查找方法选择时该怎么选才最好，有什么需要注意的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply7">7楼</a> · <abbr class="timeago" title="2014-07-28T16:03:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6970" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1166/replies/6970/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="qddegtya" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1166#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../pt4847" class="at_user" title="@pt4847"><i>@</i>pt4847</a> 那就跟本文题目违背了。。按照此需求，只能另开一帖~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../fashionlcl"><img alt="30a054210e967f0f16d3133c391dd0f5" class="uface" src="../avatar/30a054210e967f0f16d3133c391dd0f5.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="will" href="../fashionlcl">fashionlcl</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply8">8楼</a> · <abbr class="timeago" title="2014-11-10T15:41:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9754" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1877" href="http://testerhome.com/topics/1166/replies/9754/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="fashionlcl" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>期待关于appium新文章更新</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../jiguanghover"><img alt="Bf5d767c4465c28e82b899a6cfb104d1" class="uface" src="../avatar/bf5d767c4465c28e82b899a6cfb104d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hover" href="../jiguanghover">jiguanghover</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply9">9楼</a> · <abbr class="timeago" title="2014-11-12T09:49:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9784" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="342" href="http://testerhome.com/topics/1166/replies/9784/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="jiguanghover" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>问一下，咱android的模拟器上怎么找到app页面上的元素</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../xie_0723"><img alt="1439" class="uface" src="../user/large_avatar/1439.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xie0723" href="../xie_0723">xie_0723</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1166#reply10">10楼</a> · <abbr class="timeago" title="2015-01-04T11:20:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11057" data-state="" data-type="Reply" href="1166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1439" href="http://testerhome.com/topics/1166/replies/11057/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="xie_0723" href="1166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>小A；之二，什么时候出来啊？<br>
+^_^</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1896" title="你应该学会使用的 5 个 ruby 方法">你应该学会使用的 5 个 ruby 方法</a></li>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+    <li><a href="1838" title="小而美的 ghost driver">小而美的 ghost driver</a></li>
+    <li><a href="1814" title="定制 Gradle 编译时候遇到的坑，慢慢垒">定制 Gradle 编译时候遇到的坑，慢慢垒</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1166#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

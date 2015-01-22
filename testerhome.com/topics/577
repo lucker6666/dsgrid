@@ -1,0 +1,382 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Minimizing Unreproducible Bugs &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Minimizing Unreproducible Bugs</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-03-16T15:15:06+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="qddegtya" href="../qddegtya">qddegtya</a> 于<abbr class="timeago" title="2014-03-16T21:42:32+08:00"></abbr>回复
+     · 
+    397次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>原文请见 <a href="http://googletesting.blogspot.tw/2014/02/minimizing-unreproducible-bugs.html">Minimizing Unreproducible Bugs</a></p>
+
+<p>不能重现的 bug 是我的灾难。我常常找到一个bug 后来又听说这不是一个 bug，因为它无法重现。但是这个 bug 仍旧在那里，等着捕食下一个受害者。这些类型的 bug 非常昂贵，因为我们需要花大量的时间去调查。它们也会对产品体验造成破坏性的影响，特别是用户发现并报告了这些被忽略的 bug。所以为了防止这类问题，我们需要做更多。在这篇文章里，我将探讨一些明显或者不是那么明显的开发或者测试的准则，这些准则能多少减少些这些 bug 发生的可能性。</p>
+<h4>如何避免或者测试竞争，死锁，内存崩溃，时间问题，访问未初始化内存，内存泄露，资源问题</h4>
+<p>在这一节里我会将许多类型的 bug 混在一起说。这些 bug 在我们如何测试它们和它们难以重现和调试这点上是相关的。<br>
+其根源及其影响可以是微秒级别，也可能持续数个小时。它们的堆栈信息可能不存在，也可能会误导人。当遇到不正常的流量高峰或者资源不够的情况下，系统可能会出现怪异的运行故障。单一的访问模式或者资源配置会导致多线/进程竞争或者死锁。当很多组件集成一起，而各组件的性能参数差异和失败/重启/超时时间延迟会让系统一团糟，这时候就会出现时间同步问题。我们在大量的函数调用里可能不会注意到内存崩溃或者访问未初始化内存的问题，但是在一些边缘用例下就很致命。一般只有在负载或者长时间运行，内存泄露才会被发现。</p>
+<h4>开发准则：</h4>
+<ul>
+<li>简化你的同步逻辑。如果你的逻辑理解起来非常困难，那么要重现和调试复杂的并发问题也变得非常困难。</li>
+<li>使用相同的顺序取锁，来避免死锁。这是一个实践出真知的准则。但是我依然能偶尔看到不遵守这个准则的代码。定义一个顺序去拿锁，并保持这个顺序。</li>
+<li>不要通过创建多个细粒度锁来优化，除非你确信你需要这么做。额外的锁只会增加并发复杂性。</li>
+<li>避免共享内存，除非你真的需要它。访问共享内存很容易出错。但是这类 bug 却很难重现。</li>
+</ul><h4>测试准则：</h4>
+<ul>
+<li>有规律地对你的系统进行压力测试。不要惊讶，你的系统在高压下肯定会有出乎意料的故障。</li>
+<li>超时测试。模拟或者伪造依赖来测试超时的代码。如果你的超时代码有问题，在某种系统情况下，它可能会导致 bug。</li>
+<li>要对调试的版本和优化过的版本都进行测试。你可能会发现一个表现很好的调试版本，工作的没有任何问题，但是一旦经过优化，就出现奇怪的系统故障。</li>
+<li>在资源受限的情况下测试。试着减少数据中心，机器，进程，线程的数量，减少硬盘空间或者内存。也试试看模拟差的网络环境。</li>
+<li>耐久性测试。有些 bug 需要长时间运行才能暴露出来。比如，持久化数据迟早会崩溃。</li>
+<li>使用动态分析工具，比如内存调试器，ASan，TSan 和 MSan。他们可以帮助定位很多类型的无法重现的内存/线程问题。</li>
+</ul><h4>强制实施先决条件</h4>
+<p>我见过很多有着高容错性的善意函数。比如，看下面的这个函数：</p>
+<pre class="highlight c"><span class="kt">void</span> <span class="nf">ScheduleEvent</span><span class="p">(</span><span class="kt">int</span> <span class="n">timeDurationMilliseconds</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">timeDurationMilliseconds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">timeDurationMilliseconds</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre>
+<p>当输入 timeDurationMilliseconds 不合理时，函数可以调整输入为可接受的值，但是它也可能掩盖了一个 bug。调用代码可能会遇到本文中描述的任一问题，而且即使传递垃圾数据给这个函数也能正常工作（只要不小于等于0）。这种带有容错的函数越多，想要找到错误根源就越难，而且很有可能，最终用户也会看见这些垃圾信息。强制实施先决条件，比如用断言，对于新系统而言，的确可能会导致很多的故障失败。但是随着系统的成熟，可以及早发现很多小的大的问题。这些检查可以帮助提高系统的长期可靠性。</p>
+<h4>开发准则：</h4>
+<p>在你的函数里强制实施先决条件，除非你有更好的理由不去做。</p>
+<h4>使用防御性编程</h4>
+<p>防御性编程是另一个靠得住的技术，它能够有效的减少无法重现的 bug。如果你的代码使用依赖去做一些事情，但是依赖的代码执行失败却没有抛出错误或者返回了垃圾，你的代码该如何处理？你可以通过模拟或者伪造来测试这种情景。但是或许你在代码对它的依赖做一些健全检查会更好。比如：</p>
+<pre class="highlight java"><span class="kt">double</span> <span class="nf">GetMonthlyLoanPayment</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">double</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">GetTodaysInterestRateFromExternalSystem</span><span class="o">();</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">rate</span> <span class="o">&lt;</span> <span class="mf">0.001</span> <span class="o">||</span> <span class="n">rate</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="n">BadInterestRate</span><span class="o">(</span><span class="n">rate</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="o">...</span>
+</pre><h4>开发准则：</h4>
+<p>尽可能的使用防御性编程，验证你所依赖部分的工作，尤其是会造成故障的已知风险，比如用户提供的数据，I/O操作和 RPC 调用。</p>
+<h4>测试准则：</h4>
+<p>使用 <a href="http://en.wikipedia.org/wiki/Fuzz_testing">fuzz testing</a> 来测试系统容错的健壮性。</p>
+<h4>不要从用户角度处理所有的错误问题</h4>
+<p>近年来有一种趋势，不惜任何代价不然用户看到故障。这在很多案例中，很有意义。但是在一些案例中，我们过头了。<br>
+如果用户遇到小故障，但是代码没有抛出异常或者直接放过了，那么无知的用户会在一个失败的状态下继续工作。到最后，软件总会到一个致命的点，所有造成这个致命故障的原因都被忽略了。如果用户不了解先前的错误，他们就不能报告这些错误，你也没办法重现它们。</p>
+<h4>开发准则：</h4>
+<ul>
+<li>只有当你确定不会对系统状态或者对用户产生影响的时候，对用户隐藏错误。</li>
+<li>任何对用户有影响的错误都应该报告给用户，并告诉用户如何处理。向用户显示的信息，连同向工程师展示的数据，应该足够判断到底哪里出错了。</li>
+</ul><h4>测试出错处理</h4>
+<p>错误处理的代码是最常不会被测试的部分。测试覆盖不应该略过这里的。如果不能非常好地处理致命错误，糟糕的错误处理代码会造成不能重现的 bug 并带来风险。</p>
+<h4>测试准则：</h4>
+<ul>
+<li>测试你的错误处理代码。最好的方法是模拟或者伪造能触发错误的组件。</li>
+<li>通过日志检查所有类型的错误处理。</li>
+</ul><h4>检查重复的键</h4>
+<p>如果唯一标识或者访问数据的键是通过随机生成的，不能保证全局唯一性的话，重复的键会导致数据损坏或者并发问题。这种问题非常难重现。</p>
+<h4>开发准则：</h4>
+<ul>
+<li>尽力保证所有键的唯一性。</li>
+<li>如果不能保证的话，在使用前先检查键是否试用过。</li>
+<li>小心潜在的竞争，避免它们同步。</li>
+</ul><h4>测试并发数据访问</h4>
+<p>有些 bug 只会在多个客户端读写同一块数据时候发生。一般压力测试会覆盖这些用例，但是如果没有的话，你就需要特别设计一些并发数据访问的用例。这种情况下发生的 bug 常常是无法重现的。比如，一个用户可能有两个应用实例运行在同一个账户上，它们可能没有注意到这点，直到错误发生。</p>
+<h4>测试准则：</h4>
+<ul>
+<li>如果并发数据访问是系统的特性，那一定要测试它。事实上，就算不是系统的特性，也需要验证系统是否存在并发访问数据问题。测试并发非常有挑战。我常用的方法是创建许多工作者线程同时尝试访问，主线程则监控和验证哪些尝试是真正并发的，像预期那样阻塞或者被允许的，或者全部成功了。为了确保系统工作正常，代码层面上，对所有尝试和改变系统状态行为的后续分析也是必须的。</li>
+</ul><h4>绕开不明确的行为和不明确的数据访问</h4>
+<p>当在某些状态下或者某些输入下，一些 API 和基本操作会对未定义的行为报警。同样，一些数据结构没有办法保证迭代顺序（比如 JAVA 的 Set）。在代码里忽略这些警告大多数时候能很好的工作。但是一旦失败，就很难重现。</p>
+<h4>开发准则：</h4>
+<p>你要了解你所使用的 API 和操作可能有未定义的行为，需要预防这些情况。不要过多依赖数据结构的迭代顺序，除非你能保证这个顺序。依赖集合和关联数组的顺序是比较普遍的错误。</p>
+<h4>记录错误日志故障日志的细节</h4>
+<p>如果日志包含足够的出错细节，那么本文描述的问题就可以很容易地重现和调试。</p>
+<h4>开发准则：</h4>
+<ul>
+<li>遵从良好的日志实践，特别在出错处理代码里。</li>
+<li>如果日志保存在用户的机器，提供一个便捷的方法，让用户提供给你日志文件。</li>
+</ul><h4>测试准则：</h4>
+<p>保存你的日志以便后续分析。</p>
+<h4>还有什么要添加？</h4>
+<p>我有遗漏什么重要的，可以减少这些 bug 的准则吗？ 你发现和解决的难以重现的 bug 是什么？</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Minimizing Unreproducible Bugs via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="577#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="577#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="577#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="577#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="577#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>3</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="577#reply1">1楼</a> · <abbr class="timeago" title="2014-03-16T21:42:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3172" data-state="" data-type="Reply" href="577#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/577/replies/3172/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="577#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>翻译的漂亮！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="577#reply2">2楼</a> · <abbr class="timeago" title="2014-03-16T21:42:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3173" data-state="" data-type="Reply" href="577#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/577/replies/3173/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="qddegtya" href="577#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>收藏了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="577#reply3">3楼</a> · <abbr class="timeago" title="2014-03-16T21:42:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3174" data-state="" data-type="Reply" href="577#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/577/replies/3174/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="577#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>DiggerPlus上分享一把~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscarxie: 钱多事少离家近，哈哈哈，太贪心了，有其中2个也行
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="577#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

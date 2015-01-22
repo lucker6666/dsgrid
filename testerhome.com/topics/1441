@@ -1,0 +1,438 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【分享】Android Instrumention.sendPointerSync 发送 Event 失败分析 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../hyddd"><img alt="23cac4702c8e21324632114ed791c45b" class="uface" src="../avatar/23cac4702c8e21324632114ed791c45b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【分享】Android Instrumention.sendPointerSync 发送 Event 失败分析</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="hyddd" href="../hyddd">hyddd</a>
+     · 
+    于<abbr class="timeago" title="2014-09-26T17:53:14+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="shixue33" href="../shixue33">shixue33</a> 于<abbr class="timeago" title="2014-09-28T19:47:05+08:00"></abbr>回复
+     · 
+    527次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>原文地址：<a href="http://www.cnblogs.com/hyddd/p/3995281.html" rel="nofollow" target="_blank">http://www.cnblogs.com/hyddd/p/3995281.html</a>，欢迎拍砖！</p>
+<h4>问题场景</h4>
+<ul>
+<li>Android4.3，进入被测app某个Activity后，测试案例ClickOnScreen出现异常（Click can not be completed!）。</li>
+<li>Android4.4正常。</li>
+</ul>
+<h4>前置说明</h4>
+<ul>
+<li>测试案例使用的是本人实现的测试框架，它底层调用了Robotium。</li>
+</ul>
+<h4>分析过程</h4>
+<ul>
+<li>
+<p>框架调用了Robotium的ClickOnScreen，源码如下：<br>
+（com.jayway.android.robotium.solo.Clicker）<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712223734321.png" alt=""></p>
+
+<p>当sendPointerSync（发送点击事件给被测app）10次都失败，便会断言异常：Click can not be completed。<br>
+而引发sendPointerSync的异常是：SecurityException。在Android中，出现SecurityException异常是因为权限不足，一般的情况是：被测试App和测试案例的签名不一致，而这在instrumention启动被测试app就出现，不用等到instrument.sendPointerSync，这里是其他的问题引发的。</p>
+</li>
+<li><p>继续跟进问题。<br>
+（1）android.app.Instrumentation<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712235925792.png" alt=""><br>
+（2）android.hardware.input.InputManager<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712245603721.png" alt=""><br>
+（3）android.hardware.input.IInputManager<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712255144879.png" alt=""><br>
+最后是调用Binder.transect进行跨进程调用。</p></li>
+<li><p>被调用者是系统服务，可追朔到InputManagerService的injectInputEvent。<br>
+（1）/frameworks/base/services/java/com/android/server/input/InputManagerService.java<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712265605066.png" alt=""><br>
+终于发现了我们要找的SecurityException，导致INPUT_EVENT_INJECTION_PERMISSION_DENIED是jni层的nativeInjectInputEvent。<br>
+（2）/frameworks/base/services/jni/com_android_server_input_InputManagerService.cpp<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712295147568.png" alt=""><br>
+（3）/frameworks/base/services/input/InputDispatcher.cpp<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712308737784.png" alt=""><br>
+终于发现了INPUT_EVENT_INJECTION_PERMISSION_DENIED踪迹，继续查看checkInjectionPermission：<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712324826841.png" alt=""><br>
+查看系统日志，发现是造成Permission验证失败的原因是：当前windowHandle（被测app）-&gt;owneruid与注入者（instrument）-&gt;injectoruid不一致。并且windowHandle（被测app）的owneruid竟然是1000（系统账户）！<br>
+（4） 系统日志如下：<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712339982572.png" alt=""><br>
+同时，根据windowHandle-&gt;getName().string()，我意外发现“凶手”的Name是：hidden nav（隐藏的nav？？….）。</p></li>
+<li><p>在 被测app源码 和 Android源码中分别查找，最终发在“凶手”匿藏在PhoneWindowManager中……<br>
+（1）/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java<br>
+<img src="http://images.cnitblog.com/blog/46057/201409/261712353738558.png" alt=""><br>
+<strong>mHideNavFakeWindow的创建了addFackWindow，mHideNavFakeWindow的owneruid=Process.getmyid()（这里不列代码了）, 而PhoneWindowManager是内部服务PhoneWindowService的策略类，属于系统用户。所以mHideNavFakeWindow这个透明的窗口，也是系统用户级别了(mHideNavFakeWindow为了满足某特殊需要，不得不设置为系统用户)…<br>
+而执行这个分支，需要满足一个条件：在重渲染ui界面时，被设置了标记：View.SYSTEM_UI_FLAG_HIDE_NAVIGATION。<br>
+在被测App源码代码中search，终于发现疑似凶手：view.getRootView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); 而它确实就在出现ClickOnScreen异常的Activity里。最后经调试，确认问题确实如此。</strong></p></li>
+</ul>
+<h4>4.3 与 4.4表现不一致的原因</h4>
+<ul>
+<li>对比PhoneWindowManager 4.3和4.4的代码，发4.4做了改进，如下（右为4.4）：
+<img src="http://images.cnitblog.com/blog/46057/201409/261712366859058.png" alt="">
+</li>
+<li>而在被测试app码中…..
+<img src="http://images.cnitblog.com/blog/46057/201409/261712403737419.png" alt="">
+<strong>就是被测试App 在4.4时，会增加一个flag，导致了它撞大运般地在4.4中执行流程发生了改变，避免了mHideNavFakeWindow创建，从而也避免异常的发生。</strong>
+</li>
+</ul>
+<h4>总结</h4>
+<ul>
+<li>个人认为这是Android设计上的bug，它的instrument在极端的情况下会失效。</li>
+<li>除非测试案例在系统中以系统用户启动，否则在4.3以下系统，该问题无法避免！</li>
+<li>只要有mHideNavFakeWindow的存在，原则上所有的操作都会失败，包括drag在内，但Robotium对drag的异常进行了拦截并直接丢弃，所以使用drag表面是成功的，但实际上是失败，这会导致运行中出现无法解释的诡异问题。</li>
+</ul>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【分享】Android Instrumention.sendPointerSync 发送 Event 失败分析 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1441#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1441#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1441#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1441#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1441#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>6</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1441#reply1">1楼</a> · <abbr class="timeago" title="2014-09-26T17:55:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8934" data-state="" data-type="Reply" href="1441#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1441/replies/8934/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1441#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很好的分享～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../pajack"><img alt="1035" class="uface" src="../user/large_avatar/1035.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Pajack" href="../pajack">pajack</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1441#reply2">2楼</a> · <abbr class="timeago" title="2014-09-26T19:04:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8935" data-state="" data-type="Reply" href="1441#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1035" href="http://testerhome.com/topics/1441/replies/8935/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="pajack" href="1441#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞！~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1441#reply3">3楼</a> · <abbr class="timeago" title="2014-09-26T19:31:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8936" data-state="" data-type="Reply" href="1441#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1441/replies/8936/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1441#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这种level的文章，这里还是第一次出现啊，大赞！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../ylisa"><img alt="913" class="uface" src="../user/large_avatar/913.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Lisa" href="../ylisa">ylisa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1441#reply4">4楼</a> · <abbr class="timeago" title="2014-09-28T12:44:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8958" data-state="" data-type="Reply" href="1441#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="913" href="http://testerhome.com/topics/1441/replies/8958/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="ylisa" href="1441#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞~！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1441#reply5">5楼</a> · <abbr class="timeago" title="2014-09-28T13:06:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8962" data-state="" data-type="Reply" href="1441#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1441/replies/8962/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="link1220" href="1441#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>太高端了 <img src="../assets/emojis/expressionless.png" class="emoji" title=":expressionless:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1441#reply6">6楼</a> · <abbr class="timeago" title="2014-09-28T19:47:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8976" data-state="" data-type="Reply" href="1441#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1441/replies/8976/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="shixue33" href="1441#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好高端！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    请没有头像的同学，上传头像吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1441#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 自动化测试的测试数据构造之DGL &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" />
+  </div>
+  <h1 class="entry-title">自动化测试的测试数据构造之DGL</h1>
+  <div class="info leader">
+    <a class="node" href="node1">资讯点评</a>
+     · 
+    匿名
+     · 
+    于<abbr class="timeago" title="2012-11-07T15:56:47+08:00"></abbr>发布
+     · 
+    147次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1106/205675.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1106/205675.html</a></p>
+<pre>　　背景问题及解决方案问题
+
+　　一个系统中所有模块的输入数据结构一致，都是明文的行数据，行数据之间逻辑、列数据之间逻辑通过数据本身很难看出，导致构造的数据可复用成本高，对大数据的可复用成本几乎为0，而每个数据对应的测试点更是难以一一对应
+
+　　解决方案
+
+　　数据之间的逻辑关系通过规则文件描述，然后用开源DGL工具将规则文件变成实际的输入、输出数据，解决了数据逻辑不易读的问题，同时解决了数据与测试点难一一对应的问题，将规则文件抽取公共lib库，只关注模块处理的域，大大降低DGL复用的成本，也增加了规则文件的易读性，解决了手工构造数据后续难复用的问题
+
+　　DGL功能与原理
+
+　　主要功能
+
+　　1. 通过定义模板，生成所需要数据量的数据。
+
+　　2.dgl构造数据优势：
+
+　　a) 准确：只要模板定义正确，就不用担心生成数据的正确性
+
+　　b) 可复用：通过保存定义好的模板，可以为以后的case再构造数据的时候节省时间。定义的模板越通用，这样通用的模板积累的越多，后面构造数据越容易
+
+　　c) 易维护：当策略改变时，为策略构造的数据也需要修改时，只需要修改相应的规则文件中的一些规则的定义就可以很方便快速的获取新的数据。而且比直接保存case 数据占用空间和修改成本小得多。
+
+　　d) 为自动化实现打下良好基础：构造的数据后续复用，为自动化工具提供可行性
+
+　　原理
+
+　　DGL定义了一组简单的模板拼装的语法，用户用这种语法生成模板传给DGL工具进行解析，会得到解释为C语言的.c文件。再将.c文件编译执行即可以得到数据
+
+　　适用范围
+
+　　1. 适用于生成规律性强的数据，大数据量的输入构造，
+
+　　2. 不适用与结构复杂的数据，如网页数据
+
+　　创新点及应用效果
+
+　　创新点
+
+　　1. 将原来手工构造数据工作自动化，并建立公共规则lib库，使得数据易复用，易修改
+
+　　2. 解决了原始方式回归测试时，因数据不可复用而无法进行的问题
+
+　　应用效果
+
+　　1.提高了代码覆盖率，提高测试质量：原始手工构造数据无法复用，每次测试只关注新feature，遗漏了因修改新feature带来的旧feature bug
+
+　　2.缩短原式数据构造时间的30%：原始手工构造时需要构造每个域，因为规则文件有公共lib库对default属性描述，现在只需要关注程序逻辑关注的域，会大大降低数据构造的时间
+
+　　3.为自动化实现打下良好基础：构造的数据后续复用，为自动化工具提供可行性
+
+　　4.构造大数据通过操作一个变量即可：改变原来手工一点点构造的方式，只需修改一个变量，在分钟级即可实现大数据的构造描述
+</pre>
+
+
+<p>文章分类:自动测试</p>
+
+<p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1106/205675.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1106/205675.html</a></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='自动化测试的测试数据构造之DGL via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="94#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="94#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="94#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="94#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="94#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1378" title="《刀塔传奇》之互联网从业人员评测">《刀塔传奇》之互联网从业人员评测</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="94#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,792 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【转载】Android Monkey 的使用 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../xxx"><img alt="Ef2be615b33b393db3e5d66d2bc05ef9" class="uface" src="../avatar/ef2be615b33b393db3e5d66d2bc05ef9.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【转载】Android Monkey 的使用</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="小叉" href="../xxx">xxx</a>
+     · 
+    于<abbr class="timeago" title="2014-09-24T11:12:57+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="jerome" href="../jerome">jerome</a> 于<abbr class="timeago" title="2014-09-24T15:31:18+08:00"></abbr>回复
+     · 
+    619次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Monkey测试1——Monkey的使用<br>
+原文地址：<br>
+<a href="http://www.douban.com/note/257029872/" rel="nofollow" target="_blank">http://www.douban.com/note/257029872/</a><br>
+(转自豆瓣，版权属于豆瓣及豆瓣网友，如有冒犯请见谅并联系我们)</p>
+
+<p><strong>Monkey的使用</strong></p>
+
+<p>一、  什么是Monkey</p>
+
+<p>Monkey是Android中的一个命令行工具，可以运行在模拟器里或实际设备中。它向系统发送伪随机的用户事件流(如按键输入、触摸屏输入、手势输入等)，实现对正在开发的应用程序进行压力测试。Monkey测试是一种为了测试软件的稳定性、健壮性的快速有效的方法。</p>
+
+<p>二、 Monkey的特征</p>
+
+<p>1、 测试的对象仅为应用程序包，有一定的局限性。</p>
+
+<p>2、 Monkey测试使用的事件流数据流是随机的，不能进行自定义。</p>
+
+<p>3、 可对MonkeyTest的对象，事件数量，类型，频率等进行设置。</p>
+
+<p>三、Monkey的基本用法</p>
+
+<p>基本语法如下：</p>
+
+<p>$ adb shell monkey [options]</p>
+
+<p>如果不指定options，Monkey将以无反馈模式启动，并把事件任意发送到安装在目标环境中的全部包。下面是一个更为典型的命令行示例，它启动指定的应用程序，并向其发送500个伪随机事件：</p>
+
+<p>$ adb shell monkey -pyour.package.name -v 500</p>
+
+<p>四、Monkey测试的一个实例</p>
+
+<p>通过这个实例，我们能理解Monkey测试的步骤以及如何知道哪些应用程序能够用Monkey进行测试。</p>
+
+<p>Windows下（注：2和4步是为了查看我们可以测试哪些应用程序包，可省略）：</p>
+
+<p>1、 通过eclipse启动一个Android的emulator</p>
+
+<p>2、 在命令行中输入：adb devices查看设备连接情况</p>
+
+<p>C:\Documents andSettings\Administrator&gt;adb devices</p>
+
+<p>List of devices attached</p>
+
+<p>emulator-5554   device</p>
+
+<p>3、 在有设备连接的前提下，在命令行中输入：adb shell 进入shell界面</p>
+
+<p>C:\Documents andSettings\Administrator&gt;adb shell</p>
+
+<p>#</p>
+
+<p>4、 查看data/data文件夹下的应用程序包。注：我们能测试的应用程序包都在这个目录下面</p>
+
+<p>C:\Documents andSettings\Administrator&gt;adb shell</p>
+<h4>ls data/data</h4>
+<p>ls data/data</p>
+
+<p>com.google.android.btrouter</p>
+
+<p>com.android.providers.telephony</p>
+
+<p>com.android.mms</p>
+
+<p>com.android.providers.downloads</p>
+
+<p>com.android.deskclock</p>
+
+<p>com.android.email</p>
+
+<p>com.android.providers.media</p>
+
+<p>com.android.settings</p>
+
+<p>jp.co.omronsoft.openwnn</p>
+
+<p>com.android.providers.userdictionary</p>
+
+<p>com.android.quicksearchbox</p>
+
+<p>com.android.protips</p>
+
+<p>com.android.browser</p>
+
+<p>com.android.launcher</p>
+
+<p>com.android.term</p>
+
+<p>com.android.speechrecorder</p>
+
+<p>com.android.server.vpn</p>
+
+<p>com.android.defcontainer</p>
+
+<p>com.svox.pico</p>
+
+<p>com.android.customlocale</p>
+
+<p>com.android.development</p>
+
+<p>com.android.soundrecorder</p>
+
+<p>com.android.providers.drm</p>
+
+<p>com.android.spare_parts</p>
+
+<p>com.android.providers.downloads.ui</p>
+
+<p>com.android.fallback</p>
+
+<p>com.android.providers.applications</p>
+
+<p>com.android.netspeed</p>
+
+<p>com.android.wallpaper.livepicker</p>
+
+<p>android.tts</p>
+
+<p>com.android.htmlviewer</p>
+
+<p>com.android.music</p>
+
+<p>com.android.certinstaller</p>
+
+<p>com.android.inputmethod.pinyin</p>
+
+<p>com.android.providers.subscribedfeeds</p>
+
+<p>com.android.inputmethod.latin</p>
+
+<p>com.android.gallery</p>
+
+<p>com.android.systemui</p>
+
+<p>com.android.contacts</p>
+
+<p>com.android.phone</p>
+
+<p>com.android.sdksetup</p>
+
+<p>com.android.calculator2</p>
+
+<p>com.android.packageinstaller</p>
+
+<p>com.android.camera</p>
+
+<p>com.android.providers.settings</p>
+
+<p>com.thestore.main</p>
+
+<p>com.android.providers.contacts</p>
+
+<p>5、 以com.android.calculator2作为对象进行MonkeyTest</p>
+
+<p>#monkey -p com.android.calculator2-v 500</p>
+
+<p>其中-p表示对象包 –v 表示事件数量</p>
+
+<p>运行过程中，Emulator中的应用程序在不断地切换画面。</p>
+
+<p>按照选定的不同级别的反馈信息，在Monkey中还可以看到其执行过程报告和生成的事件。</p>
+
+<p>注：具体参数的设定可参考：</p>
+
+<p><a href="http://developer.android.com/guide/developing/tools/monkey.html" rel="nofollow" target="_blank">http://developer.android.com/guide/developing/tools/monkey.html</a></p>
+
+<p>五、关于Monkey测试的停止条件</p>
+
+<p>Monkey Test执行过程中在下列三种情况下会自动停止：</p>
+
+<p>1、如果限定了Monkey运行在一个或几个特定的包上，那么它会监测试图转到其它包的操作，并对其进行阻止。</p>
+
+<p>2、如果应用程序崩溃或接收到任何失控异常，Monkey将停止并报错。</p>
+
+<p>3、如果应用程序产生了应用程序不响应(applicationnot responding)的错误，Monkey将会停止并报错。</p>
+
+<p>通过多次并且不同设定下的Monkey测试才算它是一个稳定性足够的程序。</p>
+
+<p>Monkey测试2——Monkey测试策略<br>
+2013-01-08 13:31:44<br>
+Monkey的测试策略</p>
+
+<p>一.  分类</p>
+
+<p>Monkey测试针对不同的对象和不同的目的采用不同的测试方案，首先测试的对象、目的及类型如下：</p>
+
+<p>测试的类型分为：应用程序的稳定性测试和压力测试</p>
+
+<p>测试对象分为：单一apk和apk集合</p>
+
+<p>测试的目的分为：解决问题的测试(忽略异常的测试)和验收测试（不忽略异常的测试）</p>
+
+<p>二. 应用程序的稳定性测试：</p>
+
+<ol>
+<li>针对单个apk</li>
+</ol>
+
+<p>(1) 不忽略异常</p>
+
+<p>在进行单个apk的验收测试时，则使用单一apk且不忽略异常的命令执行。</p>
+
+<p>例如：<br>
+monkey -p com.android.mms --throttle 1000 -s 100-v -v -v 15000 &gt; /mnt/sdcard/monkey_test.txt &amp;</p>
+
+<p>(2) 忽略异常</p>
+
+<p>在进行单个apk的解决问题的测试时，则使用单一apk且忽略异常的命令执行，这样可以在一次执行的过程中发现应用程序中的多个问题。</p>
+
+<p>例如：<br>
+monkey -p com.android.mms --throttle 1000 -s 100--ignore-crashes --ignore-timeouts --ignore-security-exceptions--ignore-native-carshes --monitor-native-crashes -v -v -v 15000 &gt;/mnt/sdcard/monkey_test.txt &amp;</p>
+
+<ol>
+<li>针对多个apk</li>
+</ol>
+
+<p>(1) 不忽略异常</p>
+
+<p>例如：</p>
+
+<p>monkey --pkg-whitelist-file /data/whitelist.txt--throttle 1000 -s 100 -v -v -v 15000 &gt; /mnt/sdcard/monkey_test.txt &amp;</p>
+
+<p>(2) 忽略异常</p>
+
+<p>例如：</p>
+
+<p>monkey --pkg-whitelist-file /data/whitelist.txt--throttle 1000 -s 100 --ignore-crashes --ignore-timeouts--ignore-security-exceptions --ignore-native-carshes --monitor-native-crashes-v -v -v 15000 &gt; /mnt/sdcard/monkey_test.txt &amp;</p>
+
+<p>三. 应用程序的压力/健壮性测试</p>
+
+<p>应用程序的压力/健壮性测试，其主要是缩短monkey测试中事件与事件之间的延迟时间，验证在快速的事件响应的过程中，程序是否能正常运行。这种压力/健壮性测试主要是针对单一apk来执行；我们可以将--throttle的值设定为500或者更小，一般都使用500毫秒的延迟事件。</p>
+
+<p>在进行apk的集合测试时，对于高频率使用的apk、长时间使用的apk都要包含在执行的应用程序中间。</p>
+
+<p>APK分类具体：</p>
+
+<p>高频率使用的apk如：Phone、Contacts、Message、Settings、File Manager、Gallery、Input Method</p>
+
+<p>长时间使用的apk如：Phone、Browser、Music player、Camera、Video player、Email、Chat</p>
+
+<p>其他的apk如：Calendar、Notepad、Calculator、FM Radio、Google Search</p>
+
+<p>Monkey测试3——Monkey测试结果分析<br>
+2013-01-08 13:32:18<br>
+Monkey测试结果分析</p>
+
+<p>一. 初步分析方法：</p>
+
+<p>Monkey测试出现错误后，一般的差错步骤为以下几步：</p>
+
+<p>1、 找到是monkey里面的哪个地方出错</p>
+
+<p>2、 查看Monkey里面出错前的一些事件动作，并手动执行该动作</p>
+
+<p>3、 若以上步骤还不能找出，可以使用之前执行的monkey命令再执行一遍，注意seed值要一样</p>
+
+<p>一般的测试结果分析：</p>
+
+<p>1、 ANR问题：在日志中搜索“ANR”</p>
+
+<p>2、 崩溃问题：在日志中搜索“Exception”</p>
+
+<p>二. 详细分析monkey日志：</p>
+
+<p>将执行Monkey生成的log，从手机中导出并打开查看该log；在log的最开始都会显示Monkey执行的seed值、执行次数和测试的包名。</p>
+
+<p>首先我们需要查看Monkey测试中是否出现了ANR或者异常，具体方法如上述。</p>
+
+<p>然后我们要分析log中的具体信息，方法如下：</p>
+
+<p>查看log中第一个Switch，主要是查看Monkey执行的是那一个Activity，譬如下面的log中，执行的是com.tencent.smtt.SplashActivity，在下一个swtich之间的，如果出现了崩溃或其他异常，可以在该Activity中查找问题的所在。</p>
+
+<p>:Switch:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10000000;component=com.tencent.smtt/.SplashActivity;end</p>
+
+<p>// Allowing start of Intent {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER]cmp=com.tencent.smtt/.SplashActivity } in package com.tencent.smtt</p>
+
+<p>在下面的log中，Sending Pointer ACTION_DOWN和Sending Pointer ACTION_UP代表当前执行了一个单击的操作;</p>
+
+<p>Sleeping for 500 milliseconds这句log是执行Monkey测试时，throttle设定的间隔时间，每出现一次，就代表一个事件。</p>
+
+<p>SendKey(ACTION_DOWN) //KEYCODE_DPAD_DOWN   代表当前执行了一个点击下导航键的操作；</p>
+
+<p>Sending Pointer ACTION_MOVE     代表当前执行了一个滑动界面的操作。</p>
+
+<p>:Sending Pointer ACTION_DOWN x=47.0 y=438.0</p>
+
+<p>:Sending Pointer ACTION_UP x=47.0 y=438.0</p>
+
+<p>Sleeping for 500 milliseconds</p>
+
+<p>:SendKey (ACTION_DOWN): 20   //KEYCODE_DPAD_DOWN</p>
+
+<p>:SendKey (ACTION_UP): 20   //KEYCODE_DPAD_DOWN</p>
+
+<p>Sleeping for 500 milliseconds</p>
+
+<p>:Sending Pointer ACTION_MOVE x=-2.0 y=3.0</p>
+
+<p>:Sending Pointer ACTION_MOVE x=4.0 y=-3.0</p>
+
+<p>:Sending Pointer ACTION_MOVE x=-5.0 y=-3.0</p>
+
+<p>:Sending Pointer ACTION_MOVE x=3.0 y=4.0</p>
+
+<p>:Sending Pointer ACTION_MOVE x=-4.0 y=1.0</p>
+
+<p>:Sending Pointer ACTION_MOVE x=-1.0 y=-1.0</p>
+
+<p>:Sending Pointer ACTION_MOVE x=-2.0 y=-4.0</p>
+
+<p>如果Monkey测试顺利执行完成，在log的最后，会打印出当前执行事件的次数和所花费的时间；// Monkey finished代表执行完成。Monkey执行中断，在log的最后也能查看到当前已执行的次数。Monkey执行完成的log具体如下：</p>
+
+<p>Events injected: 6000</p>
+
+<p>:Dropped: keys=0 pointers=9 trackballs=0 flips=0</p>
+<h4>Network stats: elapsed time=808384ms (0ms mobile, 808384ms wifi, 0msnot connected)</h4>
+<p>// Monkey finished</p>
+
+<p>Monkey测试4——Monkey命令行可用的全部选项<br>
+2013-01-08 13:33:12<br>
+Monkey命令行可用的全部选项</p>
+
+<p>常规</p>
+
+<p>--help</p>
+
+<p>列出简单的用法。</p>
+
+<p>-v</p>
+
+<p>命令行的每一个-v将增加反馈信息的级别。</p>
+
+<p>Level 0(缺省值)除启动提示、测试完成和最终结果之外，提供较少信息。</p>
+
+<p>Level 1提供较为详细的测试信息，如逐个发送到Activity的事件。</p>
+
+<p>Level 2提供更加详细的设置信息，如测试中被选中的或未被选中的Activity。</p>
+
+<p>日志级别 Level 0  </p>
+
+<p>*示例 adbshell monkey -p com.htc.Weather –v 100</p>
+
+<p>说明缺省值，仅提供启动提示、测试完成和最终结果等少量信息</p>
+
+<p>日志级别 Level 1</p>
+
+<p>*示例 adbshell monkey -p com.htc.Weather –v -v 100</p>
+
+<p>说明  提供较为详细的日志，包括每个发送到Activity的事件信息</p>
+
+<p>日志级别 Level 2</p>
+
+<p>*示例 adbshell monkey -p com.htc.Weather –v -v –v 100</p>
+
+<p>说明  最详细的日志，包括了测试中选中/未选中的Activity信息</p>
+
+<p>事件</p>
+
+<p>-s &lt;seed&gt;</p>
+
+<p>用于指定伪随机数生成器的seed值，如果seed相同，则两次Monkey测试所产生的事件序列也相同的。</p>
+
+<ul>
+<li>示例：</li>
+</ul>
+
+<p>Monkey测试1：adb shellmonkey -p com.htc.Weather –s 10 100</p>
+
+<p>Monkey 测试2：adb shellmonkey -p com.htc.Weather –s 10 100</p>
+
+<p>两次测试的效果是相同的，因为模拟的用户操作序列（每次操作按照一定的先后顺序所组成的一系列操作，即一个序列）是一样的。操作序列虽   然是随机生成的，但是只要我们指定了相同的Seed值，就可以保证两次测试产生的随机操作序列是完全相同的，所以这个操作序列伪随机的；</p>
+
+<p>--throttle&lt;milliseconds&gt;</p>
+
+<p>在事件之间插入固定延迟。通过这个选项可以减缓Monkey的执行速度。如果不指定该选项，Monkey将不会被延迟，事件将尽可能快地被产成。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather –throttle 3000 100</li>
+</ul>
+
+<p>--pct-touch&lt;percent&gt;</p>
+
+<p>调整触摸事件的百分比(触摸事件是一个down-up事件，它发生在屏幕上的某单一位置)。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-touch 10 1000</li>
+</ul>
+
+<p>--pct-motion&lt;percent&gt;<br>
+调整动作事件的百分比(动作事件由屏幕上某处的一个down事件、一系列的伪随机事件和一个up事件组成)。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-motion 20 1000</li>
+</ul>
+
+<p>--pct-trackball&lt;percent&gt;</p>
+
+<p>调整轨迹事件的百分比(轨迹事件由一个或几个随机的移动组成，有时还伴随有点击)。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-trackball 30 1000</li>
+</ul>
+
+<p>--pct-nav&lt;percent&gt;</p>
+
+<p>调整“基本”导航事件的百分比(导航事件由来自方向输入设备的up/down/left/right组成)。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-nav 40 1000</li>
+</ul>
+
+<p>--pct-majornav&lt;percent&gt;</p>
+
+<p>调整“主要”导航事件的百分比(这些导航事件通常引发图形界面中的动作，如：5-way键盘的中间按键、回退按键、菜单按键)</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-majornav 50 1000</li>
+</ul>
+
+<p>--pct-syskeys&lt;percent&gt;<br>
+调整“系统”按键事件的百分比(这些按键通常被保留，由系统使用，如Home、Back、Start Call、End Call及音量控制键)。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-syskeys 60 1000</li>
+</ul>
+
+<p>--pct-appswitch&lt;percent&gt;<br>
+调整启动Activity的百分比。在随机间隔里，Monkey将执行一个startActivity()调用，作为最大程度覆盖包中全部Activity的一种方法。</p>
+
+<ul>
+<li>示例：adb shellmonkey -p com.htc.Weather --pct-appswitch 70 1000</li>
+</ul>
+
+<p>--pct-anyevent&lt;percent&gt;<br>
+调整其它类型事件的百分比。它包罗了所有其它类型的事件，如：按键、其它不常用的设备按钮、等等。* 示例：adb shell monkey -p com.htc.Weather</p>
+
+<p>--pct -anyevent 1001000* 指定多个类型事件的百分比：</p>
+
+<p>adb shell monkey -pcom.htc.Weather --pct-anyevent 50 --pct-appswitch 50 1000<br>
+注意：各事件类型的百分比总数不能超过100%；</p>
+
+<p>约束限制</p>
+
+<p>-p&lt;allowed-package-name&gt;</p>
+
+<p>如果用此参数指定了一个或几个包，Monkey将只允许系统启动这些包里的Activity。如果你的应用程序还需要访问其它包里的Activity(如选择取一个联系人)，那些包也需要在此同时指定。如果不指定任何包，Monkey将允许系统启动全部包里的Activity。要指定多个包，需要使用多个 -p选项，每个-p选项只能用于一个包。<br>
+* 指定一个包： adb shell monkey -p com.htc.Weather  100</p>
+
+<p>说明：com.htc.Weather为包名，100是事件计数（即让Monkey程序模拟100次随机用户事件）。</p>
+
+<ul>
+<li><p>指定多个包：adb shell monkey -p com.htc.Weather –pcom.htc.pdfreader  -p com.htc.photo.widgets 100</p></li>
+<li><p>不指定包：adb shell monkey 100</p></li>
+</ul>
+
+<p>说明：Monkey随机启动APP并发送100个随机事件。</p>
+
+<ul>
+<li>要查看设备中所有的包，在CMD窗口中执行以下命令：</li>
+</ul>
+
+<blockquote>
+<p>adb shell</p>
+</blockquote>
+
+<p>#cd data/data</p>
+
+<p>#ls</p>
+
+<p>-c&lt;main-category&gt;</p>
+
+<p>如果用此参数指定了一个或几个类别，Monkey将只允许系统启动被这些类别中的某个类别列出的Activity。如果不指定任何类别，Monkey将选 择下列类别中列出的Activity： Intent.CATEGORY_LAUNCHER或Intent.CATEGORY_MONKEY。要指定多个类别，需要使用多个-c选项，每个-c选 项只能用于一个类别。</p>
+
+<p>调试<br>
+--dbg-no-events<br>
+设置此选项，Monkey将执行初始启动，进入到一个测试Activity，然后不会再进一步生成事件。为了得到最佳结果，把它与-v、一个或几个包约 束、以及一个保持Monkey运行30秒或更长时间的非零值联合起来，从而提供一个环境，可以监视应用程序所调用的包之间的转换。</p>
+
+<p>--hprof<br>
+设置此选项，将在Monkey事件序列之前和之后立即生成profiling报告。这将会在data/misc中生成大文件(~5Mb)，所以要小心使用它。</p>
+
+<p>--ignore-crashes<br>
+通常，当应用程序崩溃或发生任何失控异常时，Monkey将停止运行。如果设置此选项，Monkey将继续向系统发送事件，直到计数完成。<br>
+* 示例1：adb shellmonkey -p com.htc.Weather --ignore-crashes 1000<br>
+ 测试过程中即使Weather程序崩溃，Monkey依然会继续发送事件直到事件数目达到1000为止；<br>
+* 示例2：adb shell monkey -p com.htc.Weather 1000<br>
+ 测试过程中，如果Weather程序崩溃，Monkey将会停止运行。</p>
+
+<p>--ignore-timeouts<br>
+通常，当应用程序发生任何超时错误(如“Application Not Responding”对话框)时，Monkey将停止运行。如果设置此选项，Monkey将继续向系统发送事件，直到计数完成。</p>
+
+<p>--ignore-security-exceptions<br>
+通常，当应用程序发生许可错误(如启动一个需要某些许可的Activity)时，Monkey将停止运行。如果设置了此选项，Monkey将继续向系统发送事件，直到计数完成。</p>
+
+<p>--kill-process-after-error<br>
+通常，当Monkey由于一个错误而停止时，出错的应用程序将继续处于运行状态。当设置了此选项时，将会通知系统停止发生错误的进程。注意，正常的(成功的)结束，并没有停止启动的进程，设备只是在结束事件之后，简单地保持在最后的状态。</p>
+
+<p>--monitor-native-crashes<br>
+监视并报告Android系统中本地代码的崩溃事件。如果设置了--kill-process-after-error，系统将停止运行。</p>
+
+<p>--wait-dbg<br>
+停止执行中的Monkey，直到有调试器和它相连接。</p>
+
+<p>原文地址：<br>
+<a href="http://www.douban.com/note/257029872/" rel="nofollow" target="_blank">http://www.douban.com/note/257029872/</a></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【转载】Android Monkey 的使用 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1429#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1429#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1429#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1429#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1429#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>2</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../xxx"><img alt="Ef2be615b33b393db3e5d66d2bc05ef9" class="uface" src="../avatar/ef2be615b33b393db3e5d66d2bc05ef9.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小叉" href="../xxx">xxx</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1429#reply1">1楼</a> · <abbr class="timeago" title="2014-09-24T11:18:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8839" data-state="" data-type="Reply" href="1429#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="777" href="http://testerhome.com/topics/1429/replies/8839/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="xxx" href="1429#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Monkey测试结果分析-这块写很涨知识</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../jerome"><img alt="1146" class="uface" src="../user/large_avatar/1146.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lijingbo" href="../jerome">jerome</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1429#reply2">2楼</a> · <abbr class="timeago" title="2014-09-24T15:31:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8853" data-state="" data-type="Reply" href="1429#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1146" href="http://testerhome.com/topics/1429/replies/8853/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="jerome" href="1429#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>确实不错，收藏了，对于Log的分析不错。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+    <li><a href="1697" title="chrome mobile emulation 及周边漫谈和相关应用+想法">chrome mobile emulation 及周边...</a></li>
+    <li><a href="1696" title="谁有轻量级的 Android 模拟器推荐？ 电脑内存 1G 上可流畅运行的">谁有轻量级的 Android 模拟器推荐？ 电脑内存 ...</a></li>
+    <li><a href="1660" title="SDK 测试小结">SDK 测试小结</a></li>
+    <li><a href="1587" title="移动应用自动化测试的困惑">移动应用自动化测试的困惑</a></li>
+    <li><a href="1567" title="DDMS 中生成 Trace 的方法原理是什么">DDMS 中生成 Trace 的方法原理是什么</a></li>
+    <li><a href="1563" title="uiautomatorviewer 不能显示模拟器界面，黑屏，但是信息能出来？谁知道怎么回事？">uiautomatorviewer 不能显示模拟器界面...</a></li>
+    <li><a href="1557" title="通过 xcode 查看 app crash 日志这个方法在 ios8 下面都查看不到了">通过 xcode 查看 app crash 日志这个方...</a></li>
+    <li><a href="1553" title="如何做好移动互联网应用测试 ">如何做好移动互联网应用测试 </a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1429#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

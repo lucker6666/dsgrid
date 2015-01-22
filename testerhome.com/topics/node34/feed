@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 移动安全测试 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 移动安全测试 节点最新发帖.</description>
+    <item>
+      <title>《Android 安全测试初探》合集</title>
+      <description>&lt;p&gt;&lt;a href="http://testerhome.com/topics/1574" target="_blank"&gt;Android 安全测试初探（一）&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1575" target="_blank"&gt;Android 安全测试初探（二）&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1576" target="_blank"&gt;Android 安全测试初探（三）&lt;/a&gt;&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Mon, 15 Dec 2014 21:58:42 +0800</pubDate>
+      <link>http://testerhome.com/topics/1698</link>
+      <guid>http://testerhome.com/topics/1698</guid>
+    </item>
+    <item>
+      <title>Android 安全测试初探（三）</title>
+      <description>&lt;p&gt;书接前文：&lt;a href="http://testerhome.com/topics/1575" rel="nofollow" target="_blank"&gt;http://testerhome.com/topics/1575&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;上回说完了检查项，本轮该说说扫描项了&lt;/p&gt;
+
+&lt;p&gt;大家听到扫描，可能立马会想起来用工具，对，大部分扫描都是通过工具，但是工具本身也会存在误报等，还需要人手工校验&lt;/p&gt;
+&lt;h4&gt;端口扫描&lt;/h4&gt;
+&lt;p&gt;一般使用 &lt;code&gt;nmap&lt;/code&gt; 和 &lt;code&gt;netstat&lt;/code&gt; 来进行的。&lt;code&gt;nmap&lt;/code&gt; 用于扫描服务器，&lt;code&gt;netstat&lt;/code&gt; 用来扫描客户端本身&lt;/p&gt;
+&lt;h4&gt;病毒、木马扫描&lt;/h4&gt;
+&lt;p&gt;一般使用国际四大杀毒厂商提供的移动版来进行扫描，分别扫描 apk 安装文件和 apk 安装后使用一段时间内产生的文件&lt;/p&gt;
+&lt;h4&gt;广告查杀&lt;/h4&gt;
+&lt;p&gt;这个一般都是平台会做的检测项，一般也是用各类查杀广告类的 apk 来进行扫描，目前已知的原理是可以通过 adb shell dumpsys notification 来查杀，至于应用内部的广告查杀原理未知，只能靠软件辅助，如果对方不认可，可以祭出大杀器，反编译找到源码&lt;/p&gt;
+
+&lt;p&gt;到这里，扫描也说完了，下面简单的说下 &lt;code&gt;drozer&lt;/code&gt; 这个工具&lt;/p&gt;
+
+&lt;p&gt;drozer 是一款非常强悍的工具，适合深入挖掘应用底层方面的安全威胁，可以查杀漏洞及木马，以及暗码（有了暗码，很多事情就很好办了~~），drozer搭建好环境后，通过命令行的方式进行运行，命令方面的讲解大家可以移步官方的doc文档&lt;/p&gt;
+
+&lt;p&gt;最后还有一个大杀器 —— fuzz测试，可能大家在pc端并不陌生，但是移动端的fuzz测试并不是传统意义的fuzz，而是通过频繁调用空intent来遍历调用apk的各个activity来验证是否会产生崩溃，死机等方面的问题，甚至安全方面的隐患&lt;/p&gt;
+
+&lt;p&gt;好了，安全方面到此告一段落&lt;/p&gt;</description>
+      <author>kasi</author>
+      <pubDate>Mon, 10 Nov 2014 15:29:14 +0800</pubDate>
+      <link>http://testerhome.com/topics/1576</link>
+      <guid>http://testerhome.com/topics/1576</guid>
+    </item>
+    <item>
+      <title>Android 安全测试初探（二）</title>
+      <description>&lt;p&gt;书接前文：&lt;a href="http://testerhome.com/topics/1574" rel="nofollow" target="_blank"&gt;http://testerhome.com/topics/1574&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;上回大体介绍了下安全测试的一些基本测试项，现在我们就细则方面来一一阐述&lt;/p&gt;
+
+&lt;p&gt;首先我们来说说检查这个大项，可能大家看到检查项只有寥寥的几个，但是要查的东西还真不少&lt;/p&gt;
+&lt;h4&gt;文件权限&lt;/h4&gt;
+&lt;p&gt;一般我们需要检查 apk 所生成的文件，这里我们需要检查 2 种模式下安装的apk&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;adb install&lt;/li&gt;
+&lt;li&gt;adb push&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;使用一段时间，需要遍历所有功能，这样才会生成所有需要检查的文件，一般检查文件路径如下 2 个&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;/dada/dada/packageName &lt;/li&gt;
+&lt;li&gt;/sdcard/Android/data/packageName&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当然有些 apk 还会在 sdcard 上面的其他路径生成文件，这个也是需要检测的，这里我们对文件做如下检测：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;权限检测 —— 检测文件的权限所属关系，通过 ls-l 来遍历，查看有哪些文件是否包含允许第三方读写权限&lt;/li&gt;
+&lt;li&gt;内容检测 —— 打开所有文件，查看内容是否涉及到个人数据及隐私数据，是否加密处理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;apk 运行权限 &lt;/h4&gt;
+&lt;p&gt;这里我们需要安装apk后，安装方法有 2 种，如上所述，运行apk后，通过 ps 来查看 apk 的运行用户是什么&lt;/p&gt;
+&lt;h4&gt;apk 权限&lt;/h4&gt;
+&lt;p&gt;这里可以使用反编译的方式查看 apk 申请了哪些权限&lt;/p&gt;
+&lt;h4&gt;日志&lt;/h4&gt;
+&lt;p&gt;这里查看 apk 运行期间所打印的日志，通过 logcat 命令来查看&lt;/p&gt;
+&lt;h4&gt;报文&lt;/h4&gt;
+&lt;p&gt;这里查看 apk 在运行期间所有跟网络交互产生的报文，通过 tcpdump、fiddle2、wireshake 等工具均可&lt;/p&gt;
+
+&lt;p&gt;好了，今天先说到这里，下回继续说其他的&lt;/p&gt;
+
+&lt;p&gt;下文链接：&lt;a href="http://testerhome.com/topics/1576" rel="nofollow" target="_blank"&gt;http://testerhome.com/topics/1576&lt;/a&gt;&lt;/p&gt;</description>
+      <author>kasi</author>
+      <pubDate>Mon, 10 Nov 2014 15:23:04 +0800</pubDate>
+      <link>http://testerhome.com/topics/1575</link>
+      <guid>http://testerhome.com/topics/1575</guid>
+    </item>
+    <item>
+      <title>Android 安全测试初探（一）</title>
+      <description>&lt;p&gt;序章：&lt;/p&gt;
+
+&lt;p&gt;Android 安全测试，跟 pc 安全测试一样分为&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;客户端&lt;/li&gt;
+&lt;li&gt;服务端&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;服务端的安全测试其实很多都跟 pc 端一样，这里不多阐述。&lt;/p&gt;
+
+&lt;p&gt;对于应用安全性，从大的方面来说可以分为 2 类，&lt;code&gt;检查&lt;/code&gt;和&lt;code&gt;扫描&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;检查包含较多，如：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;文件权限&lt;/li&gt;
+&lt;li&gt;apk运行权限&lt;/li&gt;
+&lt;li&gt;apk权限&lt;/li&gt;
+&lt;li&gt;日志&lt;/li&gt;
+&lt;li&gt;报文&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;扫描包含较少，如&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;端口扫描&lt;/li&gt;
+&lt;li&gt;病毒扫描&lt;/li&gt;
+&lt;li&gt;木马扫描&lt;/li&gt;
+&lt;li&gt;广告查杀&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;说到这里需要补充2点，除了以上那些，我们还得学会使用 &lt;code&gt;drozer&lt;/code&gt; 这个工具，比较利于查杀一些隐蔽的漏洞及其他安全方面的缺陷&lt;/p&gt;
+
+&lt;p&gt;除了工具外，还得善于网上寻找相关的安全知识了&lt;/p&gt;
+
+&lt;p&gt;看到这里，各位应该对于移动端的安全测试有了一些了解，后续会进行细则讲解&lt;/p&gt;
+
+&lt;p&gt;这里插播一条之前写的性能方面的集合 &lt;a href="http://testerhome.com/topics/506" rel="nofollow" target="_blank"&gt;http://testerhome.com/topics/506&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;下文链接：&lt;a href="http://testerhome.com/topics/1575" rel="nofollow" target="_blank"&gt;http://testerhome.com/topics/1575&lt;/a&gt;&lt;/p&gt;</description>
+      <author>kasi</author>
+      <pubDate>Mon, 10 Nov 2014 14:45:03 +0800</pubDate>
+      <link>http://testerhome.com/topics/1574</link>
+      <guid>http://testerhome.com/topics/1574</guid>
+    </item>
+    <item>
+      <title>移动安全第二帖——iOS 外部修改 VisibleView</title>
+      <description>&lt;p&gt;这个模块开着貌似一直没有人动。所以我还是来动下吧。&lt;/p&gt;
+
+&lt;p&gt;其实之前我中秋节在微博和微信上面问过大家，谁知道alpine是什么？么有人回我。其实是iOS 默认的ssh的密码。不过前提是你需要jiabrake以及下载bigboss的套件。&lt;/p&gt;
+
+&lt;p&gt;接着你可以使用进行ssh的登录&lt;br&gt;
+&lt;code&gt;ssh root@ &amp;lt;ip&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;登录之后，我们使用&lt;code&gt;ps aux&lt;/code&gt;来进行当前活动进程的查询，如下显示：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;USER       PID %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
+root        47  13.9  1.1   387432  11788   ??  Ss   Thu09AM  73:15.45 /usr/libexec/locationd
+mobile     266  10.5  2.3   541452  23640   ??  Ss   Thu09AM 582:06.60 /usr/libexec/backboardd
+mobile   13349   1.7  3.3   485808  34400   ??  Ss    7:16PM   0:03.76 /var/mobile/Applications/2F3A9C01-109E-4BC1-94E1-18514425FCB9/etao4iphone.app/etao4iphone
+mobile     267   1.6  5.1   750464  52664   ??  Ss   Thu09AM  94:38.79 /System/Library/CoreServices/SpringBoard.app/SpringBoard
+mobile      33   0.1  0.3   373632   2828   ??  Ss   Thu09AM   1:30.19 /System/Library/PrivateFrameworks/AssistantServices.framework/assistantd
+root         1   0.1  0.1   348888   1336   ??  Ss   Thu09AM   3:26.53 /sbin/launchd
+mobile   13294   0.0  0.6   374608   6616   ??  Ss    7:03PM   0:01.68 /usr/libexec/ptpd -t usb
+mobile   13291   0.0  0.2   348608   2160   ??  Ss    7:03PM   0:00.08 /System/Library/SystemConfiguration/EAPOLController.bundle/eapolclient -i en0 -u 501 -g 501
+mobile   13166   0.0  3.1   508356  32692   ??  Ss    4:37PM   0:10.78 /var/mobile/Applications/5E6E414A-E888-45D7-99CA-07C93E903024/QZone.app/QZone
+mobile   13078   0.0  5.7   627504  59504   ??  Ss    3:46PM   0:57.11 /var/mobile/Applications/D16CF421-3424-4941-830B-9C1E8E6685E8/QQ.app/QQ
+mobile   13049   0.0  0.3   371808   2612   ??  Ss    3:35PM   0:00.26 /usr/libexec/librariand
+root     13043   0.0  0.2   348488   1908   ??  Ss    3:35PM   0:00.06 /System/Library/Frameworks/Security.framework/CloudKeychainProxy.bundle/CloudKeychainProxy
+mobile   13041   0.0  0.2   349476   2240   ??  Us    3:34PM   0:00.21 /usr/libexec/mobile_installation_proxy
+mobile   13035   0.0  0.2   348944   1916   ??  Ss    3:34PM   0:00.06 /usr/libexec/notification_proxy
+mobile   13031   0.0  0.2   348940   1888   ??  Ss    3:34PM   0:00.07 /usr/libexec/mobile_assertion_agent
+mobile   13025   0.0  0.2   349008   1608   ??  Ss    3:34PM   0:00.24 /usr/libexec/afcd
+mobile   13020   0.0  0.6   449372   6064   ??  Ss    3:34PM   0:01.11 /Applications/MobileSlideShow.app/MobileSlideShow
+mobile   12859   0.0  8.8   758312  91276   ??  Ss    2:26PM  12:58.23 /var/mobile/Applications/7F58E5E1-F2CC-48F5-BDAB-F7C2E82EBC9E/dgame.app/dgame
+mobile   12788   0.0  0.3   372848   2616   ??  Ss    2:00PM   0:00.31 /System/Library/PrivateFrameworks/CoreRecents.framework/recentsd
+mobile   12786   0.0  0.1   348816    896   ??  Ss    2:00PM   0:00.11 /usr/libexec/xpcd
+mobile   12784   0.0  0.3   402692   3036   ??  Ss    2:00PM   0:01.71 com.apple.imdpersistence.IMDPersistenceAgent
+mobile   12783   0.0  1.4   535044  14252   ??  Ss    2:00PM   0:14.30 /Applications/MobileSMS.app/MobileSMS
+mobile   12745   0.0  0.2   419704   1784   ??  Ss    1:45PM   0:00.51 /Applications/MobileCal.app/MobileCal
+mobile   12736   0.0  1.5   520940  15712   ??  Ss    1:43PM   0:08.41 /Applications/MobilePhone.app/MobilePhone
+mobile   12730   0.0  0.5   373964   5620   ??  Ss    1:41PM   0:01.74 /System/Library/PrivateFrameworks/HomeSharing.framework/Support/itunescloudd
+mobile   12727   0.0  0.3   558336   3016   ??  Ss    1:41PM   0:17.37 /var/mobile/Applications/0514266A-2319-4B13-B6ED-4332C2C8543B/DPScope.app/DPScope
+mobile   12725   0.0  0.5   372488   4940   ??  Ss    1:41PM   0:01.27 /System/Library/PrivateFrameworks/MusicLibrary.framework/Support/medialibraryd
+mobile   12666   0.0  0.8   513504   8768   ??  Ss    1:24PM   0:08.63 /var/mobile/Applications/9C8BD179-3888-4B68-914B-61765CAC8CAA/AlipayMerchant.app/AlipayMerchant
+mobile   12661   0.0  3.2   622892  32984   ??  Ss    1:22PM   1:20.43 /var/mobile/Applications/77ED19CA-346A-417D-9979-DEE123F2E2AB/BetaTest.app/BetaTest
+mobile   12642   0.0  7.6   697780  78944   ??  Ss    1:14PM   4:02.13 /var/mobile/Applications/B753CC5C-5874-496C-83BD-BC3848DF784B/MicroMessenger.app/MicroMessenger
+root     12460   0.0  0.0   349852    456   ??  Ss   11:48AM   0:00.02 /System/Library/PrivateFrameworks/CoreSymbolication.framework/coresymbolicationd
+mobile   12259   0.0  0.1   348440   1392   ??  Ss   10:00AM   0:00.11 /System/Library/PrivateFrameworks/CommunicationsFilter.framework/CMFSyncAgent.app/CMFSyncAgent
+mobile   12215   0.0  0.3   372660   3620   ??  Ss    9:49AM   0:01.74 /System/Library/Frameworks/EventKit.framework/Support/calaccessd
+mobile   12163   0.0  0.3   372192   3496   ??  Ss    9:48AM   0:01.60 /System/Library/Frameworks/Accounts.framework/accountsd
+mobile   12160   0.0  0.2   372464   1764   ??  Ss    9:48AM   0:00.59 /usr/libexec/timed
+mobile   11440   0.0  0.2   372348   2536   ??  Ss   11:22PM   0:02.55 /System/Library/PrivateFrameworks/GeoServices.framework/geod
+mobile   11400   0.0  1.1   387340  11660   ??  Ss   11:01PM   0:13.62 /System/Library/Frameworks/AssetsLibrary.framework/Support/assetsd
+root     10940   0.0  0.1   381000   1020   ??  Ss   Tue06PM   0:00.88 /usr/libexec/sandboxd
+mobile   10907   0.0  0.1   348540   1400   ??  Ss   Tue06PM   0:00.96 /usr/libexec/MobileGestaltHelper
+root      3672   0.0  0.2   352560   2104   ??  SNs  Sat01AM   0:00.23 /usr/bin/python /Applications/iNalyzer5.app/mi.py
+root      2547   0.0  0.1   348540    692   ??  Ss   Fri11AM   0:18.56 /System/Library/Frameworks/SystemConfiguration.framework/SCHelper
+mobile     531   0.0  0.1   371844    940   ??  Ss   Thu10AM   0:00.44 /System/Library/PrivateFrameworks/CloudServices.framework/Support/EscrowSecurityAlert.app/Escrow
+root       283   0.0  0.1   347984    716   ??  Ss   Thu09AM   0:00.09 /usr/libexec/XXAssistInstaller
+root       262   0.0  0.1   372232    868   ??  Ss   Thu09AM   0:01.20 /usr/sbin/filecoordinationd
+root       255   0.0  0.2   372948   2464   ??  Ss   Thu09AM   0:01.72 /usr/libexec/mobileassetd
+mobile     250   0.0  1.3   460016  13244   ??  Ss   Thu09AM   6:51.85 /System/Library/TextInput/kbd
+mobile     207   0.0  0.1   372352   1320   ??  Us   Thu09AM   0:03.28 /System/Library/PrivateFrameworks/TouchRemote.framework/Support/touchsetupd
+mobile     197   0.0  0.2   372520   1808   ??  Ss   Thu09AM   0:05.63 /System/Library/PrivateFrameworks/TCC.framework/tccd
+mobile     191   0.0  0.6   378028   6276   ??  Ss   Thu09AM   5:46.37 /System/Library/PrivateFrameworks/DataAccess.framework/Support/dataaccessd
+mobile     183   0.0  0.6   377568   5912   ??  Ss   Thu09AM   2:51.89 /usr/libexec/gamed
+mobile     180   0.0  1.3   382408  13016   ??  Ss   Thu09AM   6:25.30 /System/Library/PrivateFrameworks/iTunesStore.framework/Support/itunesstored
+mobile     177   0.0  0.5   375104   5588   ??  Ss   Thu09AM   7:39.60 /usr/libexec/DuetLST
+_securityd   168   0.0  0.5   375884   4892   ??  Ss   Thu09AM   2:04.05 /usr/libexec/securityd
+mobile     162   0.0  0.4   374688   3780   ??  Ss   Thu09AM   3:23.13 /System/Library/PrivateFrameworks/ApplePushService.framework/apsd
+mobile     158   0.0  0.1   348512   1000   ??  Ss   Thu09AM   0:35.48 /usr/sbin/WirelessCoexManagerd
+root       156   0.0  0.1   371588    984   ??  Ss   Thu09AM   0:01.58 /usr/sbin/distnoted daemon
+root       150   0.0  0.1   348948    672   ??  Ss   Thu09AM   0:01.55 /usr/libexec/networkd_privileged
+mobile     148   0.0  0.3   372540   2640   ??  Ss   Thu09AM   0:28.89 /usr/libexec/lsd
+_networkd   144   0.0  0.4   375816   4628   ??  Ss   Thu09AM  16:30.65 /usr/libexec/networkd
+mobile      79   0.0  0.1   371960   1136   ??  Ss   Thu09AM   0:04.99 /usr/sbin/wirelessproxd
+root        78   0.0  0.6   375964   6224   ??  Ss   Thu09AM  10:17.38 /usr/sbin/wifid
+mobile      76   0.0  0.1   348680   1100   ??  Ss   Thu09AM   0:00.59 /System/Library/PrivateFrameworks/VisualVoicemail.framework/vmd
+root        72   0.0  0.1   351500    696   ??  Us   Thu09AM   4:36.36 /usr/sbin/syslogd
+mobile      70   0.0  0.3   372748   2796   ??  Ss   Thu09AM   0:57.93 /usr/libexec/sharingd
+mobile      69   0.0  0.2   372524   2064   ??  Ss   Thu09AM   0:14.32 /usr/libexec/routined
+root        67   0.0  0.1   371668   1212   ??  Ss   Thu09AM   3:23.07 /System/Library/CoreServices/powerd.bundle/powerd
+root        58   0.0  0.2   372372   2532   ??  Ss   Thu09AM   0:16.77 /usr/libexec/lockdownd
+mobile      56   0.0  0.2   372932   1888   ??  Ss   Thu09AM   4:39.19 /usr/libexec/installd --idleExit
+mobile      51   0.0  1.0   433420  10832   ??  Ss   Thu09AM  65:49.70 /usr/sbin/mediaserverd
+mobile      50   0.0  0.2   372976   2248   ??  Ss   Thu09AM   0:53.69 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+_mdnsresponder    48   0.0  0.2   349768   1868   ??  Ss   Thu09AM   3:52.74 /usr/sbin/mDNSResponder
+mobile      46   0.0  0.3   371956   2672   ??  Ss   Thu09AM   0:39.60 /System/Library/PrivateFrameworks/IMCore.framework/imagent.app/imagent
+mobile      45   0.0  0.2   373152   2288   ??  Ss   Thu09AM   0:48.89 /System/Library/PrivateFrameworks/IDSCore.framework/identityservicesd.app/identityservicesd
+root     13352   0.0  0.0   339564    472 s000  R+    7:16PM   0:00.01 ps aux
+root        43   0.0  0.2   349500   1584   ??  Ss   Thu09AM   1:09.39 /usr/libexec/fseventsd
+mobile      42   0.0  0.4   356808   3700   ??  Ss   Thu09AM   0:30.51 /usr/sbin/fairplayd.H2
+root        39   0.0  0.3   377136   3596   ??  Ss   Thu09AM  16:38.74 /usr/libexec/configd
+mobile      32   0.0  0.4   377704   3748   ??  Ss   Thu09AM  37:24.92 /System/Library/PrivateFrameworks/AggregateDictionary.framework/Support/aggregated
+_wireless    27   0.0  0.9   392200   9132   ??  Ss   Thu09AM  58:04.18 /System/Library/Frameworks/CoreTelephony.framework/Support/CommCenter
+mobile      26   0.0  0.2   374032   1948   ??  Ss   Thu09AM   0:14.44 /usr/sbin/BTServer
+root        23   0.0  0.2   375268   2548   ??  Ss   Thu09AM   0:10.78 /usr/libexec/XXAssistCenter
+root        22   0.0  0.4   377068   3804   ??  Ss   Thu09AM  30:22.69 /usr/libexec/UserEventAgent &lt;span class="o"&gt;(&lt;/span&gt;System&lt;span class="o"&gt;)&lt;/span&gt;
+root        18   0.0  0.1   349356    996   ??  Ss   Thu09AM   1:49.70 /usr/sbin/notifyd
+mobile      44   0.0  0.1   372136   1180   ??  Ss   Thu09AM   3:10.11 /System/Library/PrivateFrameworks/IAP.framework/Support/iaptransportd
+mobile   13350   0.0  0.2   349500   2144   ??  Ss    7:16PM   0:00.10 /System/Library/Frameworks/UIKit.framework/Support/pasteboardd
+root     13336   0.0  0.1   348404   1064 s000  Ss    7:11PM   0:00.05 -sh
+root     13335   0.0  0.1   349608   1520   ??  S     7:11PM   0:00.31 sshd: root@ttys000 
+mobile   13331   0.0  7.8   653636  81384   ??  Ss    7:11PM   0:24.60 /var/mobile/Applications/FFCF781D-EE4C-48D3-A2CE-C6D12EA549CF/ZAKER.app/ZAKER
+mobile   13308   0.0  0.9   375064   9868   ??  Ss    7:04PM   0:07.65 /usr/libexec/deleted --idleExit
+&lt;/pre&gt;
+
+&lt;p&gt;然后我们拿一淘的应用为例，首先我们找到他的进程。&lt;br&gt;
+&lt;code&gt;mobile   13349   1.7  3.3   485808  34400   ??  Ss    7:16PM   0:03.76 /var/mobile/Applications/2F3A9C01-109E-4BC1-94E1-18514425FCB9/etao4iphone.app/etao4iphone&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;他的进城号是13349，然后我们使用&lt;code&gt;cycript -p 13349&lt;/code&gt;来勾住这个应用。&lt;br&gt;
+接着开始获取他的可见属性的View，并修改它的属性。&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;&lt;span class="gp"&gt;cy# &lt;/span&gt;var app &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;UIApplication sharedApplication]  
+&lt;span class="c"&gt;#"&amp;lt;UIApplication: 0x17582b70&amp;gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;app.delegate  
+&lt;span class="c"&gt;#"&amp;lt;etao4iphoneAppDelegate: 0x176a6df0&amp;gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;var keyWindow &lt;span class="o"&gt;=&lt;/span&gt; app.keyWindow  
+&lt;span class="c"&gt;#"&amp;lt;UIWindow: 0x175e0890; frame = (0 0; 320 568); gestureRecognizers = &amp;lt;NSArray: 0x175e0d60&amp;gt;; layer = &amp;lt;UIWindowLayer: 0x175e09c0&amp;gt;&amp;gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;var rootController &lt;span class="o"&gt;=&lt;/span&gt; keyWindow.rootViewController  
+&lt;span class="c"&gt;#"&amp;lt;ETBaseUINavigationController: 0x175e1690&amp;gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;var visibleController &lt;span class="o"&gt;=&lt;/span&gt; rootController.visibleViewController 
+&lt;span class="c"&gt;#"&amp;lt;ETUITabBarController: 0x176fb5f0&amp;gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;visibleController.childViewControllers  
+@[#&lt;span class="s2"&gt;"&amp;lt;ETHomePageViewController: 0x175e1b20&amp;gt;"&lt;/span&gt;,#&lt;span class="s2"&gt;"&amp;lt;ETCommunityMainViewController: 0x176f7bb0&amp;gt;"&lt;/span&gt;,#&lt;span class="s2"&gt;"&amp;lt;ETHaitaoIndexViewController: 0x176f8ca0&amp;gt;"&lt;/span&gt;,#&lt;span class="s2"&gt;"&amp;lt;ETGoodsIndexMainViewController: 0x176f9ac0&amp;gt;"&lt;/span&gt;,#&lt;span class="s2"&gt;"&amp;lt;ETMineViewController: 0x176fa7f0&amp;gt;"&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;var assetsController &lt;span class="o"&gt;=&lt;/span&gt; new Instance&lt;span class="o"&gt;(&lt;/span&gt;0x175e1b20&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;#"&amp;lt;ETHomePageViewController: 0x175e1b20&amp;gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;cy# &lt;/span&gt;assetsController.view.backgroundColor &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;UIColor redColor]  
+&lt;span class="c"&gt;#"UIDeviceRGBColorSpace 1 0 0 1"&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;然后我们可见到如下界面：&lt;br&gt;
+&lt;img src="/photo/2014/5f9b4736de537b92609415c8106d2bd5.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;到此我们就从外部修改了View的属性。&lt;/p&gt;
+
+&lt;p&gt;未完待续&lt;/p&gt;</description>
+      <author>monkey</author>
+      <pubDate>Wed, 10 Sep 2014 19:36:17 +0800</pubDate>
+      <link>http://testerhome.com/topics/1376</link>
+      <guid>http://testerhome.com/topics/1376</guid>
+    </item>
+    <item>
+      <title>移动安全第一贴之 ContentProvider</title>
+      <description>&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;最近公司里&lt;/span&gt;&lt;span class="n"&gt;ppt&lt;/span&gt;&lt;span class="err"&gt;也出现非常多，我也做安全做了一周时间。先来介绍下这个工具吧。&lt;/span&gt;
+&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;具体&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="n"&gt;guide&lt;/span&gt;&lt;span class="err"&gt;见：&lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="ss"&gt;:/&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;mwrinfosecurity&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;com&lt;/span&gt;&lt;span class="sr"&gt;/system/&lt;/span&gt;&lt;span class="n"&gt;assets&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;559&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;original&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mwri_drozer&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;guide_2013&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;pdf&lt;/span&gt;
+&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;我们需要在&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="err"&gt;上安装上相应的&lt;/span&gt;&lt;span class="n"&gt;agent&lt;/span&gt; &lt;span class="n"&gt;apk&lt;/span&gt;&lt;span class="err"&gt;，然后输入如下命令&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/224f5b659a85a0685c2c2dfd283142a9.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/ee185421b653955accac3779bfd03f2c.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;如果看到这样的界面，说明你成功登录了&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/6f8125fdddd416ae614f20ec43c8ae75.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;这里就先拿&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;taobao&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;taobao&lt;/span&gt;&lt;span class="err"&gt;为例子，我们安装并且登录淘宝之后，此时运行&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/622b8654208f2093b103a84450c37e19.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;当然，我们都知道&lt;/span&gt;&lt;span class="n"&gt;contentprovider&lt;/span&gt;&lt;span class="err"&gt;是通过&lt;/span&gt;&lt;span class="no"&gt;URI&lt;/span&gt;&lt;span class="err"&gt;进行数据共享的，我们可以可以看到会列出可以链接的&lt;/span&gt;&lt;span class="no"&gt;URI&lt;/span&gt;&lt;span class="err"&gt;，如下&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/d341cf4b0758aaba678cf179c835cff7.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;我们来尝试着获取下&lt;/span&gt;&lt;span class="n"&gt;taobao&lt;/span&gt;&lt;span class="err"&gt;这个&lt;/span&gt;&lt;span class="n"&gt;contentprovider&lt;/span&gt;&lt;span class="err"&gt;下面的信息：&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/567c2089ff5f3dcd1d90fe1dd5edee46.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;拿到了信息之后，我们可以开始更改这些信息，又或者注入一些无效的字符串，让&lt;/span&gt;&lt;span class="n"&gt;sql&lt;/span&gt;&lt;span class="err"&gt;语句产生异常。如：&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/f8a2a938ad485b9e09a48e8e4c698d02.png" alt=""&gt;&lt;br&gt;&lt;img src="/photo/2014/9ace31b0000651dbb78cc6738cf218c9.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;我们再获取信息的时候，发现&lt;/span&gt;&lt;span class="n"&gt;appID&lt;/span&gt;&lt;span class="err"&gt;已经被我改成了之前输入的参数&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/86a53f5c921ee04e0feb10a7e8e5118a.png" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="err"&gt;同时&lt;/span&gt;&lt;span class="n"&gt;drozer&lt;/span&gt;&lt;span class="err"&gt;提供了很多其他命令和参数，继续尝试中。&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/photo/2014/9f6e0309006a075ba505c42d841c8f63.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>monkey</author>
+      <pubDate>Thu, 17 Apr 2014 00:38:37 +0800</pubDate>
+      <link>http://testerhome.com/topics/714</link>
+      <guid>http://testerhome.com/topics/714</guid>
+    </item>
+    <item>
+      <title>移动安全测试需要关注点？请大家补充</title>
+      <description>&lt;p&gt;1.与服务端的数据传输，数据加密，避免数据暴漏&lt;br&gt;
+2.针对签名需要做与服务端的签名对比，避免应用被盗用&lt;br&gt;
+3.数据库存储加密，避免数据库内容暴漏&lt;br&gt;
+4.工程打包混淆&lt;br&gt;
+还需要哪些呢？请大家补充谢谢&lt;/p&gt;</description>
+      <author>angel_ying</author>
+      <pubDate>Tue, 01 Apr 2014 10:43:12 +0800</pubDate>
+      <link>http://testerhome.com/topics/634</link>
+      <guid>http://testerhome.com/topics/634</guid>
+    </item>
+  </channel>
+</rss>

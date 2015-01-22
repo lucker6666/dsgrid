@@ -1,0 +1,728 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 新书试读，第八章性能和兼容性测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">新书试读，第八章性能和兼容性测试</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-02-10T16:21:44+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="king2731" href="../king2731">king2731</a> 于<abbr class="timeago" title="2014-07-02T11:00:57+08:00"></abbr>回复
+     · 
+    1764次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>《大话测试——移动互联网应用测试》本书的宗旨在于务实，讲任何实际看到过，经过的项目、技术和大实话，从各个角度和各位务实的测试朋友做交流，其中有四章是纯技术章节，所以并非一本纯技术书籍，感谢大家支持。 <br>
+第一章的分享链接：<a href="395" rel="nofollow" target="_blank">http://testerhome.com/topics/395</a> <br>
+第二章的分享链接：<a href="417" rel="nofollow" target="_blank">http://testerhome.com/topics/417</a></p>
+
+<p><strong>以下是简略内容,书中会更详细的描述细节：<br>
+采取方案：Android Emulator＋Python＋Shell使用Shell脚本启动不同分辨率的emulator，使用instrumentation框架进行界面操作，使用shell脚本关闭emulator，最后使用python的pil模块进行图片对比测试。最终结果会出现一个对比数字，如果数字是0，那么说明两张图片100%像素比对正确。数字越大说明差别也越大。</strong></p>
+
+<p>为什么不使用Appium？<br>
+回答：因为Appium使用的是Android的4.0以上才支持的uiautomator，适用性目前不强。可以考虑将来使用</p>
+
+<p>主流程使用python控制，调用mr，instrumentation，shell等，同时控制模拟器的启动关闭</p>
+<pre class="highlight ruby"> <span class="c1">#!/bin/bash</span>
+<span class="n">portNumber</span><span class="o">=</span><span class="mi">5578</span>
+<span class="n">emulatorPID</span><span class="o">=</span><span class="sb">`ps -ef | grep "emulator" | grep "port $portNumber" | awk '{print $2;}'`</span>
+<span class="k">if</span> <span class="o">[</span> <span class="o">-</span><span class="n">n</span> <span class="s2">"$emulatorPID"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+ <span class="n">echo</span> <span class="s2">"close emulator window"</span>
+ <span class="n">kill</span> <span class="o">-</span><span class="mi">9</span> <span class="vg">$emulatorPID</span>
+<span class="n">fi</span>
+
+<span class="n">emulatorName</span><span class="o">=</span><span class="s2">"android2.3"</span>
+
+<span class="n">echo</span> <span class="s2">"start avd"</span>
+<span class="n">emulator</span> <span class="o">-</span><span class="n">avd</span> <span class="vg">$emulatorName</span> <span class="o">-</span><span class="n">port</span> <span class="vg">$portNumber</span><span class="o">&amp;</span>
+
+<span class="n">echo</span> <span class="s2">"check emulator ready..."</span>
+<span class="n">emulatorSerialNumber</span><span class="o">=</span><span class="s2">"emulator-$portNumber"</span>
+<span class="n">adb</span> <span class="n">kill</span><span class="o">-</span><span class="n">server</span>
+<span class="n">ready</span><span class="o">=</span><span class="sb">`adb devices | grep "$emulatorSerialNumber"`</span>
+<span class="nb">sleep</span> <span class="mi">5</span>
+<span class="k">if</span> <span class="o">[</span> <span class="o">-</span><span class="n">z</span> <span class="s2">"$ready"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+ <span class="n">echo</span> <span class="s2">"emulator can NOT launch."</span>
+ <span class="nb">exit</span> <span class="mi">3</span>
+<span class="k">else</span>
+ <span class="n">ready</span><span class="o">=</span><span class="sb">`adb devices | grep "$emulatorSerialNumber.*offline"`</span>
+ <span class="k">if</span> <span class="o">[</span> <span class="o">-</span><span class="n">n</span> <span class="s2">"$ready"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+ <span class="n">echo</span> <span class="s2">"wait-for-device"</span>
+ <span class="n">adb</span> <span class="n">kill</span><span class="o">-</span><span class="n">server</span>
+ <span class="nb">sleep</span> <span class="mi">5</span>
+ <span class="n">fi</span>
+<span class="n">fi</span>
+</pre>
+<p>如果有相关锁屏或者其他相关的操作，可用MR来做执行，进入app之后的操作使用instrumentation来编写自动化，并使用am instrument驱动，如：</p>
+<pre class="highlight ruby"> <span class="k">def</span> <span class="nf">AppLogin</span><span class="p">():</span>
+    <span class="n">os</span><span class="p">.</span><span class="nf">system</span><span class="p">(</span><span class="s2">"adb shell am instrument -w -e class com.xxx.test.testClass com.xxx.test/android.test.InstrumentationTestRunner"</span><span class="p">)</span>
+</pre>
+<p>然后以MonkeyRunner来启动app各个界面并且截图保存：</p>
+<pre class="highlight ruby"><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">import</span> <span class="n">os</span>
+<span class="n">from</span> <span class="n">com</span><span class="p">.</span><span class="nf">android</span><span class="p">.</span><span class="nf">monkeyrunner</span> <span class="n">import</span> <span class="no">MonkeyRunner</span><span class="p">,</span><span class="no">MonkeyDevice</span>
+<span class="n">from</span> <span class="n">com</span><span class="p">.</span><span class="nf">android</span><span class="p">.</span><span class="nf">monkeyrunner</span><span class="p">.</span><span class="nf">easy</span> <span class="n">import</span> <span class="no">EasyMonkeyDevice</span>
+<span class="n">from</span> <span class="n">com</span><span class="p">.</span><span class="nf">android</span><span class="p">.</span><span class="nf">monkeyrunner</span><span class="p">.</span><span class="nf">easy</span> <span class="n">import</span> <span class="no">By</span>
+<span class="nb">print</span> <span class="s1">'xxx'</span>
+
+
+<span class="n">device</span> <span class="o">=</span> <span class="no">MonkeyRunner</span><span class="p">.</span><span class="nf">waitForConnection</span><span class="p">()</span>  
+<span class="n">easy_device</span> <span class="o">=</span> <span class="no">EasyMonkeyDevice</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">screenshot</span><span class="p">(</span><span class="no">Activity</span><span class="p">):</span>
+ <span class="n">package</span> <span class="o">=</span> <span class="s1">'com.xxx.xxx'</span>
+ <span class="n">activity</span> <span class="o">=</span> <span class="s1">'com.xxx.%s'</span><span class="o">%</span><span class="no">Activity</span>
+ <span class="nb">print</span> <span class="n">activity</span>
+ <span class="n">runComponent</span> <span class="o">=</span> <span class="n">package</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">activity</span>
+ <span class="n">device</span><span class="p">.</span><span class="nf">startActivity</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">runComponent</span><span class="p">)</span>
+ <span class="no">MonkeyRunner</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="n">device</span><span class="p">.</span><span class="nf">takeSnapshot</span><span class="p">()</span>
+ <span class="n">result</span><span class="p">.</span><span class="nf">writeToFile</span><span class="p">(</span><span class="s1">'/Users/monkey/Pictures/screenshot/%s.png'</span><span class="o">%</span><span class="no">Activity</span><span class="p">,</span><span class="s1">'png'</span><span class="p">)</span>
+
+
+<span class="n">screenshot</span><span class="p">(</span><span class="s1">'xxx.xxx.Activity1'</span><span class="p">)</span>
+<span class="n">screenshot</span><span class="p">(</span><span class="s1">'xxx.xxx.Activity2'</span><span class="p">)</span>
+</pre>
+<p>python的图片对比代码如下，需要事先安装PIL库：</p>
+<pre class="highlight ruby"> <span class="c1">#sudo pip install PIL</span>
+<span class="k">def</span> <span class="nf">pil_image_similarity</span><span class="p">(</span><span class="n">filepath1</span><span class="p">,</span> <span class="n">filepath2</span><span class="p">):</span>
+    <span class="n">from</span> <span class="no">PIL</span> <span class="n">import</span> <span class="no">Image</span>
+    <span class="n">import</span> <span class="n">math</span>
+    <span class="n">import</span> <span class="n">operator</span>
+
+    <span class="n">image1</span> <span class="o">=</span> <span class="no">Image</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">filepath1</span><span class="p">)</span>
+    <span class="n">image2</span> <span class="o">=</span> <span class="no">Image</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">filepath2</span><span class="p">)</span>
+
+<span class="c1">#    image1 = get_thumbnail(img1)</span>
+<span class="c1">#    image2 = get_thumbnail(img2)</span>
+
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">image1</span><span class="p">.</span><span class="nf">histogram</span><span class="p">()</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">image2</span><span class="p">.</span><span class="nf">histogram</span><span class="p">()</span>
+
+    <span class="n">rms</span> <span class="o">=</span> <span class="n">math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="p">.</span><span class="nf">add</span><span class="p">,</span>  <span class="n">list</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="nb">lambda</span> <span class="n">a</span><span class="p">,</span><span class="ss">b: </span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">)))</span><span class="o">/</span><span class="n">len</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">rms</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='新书试读，第八章性能和兼容性测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="453#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="453#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="453#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="453#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="453#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>17</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../zhaoxiaoshu"><img alt="747a4ff8cc8d84aeaf114d70f450c20e" class="uface" src="../avatar/747a4ff8cc8d84aeaf114d70f450c20e.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xiaoshu" href="../zhaoxiaoshu">zhaoxiaoshu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply1">1楼</a> · <abbr class="timeago" title="2014-02-10T17:19:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2451" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="412" href="http://testerhome.com/topics/453/replies/2451/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="zhaoxiaoshu" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问 在哪里可以买到这本书？刚才百度了一下，没有找到......</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply2">2楼</a> · <abbr class="timeago" title="2014-02-10T17:36:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2455" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/453/replies/2455/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="mingway_hu" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我感觉这个比第七章凶残~~#</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply3">3楼</a> · <abbr class="timeago" title="2014-02-10T19:09:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2459" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/2459/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 其实第七章是精髓。。= =</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply4">4楼</a> · <abbr class="timeago" title="2014-02-10T19:10:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2460" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/2460/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../zhaoxiaoshu" class="at_user" title="@zhaoxiaoshu"><i>@</i>zhaoxiaoshu</a> 还在审核中，未出版。。= =</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply5">5楼</a> · <abbr class="timeago" title="2014-02-10T19:10:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2461" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/2461/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../zhaoxiaoshu" class="at_user" title="@zhaoxiaoshu"><i>@</i>zhaoxiaoshu</a> 快了。。= =</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply6">6楼</a> · <abbr class="timeago" title="2014-02-10T19:45:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2462" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/453/replies/2462/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="qddegtya" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>原来是用了Python的PIL，思路很不错，那我感觉Sikuli也能搞定。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply7">7楼</a> · <abbr class="timeago" title="2014-02-10T20:36:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2464" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/2464/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 对的，其实实现原理感觉一样的说</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply8">8楼</a> · <abbr class="timeago" title="2014-02-10T21:05:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2466" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/453/replies/2466/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="mingway_hu" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>  好期待其他章啊~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply9">9楼</a> · <abbr class="timeago" title="2014-02-10T21:12:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2467" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/2467/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 胜利！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply10">10楼</a> · <abbr class="timeago" title="2014-02-10T22:07:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2468" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/453/replies/2468/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="qddegtya" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 原理是一样的，只不过sikuli用的是openCV，比PIL应该更强大一些。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply11">11楼</a> · <abbr class="timeago" title="2014-02-10T23:13:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2469" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/2469/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 哈哈openCV，貌似我记得我曾经demo 人脸识别的时候就是openCV~~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../xiongzhinan"><img alt="414" class="uface" src="../user/large_avatar/414.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="熊志男" href="../xiongzhinan">xiongzhinan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply12">12楼</a> · <abbr class="timeago" title="2014-02-11T13:51:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2482" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="414" href="http://testerhome.com/topics/453/replies/2482/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="xiongzhinan" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有人用sikuli啊，正在学习研究这个哩..</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../hellowxy"><img alt="138" class="uface" src="../user/large_avatar/138.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="大苹果" href="../hellowxy">hellowxy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply13">13楼</a> · <abbr class="timeago" title="2014-02-13T10:59:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2521" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="138" href="http://testerhome.com/topics/453/replies/2521/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="hellowxy" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../zhaoxiaoshu"><img alt="747a4ff8cc8d84aeaf114d70f450c20e" class="uface" src="../avatar/747a4ff8cc8d84aeaf114d70f450c20e.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xiaoshu" href="../zhaoxiaoshu">zhaoxiaoshu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply14">14楼</a> · <abbr class="timeago" title="2014-02-13T14:11:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2529" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="412" href="http://testerhome.com/topics/453/replies/2529/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="zhaoxiaoshu" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 非常期待。希望能尽快出版！ :-)</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../delete31"><img alt="620" class="uface" src="../user/large_avatar/620.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="上枫" href="../delete31">delete31</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply15">15楼</a> · <abbr class="timeago" title="2014-03-19T17:39:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3242" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="620" href="http://testerhome.com/topics/453/replies/3242/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="delete31" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>出版后求给个链接，看了下试读，感觉很喜欢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply16">16楼</a> · <abbr class="timeago" title="2014-03-19T19:36:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3244" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/453/replies/3244/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="monkey" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="453#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../delete31" class="at_user" title="@delete31"><i>@</i>delete31</a> 恩恩，，感谢感谢~~~一定到时候会宣传的，这本书只要是有追求的测试都会喜欢的~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../king2731"><img alt="Ab298f71b712378da9c33e2ae0219ac3" class="uface" src="../avatar/ab298f71b712378da9c33e2ae0219ac3.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="cary" href="../king2731">king2731</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="453#reply17">17楼</a> · <abbr class="timeago" title="2014-07-02T11:00:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6378" data-state="" data-type="Reply" href="453#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="989" href="http://testerhome.com/topics/453/replies/6378/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="king2731" href="453#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>：中奖名单中一定要有我啊~~~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    快来晒出你的星语心愿吧 http://testerhome.com/topics/533
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+    <li><a href="1697" title="chrome mobile emulation 及周边漫谈和相关应用+想法">chrome mobile emulation 及周边...</a></li>
+    <li><a href="1696" title="谁有轻量级的 Android 模拟器推荐？ 电脑内存 1G 上可流畅运行的">谁有轻量级的 Android 模拟器推荐？ 电脑内存 ...</a></li>
+    <li><a href="1660" title="SDK 测试小结">SDK 测试小结</a></li>
+    <li><a href="1587" title="移动应用自动化测试的困惑">移动应用自动化测试的困惑</a></li>
+    <li><a href="1567" title="DDMS 中生成 Trace 的方法原理是什么">DDMS 中生成 Trace 的方法原理是什么</a></li>
+    <li><a href="1563" title="uiautomatorviewer 不能显示模拟器界面，黑屏，但是信息能出来？谁知道怎么回事？">uiautomatorviewer 不能显示模拟器界面...</a></li>
+    <li><a href="1557" title="通过 xcode 查看 app crash 日志这个方法在 ios8 下面都查看不到了">通过 xcode 查看 app crash 日志这个方...</a></li>
+    <li><a href="1553" title="如何做好移动互联网应用测试 ">如何做好移动互联网应用测试 </a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="453#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

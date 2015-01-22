@@ -1,0 +1,596 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+     · 
+    于<abbr class="timeago" title="2015-01-15T15:21:07+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="qinggchu" href="../qinggchu">qinggchu</a> 于<abbr class="timeago" title="2015-01-17T22:51:26+08:00"></abbr>回复
+     · 
+    178次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>正在实践前两天论坛大侠写得关于ADB 实现ROBOTIUM跨进程的问题。<br>
+<a href="../xuxu" class="at_user" title="@xuxu"><i>@</i>xuxu</a> <a href="../qinggchu" class="at_user" title="@qinggchu"><i>@</i>qinggchu</a><br>
+实际操作的时候出了状况。<br>
+目前发现所有的ADB SHELL命令都实际没有执行。</p>
+
+<p>CMD直接进ADB SHELL都是可以用得。UIAUTOMATOR可以DUMP出来。<br>
+但是在ROBOTIUM里面就是取不出来。<br>
+试了一下连LS都取不出。</p>
+
+<p>C:\Users\yangch&gt;adb shell<br>
+root@generic_x86:/ # ls<br>
+ls<br>
+直接进的是ROOT用户，这打印说明不用再ROOT了吧？</p>
+
+<p>MANIFEST也增加了sharedUserId的权限。<br>
+    &lt;uses-permission <br>
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"<br>
+        android:sharedUserId="android.uid.system"<br>
+        /&gt;<br>
+哪位大侠以前弄过？这里还有什么坑没填过去？还是INSTRUMENT的架构就不能直接调ADB SHELL？<br>
+还是源APK也要修改一些内容？暂时搞不定了。。。求解救。<br>
+掉得是XUXU提供的ADB库。<br>
+附基本的代码：</p>
+<pre class="highlight java">        <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"mainActivity"</span><span class="o">,</span><span class="n">ShellUtils</span><span class="o">.</span><span class="na">getShellOut</span><span class="o">(</span><span class="n">ShellUtils</span>
+                 <span class="o">.</span><span class="na">shell</span><span class="o">(</span><span class="s">"ls"</span><span class="o">)));</span>
+   <span class="err">调用链：</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Process</span> <span class="n">shell</span><span class="o">(</span><span class="n">String</span> <span class="n">command</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">process</span><span class="o">(</span><span class="s">"adb shell "</span> <span class="o">+</span> <span class="n">command</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">BufferedReader</span> <span class="n">shellOut</span><span class="o">(</span><span class="n">Process</span> <span class="n">ps</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">BufferedInputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedInputStream</span><span class="o">(</span><span class="n">ps</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+        <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">in</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="n">br</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getShellOut</span><span class="o">(</span><span class="n">Process</span> <span class="n">ps</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+        <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="n">shellOut</span><span class="o">(</span><span class="n">ps</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">line</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+<span class="c1">//          sb.append(line + System.getProperty("line.separator"));</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">br</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Process</span> <span class="n">process</span><span class="o">(</span><span class="n">String</span> <span class="n">command</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Process</span> <span class="n">ps</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">ps</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">ps</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>11</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../xuxu"><img alt="784" class="uface" src="../user/large_avatar/784.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxu" href="../xuxu">xuxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply1">1楼</a> · <abbr class="timeago" title="2015-01-15T16:15:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="11647" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="784" href="http://testerhome.com/topics/1876/replies/11647/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="xuxu" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>谢谢。这里有个坑，我会找个时间填下。<br>
+instrumentation是可以调用shell命令的，但不是adb shell命令。<br>
+你要使用的话，需要将xuxu.autotest.utils.ShellUtils类中的shell方法改下：</p>
+<pre class="highlight java">    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Process</span> <span class="nf">shell</span><span class="p">(</span><span class="n">String</span> <span class="n">command</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">//      return process("adb shell " + command);</span>
+        <span class="k">return</span> <span class="n">process</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+    <span class="o">}</span>
+</pre>
+
+<p>去掉adb shell，其实就是直接Runtime.getRuntime.exec("ls")。<br>
+稍后我会在该工具类下单独提供个方法执行shell命令。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../xuxu"><img alt="784" class="uface" src="../user/large_avatar/784.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxu" href="../xuxu">xuxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply2">2楼</a> · <abbr class="timeago" title="2015-01-15T16:28:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11649" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="784" href="http://testerhome.com/topics/1876/replies/11649/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="xuxu" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>另外你要获取ls命令的输出时，可以将getShellOut方法中：</p>
+<pre class="highlight java">
+<span class="c1">//          sb.append(line + System.getProperty("line.separator"));</span>
+</pre>
+
+<p>将该句的注释去掉，同时将注释掉sb.append(line);<br>
+否则的话打印结果不会换行显示。去掉注释后就可以换行显示了，附张我运行的结果：</p>
+<pre class="highlight java">        <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"mainActivity"</span><span class="o">,</span> <span class="n">ShellUtils</span><span class="o">.</span><span class="na">getShellOut</span><span class="o">(</span><span class="n">ShellUtils</span><span class="o">.</span><span class="na">shell</span><span class="o">(</span><span class="s">"ls -l "</span><span class="o">)));</span>
+</pre>
+
+<p><img src="../photo/2015/8d0a260ebb81af9e505cb8f52a4e0815.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply3">3楼</a> · <abbr class="timeago" title="2015-01-15T16:35:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11651" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1876/replies/11651/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="yangchengtest" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../xuxu" class="at_user" title="@xuxu"><i>@</i>xuxu</a> 谢谢啊，ls命令是搞定了。<br>
+不过下面这个命令，执行后没有生成<br>
+ShellUtils.shell("uiautomator dump /data/local/tmp/uidump2.xml");一直都没有对应的文件啊。<br>
+这块以前没有接触过，按照大侠你的说法，uiautomator dump这种用法是ADB SHELL才支持，在INSTRUMENTATION架构下实际上是不支持的？<br>
+呵呵，大侠我主要是想通过你的接口绕进程。关键是上面这个命令。~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply4">4楼</a> · <abbr class="timeago" title="2015-01-15T16:45:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11654" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1876/replies/11654/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="yangchengtest" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../xuxu" class="at_user" title="@xuxu"><i>@</i>xuxu</a><br>
+好像是我理解错了。。。。SHELL应该是一样的吧？<br>
+这里有什么文件系统权限的坑么？直接ADB命令和ROBOTIUM调用有啥区别么？<br>
+麻烦大侠了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply5">5楼</a> · <abbr class="timeago" title="2015-01-15T18:42:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11673" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1876/replies/11673/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1876#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../yangchengtest" class="at_user" title="@yangchengtest"><i>@</i>yangchengtest</a>  这个跟uiautomator的调用权限有关.  apk默认执行的时候很多权限会被限制. adb则是被赋予来更多的权限, 包括注入事件的权限, 所以adb调用uiautomator是没问题的.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply6">6楼</a> · <abbr class="timeago" title="2015-01-16T11:13:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11696" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1876/replies/11696/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="yangchengtest" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <a href="../xuxu" class="at_user" title="@xuxu"><i>@</i>xuxu</a><br>
+谢谢两位大侠了，不得不暂时放弃尝试使用该方法在ROBOTIUM架构内部来做跨进程了。<br>
+反馈一下当下的进展吧：<br>
+1.目前用RUNTIME.EXEC的返回的PS结果是9。不是0。<br>
+PROCESS的WAITFOR的返回值解释是：the exit value of the native process being waited on。PS就没看到PID=9的进程。。。。<br>
+2.将目的路劲放到了SD卡里，SD卡的读写权限我开了，还是不行。<br>
+暂时没招了。系统权限的水现在对我来说还是太深了。~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply7">7楼</a> · <abbr class="timeago" title="2015-01-16T14:57:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11702" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1876/replies/11702/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1876#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../yangchengtest" class="at_user" title="@yangchengtest"><i>@</i>yangchengtest</a> 百度cafe早就解决来跨进程的测试来. 你可以参考下. github上搜索cafe框架</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply8">8楼</a> · <abbr class="timeago" title="2015-01-16T16:53:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11712" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1876/replies/11712/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="yangchengtest" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 感谢思寒，呵呵，是我肤浅了，把问题想的太简单了。。。<br>
+不过这次填这坑，也算是熟悉了一下RUNTIME机制和ANDROID简单的SHELL了。<br>
+后面去学习一下CAFE的框架。~<br>
+顺带感慨下，还有好多深坑不会啊，如HTML，JS。再次感谢两位大侠。~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../qinggchu"><img alt="203" class="uface" src="../user/large_avatar/203.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qing" href="../qinggchu">qinggchu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply9">9楼</a> · <abbr class="timeago" title="2015-01-16T23:56:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11724" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="203" href="http://testerhome.com/topics/1876/replies/11724/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="qinggchu" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../yangchengtest" class="at_user" title="@yangchengtest"><i>@</i>yangchengtest</a> 关于这个ShellUtils.shell("uiautomator dump /data/local/tmp/uidump2.xml");没有生成uidump的文件这个问题我也遇到过，当时记得是修改了下生成文件的超时时间，后来再试了下就没有问题了，但确实有些人用了这个框架都反应了有这个问题，貌似是不稳定，后续再检查下有没有什么方法来避免这个问题。现在如果实在你那边生成有问题的话，建议手工先导出uidump.xml，稍微修改下源码，然后放到指定目录让脚本去读，应该就没问题了，你可以试试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply10">10楼</a> · <abbr class="timeago" title="2015-01-17T01:44:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11725" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1876/replies/11725/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="yangchengtest" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../qinggchu" class="at_user" title="@qinggchu"><i>@</i>qinggchu</a> 谢谢回复啊~<br>
+我用RUNTIME.EXEC延时到100S在SDCARD都没有取到。RUNTIME操作没有返回出错，返回的LOG最后就是没有写文件这一步。感觉应该和APK的系统权限有关系。<br>
+从理论上看，如果能先把UIAUTOMATOR进程起来，就能解决了。UIAUTOMATOR的进程没有起来。我回头再看看有没有办法在APK里面用命令起进程。<br>
+不知道这个区别是不是和API的版本有关，我用的是API19的。UIAUTOMATOR今天有大神不是说ANDROID 4,4重新封装过，你用的是哪个版本的API？<br>
+呵呵，我最近正好事不多，学点新的填填以前的坑。不行还是回去老老实实用APPIUM做跨进程了~。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../qinggchu"><img alt="203" class="uface" src="../user/large_avatar/203.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qing" href="../qinggchu">qinggchu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1876#reply11">11楼</a> · <abbr class="timeago" title="2015-01-17T22:51:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11730" data-state="" data-type="Reply" href="1876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="203" href="http://testerhome.com/topics/1876/replies/11730/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="qinggchu" href="1876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../yangchengtest" class="at_user" title="@yangchengtest"><i>@</i>yangchengtest</a> 我用的4.2.2的版本。你可以试试自己导出uidump放到对应的路径上，再试试脚本能不能正确执行，关于uiautomator的启动问题，回头再研究研究。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1876#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

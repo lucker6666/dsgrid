@@ -1,0 +1,1291 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | [Share]使用 appium1.0 与 Java 进行自动化的例子 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">[Share]使用 appium1.0 与 Java 进行自动化的例子</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="思寒" href="../seveniruby">seveniruby</a>
+     · 
+    于<abbr class="timeago" title="2014-05-17T01:51:13+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="sunrise" href="../sunrise">sunrise</a> 于<abbr class="timeago" title="2014-11-13T15:46:30+08:00"></abbr>回复
+     · 
+    4413次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这个视频是面向小白的一个小教程.<br>
+用一个小例子带还不懂的小白同学入门, 高手请忽略.</p>
+<h4>appium 1.x改进</h4>
+<p><a href="809" rel="nofollow" target="_blank">http://testerhome.com/topics/809</a><br>
+最大的变化是使用了自己的封装库. 这个封装库继承自WebDriver, 并进行了扩展和重载.<br>
+所以除了要下载Selenium Java库外, 还需要下载Appium的Java Client库</p>
+<h4>Java Binding</h4>
+<p>下载Selenium Java客户端库<br>
+下载Appium的Java Client库.<br>
+把库添加到项目的依赖中</p>
+<h4>Android与Uiautomator</h4>
+<p>Appium在Android4.2及以上用的是Uiautomator. <br>
+4.2以下用的是Selendroid体系. 基于插桩, 类似Robotium的一个框架.</p>
+
+<p>我目前使用的是一个android4.2版本的手机, ZTE中兴.</p>
+<h4>代码</h4>
+<p>代码很简单, 只是演示, 所以没有加验证语句.  更多例子以后也会放出视频给大家.</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">testerhome</span><span class="o">.</span><span class="na">appium</span><span class="o">.</span><span class="na">example</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">io.appium.java_client.AppiumDriver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.junit.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppiumExample</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">AppiumDriver</span> <span class="n">driver</span><span class="o">;</span>
+
+    <span class="nd">@Before</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="c1">//配置webdriver</span>
+        <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platformName"</span><span class="o">,</span> <span class="s">"Android"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"deviceName"</span><span class="o">,</span><span class="s">"ZTE"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platformVersion"</span><span class="o">,</span> <span class="s">"4.2"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"appPackage"</span><span class="o">,</span> <span class="s">"com.taobao.taobao"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"appActivity"</span><span class="o">,</span> <span class="s">"com.taobao.tao.homepage.MainActivity3"</span><span class="o">);</span>
+        <span class="c1">//appium的独特地方,使用自己的AppiumDriver, 它本身是继承自WebDriver</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AppiumDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+        <span class="c1">//设置超时</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">manage</span><span class="o">().</span><span class="na">timeouts</span><span class="o">().</span><span class="na">implicitlyWait</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@After</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">taobao_search</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>
+        <span class="c1">//找输入框并点击</span>
+        <span class="n">WebElement</span> <span class="n">text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElementByClassName</span><span class="o">(</span><span class="s">"android.widget.EditText"</span><span class="o">);</span>
+        <span class="n">text</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>
+        <span class="c1">//输入要搜索的内容</span>
+        <span class="n">text</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">"xiaomi3"</span><span class="o">);</span>
+        <span class="c1">//找搜索按钮并点击</span>
+        <span class="n">WebElement</span> <span class="n">search</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElementByAndroidUIAutomator</span><span class="o">(</span><span class="s">"new UiSelector().className(\"android.widget.Button\").text(\"搜索\")"</span><span class="o">);</span>        
+        <span class="n">search</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre><h4>运行视频</h4>
+<p>本视频稍后上传到网上<br>
+跪了, 没录制上声音.<br>
+视频地址<br><br><a href="http://v.youku.com/v_show/id_XNzEzNzUzMDQ4.html" rel="nofollow" target="_blank">http://v.youku.com/v_show/id_XNzEzNzUzMDQ4.html</a></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='[Share]使用 appium1.0 与 Java 进行自动化的例子 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="876#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>31</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../oscarxie"><img alt="4d43b8fa1e25dfac428fff0d828b3934" class="uface" src="../avatar/4d43b8fa1e25dfac428fff0d828b3934.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="国文" href="../oscarxie">oscarxie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply1">1楼</a> · <abbr class="timeago" title="2014-05-17T18:21:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4924" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="115" href="http://testerhome.com/topics/876/replies/4924/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="oscarxie" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很赞啊，上传好后我给加到专辑里</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply2">2楼</a> · <abbr class="timeago" title="2014-05-17T21:09:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4925" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/4925/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../oscarxie" class="at_user" title="@oscarxie"><i>@</i>oscarxie</a> 我今天打算重新录制一边, 没声音毕竟不太好理解.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply3">3楼</a> · <abbr class="timeago" title="2014-05-17T22:50:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4929" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/876/replies/4929/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="young" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>下载Selenium Java客户端库<br>
+下载Appium的Java Client库.<br>
+这2个在哪里下载</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../xianjin"><img alt="903" class="uface" src="../user/large_avatar/903.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="先进" href="../xianjin">xianjin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply4">4楼</a> · <abbr class="timeago" title="2014-05-18T21:34:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4940" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="903" href="http://testerhome.com/topics/876/replies/4940/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="xianjin" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../young" class="at_user" title="@young"><i>@</i>young</a> 小白很多、同样疑问？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply5">5楼</a> · <abbr class="timeago" title="2014-05-18T21:57:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4941" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/4941/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../young" class="at_user" title="@young"><i>@</i>young</a> <a href="../xianjin" class="at_user" title="@xianjin"><i>@</i>xianjin</a>  <a href="809" rel="nofollow" target="_blank">http://testerhome.com/topics/809</a>  在官方的迁移文档里面已经给了地址. 找不到就尝试google下. 应该可以找到.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply6">6楼</a> · <abbr class="timeago" title="2014-05-19T10:05:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="4944" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/876/replies/4944/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="benlooking" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <a href="../young" class="at_user" title="@young"><i>@</i>young</a> <a href="../xianjin" class="at_user" title="@xianjin"><i>@</i>xianjin</a> <br><a href="http://yun.baidu.com/s/1i3vDi5J" rel="nofollow" target="_blank">http://yun.baidu.com/s/1i3vDi5J</a>  这是我之前提出来的包，可以用的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply7">7楼</a> · <abbr class="timeago" title="2014-05-19T10:31:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4945" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/4945/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 赞. 利国利民.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply8">8楼</a> · <abbr class="timeago" title="2014-05-19T15:03:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="4950" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/876/replies/4950/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="tspring" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a>   用maven可以解决jar包依赖<br>
+ &lt;dependency&gt;<br>
+            &lt;groupId&gt;org.seleniumhq.selenium&lt;/groupId&gt;<br>
+            &lt;artifactId&gt;selenium-java&lt;/artifactId&gt;<br>
+            &lt;version&gt;LATEST&lt;/version&gt;<br>
+            &lt;scope&gt;test&lt;/scope&gt;<br>
+        &lt;/dependency&gt;<br>
+        &lt;dependency&gt;<br>
+            &lt;groupId&gt;io.appium&lt;/groupId&gt;<br>
+            &lt;artifactId&gt;java-client&lt;/artifactId&gt;<br>
+            &lt;version&gt;1.1.0&lt;/version&gt;<br>
+        &lt;/dependency&gt;</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply9">9楼</a> · <abbr class="timeago" title="2014-05-19T16:30:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4958" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/4958/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> 我推荐用Maven或者gradle管理依赖和编译. 只是目前很多新手估计对这个还不了解.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply10">10楼</a> · <abbr class="timeago" title="2014-05-19T18:43:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="4997" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/876/replies/4997/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="532589730" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> <br>
+是的，使用maven管理第三方jar包/库很省事。<br>
+我也提供一个我自己能跑的java代码，使用的是testng，appium 1.0，很简单的。<br>
+重构一下，更好。</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">xx</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.Alert</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.WebElement</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.CapabilityType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.DesiredCapabilities</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.support.ui.ExpectedConditions</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.support.ui.WebDriverWait</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">io.appium.java_client.AppiumDriver</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.appium.java_client.TouchAction</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.testng.annotations.BeforeMethod</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.AfterMethod</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.DataProvider</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.BeforeClass</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.AfterClass</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.BeforeTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.AfterTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.BeforeSuite</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.AfterSuite</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.testng.annotations.Test</span><span class="o">;</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">AppiumDriver</span> <span class="n">driver</span><span class="o">;</span>
+
+  <span class="nd">@Test</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="n">f</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+      <span class="n">WebElement</span> <span class="n">ctn</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElementByName</span><span class="o">(</span><span class="s">"Continue"</span><span class="o">);</span>
+      <span class="n">TouchAction</span> <span class="n">action</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TouchAction</span><span class="o">(</span><span class="n">driver</span><span class="o">);</span>
+
+      <span class="n">action</span><span class="o">.</span><span class="na">press</span><span class="o">(</span><span class="n">ctn</span><span class="o">).</span><span class="na">perform</span><span class="o">();</span>
+      <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>            <span class="c1">// sleep for debugging</span>
+
+      <span class="kt">int</span> <span class="n">X</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">manage</span><span class="o">().</span><span class="na">window</span><span class="o">().</span><span class="na">getSize</span><span class="o">().</span><span class="na">getWidth</span><span class="o">();</span>
+      <span class="kt">int</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">manage</span><span class="o">().</span><span class="na">window</span><span class="o">().</span><span class="na">getSize</span><span class="o">().</span><span class="na">getHeight</span><span class="o">();</span>
+
+      <span class="kt">int</span> <span class="n">sX</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">X</span> <span class="o">*</span> <span class="mf">0.9</span><span class="o">);</span>
+      <span class="kt">int</span> <span class="n">sY</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">Y</span> <span class="o">*</span> <span class="mf">0.5</span><span class="o">);</span>
+      <span class="kt">int</span> <span class="n">eX</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">X</span> <span class="o">*</span> <span class="mf">0.05</span><span class="o">);</span>
+      <span class="kt">int</span> <span class="n">eY</span> <span class="o">=</span> <span class="n">sY</span><span class="o">;</span>
+      <span class="kt">int</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">2000</span><span class="o">;</span>
+      <span class="n">driver</span><span class="o">.</span><span class="na">swipe</span><span class="o">(</span><span class="n">sX</span><span class="o">,</span> <span class="n">sY</span><span class="o">,</span> <span class="n">eX</span><span class="o">,</span> <span class="n">eY</span><span class="o">,</span> <span class="n">duration</span><span class="o">);</span>      <span class="c1">//swipe function is broken in iOS 7.x simulator by Apple</span>
+       <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">3000</span><span class="o">);</span>      <span class="c1">// sleep for debugging</span>
+  <span class="o">}</span>
+
+  <span class="nd">@BeforeMethod</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+      <span class="c1">// set up appium    </span>
+      <span class="n">File</span> <span class="n">appDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"/app/Testing_App"</span><span class="o">);</span>
+      <span class="n">File</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">appDir</span><span class="o">,</span> <span class="s">"xxx.app"</span><span class="o">);</span>
+      <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+      <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">"iOS"</span><span class="o">);</span>
+      <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span> <span class="s">"iOS"</span><span class="o">);</span>
+      <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"7.1"</span><span class="o">);</span>
+      <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"Mac"</span><span class="o">);</span>
+      <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="n">app</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+      <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AppiumDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+
+  <span class="o">}</span>
+
+  <span class="nd">@AfterMethod</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="n">teardown</span><span class="o">()</span> <span class="o">{</span>
+      <span class="n">driver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+  <span class="o">}</span>
+
+
+
+<span class="o">}</span>
+
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply11">11楼</a> · <abbr class="timeago" title="2014-05-19T19:36:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4998" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/4998/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>已经附上视频连接. 没有声音, 大家将就下吧, 以后有时间再补声音, 或者重做</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../cl51cl"><img alt="Bb1514acc456825f2b8df8523fc9b2aa" class="uface" src="../avatar/bb1514acc456825f2b8df8523fc9b2aa.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="LONG.C" href="../cl51cl">cl51cl</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply12">12楼</a> · <abbr class="timeago" title="2014-05-19T21:36:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5002" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="895" href="http://testerhome.com/topics/876/replies/5002/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="cl51cl" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有没有python的呀？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../xianjin"><img alt="903" class="uface" src="../user/large_avatar/903.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="先进" href="../xianjin">xianjin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply13">13楼</a> · <abbr class="timeago" title="2014-05-20T01:04:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5004" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="903" href="http://testerhome.com/topics/876/replies/5004/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="xianjin" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 多谢啦</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply14">14楼</a> · <abbr class="timeago" title="2014-05-20T09:46:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5009" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/876/replies/5009/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="tspring" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../532589730" class="at_user" title="@532589730"><i>@</i>532589730</a>  WebElement ctn = driver.findElementByName("Continue");，你直接用这个查找元素，如果这个元素需要等待，你怎么处理？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply15">15楼</a> · <abbr class="timeago" title="2014-05-20T10:46:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5019" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/5019/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> 设置timeout或者循环短等待</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../callachen"><img alt="927" class="uface" src="../user/large_avatar/927.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chenlin" href="../callachen">callachen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply16">16楼</a> · <abbr class="timeago" title="2014-05-20T17:56:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5036" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="927" href="http://testerhome.com/topics/876/replies/5036/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="callachen" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你好，我在mac上，想跑下appium的sample code<br>
+但是一直报Error: Device android not configured yet<br>
+info: Error: Device android not configured yet，<br>
+我不知道哪里出的问题.能不能帮我看下<br>
+我安装的是appium1.0<br>
+appium log:debug: Appium request initiated at /wd/hub/session<br>
+debug: Request received with params: {"desiredCapabilities":{"platformVersion":"4.2","app":"/Users/build/appium/sample-code/examples/java/junit/../../../apps/ContactManager/ContactManager.apk","platformName":"Android","deviceName":"GT-P5113","browserName":"","app-package":"com.example.android.contactmanager","app-activity":".ContactManager"}}<br>
+error: Trying to run a session for device 'android' but that device hasn't been configured. Run config<br>
+info: Got configuration error, not starting session<br>
+info: Cleaning up appium session<br>
+error: Failed to start an Appium session, err was: Error: Device android not configured yet<br>
+info: Error: Device android not configured yet<br>
+    at Appium.configure (/usr/local/lib/node_modules/appium/lib/appium.js:264:15)<br>
+    at Appium.start (/usr/local/lib/node_modules/appium/lib/appium.js:102:10)<br>
+    at exports.createSession (/usr/local/lib/node_modules/appium/lib/server/controller.js:155:16)<br>
+    at callbacks (/usr/local/lib/node_modules/appium/node_modules/express/lib/router/index.js:164:37)<br>
+    at param (/usr/local/lib/node_modules/appium/node_modules/express/lib/router/index.js:138:11)<br>
+    at pass (/usr/local/lib/node_modules/appium/node_modules/express/lib/router/index.js:145:5)<br>
+    at nextRoute (/usr/local/lib/node_modules/appium/node_modules/express/lib/router/index.js<img src="../assets/emojis/100.png" class="emoji" title=":100:" alt="">7)<br>
+    at callbacks (/usr/local/lib/node_modules/appium/node_modules/express/lib/router/index.js:167:11)<br>
+    at /usr/local/lib/node_modules/appium/lib/server/controller.js:41:7<br>
+    at callbacks (/usr/local/lib/node_modules/appium/node_modules/express/lib/router/index.js:164:37)<br>
+info: Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: Device android not configured yet)","origValue":"Device android not configured yet"},"sessionId":null}<br>
+POST /wd/hub/session 500 1ms - 216b</p>
+
+<p>这是跑mvn的log：<br>
+admins-MacBook-Pro:junit build$ mvn -Dtest=com.saucelabs.appium.AndroidContactsTest test<br>
+[INFO] Scanning for projects...<br>
+[WARNING] <br>
+[WARNING] Some problems were encountered while building the effective model for com.saucelabs:sauce_appium_junit:jar:0.0.1-SNAPSHOT<br>
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ line 60, column 12<br>
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-surefire-plugin is missing. @ line 56, column 12<br>
+[WARNING] <br>
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.<br>
+[WARNING] <br>
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.<br>
+[WARNING] <br>
+[INFO]<br><br>
+[INFO] ------------------------------------------------------------------------<br>
+[INFO] Building sauce_appium_junit 0.0.1-SNAPSHOT<br>
+[INFO] ------------------------------------------------------------------------<br>
+[INFO] <br>
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ sauce_appium_junit ---<br>
+[debug] execute contextualize<br>
+[WARNING] Using platform encoding (EUC_CN actually) to copy filtered resources, i.e. build is platform dependent!<br>
+[INFO] skip non existing resourceDirectory /Users/build/appium/sample-code/examples/java/junit/src/main/resources<br>
+[INFO] <br>
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ sauce_appium_junit ---<br>
+[INFO] No sources to compile<br>
+[INFO] <br>
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ sauce_appium_junit ---<br>
+[debug] execute contextualize<br>
+[WARNING] Using platform encoding (EUC_CN actually) to copy filtered resources, i.e. build is platform dependent!</p>
+
+<p>这是test case code：</p>
+
+<p>package com.saucelabs.appium;</p>
+
+<p>import io.appium.java_client.AppiumDriver;<br>
+import org.junit.After;<br>
+import org.junit.Before;<br>
+import org.junit.Test;<br>
+import org.openqa.selenium.By;<br>
+import org.openqa.selenium.WebElement;<br>
+import org.openqa.selenium.remote.CapabilityType;<br>
+import org.openqa.selenium.remote.DesiredCapabilities;</p>
+
+<p>import java.io.File;<br>
+import java.net.URL;<br>
+import java.util.List;</p>
+
+<p>public class AndroidContactsTest {<br>
+    private AppiumDriver driver;</p>
+
+<p><a href="http://testerhome.com/Before" class="at_user" title="@Before"><i>@</i>Before</a><br>
+    public void setUp() throws Exception {<br>
+        // set up appium<br>
+        File classpathRoot = new File(System.getProperty("user.dir"));<br>
+        File appDir = new File(classpathRoot, "../../../apps/ContactManager");<br>
+        File app = new File(appDir, "ContactManager.apk");<br>
+        DesiredCapabilities capabilities = new DesiredCapabilities();<br>
+        capabilities.setCapability(CapabilityType.BROWSER_NAME, "");<br>
+        capabilities.setCapability("platformName", "Android");<br>
+        capabilities.setCapability("deviceName","GT-P5113");<br>
+        capabilities.setCapability("platformVersion", "4.2");<br>
+        capabilities.setCapability("app", app.getAbsolutePath());<br>
+        capabilities.setCapability("app-package", "com.example.android.contactmanager");<br>
+        capabilities.setCapability("app-activity", ".ContactManager");<br>
+        driver = new AppiumDriver(new URL("<a href="http://127.0.0.1:4723/wd/hub" rel="nofollow" target="_blank">http://127.0.0.1:4723/wd/hub</a>"), capabilities);<br>
+    }</p>
+
+<p><a href="http://testerhome.com/After" class="at_user" title="@After"><i>@</i>After</a><br>
+    public void tearDown() throws Exception {<br>
+        driver.quit();<br>
+    }</p>
+
+<p><a href="http://testerhome.com/Test" class="at_user" title="@Test"><i>@</i>Test</a><br>
+    public void addContact(){<br>
+        WebElement el = driver.findElement(By.name("Add Contact"));<br>
+        el.click();<br>
+        //List&lt;WebElement&gt; textFieldsList = driver.findElementsByClassName("android.widget.EditText");<br>
+        //textFieldsList.get(0).sendKeys("Some Name");<br>
+        //textFieldsList.get(2).sendKeys("Some@example.com");<br>
+        //driver.swipe(100, 500, 100, 100, 2);<br>
+        //driver.findElementByName("Save").click();<br>
+    }</p>
+
+<p>}</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../zwdlp520"><img alt="902" class="uface" src="../user/large_avatar/902.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="迷惘的一代" href="../zwdlp520">zwdlp520</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply17">17楼</a> · <abbr class="timeago" title="2014-05-20T18:19:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5040" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="902" href="http://testerhome.com/topics/876/replies/5040/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="zwdlp520" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>大神，能帮我分析一下错误的原因吗，小白的我真是毫无办法。求助。</p>
+
+<blockquote>
+<p>ERROR: debug: Appium request initiated at /wd/hub/session<br>
+info: Didn't get app but did get Android package, will attempt to launch it on the device<br>
+ERROR: debug: Request received with params: {"desiredCapabilities":{"platformVersion":"4.4","platformName":"Android","deviceName":"android","browserName":"","appActivity":"com.taobao.tao.homepage.MainActivity3","appPackage":"com.taobao.taobao"}}<br>
+info: Creating new appium session 5eedf0ca-ec99-4281-99ac-7c5b266376e1<br>
+ERROR: debug: Using fast reset? true<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" devices<br>
+info: Starting android appium<br>
+info: Preparing device for session<br>
+info: Not checking whether app is present since we are assuming it's already on the device<br>
+info: Checking whether adb is present<br>
+info: [ADB] Using adb from D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe<br>
+info: Trying to find a connected android device<br>
+info: [ADB] Getting connected devices...<br>
+info: [ADB] 1 device(s) connected<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 wait-for-device<br>
+info: Setting device id to emulator-5554<br>
+info: [ADB] Waiting for device to be ready and to respond to shell commands (timeout = 5)<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "echo 'ready'"<br>
+info: Starting logcat capture<br>
+info: Getting device API level<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "getprop ro.build.version.sdk"<br>
+info: Device is at API Level 19<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "rm -rf /data/local/tmp/strings.json"<br>
+ERROR: debug: Not uninstalling app since server not started with --full-reset<br>
+info: Skipping install since we launched with a package instead of an app path<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 forward tcp:4724 tcp:4724<br>
+ERROR: debug: Pushing appium bootstrap to device...<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 push "D:\Appium1.0.0.3\node_modules\appium\build\android_bootstrap\AppiumBootstrap.jar" /data/local/tmp/<br>
+ERROR: debug: Pushing unlock helper app to device...<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 install "D:\Appium1.0.0.3\node_modules\appium\build\unlock_apk\unlock_apk-debug.apk"<br>
+info: Attempting to kill all 'uiautomator' processes<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "ps 'uiautomator'"<br>
+info: Getting all processes with 'uiautomator'<br>
+info: No matching processes found<br>
+ERROR: debug: spawning: D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe -s emulator-5554 shell uiautomator runtest AppiumBootstrap.jar -c io.appium.android.bootstrap.Bootstrap<br>
+info: Running bootstrap<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: numtests=1<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: stream=<br>
+info: [UIAUTOMATOR STDOUT] io.appium.android.bootstrap.Bootstrap:<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: id=UiAutomatorTestRunner<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: test=testRunServer<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: class=io.appium.android.bootstrap.Bootstrap<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: current=1<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: 1<br>
+info: [BOOTSTRAP] [info] Socket opened on port 4724<br>
+info: [BOOTSTRAP] [info] Appium Socket Server Ready<br>
+ERROR: debug: Waking up device if it's not alive<br>
+info: [BOOTSTRAP] [info] Loading json...<br>
+info: Pushing command to appium work queue: ["wake",{}]<br>
+info: [BOOTSTRAP] [info] Registered crash watchers.<br>
+info: [BOOTSTRAP] [info] Client connected<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"wake","params":{}}<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: wake<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "dumpsys window"<br>
+info: [BOOTSTRAP] [info] Returning result: {"value":true,"status":0}<br>
+info: Writing dumpsys output to D:\Appium1.0.0.3\node_modules\appium.dumpsys.log<br>
+ERROR: debug: Screen already unlocked, continuing.<br>
+info: Pushing command to appium work queue: ["getDataDir",{}]<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"getDataDir","params":{}}<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: getDataDir<br>
+ERROR: debug: dataDir set to: /data<br>
+info: [BOOTSTRAP] [info] Returning result: {"value":"\/data","status":0}<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "am start -S -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -f 0x10200000 -n com.taobao.taobao/com.taobao.tao.homepage.MainActivity3"<br>
+ERROR: debug: executing: "D:\tools\adt-bundle-windows-x86_64-20131030\sdk\platform-tools\adb.exe" -s emulator-5554 shell "am start -S -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -f 0x10200000 -n com.taobao.taobao/.com.taobao.tao.homepage.MainActivity3"</p>
+</blockquote>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply18">18楼</a> · <abbr class="timeago" title="2014-05-20T18:26:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5042" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/5042/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../zwdlp520" class="at_user" title="@zwdlp520"><i>@</i>zwdlp520</a> 里面已经说了, 是app的配置有问题, 你得检查下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../zwdlp520"><img alt="902" class="uface" src="../user/large_avatar/902.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="迷惘的一代" href="../zwdlp520">zwdlp520</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply19">19楼</a> · <abbr class="timeago" title="2014-05-21T15:22:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5069" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="902" href="http://testerhome.com/topics/876/replies/5069/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="zwdlp520" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 现在运行的时候还是会有很多错误，但脚本能正常执行...无解。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../niweyzhuce"><img alt="691" class="uface" src="../user/large_avatar/691.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="neil" href="../niweyzhuce">niweyzhuce</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply20">20楼</a> · <abbr class="timeago" title="2014-05-21T15:43:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5070" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="691" href="http://testerhome.com/topics/876/replies/5070/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="niweyzhuce" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢分享，英语不好的有福了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply21">21楼</a> · <abbr class="timeago" title="2014-05-22T11:16:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5093" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/876/replies/5093/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="532589730" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> <br>
+我会使用while循环去判断了，附加一个间隔时间，设一个等待时间。</p>
+
+<p>一般我会加一个app是否成功开启的一个方法，先来一个确定。<br>
+如果连app都没有成功打开，谈何测试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../mingyuwang"><img alt="570" class="uface" src="../user/large_avatar/570.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王明雨" href="../mingyuwang">mingyuwang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply22">22楼</a> · <abbr class="timeago" title="2014-05-23T18:22:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5148" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="570" href="http://testerhome.com/topics/876/replies/5148/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="mingyuwang" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 请问一下Selenium是不是只能用java和maven才能做？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../happyjiejie"><img alt="1048" class="uface" src="../user/large_avatar/1048.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="刘杰" href="../happyjiejie">happyjiejie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply23">23楼</a> · <abbr class="timeago" title="2014-06-09T16:54:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5627" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1048" href="http://testerhome.com/topics/876/replies/5627/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="happyjiejie" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主你好，<br>
+capabilities.setCapability("appPackage", "com.taobao.taobao");<br>
+ capabilities.setCapability("appActivity", "com.taobao.tao.homepage.MainActivity3");<br>
+像这个com.taobao.taobao，com.taobao.tao.homepage.MainActivity3，我要是测试其它的app怎么写啊？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../happyjiejie"><img alt="1048" class="uface" src="../user/large_avatar/1048.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="刘杰" href="../happyjiejie">happyjiejie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply24">24楼</a> · <abbr class="timeago" title="2014-06-09T16:55:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5628" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1048" href="http://testerhome.com/topics/876/replies/5628/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="happyjiejie" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个appium可以进行安卓的web测试吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply25">25楼</a> · <abbr class="timeago" title="2014-06-10T11:16:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5646" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/876/replies/5646/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="xiaomayi0323" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../happyjiejie" class="at_user" title="@happyjiejie"><i>@</i>happyjiejie</a> 换其他App的appPackage和appActivity</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply26">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply26">26楼</a> · <abbr class="timeago" title="2014-06-10T11:17:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5647" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/876/replies/5647/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="26" data-login="xiaomayi0323" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply24" class="at_floor" data-floor="24">#24楼</a> <a href="../happyjiejie" class="at_user" title="@happyjiejie"><i>@</i>happyjiejie</a> 可以，Appium支持原生，混合和Web三种类型的App</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply27">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply27">27楼</a> · <abbr class="timeago" title="2014-06-10T11:21:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5648" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/876/replies/5648/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="27" data-login="xiaomayi0323" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply22" class="at_floor" data-floor="22">#22楼</a> <a href="../mingyuwang" class="at_user" title="@mingyuwang"><i>@</i>mingyuwang</a> 请搜索Selenium，Selenium支持Python，Ruby，Java，C#</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply28">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply28">28楼</a> · <abbr class="timeago" title="2014-06-10T11:22:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5649" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/876/replies/5649/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="28" data-login="seveniruby" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply27" class="at_floor" data-floor="27">#27楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a>  给力</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply29">
+    <div class="pull-left face"><a href="../happyjiejie"><img alt="1048" class="uface" src="../user/large_avatar/1048.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="刘杰" href="../happyjiejie">happyjiejie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply29">29楼</a> · <abbr class="timeago" title="2014-06-11T10:13:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5661" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1048" href="http://testerhome.com/topics/876/replies/5661/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="29" data-login="happyjiejie" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="876#reply27" class="at_floor" data-floor="27">#27楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 你好，我以前是做PC端的web测试的用的是selenium，前段时间的时候selenium还可以启动起来安装的默认浏览器，但API更新以后就那以前的那个启动安卓默认浏览器的方法给删除了，你有什么方法吗？给写个dome，谢谢啦。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply30">
+    <div class="pull-left face"><a href="../april46"><img alt="1742" class="uface" src="../user/large_avatar/1742.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="SongBoya" href="../april46">april46</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply30">30楼</a> · <abbr class="timeago" title="2014-10-28T18:11:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9480" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1742" href="http://testerhome.com/topics/876/replies/9480/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="30" data-login="april46" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有没有Appium JAVA ios的例子提供给小白？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply31">
+    <div class="pull-left face"><a href="../sunrise"><img alt="1902" class="uface" src="../user/large_avatar/1902.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="扮猪吃老虎" href="../sunrise">sunrise</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="876#reply31">31楼</a> · <abbr class="timeago" title="2014-11-13T15:46:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9823" data-state="" data-type="Reply" href="876#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1902" href="http://testerhome.com/topics/876/replies/9823/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="31" data-login="sunrise" href="876#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主，如果Appium的Java Client库升级到2.0的话，AppiumDriver这个类变成了抽象函数，要改用AndroidDriver</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @jacky 希望一天天的进步，小学妹等着我啊
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="876#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

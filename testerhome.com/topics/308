@@ -1,0 +1,1584 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 关于解决 Appium 里的控件的定位问题。不使用 By.name()这个方法 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">关于解决 Appium 里的控件的定位问题。不使用 By.name()这个方法</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="tomchen" href="../dippa">dippa</a>
+     · 
+    于<abbr class="timeago" title="2013-12-19T16:56:54+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="dippa" href="../dippa">dippa</a> 于<abbr class="timeago" title="2013-12-24T15:06:28+08:00"></abbr>回复
+     · 
+    2238次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>我现在想测试一款APP，该App包含一个登陆的界面以及登陆后的页面，如何不用By.name()这个方法 ，能够定位控件。我曾经想过使用XPath，但问题在于，其登录前与登陆后XPath的开头均为//window[1] 。无法确定是哪一个的控件，大神帮帮忙吧。</p>
+
+<p>5：30 PM <br>
+已经能够获取指定控件（Textfield），但是传值失效。<br>
+java 代码：</p>
+<pre class="highlight java">        <span class="n">List</span><span class="o">&lt;</span><span class="n">WebElement</span><span class="o">&gt;</span> <span class="n">elems</span> <span class="o">=</span> <span class="n">wd</span><span class="o">.</span><span class="na">findElements</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">tagName</span><span class="o">(</span><span class="s">"UIASecureTextField"</span><span class="o">));</span>
+            <span class="k">for</span><span class="o">(</span><span class="n">WebElement</span> <span class="nl">e:</span><span class="n">elems</span><span class="o">){</span>
+          <span class="n">e</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">"123456"</span><span class="o">);}</span>   <span class="c1">//能够获取控件 ，但是传值失效</span>
+</pre>
+<p>log:</p>
+<pre class="highlight shell">
+info: Welcome to Appium v0.12.3
+
+info: Appium REST http interface listener started on 127.0.0.1:4723
+   info  - socket.io started
+
+info: Not spawning instruments force-quit watcher since it only works on 10.9 and you have 10.8.5
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"0.12.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}}}</span>
+
+debug: Appium request initiated at /wd/hub/status
+
+GET /wd/hub/status 200 9ms - 144b
+
+debug: Request received with params: <span class="o">{}</span>
+
+debug: Appium request initiated at /wd/hub/status
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"0.12.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}}}</span>
+
+debug: Request received with params: <span class="o">{}</span>
+
+GET /wd/hub/status 200 2ms - 144b
+
+debug: Appium request initiated at /wd/hub/session
+
+info: Using <span class="nb">local </span>app from desiredCaps: /Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app
+
+debug: Request received with params: <span class="o">{</span><span class="s2">"desiredCapabilities"</span>:<span class="o">{</span><span class="s2">"platform"</span>:<span class="s2">"Mac"</span>,<span class="s2">"app"</span>:<span class="s2">"/Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app"</span>,<span class="s2">"browserName"</span>:<span class="s2">"iOS"</span>,<span class="s2">"version"</span>:<span class="s2">"6.1"</span><span class="o">}}</span>
+
+info: Creating new appium session e61d6443-50dd-4720-bb70-a42546709b86
+info: Removing any remaining instruments sockets
+info: Cleaned up instruments socket /tmp/instruments_sock
+
+info: Parsed app Localizable.strings
+
+info: Killing the simulator process
+
+debug: Launching device: iPhone <span class="o">(</span>3.5-inch<span class="o">)</span>
+
+info: Parsed app Info.plist
+
+info: Wrote new app Info.plist with device <span class="nb">type
+
+</span>info: Starting iOS 7.<span class="k">*</span> simulator log capture
+
+debug: No device id or app, not installing to real device.
+
+debug: Creating instruments
+
+info: Instruments is at: /Applications/Xcode.app/Contents/Developer/usr/bin/instruments
+
+info: <span class="o">[</span>INSTSERVER] Instruments socket server started at /tmp/instruments_sock
+
+info: Spawning instruments with <span class="nb">command</span>: /Applications/Xcode.app/Contents/Developer/usr/bin/instruments -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.bundle/Contents/Resources/Automation.tracetemplate /Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app -e UIASCRIPT /Applications/Appium.app/Contents/Resources/node_modules/appium/lib/devices/ios/uiauto/bootstrap.js -e UIARESULTSPATH /tmp/appium-instruments/
+info: And extra without-delay env: <span class="o">{</span><span class="s2">"DYLD_INSERT_LIBRARIES"</span>:<span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/build/iwd/InstrumentsShim.dylib"</span>,<span class="s2">"LIB_PATH"</span>:<span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/build/iwd"</span><span class="o">}</span>
+info: And launch timeout: 90000ms
+
+debug: Appium request initiated at /wd/hub/status
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"0.12.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"e61d6443-50dd-4720-bb70-a42546709b86"</span><span class="o">}</span>
+
+debug: Request received with params: <span class="o">{}</span>
+
+GET /wd/hub/status 200 1ms - 199b
+
+info: <span class="o">[</span>INST STDERR] 2013-12-20 11:24:57.972 ScriptAgent[16241:2e07] CLTilesManagerClient: initialize, sSharedTilesManagerClient
+
+
+info: <span class="o">[</span>INST STDERR] 2013-12-20 11:24:57.972 ScriptAgent[16241:2e07] CLTilesManagerClient: init
+2013-12-20 11:24:57.973 ScriptAgent[16241:2e07] CLTilesManagerClient: reconnecting, 0x96705e0
+
+
+info: <span class="o">[</span>INSTSERVER] Instruments is ready to receive commands
+
+debug: Sending <span class="nb">command </span>to instruments: au.bundleId<span class="o">()</span>
+
+info: Instruments launched. Starting poll loop <span class="k">for </span>new commands.
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.bundleId()"</span>
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>15 bytes<span class="o">)</span>
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.bundleId<span class="o">()</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>68 bytes<span class="o">)</span>
+
+debug: Sending <span class="nb">command </span>to instruments: au.setScreenOrientation<span class="o">(</span><span class="s1">'PORTRAIT'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="s2">"com.accela.inspector"</span><span class="o">}</span>
+info: Bundle ID <span class="k">for </span>open app is com.accela.inspector
+info: Setting initial orientation to PORTRAIT
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.setScreenOrientation('PORTRAIT')"</span>
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.setScreenOrientation<span class="o">(</span><span class="s1">'PORTRAIT'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>56 bytes<span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="s2">"PORTRAIT"</span><span class="o">}</span>
+info: Device launched! Ready <span class="k">for </span>commands <span class="o">(</span>will <span class="nb">time </span>out <span class="k">in </span>60secs<span class="o">)</span>
+info: Appium session started with sessionId e61d6443-50dd-4720-bb70-a42546709b86
+POST /wd/hub/session 303 87390ms - 9b
+
+debug: Appium request initiated at /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"7.0"</span>,<span class="s2">"webStorageEnabled"</span>:false,<span class="s2">"locationContextEnabled"</span>:false,<span class="s2">"browserName"</span>:<span class="s2">"iOS"</span>,<span class="s2">"platform"</span>:<span class="s2">"Mac"</span>,<span class="s2">"javascriptEnabled"</span>:true,<span class="s2">"databaseEnabled"</span>:false,<span class="s2">"takesScreenshot"</span>:true,<span class="s2">"app"</span>:<span class="s2">"/Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app"</span><span class="o">}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"e61d6443-50dd-4720-bb70-a42546709b86"</span><span class="o">}</span>
+
+debug: Request received with params: <span class="o">{}</span>
+
+GET /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86 200 1ms - 470b
+
+debug: Appium request initiated at /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86/timeouts/implicit_wait
+
+info: Set iOS implicit <span class="nb">wait </span>to 60000ms
+
+debug: Request received with params: <span class="o">{</span><span class="s2">"ms"</span>:60000<span class="o">}</span>
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:null,<span class="s2">"sessionId"</span>:<span class="s2">"e61d6443-50dd-4720-bb70-a42546709b86"</span><span class="o">}</span>
+POST /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86/timeouts/implicit_wait 200 2ms - 89b
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.getElementsByType('UIATextField')"</span>
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.getElementsByType<span class="o">(</span><span class="s1">'UIATextField'</span><span class="o">)</span>
+
+debug: Appium request initiated at /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86/elements
+debug: Request received with params: <span class="o">{</span><span class="s2">"using"</span>:<span class="s2">"tag name"</span>,<span class="s2">"value"</span>:<span class="s2">"UIATextField"</span><span class="o">}</span>
+debug: Sending <span class="nb">command </span>to instruments: au.getElementsByType<span class="o">(</span><span class="s1">'UIATextField'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>79 bytes<span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:[<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"0"</span><span class="o">}</span>,<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"1"</span><span class="o">}]}</span>
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:[<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"0"</span><span class="o">}</span>,<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"1"</span><span class="o">}]</span>,<span class="s2">"sessionId"</span>:<span class="s2">"e61d6443-50dd-4720-bb70-a42546709b86"</span><span class="o">}</span>
+POST /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86/elements 200 1375ms - 157b
+
+debug: Appium request initiated at /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86/element/0/value
+
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.getElement('0').setValueByType('123456')"</span>
+
+debug: Request received with params: <span class="o">{</span><span class="s2">"id"</span>:<span class="s2">"0"</span>,<span class="s2">"value"</span>:[<span class="s2">"123456"</span><span class="o">]}</span>
+debug: Sending <span class="nb">command </span>to instruments: au.getElement<span class="o">(</span><span class="s1">'0'</span><span class="o">)</span>.setValueByType<span class="o">(</span><span class="s1">'123456'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.getElement<span class="o">(</span><span class="s1">'0'</span><span class="o">)</span>.setValueByType<span class="o">(</span><span class="s1">'123456'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>202 bytes<span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:17,<span class="s2">"value"</span>:<span class="s2">"Unexpected error in -[UIATextField_0xa3a67d0 setValue:], /SourceCache/UIAutomation_Sim/UIAutomation-365/Framework/UIAElement.m line 1061, kAXErrorFailure"</span><span class="o">}</span>
+info: Responding to client with error: <span class="o">{</span><span class="s2">"status"</span>:17,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"message"</span>:<span class="s2">"An error occurred while executing user supplied JavaScript."</span>,<span class="s2">"origValue"</span>:<span class="s2">"Unexpected error in -[UIATextField_0xa3a67d0 setValue:], /SourceCache/UIAutomation_Sim/UIAutomation-365/Framework/UIAElement.m line 1061, kAXErrorFailure"</span><span class="o">}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"e61d6443-50dd-4720-bb70-a42546709b86"</span><span class="o">}</span>
+POST /wd/hub/session/e61d6443-50dd-4720-bb70-a42546709b86/element/0/value 500 201ms - 342b
+
+
+
+
+
+
+
+2013.12.20  2:02PM  
+
+
+
+info: Welcome to Appium v0.12.3
+
+info: Appium REST http interface listener started on 127.0.0.1:4723
+   info  - socket.io started
+info: Not spawning instruments force-quit watcher since it only works on 10.9 and you have 10.8.5
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"0.12.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}}}</span>
+
+GET /wd/hub/status 200 7ms - 144b
+
+debug: Appium request initiated at /wd/hub/status
+
+debug: Request received with params: <span class="o">{}</span>
+
+debug: Appium request initiated at /wd/hub/session
+
+debug: Request received with params: <span class="o">{</span><span class="s2">"desiredCapabilities"</span>:<span class="o">{</span><span class="s2">"platform"</span>:<span class="s2">"Mac"</span>,<span class="s2">"app"</span>:<span class="s2">"/Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app"</span>,<span class="s2">"browserName"</span>:<span class="s2">"iOS"</span>,<span class="s2">"version"</span>:<span class="s2">"6.1"</span><span class="o">}}</span>
+
+info: Using <span class="nb">local </span>app from desiredCaps: /Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app
+
+info: Creating new appium session 0b708449-5477-424b-ba90-15f26df3cf66
+info: Removing any remaining instruments sockets
+info: Cleaned up instruments socket /tmp/instruments_sock
+
+info: Parsed app Localizable.strings
+
+info: Killing the simulator process
+
+debug: Launching device: iPhone <span class="o">(</span>3.5-inch<span class="o">)</span>
+
+info: Parsed app Info.plist
+
+debug: No device id or app, not installing to real device.
+debug: Creating instruments
+
+info: Wrote new app Info.plist with device <span class="nb">type
+</span>info: Starting iOS 7.<span class="k">*</span> simulator log capture
+
+info: Instruments is at: /Applications/Xcode.app/Contents/Developer/usr/bin/instruments
+info: <span class="o">[</span>INSTSERVER] Instruments socket server started at /tmp/instruments_sock
+info: Spawning instruments with <span class="nb">command</span>: /Applications/Xcode.app/Contents/Developer/usr/bin/instruments -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.bundle/Contents/Resources/Automation.tracetemplate /Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app -e UIASCRIPT /Applications/Appium.app/Contents/Resources/node_modules/appium/lib/devices/ios/uiauto/bootstrap.js -e UIARESULTSPATH /tmp/appium-instruments/
+info: And extra without-delay env: <span class="o">{</span><span class="s2">"DYLD_INSERT_LIBRARIES"</span>:<span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/build/iwd/InstrumentsShim.dylib"</span>,<span class="s2">"LIB_PATH"</span>:<span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/build/iwd"</span><span class="o">}</span>
+info: And launch timeout: 90000ms
+
+debug: Appium request initiated at /wd/hub/status
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"0.12.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"0b708449-5477-424b-ba90-15f26df3cf66"</span><span class="o">}</span>
+GET /wd/hub/status 200 2ms - 199b
+
+debug: Request received with params: <span class="o">{}</span>
+
+info: <span class="o">[</span>INST STDERR] 2013-12-20 14:01:17.722 ScriptAgent[1139:2e07] CLTilesManagerClient: initialize, sSharedTilesManagerClient
+
+
+info: <span class="o">[</span>INST STDERR] 2013-12-20 14:01:17.725 ScriptAgent[1139:2e07] CLTilesManagerClient: init
+2013-12-20 14:01:17.725 ScriptAgent[1139:2e07] CLTilesManagerClient: reconnecting, 0xa13a400
+
+
+info: <span class="o">[</span>INSTSERVER] Instruments is ready to receive commands
+
+debug: Sending <span class="nb">command </span>to instruments: au.bundleId<span class="o">()</span>
+
+info: Instruments launched. Starting poll loop <span class="k">for </span>new commands.
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.bundleId()"</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>15 bytes<span class="o">)</span>
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.bundleId<span class="o">()</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>68 bytes<span class="o">)</span>
+
+debug: Sending <span class="nb">command </span>to instruments: au.setScreenOrientation<span class="o">(</span><span class="s1">'PORTRAIT'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="s2">"com.accela.inspector"</span><span class="o">}</span>
+info: Bundle ID <span class="k">for </span>open app is com.accela.inspector
+info: Setting initial orientation to PORTRAIT
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.setScreenOrientation('PORTRAIT')"</span>
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.setScreenOrientation<span class="o">(</span><span class="s1">'PORTRAIT'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>56 bytes<span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="s2">"PORTRAIT"</span><span class="o">}</span>
+info: Device launched! Ready <span class="k">for </span>commands <span class="o">(</span>will <span class="nb">time </span>out <span class="k">in </span>60secs<span class="o">)</span>
+info: Appium session started with sessionId 0b708449-5477-424b-ba90-15f26df3cf66
+
+POST /wd/hub/session 303 10873ms - 9b
+
+debug: Appium request initiated at /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"7.0"</span>,<span class="s2">"webStorageEnabled"</span>:false,<span class="s2">"locationContextEnabled"</span>:false,<span class="s2">"browserName"</span>:<span class="s2">"iOS"</span>,<span class="s2">"platform"</span>:<span class="s2">"Mac"</span>,<span class="s2">"javascriptEnabled"</span>:true,<span class="s2">"databaseEnabled"</span>:false,<span class="s2">"takesScreenshot"</span>:true,<span class="s2">"app"</span>:<span class="s2">"/Users/DEV/Library/Developer/Xcode/DerivedData/Inspector-dldvhbusyfhhaifiqsmclsjgisxy/Build/Products/Debug-iphonesimulator/Inspector.app"</span><span class="o">}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"0b708449-5477-424b-ba90-15f26df3cf66"</span><span class="o">}</span>
+GET /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66 200 2ms - 470b
+
+debug: Request received with params: <span class="o">{}</span>
+
+debug: Appium request initiated at /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66/timeouts/implicit_wait
+
+info: Set iOS implicit <span class="nb">wait </span>to 60000ms
+
+debug: Request received with params: <span class="o">{</span><span class="s2">"ms"</span>:60000<span class="o">}</span>
+debug: Appium request initiated at /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66/elements
+debug: Request received with params: <span class="o">{</span><span class="s2">"using"</span>:<span class="s2">"tag name"</span>,<span class="s2">"value"</span>:<span class="s2">"UIATextField"</span><span class="o">}</span>
+
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:null,<span class="s2">"sessionId"</span>:<span class="s2">"0b708449-5477-424b-ba90-15f26df3cf66"</span><span class="o">}</span>
+POST /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66/timeouts/implicit_wait 200 3ms - 89b
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.getElementsByType('UIATextField')"</span>
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.getElementsByType<span class="o">(</span><span class="s1">'UIATextField'</span><span class="o">)</span>
+
+debug: Sending <span class="nb">command </span>to instruments: au.getElementsByType<span class="o">(</span><span class="s1">'UIATextField'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>79 bytes<span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:[<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"0"</span><span class="o">}</span>,<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"1"</span><span class="o">}]}</span>
+info: Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:[<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"0"</span><span class="o">}</span>,<span class="o">{</span><span class="s2">"ELEMENT"</span>:<span class="s2">"1"</span><span class="o">}]</span>,<span class="s2">"sessionId"</span>:<span class="s2">"0b708449-5477-424b-ba90-15f26df3cf66"</span><span class="o">}</span>
+POST /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66/elements 200 570ms - 157b
+
+debug: Appium request initiated at /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66/execute
+
+info: Pushing <span class="nb">command </span>to appium work queue: <span class="s2">"au.getElement('0').setValue('123456')"</span>
+info: <span class="o">[</span>INSTSERVER] Sending <span class="nb">command </span>to instruments: au.getElement<span class="o">(</span><span class="s1">'0'</span><span class="o">)</span>.setValue<span class="o">(</span><span class="s1">'123456'</span><span class="o">)</span>
+
+debug: Request received with params: <span class="o">{</span><span class="s2">"args"</span>:[<span class="o">{</span><span class="s2">"element"</span>:<span class="s2">"0"</span>,<span class="s2">"value"</span>:<span class="s2">"123456"</span><span class="o">}]</span>,<span class="s2">"script"</span>:<span class="s2">"mobile: setValue"</span><span class="o">}</span>
+debug: Sending <span class="nb">command </span>to instruments: au.getElement<span class="o">(</span><span class="s1">'0'</span><span class="o">)</span>.setValue<span class="o">(</span><span class="s1">'123456'</span><span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data received <span class="o">(</span>202 bytes<span class="o">)</span>
+
+info: <span class="o">[</span>INSTSERVER] Socket data being routed <span class="k">for</span> <span class="s1">'cmd'</span> event
+info: <span class="o">[</span>INSTSERVER] Got result from instruments: <span class="o">{</span><span class="s2">"status"</span>:17,<span class="s2">"value"</span>:<span class="s2">"Unexpected error in -[UIATextField_0xa384660 setValue:], /SourceCache/UIAutomation_Sim/UIAutomation-365/Framework/UIAElement.m line 1061, kAXErrorFailure"</span><span class="o">}</span>
+info: Responding to client with error: <span class="o">{</span><span class="s2">"status"</span>:17,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"message"</span>:<span class="s2">"An error occurred while executing user supplied JavaScript."</span>,<span class="s2">"origValue"</span>:<span class="s2">"Unexpected error in -[UIATextField_0xa384660 setValue:], /SourceCache/UIAutomation_Sim/UIAutomation-365/Framework/UIAElement.m line 1061, kAXErrorFailure"</span><span class="o">}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"0b708449-5477-424b-ba90-15f26df3cf66"</span><span class="o">}</span>
+POST /wd/hub/session/0b708449-5477-424b-ba90-15f26df3cf66/execute 500 216ms - 342b
+
+
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='关于解决 Appium 里的控件的定位问题。不使用 By.name()这个方法 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="308#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="308#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="308#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="308#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="308#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>38</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply1">1楼</a> · <abbr class="timeago" title="2013-12-19T18:56:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1378" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1378/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 你好，我已经能够获取到指定页面控件，但是始终传值失败，我也看过您这篇<a href="http://www.testerhome.com/topics/167" rel="nofollow" target="_blank">http://www.testerhome.com/topics/167</a>  ，我能够获取到指定控件就是看这篇文章的，但是却无法成功传值，请问您个人认为是什么原因呢？ 我能想到的办法都试过了，始终不成功。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply2">2楼</a> · <abbr class="timeago" title="2013-12-19T19:03:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1380" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/308/replies/1380/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 贴代码和log   别截图了 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply3">3楼</a> · <abbr class="timeago" title="2013-12-20T09:19:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1382" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1382/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>   代码跟log已放上去。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply4">4楼</a> · <abbr class="timeago" title="2013-12-20T10:04:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1384" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1384/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   能帮我看看是什么问题吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply5">5楼</a> · <abbr class="timeago" title="2013-12-20T10:11:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1385" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1385/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a> 能帮我看看是什么问题吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply6">6楼</a> · <abbr class="timeago" title="2013-12-20T10:53:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1386" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/308/replies/1386/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="spikeshen" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 传值失效？你看下你的list里到底找到多少个元素，一个个尝试下，也许你找到的不是你要输入值得那个。 看你报错。。。你的app启动都失败了啊。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply7">7楼</a> · <abbr class="timeago" title="2013-12-20T11:29:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1388" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1388/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>   可以成功启动的，但是传值失效，通过上面的java代码已经能够获取到，该控件，因为源代码里没有加Attribute ，所以只能遍历然后获取控件。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply8">8楼</a> · <abbr class="timeago" title="2013-12-20T11:29:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1389" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1389/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>  我重新运行一遍，跟新了Log。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply9">9楼</a> · <abbr class="timeago" title="2013-12-20T11:30:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1390" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1390/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>  可以帮我看看吗？我确实找不到哪里错了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply10">10楼</a> · <abbr class="timeago" title="2013-12-20T11:33:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1391" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/308/replies/1391/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="lihuazhang" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <ol>
+<li>eclipse 可以 debug 的吧？ 试试看</li>
+<li>试试看 setValue，不用sendKeys。从 ios instuments uiautomaiton 的角度来看， setValue 比较可靠</li>
+</ol>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply11">11楼</a> · <abbr class="timeago" title="2013-12-20T11:38:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1392" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1392/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   有setValue这个函数的？没提示的呀</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply12">12楼</a> · <abbr class="timeago" title="2013-12-20T11:41:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1393" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/308/replies/1393/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="lihuazhang" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 试试看？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply13">13楼</a> · <abbr class="timeago" title="2013-12-20T11:45:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1394" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/308/replies/1394/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="spikeshen" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 有。。。ios支持，android不支持=。= 而且据说用setValue弄中文没问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply14">14楼</a> · <abbr class="timeago" title="2013-12-20T11:48:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1395" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1395/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>  那Java没有对应的函数吗？ 好，那我试试看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply15">15楼</a> · <abbr class="timeago" title="2013-12-20T11:50:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1396" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/308/replies/1396/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="spikeshen" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> </p>
+
+<p>HashMap&lt;String, String&gt; inputObject = new HashMap&lt;String, String&gt;();<br>
+ inputObject.put("element", ((RemoteWebElement) we).getId());<br>
+ inputObject.put("value", "测试");<br>
+ js.executeScript("mobile: setValue", inputObject);</p>
+
+<p>大概是这样 we就是你要填值的那个元素</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply16">16楼</a> · <abbr class="timeago" title="2013-12-20T12:05:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1397" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/308/replies/1397/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="lihuazhang" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a> 是的。 中文没问题，因为 IOS instruments 里面是支持的。 appium 调用的就是 instruments</p>
+
+<p>比如</p>
+<pre class="highlight plaintext"> this.app().alert().images()[0].textFields()[0].setValue("你好");
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply17">17楼</a> · <abbr class="timeago" title="2013-12-20T13:45:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1400" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1400/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>  请问 js.executeScript("mobile: setValue", inputObject); 这句代码怎么实现呢？  js是什么类型的？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply18">18楼</a> · <abbr class="timeago" title="2013-12-20T13:51:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1401" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/308/replies/1401/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="spikeshen" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> JavascriptExecutor js = (JavascriptExecutor) wd;<br>
+wd是WebDriver对象，你可以先看看web driver相关的文章学习下。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply19">19楼</a> · <abbr class="timeago" title="2013-12-20T13:53:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1402" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1402/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>   可以直接调用  RemoteWebDriver 这个类型的吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply20">20楼</a> · <abbr class="timeago" title="2013-12-20T13:59:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1403" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/308/replies/1403/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="spikeshen" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 没试过，强转之后不知道会有啥问题。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply21">21楼</a> · <abbr class="timeago" title="2013-12-20T14:03:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1404" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1404/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>  还是不行，输入失效。唉。。 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply22">22楼</a> · <abbr class="timeago" title="2013-12-20T14:05:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1405" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1405/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a> <br>
+        List&lt;WebElement&gt; elems = wd.findElements(By.tagName("UIATextField"));</p>
+
+<p>for(WebElement e:elems){<br>
+            HashMap&lt;String, String&gt; inputObject = new HashMap&lt;String, String&gt;();<br>
+            inputObject.put("element", ((RemoteWebElement)e).getId());<br>
+            inputObject.put("value", "123456");<br>
+            JavascriptExecutor js = (JavascriptExecutor) wd;<br>
+            js.executeScript("mobile: setValue", inputObject);<br>
+    }   </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply23">23楼</a> · <abbr class="timeago" title="2013-12-20T14:05:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1406" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1406/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>   这是那段运行的代码，Log我也跟新在上面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply24">24楼</a> · <abbr class="timeago" title="2013-12-20T14:21:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1407" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/308/replies/1407/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="lihuazhang" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 代码片段 用代码块扩起来吧。可以把每个 element 打印出来看看不</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply25">25楼</a> · <abbr class="timeago" title="2013-12-20T14:28:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1408" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1408/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>UIAWindow</p>
+
+<p>UIAScrollView</p>
+
+<p>UIAImage<br>
+login_bg_i5.png<br>
+UIAImage</p>
+
+<p>UIAButton</p>
+
+<p>UIAImage<br>
+app_logo.png<br>
+UIAStaticText</p>
+
+<p>UIATableView<br>
+Empty list<br>
+UIATableCell<br>
+Agency<br>
+UIAStaticText<br>
+Agency<br>
+UIATextField</p>
+
+<p>UIATableCell<br>
+User Name<br>
+UIAStaticText<br>
+User Name<br>
+UIATextField</p>
+
+<p>UIATableCell<br>
+Password<br>
+UIAStaticText<br>
+Password<br>
+UIASecureTextField</p>
+
+<p>UIAButton<br>
+Additional Settings<br>
+UIAButton<br>
+Sign In<br>
+UIAButton<br>
+Preview<br>
+UIAImage<br>
+accela_logo.png<br>
+UIAImage</p>
+
+<p>UIAWindow</p>
+
+<p>UIAKeyboard</p>
+
+<p>UIAKey<br>
+q<br>
+UIAKey<br>
+w<br>
+UIAKey<br>
+e<br>
+UIAKey<br>
+r<br>
+UIAKey<br>
+t<br>
+UIAKey<br>
+y<br>
+UIAKey<br>
+u<br>
+UIAKey<br>
+i<br>
+UIAKey<br>
+o<br>
+UIAKey<br>
+p<br>
+UIAKey<br>
+a<br>
+UIAKey<br>
+s<br>
+UIAKey<br>
+d<br>
+UIAKey<br>
+f<br>
+UIAKey<br>
+g<br>
+UIAKey<br>
+h<br>
+UIAKey<br>
+j<br>
+UIAKey<br>
+k<br>
+UIAKey<br>
+l<br>
+UIAButton<br>
+shift<br>
+UIAKey<br>
+z<br>
+UIAKey<br>
+x<br>
+UIAKey<br>
+c<br>
+UIAKey<br>
+v<br>
+UIAKey<br>
+b<br>
+UIAKey<br>
+n<br>
+UIAKey<br>
+m<br>
+UIAKey<br>
+Delete<br>
+UIAKey<br>
+more, numbers<br>
+UIAButton<br>
+Next keyboard<br>
+UIAButton<br>
+Dictate<br>
+UIAKey<br>
+space<br>
+UIAButton<br>
+Return<br>
+UIAWindow</p>
+
+<p>UIAStatusBar</p>
+
+<p>UIAElement<br>
+Swipe down with three fingers to reveal the notification center., Swipe up with three fingers to reveal the control center, Double-tap to scroll to top<br>
+UIAElement<br>
+3 of 3 Wi-Fi bars<br>
+UIAElement<br>
+2:28 PM<br>
+UIAElement<br>
+100% battery power</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply26">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply26">26楼</a> · <abbr class="timeago" title="2013-12-20T14:29:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1409" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1409/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="26" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>//遍历所有对象<br><br>
+        List&lt;WebElement&gt; elements = wd.findElementsByXPath("//*");<br>
+        for(WebElement e:elements){<br>
+            System.out.println(e.getTagName());<br>
+            System.out.println(e.getAttribute("name"));<br>
+        }   </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply27">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply27">27楼</a> · <abbr class="timeago" title="2013-12-20T14:29:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1411" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1411/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="27" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply24" class="at_floor" data-floor="24">#24楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>    我用的是上面那段代码  打印所有的element</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply28">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply28">28楼</a> · <abbr class="timeago" title="2013-12-20T14:30:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1412" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1412/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="28" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply24" class="at_floor" data-floor="24">#24楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   就是一个登陆界面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply29">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply29">29楼</a> · <abbr class="timeago" title="2013-12-20T16:07:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1415" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1415/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="29" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   坛子里在MAC 上用inspector测试安卓的教程好像比较少， 我想问下该如何添加安卓的app path ，我试过直接吧apk放上去，也不行，然后把工程文件压缩放上去也不行，请问是用什么放上去呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply30">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply30">30楼</a> · <abbr class="timeago" title="2013-12-20T16:32:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1417" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/308/replies/1417/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="30" data-login="seveniruby" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply29" class="at_floor" data-floor="29">#29楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 那个inspector还是尽量少用吧, 他本身写的就不太好, 很多因素没考虑到, 基本全按照ios的标准来设计的, 你要是用他就会很多坑了.</p>
+
+<p>遇到的问题, 可以通过调试appium来解决</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply31">
+    <div class="deleted">31楼 已删除.</div>
+</div>
+<div class="reply" id="reply32">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply32">32楼</a> · <abbr class="timeago" title="2013-12-20T17:18:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1419" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/308/replies/1419/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="32" data-login="lihuazhang" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight java">
+<span class="n">List</span><span class="o">&lt;</span><span class="n">WebElement</span><span class="o">&gt;</span> <span class="n">elems</span> <span class="o">=</span> <span class="n">wd</span><span class="o">.</span><span class="na">findElements</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">tagName</span><span class="o">(</span><span class="s">"UIASecureTextField"</span><span class="o">));</span>
+
+<span class="k">for</span><span class="o">(</span><span class="n">WebElement</span> <span class="nl">e:</span><span class="n">elems</span><span class="o">){</span>
+         <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getTagName</span><span class="o">());</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"name"</span><span class="o">));</span>
+<span class="o">}</span>   
+
+</pre>
+<p>打印这个看看？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply33">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply33">33楼</a> · <abbr class="timeago" title="2013-12-20T18:18:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1420" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/308/replies/1420/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="33" data-login="spikeshen" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply31" class="at_floor" data-floor="31">#31楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>  我发现用findElements 经常找出来的元素比我从ui dump下来的要多的多。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply34">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply34">34楼</a> · <abbr class="timeago" title="2013-12-24T10:15:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1525" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1525/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="34" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply31" class="at_floor" data-floor="31">#31楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> </p>
+
+<p>UIASecureTextField</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply35">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply35">35楼</a> · <abbr class="timeago" title="2013-12-24T10:18:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1526" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1526/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="35" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply31" class="at_floor" data-floor="31">#31楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   这是打印出来的结果。只能打出Tagname 。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply36">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply36">36楼</a> · <abbr class="timeago" title="2013-12-24T10:21:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1527" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1527/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="36" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply30" class="at_floor" data-floor="30">#30楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  请问调试appium是什么意思呢？在黑框里写代码吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply37">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply37">37楼</a> · <abbr class="timeago" title="2013-12-24T10:27:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1529" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/308/replies/1529/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="37" data-login="lihuazhang" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply35" class="at_floor" data-floor="35">#35楼</a> <a href="../dippa" class="at_user" title="@dippa"><i>@</i>dippa</a> 我是说 debug java 代码</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply38">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply38">38楼</a> · <abbr class="timeago" title="2013-12-24T15:03:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1536" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1536/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="38" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply36" class="at_floor" data-floor="36">#36楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>  debug 是要输出什么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply39">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="308#reply39">39楼</a> · <abbr class="timeago" title="2013-12-24T15:06:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1538" data-state="" data-type="Reply" href="308#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/308/replies/1538/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="39" data-login="dippa" href="308#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="308#reply36" class="at_floor" data-floor="36">#36楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>  不好意思，我不是很懂什么意思，我知道debug是什么，但是不是很懂debug java 代码是什么意思</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+    <li><a href="1900" title="Appium 中如何实现自定义的 UiWatcher 类">Appium 中如何实现自定义的 UiWatcher 类</a></li>
+    <li><a href="1888" title="Appium + Selenium Grid2 = Appium Parallel Execution">Appium + Selenium Grid2 = A...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="308#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

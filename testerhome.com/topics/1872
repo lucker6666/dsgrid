@@ -1,0 +1,862 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | selendroid 初学碰到的问题 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">selendroid 初学碰到的问题</h1>
+  <div class="info leader">
+    <a class="node" href="node36">新手区</a>
+     · 
+    <a data-author="true" data-name="向阳" href="../face_south">face_south</a>
+     · 
+    于<abbr class="timeago" title="2015-01-15T11:41:55+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="face_south" href="../face_south">face_south</a> 于<abbr class="timeago" title="2015-01-19T16:55:53+08:00"></abbr>回复
+     · 
+    127次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>我按照官方的例子修改了一下代码，然后就一直运行出错：<br>
+代码：</p>
+<pre class="highlight python"><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+
+<span class="c">########################################################################</span>
+<span class="k">class</span> <span class="nc">FindElementTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="s">"""打开 apk 找到"""</span>
+    <span class="c">#----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">""""""</span>
+        <span class="n">desired_capabilities</span><span class="o">=</span><span class="p">{</span><span class="s">'aut'</span><span class="p">:</span><span class="s">'com.example.bebb:1.9.1'</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">=</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span>
+            <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">implicitly_wait</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="c">#全局定义超时，处理find_element_by 等操作超时均为30s</span>
+    <span class="c">#----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">test_find_element_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">""""""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'and-activity://com.example.bebb.PlashScreen'</span><span class="p">)</span>
+        <span class="c">#print '11'</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">"and-activity://PlashScreen"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">current_url</span><span class="p">)</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
+
+        <span class="n">closeWebView</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_class_name</span><span class="p">(</span><span class="s">'android.widget.ImageView'</span><span class="p">)</span>
+        <span class="n">closeWebView</span><span class="o">.</span><span class="n">click</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">tap</span><span class="p">([(</span><span class="mi">200</span><span class="p">,</span><span class="mi">50</span><span class="p">)],</span><span class="mi">1</span><span class="p">)</span>
+
+
+    <span class="c">#----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">"""tearDown"""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre>
+
+<p>报错：</p>
+<pre class="highlight shell">E
+<span class="o">======================================================================</span>
+ERROR: test_find_element_by_id <span class="o">(</span>__main__.FindElementTest<span class="o">)</span>
+----------------------------------------------------------------------
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"d:</span><span class="se">\p</span><span class="s2">ython</span><span class="se">\p</span><span class="s2">y_workspace</span><span class="se">\s</span><span class="s2">elendroid</span><span class="se">\s</span><span class="s2">elendroid_ceb01.py"</span>, line 12, <span class="k">in </span>setUp
+    <span class="nv">desired_capabilities</span><span class="o">=</span>desired_capabilities
+  File <span class="s2">"D:</span><span class="se">\P</span><span class="s2">rogram File</span><span class="se">\p</span><span class="s2">ython</span><span class="se">\l</span><span class="s2">ib</span><span class="se">\s</span><span class="s2">ite-packages</span><span class="se">\s</span><span class="s2">elenium</span><span class="se">\w</span><span class="s2">ebdriver</span><span class="se">\r</span><span class="s2">emote</span><span class="se">\w</span><span class="s2">ebdriver.py"</span>, line 73, <span class="k">in </span>__init__
+    self.start_session<span class="o">(</span>desired_capabilities, browser_profile<span class="o">)</span>
+  File <span class="s2">"D:</span><span class="se">\P</span><span class="s2">rogram File</span><span class="se">\p</span><span class="s2">ython</span><span class="se">\l</span><span class="s2">ib</span><span class="se">\s</span><span class="s2">ite-packages</span><span class="se">\s</span><span class="s2">elenium</span><span class="se">\w</span><span class="s2">ebdriver</span><span class="se">\r</span><span class="s2">emote</span><span class="se">\w</span><span class="s2">ebdriver.py"</span>, line 121, <span class="k">in </span>start_session
+    <span class="s1">'desiredCapabilities'</span>: desired_capabilities,
+  File <span class="s2">"D:</span><span class="se">\P</span><span class="s2">rogram File</span><span class="se">\p</span><span class="s2">ython</span><span class="se">\l</span><span class="s2">ib</span><span class="se">\s</span><span class="s2">ite-packages</span><span class="se">\s</span><span class="s2">elenium</span><span class="se">\w</span><span class="s2">ebdriver</span><span class="se">\r</span><span class="s2">emote</span><span class="se">\w</span><span class="s2">ebdriver.py"</span>, line 173, <span class="k">in </span>execute
+    self.error_handler.check_response<span class="o">(</span>response<span class="o">)</span>
+  File <span class="s2">"D:</span><span class="se">\P</span><span class="s2">rogram File</span><span class="se">\p</span><span class="s2">ython</span><span class="se">\l</span><span class="s2">ib</span><span class="se">\s</span><span class="s2">ite-packages</span><span class="se">\s</span><span class="s2">elenium</span><span class="se">\w</span><span class="s2">ebdriver</span><span class="se">\r</span><span class="s2">emote</span><span class="se">\e</span><span class="s2">rrorhandler.py"</span>, line 166, <span class="k">in </span>check_response
+    raise exception_class<span class="o">(</span>message, screen, stacktrace<span class="o">)</span>
+WebDriverException: Message: Error starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: Error starting Selendroid session
+
+    at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStandaloneDriver.java:277<span class="o">)</span>
+
+    at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+
+    at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+
+    at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+
+    at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:333<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:319<span class="o">)</span>
+
+    at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShapingHandler.java:223<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:333<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:319<span class="o">)</span>
+
+    at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:103<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:333<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:319<span class="o">)</span>
+
+    at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+
+    at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.java:148<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:333<span class="o">)</span>
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerContext.java:319<span class="o">)</span>
+
+    at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+
+    at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.java:125<span class="o">)</span>
+
+    at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+
+    at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+
+    at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+
+    at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+
+    at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:116<span class="o">)</span>
+
+    at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadFactory.java:137<span class="o">)</span>
+
+    at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+
+Caused by: io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test </span>is not configured <span class="k">in </span>selendroid server.
+
+    at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneDriver.java:361<span class="o">)</span>
+
+    at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStandaloneDriver.java:192<span class="o">)</span>
+
+    ... 25 more
+
+
+
+
+----------------------------------------------------------------------
+Ran 1 <span class="nb">test </span><span class="k">in </span>4.537s
+
+FAILED <span class="o">(</span><span class="nv">errors</span><span class="o">=</span>1<span class="o">)</span>
+
+</pre>
+
+<p>我看的是说这部分不对：</p>
+<pre class="highlight shell">self.driver<span class="o">=</span>webdriver.Remote<span class="o">(</span>
+            <span class="nv">desired_capabilities</span><span class="o">=</span>desired_capabilities
+        <span class="o">)</span>
+</pre>
+
+<p>但是就是不知道为什么不对，我用原代码就可以通过，原代码里边测试的apk就是selendroid-test-app-0.12.0.apk。</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='selendroid 初学碰到的问题 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1872#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1872#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1872#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1872#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1872#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>8</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply1">1楼</a> · <abbr class="timeago" title="2015-01-15T11:54:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11631" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1872/replies/11631/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>server的日志</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="向阳" href="../face_south">face_south</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply2">2楼</a> · <abbr class="timeago" title="2015-01-15T13:00:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11633" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2102" href="http://testerhome.com/topics/1872/replies/11633/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="face_south" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1872#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> </p>
+<pre class="highlight shell">一月 15, 2015 12:56:49 下午 io.selendroid.server.model.SelendroidStandaloneDriver createNewTestSessi
+on
+SEVERE: Error occurred <span class="k">while </span>starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test </span>is not con
+figured <span class="k">in </span>selendroid server.
+        at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneD
+river.java:361<span class="o">)</span>
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:192<span class="o">)</span>
+        at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+        at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+        at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+        at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShaping
+Handler.java:223<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:1
+03<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+        at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.ja
+va:148<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+        at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.jav
+a:125<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+        at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:1
+16<span class="o">)</span>
+        at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadF
+actory.java:137<span class="o">)</span>
+        at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+
+一月 15, 2015 12:56:49 下午 io.selendroid.server.model.SelendroidStandaloneDriver createNewTestSessi
+on
+SEVERE: Error occurred <span class="k">while </span>starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test </span>is not con
+figured <span class="k">in </span>selendroid server.
+        at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneD
+river.java:361<span class="o">)</span>
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:192<span class="o">)</span>
+        at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+        at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+        at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+        at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShaping
+Handler.java:223<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:1
+03<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+        at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.ja
+va:148<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+        at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.jav
+a:125<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+        at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:1
+16<span class="o">)</span>
+        at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadF
+actory.java:137<span class="o">)</span>
+        at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+
+一月 15, 2015 12:56:49 下午 io.selendroid.server.model.SelendroidStandaloneDriver createNewTestSessi
+on
+SEVERE: Error occurred <span class="k">while </span>starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test </span>is not con
+figured <span class="k">in </span>selendroid server.
+        at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneD
+river.java:361<span class="o">)</span>
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:192<span class="o">)</span>
+        at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+        at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+        at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+        at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShaping
+Handler.java:223<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:1
+03<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+        at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.ja
+va:148<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+        at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.jav
+a:125<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+        at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:1
+16<span class="o">)</span>
+        at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadF
+actory.java:137<span class="o">)</span>
+        at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+
+一月 15, 2015 12:56:49 下午 io.selendroid.server.model.SelendroidStandaloneDriver createNewTestSessi
+on
+SEVERE: Error occurred <span class="k">while </span>starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test </span>is not con
+figured <span class="k">in </span>selendroid server.
+        at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneD
+river.java:361<span class="o">)</span>
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:192<span class="o">)</span>
+        at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+        at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+        at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+        at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShaping
+Handler.java:223<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:1
+03<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+        at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.ja
+va:148<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+        at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.jav
+a:125<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+        at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:1
+16<span class="o">)</span>
+        at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadF
+actory.java:137<span class="o">)</span>
+        at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+
+一月 15, 2015 12:56:49 下午 io.selendroid.server.model.SelendroidStandaloneDriver createNewTestSessi
+on
+SEVERE: Error occurred <span class="k">while </span>starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test </span>is not con
+figured <span class="k">in </span>selendroid server.
+        at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneD
+river.java:361<span class="o">)</span>
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:192<span class="o">)</span>
+        at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+        at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+        at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+        at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShaping
+Handler.java:223<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:1
+03<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+        at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.ja
+va:148<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+        at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.jav
+a:125<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+        at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:1
+16<span class="o">)</span>
+        at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadF
+actory.java:137<span class="o">)</span>
+        at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+
+一月 15, 2015 12:56:49 下午 io.selendroid.server.handler.CreateSessionHandler handle
+SEVERE: Error <span class="k">while </span>creating new session
+io.selendroid.exceptions.SessionNotCreatedException: Error starting Selendroid session
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:277<span class="o">)</span>
+        at io.selendroid.server.handler.CreateSessionHandler.handle<span class="o">(</span>CreateSessionHandler.java:44<span class="o">)</span>
+        at io.selendroid.server.SelendroidServlet.handleRequest<span class="o">(</span>SelendroidServlet.java:143<span class="o">)</span>
+        at io.selendroid.server.BaseServlet.handleHttpRequest<span class="o">(</span>BaseServlet.java:67<span class="o">)</span>
+        at io.selendroid.server.http.ServerHandler.channelRead<span class="o">(</span>ServerHandler.java:53<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead<span class="o">(</span>AbstractTrafficShaping
+Handler.java:223<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.MessageToMessageDecoder.channelRead<span class="o">(</span>MessageToMessageDecoder.java:1
+03<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead<span class="o">(</span>ByteToMessageDecoder.java:163<span class="o">)</span>
+        at io.netty.channel.CombinedChannelDuplexHandler.channelRead<span class="o">(</span>CombinedChannelDuplexHandler.ja
+va:148<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead<span class="o">(</span>AbstractChannelHandlerCo
+ntext.java:333<span class="o">)</span>
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead<span class="o">(</span>AbstractChannelHandlerCont
+ext.java:319<span class="o">)</span>
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead<span class="o">(</span>DefaultChannelPipeline.java:787<span class="o">)</span>
+        at io.netty.channel.nio.AbstractNioByteChannel<span class="nv">$NioByteUnsafe</span>.read<span class="o">(</span>AbstractNioByteChannel.jav
+a:125<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey<span class="o">(</span>NioEventLoop.java:511<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized<span class="o">(</span>NioEventLoop.java:468<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys<span class="o">(</span>NioEventLoop.java:382<span class="o">)</span>
+        at io.netty.channel.nio.NioEventLoop.run<span class="o">(</span>NioEventLoop.java:354<span class="o">)</span>
+        at io.netty.util.concurrent.SingleThreadEventExecutor<span class="nv">$2</span>.run<span class="o">(</span>SingleThreadEventExecutor.java:1
+16<span class="o">)</span>
+        at io.netty.util.concurrent.DefaultThreadFactory<span class="nv">$DefaultRunnableDecorator</span>.run<span class="o">(</span>DefaultThreadF
+actory.java:137<span class="o">)</span>
+        at java.lang.Thread.run<span class="o">(</span>Unknown Source<span class="o">)</span>
+Caused by: io.selendroid.exceptions.SessionNotCreatedException: The requested application under <span class="nb">test
+ </span>is not configured <span class="k">in </span>selendroid server.
+        at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp<span class="o">(</span>SelendroidStandaloneD
+river.java:361<span class="o">)</span>
+        at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession<span class="o">(</span>SelendroidStan
+daloneDriver.java:192<span class="o">)</span>
+        ... 25 more
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply3">3楼</a> · <abbr class="timeago" title="2015-01-15T13:48:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11635" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1872/replies/11635/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="https://github.com/selendroid/selendroid/issues/403" rel="nofollow" target="_blank">https://github.com/selendroid/selendroid/issues/403</a> 看下这个能不能帮助到你</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="向阳" href="../face_south">face_south</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply4">4楼</a> · <abbr class="timeago" title="2015-01-15T19:21:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11676" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2102" href="http://testerhome.com/topics/1872/replies/11676/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="face_south" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>  <strong>谢谢~~</strong>  我再看看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="向阳" href="../face_south">face_south</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply5">5楼</a> · <abbr class="timeago" title="2015-01-19T15:10:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11789" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2102" href="http://testerhome.com/topics/1872/replies/11789/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="face_south" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>又用了几天selendroid，发现可能是我启动服务的方式不对；<br>
+<code>java -jar .\selendroid-standalone-0.12.0-with-dependencies.jar -app .\selendroid-test-app-0.12.0.apk</code>启动服务时，<code>-app</code>后边的测试apk应和脚本中被测的apk一致；这样启动服务后手机里边会增加一个应用<code>Selendroid</code>:<br>
+<img src="../photo/2015/5829027cb4c4fc2dfe0a05b993a9349e.png" alt=""><br>
+如果要测其他脚本（其他安卓包），就要重启服务，重启服务的时候更换apk名，要不就直接报错：</p>
+<pre class="highlight shell">WebDriverException: Message: Error starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: Error starting Selendroid session
+</pre>
+
+<p>重新启动服务后，手机里边会又增加一个<code>Selendroid</code>应用：<br>
+<img src="../photo/2015/54645907f4bd4e9d2662b37b00ee5163.png" alt=""><br>
+我用的是安卓模拟器，有时候执行脚本的就是没反应，经常<code>adb devices</code>发现不了设备；可能这也是个原因。<br>
+谢谢 lihuazhang</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply6">6楼</a> · <abbr class="timeago" title="2015-01-19T15:57:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11793" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1872/replies/11793/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1872#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../face_south" class="at_user" title="@face_south"><i>@</i>face_south</a> 这个 selendroid 是测试apk</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply7">7楼</a> · <abbr class="timeago" title="2015-01-19T15:58:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11794" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1872/replies/11794/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="lihuazhang" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你得了解下 instruments 再来看 selendroid</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../face_south"><img alt="2102" class="uface" src="../user/large_avatar/2102.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="向阳" href="../face_south">face_south</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1872#reply8">8楼</a> · <abbr class="timeago" title="2015-01-19T16:55:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11806" data-state="" data-type="Reply" href="1872#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2102" href="http://testerhome.com/topics/1872/replies/11806/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="face_south" href="1872#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   好的  我找文档好好看看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @meiyu 有希望，有爱的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1872" title="selendroid 初学碰到的问题">selendroid 初学碰到的问题</a></li>
+    <li><a href="1828" title="webdriver 查找页面元素等待的方法">webdriver 查找页面元素等待的方法</a></li>
+    <li><a href="1748" title="使用反射实现 webdriver page 类 ">使用反射实现 webdriver page 类 </a></li>
+    <li><a href="1747" title="关于从零开始开展 QA 工作的建议：">关于从零开始开展 QA 工作的建议：</a></li>
+    <li><a href="1691" title="求教如何让 genymotion 模拟器执行 python 的指定操作？">求教如何让 genymotion 模拟器执行 pyth...</a></li>
+    <li><a href="1510" title="新手报到">新手报到</a></li>
+    <li><a href="1467" title="TesterHome 新秀群成员-xiang2743，2014年9月 学习总结 1">TesterHome 新秀群成员-xiang2743，...</a></li>
+    <li><a href="1461" title="TesterHome 新秀群成员-carter，2014年9月 学习总结">TesterHome 新秀群成员-carter，201...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1872#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

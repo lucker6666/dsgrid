@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 性能测试工具 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 性能测试工具 节点最新发帖.</description>
+    <item>
+      <title>jmeter Bean shell PreProcessor 小用</title>
+      <description>&lt;p&gt;最近模拟一组数据，用到字母的组合，用 random string 方法出来的值很怪，于是就找了段 bean shell 的脚本。&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Random&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+
+&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;random_len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;string_length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+    &lt;span class="n"&gt;randomstring&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;string_length&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt; 
+        &lt;span class="n"&gt;Random&lt;/span&gt; &lt;span class="n"&gt;randomGenerator&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Random&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt; 
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;randomInt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;randomGenerator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;nextInt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt; 
+        &lt;span class="n"&gt;randomstring&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;substring&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;randomInt&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;randomInt&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt; 
+    &lt;span class="o"&gt;}&lt;/span&gt; 
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;randomstring&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;info&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random_len&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;info&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random_len&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+
+&lt;span class="n"&gt;vars&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;put&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"random_8"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;random_len&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt; 
+&lt;span class="n"&gt;vars&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;put&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"random_16"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;random_len&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt; 
+
+&lt;/pre&gt;
+&lt;p&gt;把这个脚本放在 Bean shell PreProcessor  里，&lt;br&gt;&lt;img src="/photo/2014/1fd15ee419f2f2751576b6c9d02d804e.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;然后就能在后续里，直接使用 ${random_8} 和 ${random_16}&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Wed, 15 Jan 2014 18:21:52 +0800</pubDate>
+      <link>http://testerhome.com/topics/409</link>
+      <guid>http://testerhome.com/topics/409</guid>
+    </item>
+    <item>
+      <title>LR关联的问题，回放脚本可以成功，但是场景中关联部分成功部分报错</title>
+      <description>&lt;p&gt;情况描述如题，错误代码如下&lt;br /&gt;
+Action.c(172): Error -26377: No match found for the requested parameter &amp;quot;WCSParam45&amp;quot;. Check whether the requested boundaries exist in the response data. Also, if the data you want to save exceeds 1024 bytes, use web_set_max_html_param_len to increase the parameter size&lt;br /&gt;
+1、我使用的自动关联，单次回放可以成功，是不是可以排除关联函数的问题？；&lt;br /&gt;
+2、其次肯定不是字节长度的问题，因为变量都是系统返回的32位MD5码，1024足够了&lt;br /&gt;
+百度了半天原因应该是因为前置的操作没有成功导致没有取到关联的变量值，这个的概率比较大，那就接下来请大神看看我的操作问题&lt;br /&gt;
+脚本如下（省略了extrares中的内容）&lt;/p&gt;
+
+&lt;p&gt;lr_start_transaction(&amp;quot;优化&amp;quot;);&lt;/p&gt;
+&lt;pre&gt;    /* Registering parameter(s) from source task id 65
+    // {WCSParam2} = &amp;quot;351288cd84422bf48229ae1cc0ccb275&amp;quot;
+    // */
+    web_reg_save_param(&amp;quot;WCSParam2&amp;quot;,
+            &amp;quot;LB/DIG=3&amp;amp;md5=&amp;quot;,
+            &amp;quot;RB/DIG=&amp;amp;show=&amp;quot;,
+            &amp;quot;Ord=1&amp;quot;,
+            &amp;quot;Search=Body&amp;quot;,
+            &amp;quot;RelFrameId=1&amp;quot;,
+            LAST);
+
+    web_url(&amp;quot;优化词条&amp;quot;,
+            &amp;quot;URL=http://d3m2.zhongsou.com/Keyword/ylogs?kid={ID}&amp;amp;action=seo&amp;quot;,
+            &amp;quot;TargetFrame=&amp;quot;,
+            &amp;quot;Resource=0&amp;quot;,
+            &amp;quot;RecContentType=text/html&amp;quot;,
+            &amp;quot;Referer=http://d3m2.zhongsou.com/Keyword/seo&amp;quot;,
+            &amp;quot;Snapshot=t4.inf&amp;quot;,
+            &amp;quot;Mode=HTML&amp;quot;,
+            EXTRARES,                
+            LAST);
+
+    web_custom_request(&amp;quot;autodata&amp;quot;,
+            &amp;quot;URL=http://d3m2.zhongsou.com/Searchsource/autodata&amp;quot;,
+            &amp;quot;Method=POST&amp;quot;,
+            &amp;quot;TargetFrame=&amp;quot;,
+            &amp;quot;Resource=0&amp;quot;,
+            &amp;quot;RecContentType=text/html&amp;quot;,
+            &amp;quot;Referer=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;amp;faction=seo&amp;quot;,
+            &amp;quot;Snapshot=t5.inf&amp;quot;,
+            &amp;quot;Mode=HTML&amp;quot;,
+            &amp;quot;EncType=application/x-www-form-urlencoded; charset=UTF-8&amp;quot;,
+            &amp;quot;BodyBinary=kid={ID}&amp;amp;keyword={word}&amp;amp;columns=鏂伴椈鍔ㄦ&amp;quot;
+            &amp;quot;\\x80\\x81&amp;quot;
+            &amp;quot;&amp;amp;typeid=3&amp;amp;md5={WCSParam2}&amp;quot;,
+            EXTRARES,                
+            LAST);
+
+    /* Registering parameter(s) from source task id 135
+    // {WCSParam45} = &amp;quot;50dae4a7f66f8deb140004cc&amp;quot;
+    // */
+    web_reg_save_param(&amp;quot;WCSParam45&amp;quot;,
+            &amp;quot;LB/DIG=type=\&amp;quot;checkbox\&amp;quot;  value=\&amp;quot;&amp;quot;,
+            &amp;quot;RB/DIG=\&amp;quot; /&amp;gt;&amp;lt;/td&amp;gt;&amp;quot;,
+            &amp;quot;Ord=1&amp;quot;,
+            &amp;quot;Search=Body&amp;quot;,
+            &amp;quot;RelFrameId=1&amp;quot;,
+            LAST);
+
+    /* Registering parameter(s) from source task id 135
+    // {WCSParam47} = &amp;quot;50dae4a7f66f8deb140004cb&amp;quot;
+    // */
+    web_reg_save_param(&amp;quot;WCSParam47&amp;quot;,
+            &amp;quot;LB/DIG=type=\&amp;quot;checkbox\&amp;quot;  value=\&amp;quot;&amp;quot;,
+            &amp;quot;RB/DIG=\&amp;quot; /&amp;gt;&amp;lt;/td&amp;gt;&amp;quot;,
+            &amp;quot;Ord=2&amp;quot;,
+            &amp;quot;Search=Body&amp;quot;,
+            &amp;quot;RelFrameId=1&amp;quot;,
+            LAST);
+
+    web_url(&amp;quot;index&amp;quot;,
+            &amp;quot;URL=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;amp;faction=seo&amp;amp;keyword={word}&amp;amp;columns=%E6%96%B0%E9%97%BB%E5%8A%A8%E6%80%81&amp;quot;,
+            &amp;quot;TargetFrame=&amp;quot;,
+            &amp;quot;Resource=0&amp;quot;,
+            &amp;quot;RecContentType=text/html&amp;quot;,
+            &amp;quot;Referer=&amp;quot;,
+            &amp;quot;Snapshot=t6.inf&amp;quot;,
+            &amp;quot;Mode=HTML&amp;quot;,
+            EXTRARES,                
+            LAST);
+
+    web_custom_request(&amp;quot;temporary&amp;quot;,
+            &amp;quot;URL=http://d3m2.zhongsou.com/Searchsource/temporary&amp;quot;,
+            &amp;quot;Method=POST&amp;quot;,
+            &amp;quot;TargetFrame=&amp;quot;,
+            &amp;quot;Resource=0&amp;quot;,
+            &amp;quot;RecContentType=text/html&amp;quot;,
+            &amp;quot;Referer=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;amp;faction=seo&amp;amp;keyword={word}&amp;amp;columns=%E6%96%B0%E9%97%BB%E5%8A%A8%E6%80%81&amp;quot;,
+            &amp;quot;Snapshot=t7.inf&amp;quot;,
+            &amp;quot;Mode=HTML&amp;quot;,
+            &amp;quot;EncType=application/x-www-form-urlencoded; charset=UTF-8&amp;quot;,
+            &amp;quot;BodyBinary=typeid=3&amp;amp;id={WCSParam45},{WCSParam47}&amp;amp;kid={ID}&amp;amp;md5={WCSParam2}&amp;amp;temporary_keyword={word}&amp;amp;temporary_columns=鏂伴椈鍔ㄦ&amp;quot;
+            &amp;quot;\\x80\\x81&amp;quot;
+            &amp;quot;&amp;quot;,
+            EXTRARES,                
+            LAST);
+
+    web_url(&amp;quot;index_2&amp;quot;,
+            &amp;quot;URL=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;amp;faction=seo&amp;amp;keyword={word}&amp;amp;columns=%E6%96%B0%E9%97%BB%E5%8A%A8%E6%80%81&amp;quot;,
+            &amp;quot;TargetFrame=&amp;quot;,
+            &amp;quot;Resource=0&amp;quot;,
+            &amp;quot;RecContentType=text/html&amp;quot;,
+            &amp;quot;Referer=&amp;quot;,
+            &amp;quot;Snapshot=t8.inf&amp;quot;,
+            &amp;quot;Mode=HTML&amp;quot;,
+            EXTRARES,                
+            LAST);
+    lr_end_transaction(&amp;quot;优化&amp;quot;, LR_AUTO);
+&lt;/pre&gt;
+</description>
+      <author>wxa1</author>
+      <pubDate>Thu, 27 Dec 2012 10:21:51 +0800</pubDate>
+      <link>http://testerhome.com/topics/122</link>
+      <guid>http://testerhome.com/topics/122</guid>
+    </item>
+    <item>
+      <title>关于文本检查点的使用</title>
+      <description>&lt;p&gt;我就知道录制的脚本时候插入文本检查点可以知道页面是否加载的正确，逻辑貌似都是如果检测到这段文字表明通过，我想实现如果检测到这段文字就表明操作失败，应该如果设置啊？&lt;/p&gt;</description>
+      <author>wxa1</author>
+      <pubDate>Tue, 13 Nov 2012 17:02:46 +0800</pubDate>
+      <link>http://testerhome.com/topics/101</link>
+      <guid>http://testerhome.com/topics/101</guid>
+    </item>
+    <item>
+      <title>【商业】负载测试工具 LoadRunner</title>
+      <description>&lt;p&gt;LoadRunner，是一种预测系统行为和性能的负载测试工具。通过以模拟上千万用户实施 并发负载及实时性能监测的方式来确认和查找问题，LoadRunner能够对整个企业架构进行测试。通过使用 LoadRunner，企业能最大限度地缩短测试时间，优化性能和加速应用系统的发布周期。 LoadRunner是一种适用于各种体系架构的自动负载测试工具，它能预测系统行为并优化系统性能。&lt;br /&gt;
+  下载地址：&lt;a href="http://www.pc6.com/softview/SoftView_56676.html" rel="nofollow" target="_blank"&gt;http://www.pc6.com/softview/SoftView_56676.html&lt;/a&gt;&lt;/p&gt;</description>
+      <author>test_sun</author>
+      <pubDate>Tue, 16 Oct 2012 00:09:30 +0800</pubDate>
+      <link>http://testerhome.com/topics/16</link>
+      <guid>http://testerhome.com/topics/16</guid>
+    </item>
+    <item>
+      <title>[开源] 负载测试工具 loadUI</title>
+      <description>&lt;p&gt;loadUI 是一个企业级的负载测试工具，测试可分布式运行并可实时修改，与 soapUI 紧密集成，使用高度图形化接口，使得测试变得很简单而且运行迅速。&lt;br /&gt;
+  下载链接：&lt;a href="http://sourceforge.net/projects/loadui/files/" rel="nofollow" target="_blank"&gt;http://sourceforge.net/projects/loadui/files/&lt;/a&gt;&lt;/p&gt;</description>
+      <author>test_sun</author>
+      <pubDate>Tue, 16 Oct 2012 00:07:43 +0800</pubDate>
+      <link>http://testerhome.com/topics/15</link>
+      <guid>http://testerhome.com/topics/15</guid>
+    </item>
+    <item>
+      <title>[开源] Java程序性能分析工具 VisualVM</title>
+      <description>&lt;p&gt;VisualVM是一个集成多个JDK命令行工具的可视化工具。可以作为Java应用程序性能分析和运行监控的工具。开发人员可以利用它来监控，分析，获 胜Thread-Dumps，浏览Heap dumps。系统管理员可以利用它来监测，控制Java应用程序横跨整个网络的情况。Java应用程序使用人员可以利用它来创建包含所有必要信息的Bug 报告。&lt;/p&gt;
+
+&lt;p&gt;下载链接：&lt;a href="https://visualvm.dev.java.net/download.html" rel="nofollow" target="_blank"&gt;https://visualvm.dev.java.net/download.html&lt;/a&gt;&lt;/p&gt;</description>
+      <author>test_sun</author>
+      <pubDate>Tue, 16 Oct 2012 00:06:39 +0800</pubDate>
+      <link>http://testerhome.com/topics/14</link>
+      <guid>http://testerhome.com/topics/14</guid>
+    </item>
+    <item>
+      <title>[开源] Ruby的性能测试工具 RoadRunner</title>
+      <description>&lt;p&gt;RoadRunner是一个用ruby写的类似LoadRunner框架的性能测试工具&lt;br /&gt;
+  LoadRunner?这个工具很多做过性能测试的朋友肯定都知道，里面有很多方便易用的方法，不过这些方法的实现不是重点，毕竟ruby的第三方 库的各种实现非常的多,ruby开发者的热情都很高&lt;br /&gt;
+  RoadRunner实现的是LoadRunner的框架，&lt;br /&gt;
+既： init(){ } action(){ } end(){ }&lt;br /&gt;
+  init存放初始化、登陆等操作，action可以不断的迭代执行，从而 产生持续不断的压力，end存放释放资源、退出等操作。外加一个虽然简单但直观的报表，之后的版本除了不断的完善RR的报告，提高和LR 的相似度之外，还会增加更多ruby特有的方法，丰富Rrhelper模块代码。&lt;br /&gt;
+  RoadRunner更方便的地方在于,它不仅仅可以通 过日志来展示结果,还可以将结果存储到数据库中,大家可以看test目录中的pi_db.rb这个测试文件,之后就会很方便的通过读取数据库的测试记录, 来绘制测试报表.&lt;br /&gt;
+  我觉得我在写数据库这块代码的时候比较让自己满意, 这块的设计是这样的:&lt;br /&gt;
+当你引用 RoadRunner这个gem时,如果你还在生成RoadRunner类的同时,给      RoadRunner.new方法一个block,并 且这个block里面是一个ActiveRecord的数据库连接,&lt;br /&gt;
+而且这个数据库中没有 scenarios,transactions,records这三张表,&lt;br /&gt;
+则RoadRunner会自动创建这三张表,以及默认的字段,&lt;br /&gt;
+并且将测试的数据写入这三张表中.&lt;br /&gt;
+  但要注意,如果已经有了这三张表,但字段和RR的要求不同,那就会导致写数据异常,需 要分库或者改名.&lt;br /&gt;
+下载链接：&lt;a href="http://code.google.com/p/roadrunner/downloads/list" rel="nofollow" target="_blank"&gt;http://code.google.com/p/roadrunner/downloads/list&lt;/a&gt;&lt;/p&gt;</description>
+      <author>test_sun</author>
+      <pubDate>Tue, 16 Oct 2012 00:06:13 +0800</pubDate>
+      <link>http://testerhome.com/topics/13</link>
+      <guid>http://testerhome.com/topics/13</guid>
+    </item>
+    <item>
+      <title>[开源] Web服务性能测试工具 Pylot</title>
+      <description>&lt;p&gt;Pylot 是一款开源的用以测试 Web Service性能和扩展性的工具，它运行HTTP负载测试，这对于制定容量计划、确定基准点、分析系统瓶颈以及系统调优都非常有用。在使用过程 中，Pylot会发起并发请求（HTTP Requests），检验服务器响应，以及带有相关指标的报表。它通过GUI或者Shell&amp;#47;Console来执行和监视对被测试网站的测试过程。&lt;br /&gt;
+  Pylot基于Python开发，和著名的Apache压力测试工具ab一样，默认在命令行运行，也可以通过参数触发GUI界面，当然前提是安装了wxPython的。&lt;/p&gt;
+
+&lt;p&gt;下载链接： &lt;a href="http://www.pylot.org/download.html" rel="nofollow" target="_blank"&gt;http://www.pylot.org/download.html&lt;/a&gt;&lt;/p&gt;</description>
+      <author>test_sun</author>
+      <pubDate>Tue, 16 Oct 2012 00:04:46 +0800</pubDate>
+      <link>http://testerhome.com/topics/12</link>
+      <guid>http://testerhome.com/topics/12</guid>
+    </item>
+    <item>
+      <title>[开源]压力测试工具 JMeter</title>
+      <description>&lt;p&gt;JMeter是Apache组织的开放源代码项目，它是功能和性能测试的工具，100%的用java实现。&lt;br /&gt;
+The Apache JMeter™ desktop application is open source software, a 100% pure Java application designed to load test functional behavior and measure performance. It was originally designed for testing Web Applications but has since expanded to other test functions.&lt;/p&gt;
+
+&lt;p&gt;下载链接：&lt;a href="http://jmeter.apache.org/download_jmeter.cgi" rel="nofollow" target="_blank"&gt;http://jmeter.apache.org/download_jmeter.cgi&lt;/a&gt;&lt;/p&gt;</description>
+      <author>test_sun</author>
+      <pubDate>Tue, 16 Oct 2012 00:04:10 +0800</pubDate>
+      <link>http://testerhome.com/topics/11</link>
+      <guid>http://testerhome.com/topics/11</guid>
+    </item>
+  </channel>
+</rss>

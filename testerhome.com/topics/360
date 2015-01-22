@@ -1,0 +1,720 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 移动性能测试初探 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">移动性能测试初探</h1>
+  <div class="info leader">
+    <a class="node" href="node32">移动性能测试</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-01-05T23:31:59+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-12-15T08:50:06+08:00"></abbr>回复
+     · 
+    1452次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>说实在的我是不想现在说太多，这样我觉得我这个书写的意义就不大了。索性不出版了。。＝ ＝<br>
+  我上周帮助公司也做了一下app的性能测试，整个过程历时一天半，当然仅仅是针对测试，燃烧了我大半小宇宙。<br>
+  首先现在移动应用的性能测试一般分成三种测试的方向，或许说是找基线的方向：<br>
+  1. 先对于竞品进行测试，从而进行对比<br>
+  2. 经过测试，团队讨论得出一个大家认可的数据，从而变成基线<br>
+  3. 在系统，应用等限制中找到一个基线，打比方说比如某些应用的画面需要60fps的帧率进行平滑的渲染等</p>
+
+<p>而无论是哪种得到数据并非非常容易，性能测试往往与应用逻辑，架构，业务牢牢的绑定。<br>
+  Android和ios的内存泄漏也许是很多人关心的一个方面。在此之前当然我们应该先进行静态的代码扫描，find bugs，lint，code Analysis等。内存泄漏其实并非一定有什么基线，在我看来每个不同类型的应用其基线可能都是不同的，然后内存泄漏现在常用的方法如下：<br>
+  1. 对应用进行”Cause GC”操作，查看object data的走势，如该数值持续上涨说明有内存泄漏的可能。<br>
+  2. Android获取hprof文件。其一，在进行压测之后获取hprof使用MAT进行分析。其二，可以在某些重要业务场景前后分别去Dump HPROF，从而对比前后某些对象是否有重复引用等<br>
+  3. ios的话要请教中国ios之父了。。我目前还是只是用instruments自带的一些工具在业务场景中进行查看。<br>
+  4. dumpsys也不失为一个比较简单的方法，但是就是比较难定位问题在哪里</p>
+
+<p>当然我之前也一直推崇的systemtrace以及gnxinfo也是很不错的性能测试工具。其运用在自己要测试的场景中就能够得出很精准的数据，包括应用的启动，包括绘制函数方法的耗时等，报告如下：<br><img src="../photo/dd20ea3e5dc211469254f8c0f02ee1a7.png" alt=""><br><img src="../photo/4f1823f6086fecd6d11faa01f75ff78d.png" alt=""></p>
+
+<p>其他也有电量，流量等，这类其实现在现成的测试app也有。我们自己要去写个也不是什么难事，比如写一个很傻的activity，然后启动几个监控的service就可以了。通过系统api都是能够获取到我们想要的数据的，当然百度等公司还是会用万用表来进行电量测试，我表示我肯定做不到。部门代码如下：<br><img src="../photo/a5c42ae405de1ead44616d5fe3c39abc.png" alt=""></p>
+
+<p>当然我上周在做的时候，顺便让我们测试的同学把关键业务做了下，然后生成的code coverage报告也让开发协助测试增加了很多有用的测试用例。这也是我觉得真心不错的一个发展方向。</p>
+
+<p>好吧，就说那么多了，再说下去我书就白写了。。。。。。我抓紧review自己的书去了。。。我觉得我这是自己作死的节奏阿。。。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='移动性能测试初探 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="360#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="360#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="360#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="360#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="360#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>20</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../loope"><img alt="E5e500e291398b209cd08a5017789795" class="uface" src="../avatar/e5e500e291398b209cd08a5017789795.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="南山" href="../loope">loope</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply1">1楼</a> · <abbr class="timeago" title="2014-01-05T23:36:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1790" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="319" href="http://testerhome.com/topics/360/replies/1790/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="loope" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好帖必须要顶啊。学习了。加油。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../k7gxn56"><img alt="310" class="uface" src="../user/large_avatar/310.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="谌祥" href="../k7gxn56">k7gxn56</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply2">2楼</a> · <abbr class="timeago" title="2014-01-05T23:43:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1791" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="310" href="http://testerhome.com/topics/360/replies/1791/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="k7gxn56" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>天书</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lizhenghuan"><img alt="164" class="uface" src="../user/large_avatar/164.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="喜力" href="../lizhenghuan">lizhenghuan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply3">3楼</a> · <abbr class="timeago" title="2014-01-06T09:25:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1794" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="164" href="http://testerhome.com/topics/360/replies/1794/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lizhenghuan" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>都是用安捷伦的功耗仪</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply4">4楼</a> · <abbr class="timeago" title="2014-01-06T10:03:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1797" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/1797/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lizhenghuan" class="at_user" title="@lizhenghuan"><i>@</i>lizhenghuan</a> 太先进了！！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply5">5楼</a> · <abbr class="timeago" title="2014-01-06T10:03:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1798" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/1798/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lizhenghuan" class="at_user" title="@lizhenghuan"><i>@</i>lizhenghuan</a> 太先进了！！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../wirelessqa"><img alt="317" class="uface" src="../user/large_avatar/317.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="老毕" href="../wirelessqa">wirelessqa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply6">6楼</a> · <abbr class="timeago" title="2014-01-06T10:21:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1799" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="317" href="http://testerhome.com/topics/360/replies/1799/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="wirelessqa" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>到哪都有熟人，哈哈。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply7">7楼</a> · <abbr class="timeago" title="2014-01-06T10:27:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1801" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/360/replies/1801/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="mingway_hu" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的超赞哎~但有不少还没接触过~涨姿势了~<br>
+monkey哥，我觉得人们更多的是冲着你人去的~你人猛，就是把博客总结成书也会有人看的~<br>
+偶尔的放出书的信息，对宣传有一定的好处~~就像twitter上一个总是爆nokia手机的人，我开始认为他这么干是在泄露机密，但事实上爆出后总能引起人们对nokia的注意力和好奇心~~#<br>
+突然想去之前测nokia手机系统时，测耗电量用的那个安捷伦的超大电流表重30来斤，据说一块要10W多大洋~~好怀念那块电流表的说~~#</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../test_sun"><img alt="3" class="uface" src="../user/large_avatar/3.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="散步的SUN" href="../test_sun">test_sun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply8">8楼</a> · <abbr class="timeago" title="2014-01-06T11:56:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1807" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="3" href="http://testerhome.com/topics/360/replies/1807/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="test_sun" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>看着很牛擦啊...完全不懂</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply9">9楼</a> · <abbr class="timeago" title="2014-01-06T12:12:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1809" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/1809/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 这种电量测试太霸气了。。。一般公司根本没有办法搞啊。。= =</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply10">10楼</a> · <abbr class="timeago" title="2014-01-06T12:12:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1810" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/1810/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../test_sun" class="at_user" title="@test_sun"><i>@</i>test_sun</a> 都是基础的说。= =</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../icu200934"><img alt="D4f94586ebeedba733fab6643863dc4b" class="uface" src="../avatar/d4f94586ebeedba733fab6643863dc4b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="foolish" href="../icu200934">icu200934</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply11">11楼</a> · <abbr class="timeago" title="2014-01-06T14:17:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1823" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="311" href="http://testerhome.com/topics/360/replies/1823/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="icu200934" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我来凑个数..</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply12">12楼</a> · <abbr class="timeago" title="2014-01-07T09:25:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1849" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/360/replies/1849/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="anikikun" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>嗯，有些监测工具自己写一下也很简单，有时候自己的需求自己更能把握住</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply13">13楼</a> · <abbr class="timeago" title="2014-01-07T10:31:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1851" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/1851/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 对的，这点深有体会。我个人觉得移动这边的性能往深的去其实都是细节问题。而这些没有一个现成的东西可以cover的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../sonny"><img alt="263" class="uface" src="../user/large_avatar/263.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="sonny" href="../sonny">sonny</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply14">14楼</a> · <abbr class="timeago" title="2014-07-02T16:22:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6397" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="263" href="http://testerhome.com/topics/360/replies/6397/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="sonny" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>太期待万用表和安捷伦功耗仪的测试方法了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../luguo_"><img alt="475" class="uface" src="../user/large_avatar/475.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="柒" href="../luguo_">luguo_</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply15">15楼</a> · <abbr class="timeago" title="2014-07-21T14:23:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6757" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="475" href="http://testerhome.com/topics/360/replies/6757/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="luguo_" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>期待书出来啊~~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply16">16楼</a> · <abbr class="timeago" title="2014-07-21T15:30:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6759" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/6759/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../luguo_" class="at_user" title="@luguo_"><i>@</i>luguo_</a> 哈哈～～就这几天有货啦～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../jiminy"><img alt="1940" class="uface" src="../user/large_avatar/1940.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jiminy" href="../jiminy">jiminy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply17">17楼</a> · <abbr class="timeago" title="2014-11-18T20:38:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9906" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1940" href="http://testerhome.com/topics/360/replies/9906/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="jiminy" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我日常会通过app来测试我们的app的电耗测试，感觉app测试出来的数据不太可靠，想了解更多上面提到的电耗测试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply18">18楼</a> · <abbr class="timeago" title="2014-11-18T21:34:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9908" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/9908/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../jiminy" class="at_user" title="@jiminy"><i>@</i>jiminy</a> 其实用安捷轮最好。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../jiminy"><img alt="1940" class="uface" src="../user/large_avatar/1940.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jiminy" href="../jiminy">jiminy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply19">19楼</a> · <abbr class="timeago" title="2014-12-15T01:33:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10579" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1940" href="http://testerhome.com/topics/360/replies/10579/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="jiminy" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 没有这样的条件啊，只能寻找一个较靠谱工具</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="360#reply20">20楼</a> · <abbr class="timeago" title="2014-12-15T08:50:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10580" data-state="" data-type="Reply" href="360#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/360/replies/10580/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="monkey" href="360#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="360#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../jiminy" class="at_user" title="@jiminy"><i>@</i>jiminy</a> 这就和你上面的评论矛盾啦。。。 ＝ ＝。。其实app测试出来的数据，就是电量这个东西不一定很靠谱。主要安捷伦也未必靠谱，因为毕竟不是app的层面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1831" title="如何选用 seed 的值？">如何选用 seed 的值？</a></li>
+    <li><a href="1734" title="基于变化取性能响应时间尝试">基于变化取性能响应时间尝试</a></li>
+    <li><a href="1591" title="性能测试专题卡斯访谈录">性能测试专题卡斯访谈录</a></li>
+    <li><a href="846" title="Android 应用性能自动化测试工具初探（二）">Android 应用性能自动化测试工具初探（二）</a></li>
+    <li><a href="833" title="Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart">Android 应用性能自动化测试工具初探（一） je...</a></li>
+    <li><a href="651" title="xcode5.1 下面安装 reportlab 的问题">xcode5.1 下面安装 reportlab 的问题</a></li>
+    <li><a href="637" title="python 之 Android 通用性能开源工具 0.000001 版">python 之 Android 通用性能开源工具 0...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="360#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

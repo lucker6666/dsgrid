@@ -1,0 +1,495 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome |  Android 性能测试初探（四） &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title"> Android 性能测试初探（四）</h1>
+  <div class="info leader">
+    <a class="node" href="node32">移动性能测试</a>
+     · 
+    <a data-author="true" data-name="" href="../kasi">kasi</a>
+     · 
+    于<abbr class="timeago" title="2014-02-19T18:47:32+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="kasi" href="../kasi">kasi</a> 于<abbr class="timeago" title="2014-05-29T16:11:50+08:00"></abbr>回复
+     · 
+    1748次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>书接上文 <a href="484">Android 性能测试初探（三）</a>  </p>
+
+<p>自从 cpu及内存后，GPU 这个词对于 PC 性能测试者也不陌生了，什么 3Dmax，安兔兔之类的第三方软件让 GPU 在移动端性能测试领域都知晓，但对于应用的 GPU 该如何来测试呢，我们先引入几个名词：</p>
+
+<ul>
+<li>过度绘制</li>
+<li>帧率</li>
+<li>帧方差</li>
+</ul><p>过度绘制是指界面显示的 activity 套接了多层而导致。帧率是指屏幕刷新率。帧方差是指屏幕刷新帧间隔方差。</p>
+
+<p>对于 GPU 的测试主要包括以下几个测试子项</p>
+
+<ol>
+<li>界面过度绘制</li>
+<li>屏幕滑动帧速率</li>
+<li>屏幕滑动平滑度</li>
+</ol><p>对于过度绘制的测试主要通过人工进行测试，通过打开开发者选项中的 <strong>显示GPU过度绘制</strong> 来进行测试（PS：只有android4.2及以上的版本才具备此功能)，验收的标准为:</p>
+
+<ol>
+<li>不允许出现黑色像素</li>
+<li>不允许存在4x过度绘制</li>
+<li>不允许存在面积超过屏幕1/4区域的3x过度绘制（淡红色区域）</li>
+</ol><p>对于屏幕滑动帧速率主要有 2 种方法。</p>
+
+<p>先说说软件测试的方法：</p>
+
+<p>1.手机端需打开开发者选项中的 <strong>启用跟踪</strong> 后勾选 <strong>Graphics</strong> 和 <strong>View</strong><br>
+2.启动 SDK 工具 Systrace 插件，勾选被测应用，点击 Systrace 插件，在弹出的对话框中设置持续抓取时间，在trace taps下面勾选 gfx 及 view 选项，<br>
+3.人滑动界面可以通过节拍来进行滑动或者扫动，帧率数据会保存到默认路径下，默认名称为 trace.html<br><br>
+4.将trace.html文件拷贝到linux系统下 通过命令进行转换，生成trace.csv文件 </p>
+<pre class="highlight plaintext">grep 'postFramebuffer' trace.html   | sed -e 's/.*]\W*//g' -e 's/:.*$//g' -e 's/\.//g' &gt; trace.csv 
+</pre>
+<p>5.用excel打开文件计算得到帧率</p>
+
+<p>接下来我们说说硬件的方法，这里需要引入高速相机，打开高速相机，开启摄像模式，录制人滑动或者扫动被测应用的视频，再通过人工或者程序数帧的方法对结果进行计算得到帧率</p>
+
+<p>对于屏幕滑动平滑度的测试，方法如同帧率测试，唯一的差异就是最后的结果计算公式的差异</p>
+
+<p>GPU的测试目前业界使用的均为硬件来进行，软件测试的数据相较硬件差异较大，对于帧率及帧方差的测试标准而言，需对待不同机型设定不同的标准</p>
+
+<p>好了，对于GPU方面的测试介绍到此，相信大家对于这块不会陌生了：）</p>
+
+<p>预知下文，请听下回分解</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title=' Android 性能测试初探（四） via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="486#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="486#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="486#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="486#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="486#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>9</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply1">1楼</a> · <abbr class="timeago" title="2014-02-19T19:54:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2625" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/486/replies/2625/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>辛苦了  高产啊 大牛</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply2">2楼</a> · <abbr class="timeago" title="2014-02-20T07:14:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2635" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/486/replies/2635/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>能给个报表类型的东西看看么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply3">3楼</a> · <abbr class="timeago" title="2014-02-20T09:21:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2640" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/486/replies/2640/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="kasi" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>报表类型 具体指啥</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply4">4楼</a> · <abbr class="timeago" title="2014-02-20T09:30:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2641" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/486/replies/2641/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="486#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> 给老板看的性能报表~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply5">5楼</a> · <abbr class="timeago" title="2014-02-20T09:42:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2643" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/486/replies/2643/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="kasi" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>给老板看的肯定就不能放出来了，</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply6">6楼</a> · <abbr class="timeago" title="2014-02-20T09:57:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2646" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/486/replies/2646/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="mingway_hu" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Cool!连大致的基准都放出来了~~！点32个赞~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../royburns"><img alt="E722e604db7d13ee9f5382f2c2fab4e5" class="uface" src="../avatar/e722e604db7d13ee9f5382f2c2fab4e5.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="爱笑的小pp" href="../royburns">royburns</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply7">7楼</a> · <abbr class="timeago" title="2014-05-29T10:56:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5316" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="537" href="http://testerhome.com/topics/486/replies/5316/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="royburns" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>hello，能不能贴一下你们的文档，想看看你们的格式啊，规范啊之类的东西，先谢过</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../royburns"><img alt="E722e604db7d13ee9f5382f2c2fab4e5" class="uface" src="../avatar/e722e604db7d13ee9f5382f2c2fab4e5.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="爱笑的小pp" href="../royburns">royburns</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply8">8楼</a> · <abbr class="timeago" title="2014-05-29T10:56:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5317" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="537" href="http://testerhome.com/topics/486/replies/5317/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="royburns" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>就是性能测试报告</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="486#reply9">9楼</a> · <abbr class="timeago" title="2014-05-29T16:11:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5334" data-state="" data-type="Reply" href="486#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/486/replies/5334/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="kasi" href="486#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>文档属于公司信息 不能提供</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @monkey: 希望我能够在中国找到我理想的工作环境！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1831" title="如何选用 seed 的值？">如何选用 seed 的值？</a></li>
+    <li><a href="1734" title="基于变化取性能响应时间尝试">基于变化取性能响应时间尝试</a></li>
+    <li><a href="1591" title="性能测试专题卡斯访谈录">性能测试专题卡斯访谈录</a></li>
+    <li><a href="846" title="Android 应用性能自动化测试工具初探（二）">Android 应用性能自动化测试工具初探（二）</a></li>
+    <li><a href="833" title="Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart">Android 应用性能自动化测试工具初探（一） je...</a></li>
+    <li><a href="651" title="xcode5.1 下面安装 reportlab 的问题">xcode5.1 下面安装 reportlab 的问题</a></li>
+    <li><a href="637" title="python 之 Android 通用性能开源工具 0.000001 版">python 之 Android 通用性能开源工具 0...</a></li>
+    <li><a href="621" title="Android 应用性能测试 apk 分享">Android 应用性能测试 apk 分享</a></li>
+    <li><a href="617" title="腾讯 APP 场测 / 随身测神器-GT">腾讯 APP 场测 / 随身测神器-GT</a></li>
+    <li><a href="568" title="移动测试初探-续">移动测试初探-续</a></li>
+    <li><a href="536" title="adb shell ps -x 这个命令什么意思">adb shell ps -x 这个命令什么意思</a></li>
+    <li><a href="529" title="Android 应用性能测试方案一之 log 分析">Android 应用性能测试方案一之 log 分析</a></li>
+    <li><a href="505" title="移动端相关功耗测试杂谈">移动端相关功耗测试杂谈</a></li>
+    <li><a href="503" title="Android 性能测试初探（六）">Android 性能测试初探（六）</a></li>
+    <li><a href="502" title=" Android 性能测试初探（五）"> Android 性能测试初探（五）</a></li>
+    <li><a href="488" title="traceView 简单 demo">traceView 简单 demo</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="486#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

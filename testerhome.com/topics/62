@@ -1,0 +1,280 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Facebook 的自动化测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" />
+  </div>
+  <h1 class="entry-title">Facebook 的自动化测试</h1>
+  <div class="info leader">
+    <a class="node" href="node1">资讯点评</a>
+     · 
+    匿名
+     · 
+    于<abbr class="timeago" title="2012-10-25T18:15:42+08:00"></abbr>发布
+     · 
+    150次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1025/205645.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1025/205645.html</a></p>
+<pre>　　Facebook 怎样做自动化测试
+
+　　最近Quora上有个讨论，原意是：“facebook是如何做自动化测试的，他们是怎样测试才能保证每周的升级都可以不出差错的呢?” 参见Link
+
+　　来自Facebook的Steven Grimm很好地回答了这个问题，觉得还不错，这里以第一人称翻译了一下。
+
+　　对于PHP的代码，我们写了非常多的基于PHPUnit测试框架的测试类，这些测试类覆盖范围比较大，从简单的判读真假的单元测试到大规模的后端服务的集成测试。开发人员把运行这些基于PHPUnit的测试用例作为他们工作中的一部分，同时这些用例也在一些专用的设备上不停地被运行(注：持续集成模式)。当开发人员对一些代码做了比较大的修改时，在开发机器上的自动化工具会运行这些测试用例的同时也会生成相应的代码覆盖率数据，对于需要提交到代码库的diff，在做代码review的时候回自动地产生一份带有覆盖率的测试报告。
+
+　　对于前端的代码，我们使用Waitir(注：Waitir是前端UI的自动化测试框架)做了基于浏览器的界面自动化测试。这些测试用例涵盖了网站页面的功能，特别是针对隐私方面，比如：“用户X发布了Y，而Y应该/不应该被用户Z看到”，有着大量的基于浏览器级别的这种用例。(这些隐私规则当然也会使用一些更低级别的方法被测试到，但是这些规则的实现是必须要严格执行的，并有着非常高的优先级，因此这部分必须要有足够的测试用例来覆盖)
+
+　　除了一些使用watir的全自动化用例以外，我们也有一些半自动化的测试。这些测试也使用了waitir技术，这样可以使一些表格填充或者点击button来完成整改界面上的流程的测试不太单调乏味，而且我们可以很清楚地检查和验证当前的步骤或流程是否正确合理。
+
+　　我们也在尝试开始使用JSSpec (注：JavaScript单元测试框架)去做一些JavaScript代码的单元测试，但当前也是刚刚开始做。
+
+　　对于后端服务的测试，根据不同的服务特性我们采用了许多不同的测试框架与方法。对于一些需要开源发布的项目，我们会使用开源的测试框架，像Boost和JUnit测试框架(注：Boost是针对C++/JUnit是针对Java的测试框架);对于另外一些项目，可能永远都不会发布到外界，我们就是使用内部开发的可以很紧密地与我们build系统集成在一起的C++测试框架。还有少数项目会使用项目级别的测试工具。多数后端服务的测试都会紧紧地和持续集成/Build系统结合在一起，这些持续集成的build系统会不停地针对源代码自动地运行测试用例并生成测试结果，测试结果在存储在数据库的同时会发送到通知系统中去。
+
+　　HipHop(注：HipHop for PHP是Facebook的PHP项目)有一套类似的持续集成系统，HipHop的单元测试和所有基于PHPUnit的测试都会被运行。所有的这些测试结果会和基于普通的PHP解释器的结果做对比，从而可以看到不同PHP上的行为的不同;
+
+　　Facebook的测试工具将测试结果存储在数据库的同时会发送一份通知邮件，这个邮件会包含执行失败的信息并且邮件的接收范围是开发同学可以自己调整的。(例如，你可以选择只有在测试连续失败一段时候的时候才接收到通知邮件，或者当一个用力失败的时候立刻收到通知)。在浏览器UI上，测试结果和 缺陷/开发任务跟踪系统会结合在一起，可以很容易的将测试失败与开发任务关联起来。
+
+　　测试中一个非常重要的现象是“导致阻塞”，也就是一个测试用例失败有可能会阻止发布(在Facebook，有发布工程师会来评估是否可以将带有问题的代码发布到生产环境，发布工程师在必要的情况下会得到授权去阻止产品的发布)。阻止产品发布上线的事情是被认为是非常严重的问题，因为在Facebook大家对于这种快速发布的模式是深深引以为豪的。
+
+　　我所在的团队是测试工程部门，主要职责是打造通用基础工具，这些工具会被上述的所有人用到，同时我们也在维护测试框架，像PHPUnit和Watir。Facebook没有专职的测试团队，所有的工程师都需要为他们的代码写自动化测试用例，并维护这些测试用例，保证产品代码改变的同时这些测试代码可以正确地运行。
+
+　　Facebook的测试还处于一个初期起步尝试阶段，上面的介绍都只是我们在当前运行的方法而已。
+
+　　公直 2012/2/27
+
+　　附录原文，
+
+　　What kind of automated testing does Facebook do? How do they make sure they aren’t breaking things in their weekly pushes?
+
+　　Steven Grimm, 2005-2012
+
+　　We do several kinds of testing. Some specifics:
+
+　　For our PHP code, we have a suite of a few thousand test classes using the PHPUnit framework. They range in complexity from simple true unit tests to large-scale integration tests that hit our production backend services. The PHPUnit tests are run both by developers as part of their workflow and continuously by an automated test runner on dedicated hardware. Our developer tools automatically use code coverage data to run tests that cover the outstanding edits in a developer sandbox, and a report of test results is automatically included in our code review tool when a patch is submitted for review.
+
+　　For browser-based testing of our Web code, we use the Watir framework. We have Watir tests covering a range of the site’s functionality, particularly focused on privacy—there are tons of “user X posts item Y and it should/shouldn’t be visible to user Z” tests at the browser level. (Those privacy rules are, of course, also tested at a lower level, but the privacy implementation being rock-solid is a critical priority and warrants redundant test coverage.)
+
+　　In addition to the fully automated Watir tests, we have semi-automated tests that use Watir so humans can avoid the drudgery of filling out form fields and pressing buttons to get through UI flows, but can still examine what’s going on and validate that things look reasonable.#p#分页标题#e#
+
+　　We’re starting to use JSSpec for unit-testing JavaScript code, though that’s still in its early stages at this point.
+
+　　For backend services, we use a variety of test frameworks depending on the specifics of the services. Projects that we release as open source use open-source frameworks like Boost’s test classes or JUnit. Projects that will never be released to the outside world can use those, or can use an internally-developed C++ test framework that integrates tightly with our build system. A few projects use project-specific test harnesses. Most of the backend services are tied into a continuous integration / build system that constantly runs the test suites against the latest source code and reports the results into the results database and the notification system.
+
+　　HipHop has a similar continuous-integration system with the added twist that it not only runs its own unit tests, but also runs all the PHPUnit tests. These results are compared with the results from the same PHP code base run under the plain PHP interpreter to detect any differences in behavior.
+
+　　Our test infrastructure records results in a database and sends out email notifications on failure with developer-tunable sensitivity (e.g., you can choose to not get a notification unless a test fails continuously for some amount of time, or to be notified the instant a single failure happens.) The user interface for our test result browser is integrated with our bug/task tracking system, making it really easy to associate test failures with open tasks.
+
+　　A significant fraction of tests are “push-blocking”—that is, a test failure is potential grounds for holding up a release (this is at the discretion of the release engineer who is pushing the code in question out to production, but that person is fully empowered to stop the presses if need be.) Blocking a push is taken very seriously since we pride ourselves on our fast release turnaround time.
+
+　　My team, Test Engineering, is responsible for building the common infrastructure used by all the above stuff, as well as for maintaining PHPUnit and Watir. Facebook has no dedicated QA team; all Facebook engineers are responsible for writing automated tests for their code and keeping the tests maintained as the underlying code changes.
+
+　　Facebook’s test setup is still very much a work in progress, but the above is at least a taste of what we do in that area.
+</pre>
+
+
+<p>文章分类:自动测试</p>
+
+<p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1025/205645.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1025/205645.html</a></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Facebook 的自动化测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="62#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="62#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="62#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="62#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="62#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscar: 每个人都有每个人的追求和生活方式；我们可以什么都没有，没房、没车、没脑瓜，但是我们得有做人的尊严。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1378" title="《刀塔传奇》之互联网从业人员评测">《刀塔传奇》之互联网从业人员评测</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="62#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

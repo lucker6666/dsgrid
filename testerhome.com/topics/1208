@@ -1,0 +1,540 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【探究解答】getAttribute 方法为何不支持参数为 index 问题帖的探究 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【探究解答】getAttribute 方法为何不支持参数为 index 问题帖的探究</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+     · 
+    于<abbr class="timeago" title="2014-08-01T11:43:12+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="qddegtya" href="../qddegtya">qddegtya</a> 于<abbr class="timeago" title="2014-12-23T19:37:06+08:00"></abbr>回复
+     · 
+    605次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>原来的问题帖在这里，在看本帖之前，请先仔细阅读一下原来的问题帖。<br>
+<a href="1199" rel="nofollow" target="_blank">http://testerhome.com/topics/1199</a></p>
+
+<p>虽然现在原帖子被置为了【已解决】，但是，我显然不甘心这样的解决方式。</p>
+
+<p>问题很简单：为什么嗅探出来的index属性，通过getAttribute方法获取不到！？</p>
+<h4>我们先从getAttribute的源码开始看</h4>
+<p>这里我还是以python client为例</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="s">"""Gets the attribute value.
+
+        :Args:
+            - name - name of the attribute property to retieve.
+
+        Example::
+
+            # Check if the 'active' css class is applied to an element.
+            is_active = "active" in target_element.get_attribute("class")
+
+        """</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">,</span> <span class="p">{</span><span class="s">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span>
+        <span class="n">attributeValue</span> <span class="o">=</span> <span class="s">''</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s">'value'</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">attributeValue</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s">'value'</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s">'value'</span> <span class="ow">and</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">'true'</span><span class="p">,</span> <span class="s">'false'</span><span class="p">):</span>
+                <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">attributeValue</span>
+</pre>
+
+<p>webelement实例支持get_attribute方法，那么这个方法究竟是怎么实现获取元素属性值的呢？<br>
+根据代码中的Command.GET_ELEMENT_ATTRIBUTE，我们来到这里</p>
+<pre class="highlight python"><span class="n">GET_ELEMENT_ATTRIBUTE</span> <span class="o">=</span> <span class="s">"getElementAttribute"</span>
+</pre>
+
+<p>原来，这个方法调用了webdriver的getElementAttribute命令，我们不妨去绝对标准的W3C上看看这条命令的解释</p>
+<h4>W3C关于webdriver中getElementAttribute的解释</h4>
+<p>10.3 Reading Attributes and Properties</p>
+
+<p>Although the [HTML5] spec is very clear about the difference between the properties and attributes of a DOM element, users are frequently confused between the two. Because of this, the WebDriver API offers a single command ("getElementAttribute") which covers the case of returning both the value of a DOM element's property or attribute. If a user wishes to refer specifically to an attribute or a property, they should evaluate Javascript in order to be unambiguous. In this section, the "attribute" with name name shall refer to the result of calling the Javascript "getAttribute" function on the element, with the following exceptions:</p>
+
+<p>If, in the current rendering mode, the content attribute name reflects a boolean IDL attribute, as per the HTML specification, the value must be the string 'true' if that IDL attribute's value is true or the null value if the IDL attribute's value is false.<br>
+If the element is an OPTION element and name is "value" and there is no "value" attribute, then the text content of the OPTION element must be returned, in accordance with [HTML401] spec, specifically the section on pre-selected options. The text content must be the result of calling the "getElementText" command on the OPTION element.<br>
+If the element is selectable, and name is "selected", or the element is an INPUT element of type "checkbox" or "radio" and name is "checked", return the string 'true' if the element is selected, and the null value otherwise.<br>
+If name is "style", the value returned must be serialized as defined in the [CSSOM-VIEW] spec. Notably, css property names must be cased the same as specified in in section 6.5.1 of the [CSSOM-VIEW] spec.<br>
+Consequently, it should be equivalent to obtaining the "cssText" property, with the additional constraint that the same value must be returned after a round trip through "executeScript". That is, the following pseudo-code must be true (where "driver" is a WebDriver instance, and "element" is a WebElement):</p>
+<pre class="highlight javascript"><span class="kd">var</span> <span class="nx">style</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">'style'</span><span class="p">);</span>
+<span class="nx">driver</span><span class="p">.</span><span class="nx">executeScript</span><span class="p">(</span><span class="s1">'arguments[0].style = arguments[1]'</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">style</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">recovered</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">'style'</span><span class="p">);</span>
+<span class="nx">assertEquals</span><span class="p">(</span><span class="nx">style</span><span class="p">,</span> <span class="nx">recovered</span><span class="p">);</span>
+</pre>
+
+<p>Color property values must be standardized to rgba format, matching the regular expression: rgba(\d+, \d+, \d+, (1|0(.\d+)?)).<br>
+If the value is expected to be a URL (see the below table), return the property named name, i.e. a fully resolved URL: TODO: This doesn't feel like an exhaustive list<br>
+Tag name    "name" value</p>
+<pre class="highlight plaintext">A   href
+IMG src
+</pre>
+
+<p>If name is in the below table, and the above stages have not yielded a defined, non-null value, the value of the aliased attribute in the table below should be returned:<br>
+Original property name  Aliased property name</p>
+<pre class="highlight plaintext">class   className
+readonly    readOnly
+</pre>
+
+<p>NOTE<br>
+These aliases provide the commonly used names for element properties.</p>
+<h4>getElementAttribute的核心实现参考</h4><pre class="highlight plaintext">Command Name    getElementAttribute
+Parameters  "sessionId" {string} The key that identifies which session this request is for.
+"id" {string} The ID of the WebElement on which to operate.
+"name" {string} The name of the property of attribute to return.
+Return Value    {string|null} The value returned by the above algorithm, coerced to a nullable string, or null if no value is defined.
+Errors  StaleElementException If the element is no longer attached to the DOM.
+</pre>
+
+<p>但是，看到这里，我们似乎还是没有从W3C那里扒到一点什么，但是起码我们还是有收获的。</p>
+<h4>这个时候我们在想，这个index属性到底是不是element的？</h4>
+<p>我们不妨从webdriver中随便找一个简单的例子去执行一下瞧瞧</p>
+<pre class="highlight python"><span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">wb</span><span class="o">=</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+    <span class="n">wb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"http://www.baidu.com"</span><span class="p">)</span>
+    <span class="n">newsele</span><span class="o">=</span><span class="n">wb</span><span class="o">.</span><span class="n">find_elements_by_tag_name</span><span class="p">(</span><span class="s">"a"</span><span class="p">)</span>
+    <span class="n">wb</span><span class="o">.</span><span class="n">execute_script</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">newe</span> <span class="ow">in</span> <span class="n">newsele</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">newe</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s">"index"</span><span class="p">)</span>
+</pre>
+
+<p>这里我打印出来的全是None，说明我们这里取到的每一个a标签都没有这个index属性，我们去看看浏览器的DOM分析：</p>
+
+<p><img src="../photo/2014/687075a4e64828e41cda37234a8fd99d.png" alt=""></p>
+
+<p>结果证明事实确实是这样，我们确实没有看到index这个属性值！</p>
+<h4>那么UIAutomator中的这个index属性值是哪儿来的？</h4>
+<p><img src="../photo/2014/8ab42405fc8591be3fdf02f35e4f5bff.jpg" alt=""></p>
+
+<p>我们不妨大胆猜测，这个index本身就不是节点的"属性"，这个index只是类似于jquery中的index()方法一样取到的这个元素相对于其他同类元素的索引值，uiautomatorviewer只是把它打印出来了，并显示在了界面上。你可以通过这个index索引(类似于数组下标)去访问到这个元素，但是反过来的话，就稍微有些复杂：</p>
+
+<p>我们想象一个最普通的数组，里面放的是我们取到的各个同类元素</p>
+<pre class="highlight plaintext">['链接a1','链接a2','链接a3','链接a4']
+</pre>
+
+<p>现在，这个列表中的每一个元素都是一个对象(obj)，假如我要给他们动态添加index属性，我需要遍历他们，并利用他们所在的数组下标和他们自身做一个操作：那就是调用自身的某个set方法，动态增加一个index属性，并将索引值赋给这个index属性，只有这样我们才能通过对象.属性去访问到这个值。</p>
+
+<p>但是问题就在于，这个运行时才添加到的属性显然是无法保存的，当你试图去访问"index"属性时，返回的只有None或者是一些异常提示信息。</p>
+
+<p>所以，这个问题跟"Appium封装的getAttribute方法不支持index"，"没有实现" 应该是没有任何关系的。</p>
+<h4>要想做到的话怎么办？</h4>
+<p>要想做到访问其实也不是不可以，那就是对这个对象进行封装，通过封装后的对象访问这个index属性。</p>
+<h4>这个有点类似于QTP中的封装属性和公共属性</h4>
+<p>我们知道，QTP中的对象识别中，也有一个index，但是这个index是QTP自己封装的，公共属性才是一个标准的元素大家都共有的属性，webdriver中的getAttribute方法，只能获取到这里的公用属性，封装的属性是获取不到的，所以，我想这就是问题的答案。</p>
+<h4>欢迎不同意见</h4>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【探究解答】getAttribute 方法为何不支持参数为 index 问题帖的探究 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1208#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1208#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1208#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1208#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1208#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply1">1楼</a> · <abbr class="timeago" title="2014-08-01T11:43:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7145" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1208/replies/7145/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../tom_ma" class="at_user" title="@tom_ma"><i>@</i>tom_ma</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../tom_ma"><img alt="808" class="uface" src="../user/large_avatar/808.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tom_ma" href="../tom_ma">tom_ma</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply2">2楼</a> · <abbr class="timeago" title="2014-08-01T12:18:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7149" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="808" href="http://testerhome.com/topics/1208/replies/7149/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="tom_ma" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 你也太专业了。。。膜拜下，但是我还是好奇为何driver.findElementByXPath("//android.widget.ImageView[<a href="http://testerhome.com/index" class="at_user" title="@index"><i>@</i>index</a>=0]"); 这个语句可以定位到对应的元素呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply3">3楼</a> · <abbr class="timeago" title="2014-08-01T12:27:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7150" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1208/replies/7150/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1208#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../tom_ma" class="at_user" title="@tom_ma"><i>@</i>tom_ma</a> xpath本身就是遍历xml中相关信息的，这个时候的index已经是Node中的一个节点了，但是这还是不能说index就是这个element的属性，这个跟这个问题本身是完全不矛盾的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply4">4楼</a> · <abbr class="timeago" title="2014-08-02T01:34:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7220" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1208/replies/7220/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="seveniruby" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很赞，分析的非常好， 讲解的很透彻</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../tianwei024"><img alt="1058" class="uface" src="../user/large_avatar/1058.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tianwei" href="../tianwei024">tianwei024</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply5">5楼</a> · <abbr class="timeago" title="2014-08-04T15:30:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7246" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1058" href="http://testerhome.com/topics/1208/replies/7246/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="tianwei024" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lifreshman"><img alt="684fc94d4d6baff6255ea30ca47b4fb6" class="uface" src="../avatar/684fc94d4d6baff6255ea30ca47b4fb6.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lifreshman" href="../lifreshman">lifreshman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply6">6楼</a> · <abbr class="timeago" title="2014-12-23T18:42:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10798" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="979" href="http://testerhome.com/topics/1208/replies/10798/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lifreshman" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请教一下关于getAttribute的问题，我在appium的lib/devices/ios/ios-controller.js 里看到有这么一段代码，<br>
+rest.get('/wd/hub/session/:sessionId?/element/:elementId?/attribute/:name', controller.getAttribute);</p>
+<pre class="highlight javascript"><span class="nx">iOSController</span><span class="p">.</span><span class="nx">getAttribute</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">elementId</span><span class="p">,</span> <span class="nx">attributeName</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isWebContext</span><span class="p">())</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">atomsElement</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getAtomsElement</span><span class="p">(</span><span class="nx">elementId</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">atomsElement</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">status</span><span class="p">:</span> <span class="nx">status</span><span class="p">.</span><span class="nx">codes</span><span class="p">.</span><span class="nx">UnknownError</span><span class="p">.</span><span class="nx">code</span>
+      <span class="p">,</span> <span class="na">value</span><span class="p">:</span> <span class="s2">"Error converting element ID for using in WD atoms: "</span> <span class="o">+</span> <span class="nx">elementId</span>
+      <span class="p">});</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">executeAtom</span><span class="p">(</span><span class="s1">'get_attribute_value'</span><span class="p">,</span> <span class="p">[</span><span class="nx">atomsElement</span><span class="p">,</span> <span class="nx">attributeName</span><span class="p">],</span> <span class="nx">cb</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">contains</span><span class="p">([</span><span class="s1">'label'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">,</span> <span class="s1">'values'</span><span class="p">,</span> <span class="s1">'hint'</span><span class="p">],</span> <span class="nx">attributeName</span><span class="p">))</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"au.getElement('"</span><span class="p">,</span> <span class="nx">elementId</span><span class="p">,</span> <span class="s2">"')."</span><span class="p">,</span> <span class="nx">attributeName</span><span class="p">,</span> <span class="s2">"()"</span><span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">proxy</span><span class="p">(</span><span class="nx">command</span><span class="p">,</span> <span class="nx">cb</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">status</span><span class="p">:</span> <span class="nx">status</span><span class="p">.</span><span class="nx">codes</span><span class="p">.</span><span class="nx">UnknownCommand</span><span class="p">.</span><span class="nx">code</span>
+      <span class="p">,</span> <span class="na">value</span><span class="p">:</span> <span class="s2">"UIAElements don't have the attribute '"</span> <span class="o">+</span> <span class="nx">attributeName</span> <span class="o">+</span> <span class="s2">"'"</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre>
+
+<p>这里是说python在用get_attribute 方法时会发送get里的请求，然后appium将请求映射为iOSController.getAttribute 么，那这里是说如果是原生app，就只能获取到'label', 'name', 'value', 'values', 'hint'这几个属性么？<br>
+期待你的回复！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1208#reply7">7楼</a> · <abbr class="timeago" title="2014-12-23T19:37:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10800" data-state="" data-type="Reply" href="1208#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1208/replies/10800/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="qddegtya" href="1208#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1208#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../lifreshman" class="at_user" title="@lifreshman"><i>@</i>lifreshman</a> 从代码上来讲：_.contains(['label', 'name', 'value', 'values', 'hint'], attributeName) underscore中的contains方法表示list中是否包含第二个参数，所以，除了这几个之外的，都会抛“UIAElements don't have the attribute......”</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    每个人都会遇到困难, 希望朋友的陪伴能够给你带来新的温暖
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1208#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

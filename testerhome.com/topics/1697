@@ -1,0 +1,867 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | chrome mobile emulation 及周边漫谈和相关应用+想法 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">chrome mobile emulation 及周边漫谈和相关应用+想法</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+     · 
+    于<abbr class="timeago" title="2014-12-15T20:05:33+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="qddegtya" href="../qddegtya">qddegtya</a> 于<abbr class="timeago" title="2015-01-09T00:33:14+08:00"></abbr>回复
+     · 
+    1155次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>写在前面的一些废话</h4>
+<p>首先，感谢各位一直以来对我个人的帮助和支持，很久没有在Testerhome发一弹技术帖了，最近总给人一种不务正业的感觉......大家都知道我目前已经转向苦逼的前端开发，在这个转变的过程中，我个人对移动端的一些测试形态有了一些新想法，今天就来聊聊如题所说的这些事儿。</p>
+
+<p>以下一些实例中涉及到了我目前所在公司的网站及其产品，确实有广告嫌疑，但是产品的h5端是由我本人开发，所以我觉得我暂时找不到更合适的例子了......</p>
+<h4>首先还是来谈谈chrome mobile emulation</h4>
+<p>OK，我还是先来聊聊chrome的mobile emulation，其实做前端开发的童鞋应该都知道他在chrome里的位置，比较害羞，比较隐蔽，而且只有在chrome 32之上的版本才能看到她，现在越来越强大了，他最直观的作用是模拟各种主流移动设备及其相关参数：通用尺寸，pixelRatio设备像素比（这也是一个大话题，暂时不用关注）等，举一个最简单的例子，当你直接打开某网站的时候默认看到的是pc版：</p>
+
+<p><img src="../photo/2014/5c5259b87997f79150e492c51acdda47.png" alt=""></p>
+
+<p>但是，众所周知的原因，现在几乎所有的主流网站都会配备一个移动设备适配版，一般称之为“触屏版”，技术上采用html5开发，其实今天我们需要解决的主要问题就是如何来测试这种形态下产品的兼容性以及如何自动化。</p>
+
+<p>一切从我们按下著名的F12键开始......</p>
+
+<p><img src="../photo/2014/6c2caa72086a9fd544c4bd508d5ba202.png" alt=""></p>
+
+<p>注意左上角类似手机的图标，当这个图标激活之后，我们将看到我们的"触屏版"在不同设备下的表现：</p>
+
+<p><img src="../photo/2014/7acfad7fec6a4187886d55bc16eae71e.png" alt=""></p>
+
+<p>大家可以试着打开淘宝网简单地体验一下。<br>
+我们可以看到，它可以模拟出当前的一些主流设备，从手机到平板，应有尽有，连我们最近的土豪6plus都赫然在列：</p>
+
+<p><img src="../photo/2014/4ea187006d9e521ef0fcce9384f587fa.png" alt=""></p>
+
+<p>值得一提的是，它还有一些令人兴奋的调试参数，比如右上角可以模拟网络类型，这无论对于研发还是测试来说都是不可多得的好工具：</p>
+
+<p><img src="../photo/2014/b405bd2f7120f6f38e12ab454b449b10.png" alt=""></p>
+
+<p>当你调节完你所需要的所有场景参数时，你就可以慢慢体验了，说再多也抵不过一张动态图：</p>
+
+<p><img src="../photo/2014/ea16a932c667e86aeb0446c165d0d4ac.gif" alt=""></p>
+
+<p>ps：在emulation中，所有的移动端touch事件将开始生效，也就是说，前端开发人员所写的一些只为适配移动设备的事件在这里可以完美运行。</p>
+<h4>从测试角度而言，我们可以利用它做什么？</h4>
+<p>从手工测试角度来说，这款工具无疑给我们带来了很多好处。不必再次强调之。<br>
+从自动化角度来说，chrome emulation能为我们带来遐想空间，并驱动我们去实现它。</p>
+
+<p>从价值来说，利用chrome emulation，我们可以做到web产品"触屏版"在各个主流设备及相关浏览器下的表现能力，并利用持续集成平台完成这个伟大的目标。</p>
+<h4>how do？</h4>
+<p>要完成这样的一个自动化，我们首先不该沉溺在一些老的资料里，而是应该多关注官方的一些文档。不用担心找不到，因为一旦有了想法，这些资料自然会被你挖掘到，看你想不想......这不，我在ChromeDriver website上，找到了这样一个官方说明：</p>
+
+<p>在chromedriver &gt;= 2.11的release版本中才开始加入对这一特性的支持。注意：最新的chromedriver的release版本号为2.13，这也意味着，这个特性刚支持不久，各位可以尽情发挥。</p>
+
+<p>链接：<a href="https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation" rel="nofollow" target="_blank">https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation</a></p>
+
+<p>Mobile Emulation<br>
+Chrome allows users to emulate Chrome on a mobile device (e.g. a “Google Nexus 7” tablet, or an “Apple iPhone 5”) from the desktop version of Chrome, by enabling the Mobile Emulation feature in Chrome DevTools. This feature speeds up web development, allows developers to quickly test how a website will render in a mobile device, without requiring a real device. ChromeDriver can also enable Mobile Emulation, via the “mobileEmulation” capability, specified with a dictionary value.</p>
+
+<p>Just as in the DevTools Emulation panel, there are two ways in ChromeDriver to enable Mobile Emulation: by specifying a known device, or by specifying individual device attributes. The format of the “mobileEmulation” dictionary depends on which method is desired.<br>
+Specifying a Known Mobile Device<br>
+To enable Mobile Emulation with a specific device name, the “mobileEmulation” dictionary must contain a “deviceName.” Use a valid device name from the DevTools Emulation panel as the value for “deviceName.”</p>
+
+<p>真是令人兴奋的一段描述，官方还给出了两个example，这里我只以python为例讲解：</p>
+<h4>直接模拟一个已存在的主流设备</h4><pre class="highlight python"><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="n">mobile_emulation</span> <span class="o">=</span> <span class="p">{</span> <span class="s">"deviceName"</span><span class="p">:</span> <span class="s">"Google Nexus 5"</span> <span class="p">}</span>
+<span class="n">chrome_options</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">ChromeOptions</span><span class="p">()</span> <span class="c">#  ChromeOptions实例,也算非常常用的一个类了。</span>
+<span class="n">chrome_options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s">"mobileEmulation"</span><span class="p">,</span> <span class="n">mobile_emulation</span><span class="p">)</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="s">'http://127.0.0.1:4444/wd/hub'</span><span class="p">,</span>
+                          <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">chrome_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
+</pre>
+<h4>完全自定义一个带参数的设备</h4>
+<p>当我们需要模拟一些通用参数或者不存在的设备浏览器类型时，可以采用这种高度自定义的方法：</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="n">mobile_emulation</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">"deviceMetrics"</span><span class="p">:</span> <span class="p">{</span><span class="s">"width"</span><span class="p">:</span> <span class="mi">360</span><span class="p">,</span> <span class="s">"height"</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s">"pixelRatio"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span> <span class="c">#  定义设备高宽，像素比</span>
+    <span class="s">"userAgent"</span><span class="p">:</span> <span class="s">"Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) "</span> <span class="c"># 通过ua来模拟</span>
+                 <span class="s">"AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"</span><span class="p">}</span>
+
+<span class="n">chrome_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+<span class="n">chrome_options</span><span class="o">.</span><span class="n">add_experimental_option</span><span class="p">(</span><span class="s">"mobileEmulation"</span><span class="p">,</span> <span class="n">mobile_emulation</span><span class="p">)</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span><span class="n">chrome_options</span> <span class="o">=</span> <span class="n">chrome_options</span><span class="p">)</span>
+
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"http://www.taobao.com"</span><span class="p">)</span>
+</pre>
+
+<p>我们运行起来看看，It works！</p>
+
+<p><img src="../photo/2014/f9a59cced689a9a75a4dcb4cb9e3d12b.png" alt=""></p>
+
+<p>到这里，我们顺利地通过chrome driver拉起了一个触屏版demo，这个例子中，需要强调的是UA参数。</p>
+
+<p>在主流的前端开发技术中，为了适配各种第三方移动端浏览器，一般都是通过其特定的UA头来进行判断的，通过UA头再给出对应容器下的展现。这也意味着，我们使用这种方法，可以模拟我们的产品在微信/UC浏览器/QQ手机浏览器等国产环境下的表现......</p>
+<h4>总结与想法</h4>
+<p>目前而言，web触屏版形态的展现非常主流（特别是一些互联网产品），掌握这些务实的技巧就显得很有必要。为此，我一直觉得：测试人员的思路只要稍微发散一些，可以带来无尽可能，不必钻牛角尖，最后得不偿失。</p>
+<h4>推荐的发散思路、工具等</h4>
+<p>下面是一些想法，工具，有兴趣的同学可以自行往下研究。</p>
+
+<p>首先，我觉得了解web触屏版开发中，那些为了支持移动设备特性，前端开发人员常用的基础技巧很重要。<br>
+其次：</p>
+
+<ol>
+<li>适当了解一下ua，js针对移动设备的主流事件，webkit独有的一些特性，了解常用移动端浏览器引擎（通常指渲染引擎）</li>
+<li>最大化节约测试成本是得到自动化成果的最务实手段。</li>
+<li>了解PhantomJS等工具，了解webkit的自动化测试的特点。</li>
+<li>了解一些常用的前端debug工具和远程调试工具（weinre等）</li>
+<li>时刻关注自动化主流工具/技术的最新版本和最新官方资讯（极为重要，对一些特性猜测保持技术敏感）</li>
+<li>当然，我始终认为，第五点是建立在有把梯子的基础上的......</li>
+<li>适当了解一些性能测试的思路和意识，而不仅仅总是那几款工具（lr,jmeter）</li>
+</ol>
+
+<p>可以戳我在SegmentFault上的一篇帖子：<br>
+《前端测试自动化工具 + 页面性能分析工具 BerserkJS 试用小记》<br>
+<a href="http://segmentfault.com/blog/diggerplus/1190000000695819" rel="nofollow" target="_blank">http://segmentfault.com/blog/diggerplus/1190000000695819</a></p>
+<h4>解答一些群里有人问我的问题</h4>
+<p>Q： 移动端/web自动化的client能否用javascript编写？</p>
+
+<p>A：了解一下Node.js，npm包中有selenium webdriver的模块，上述的例子用js写，大概长这样：</p>
+<pre class="highlight javascript"><span class="kd">var</span> <span class="nx">webdriver</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'selenium-webdriver'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">capabilities</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">browserName</span><span class="p">:</span> <span class="s1">'chrome'</span><span class="p">,</span>
+  <span class="na">chromeOptions</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">mobileEmulation</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">deviceName</span><span class="p">:</span> <span class="s1">'Apple iPhone 5'</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="kd">var</span>
+  <span class="nx">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">webdriver</span>
+  <span class="p">.</span><span class="nx">Builder</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">withCapabilities</span><span class="p">(</span><span class="nx">capabilities</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">build</span><span class="p">();</span>
+
+<span class="nx">driver</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'http://taobao.com'</span><span class="p">);</span>
+</pre>
+
+<p>至于appium，npm里躺着的就更多了，但是多数是服务端。</p>
+
+<p><img src="../photo/2014/85b6527cbb550cf28d5622c0d6fec11a.png" alt=""></p>
+
+<p>Q:  提问者自认为小白的一些问题</p>
+
+<p>A:  这个，我个人建议去看我的另外一篇帖子《重拾提问的艺术》，不装逼地讲，这篇文章我认为逼格还是可以的，而且务实。</p>
+<h4>送梯子一把</h4>
+<p>作为一名长期技术工作者，梯子已经成为了一个必备工具，之前我可能还会推荐朋友使用wallproxy之类的开源项目，不过gae的速度简直......所以我决定隆重推荐国内的一个vpn产品，想要了解的同学可以戳我的邀请链接：<br>
+<a href="http://findtizi.com/?r=97d149bebfb3f3f8" rel="nofollow" target="_blank">http://findtizi.com/?r=97d149bebfb3f3f8</a></p>
+<h4>最后才是广告</h4>
+<p>我的全新个人博客 <a href="http://xiaoa.name" rel="nofollow" target="_blank">http://xiaoa.name</a> 悄然上线了，虽然文章目前都是假的，功能还在完善中......<br>
+托管在国内的gitcafe，代码同步在gitcafe和github，欢迎交流。</p>
+<h4>PS</h4>
+<p>这个帖子总共经历我几块牛排，一碗鱼汤，一碗蛋炒饭，几颗草莓的时间，所以，我认为信息量还是可以的。<br>
+语句不通顺之处可以指出，我会持续更新和优化。</p>
+<h4>补刀内容赏析，欢迎热烈讨论。</h4>
+<p>来自 @思寒 </p>
+
+<p>我这边补刀下.<br>
+优点<br>
+1. 这个方法基于chrome, 可以便捷的识别跨尺寸的兼容问题. 简直就可以分分钟帮企业做个自动化服务了.<br>
+2. 获取响应速度的瀑布流图也非常的容易. 很容易做性能测试和瓶颈分析</p>
+
+<p>缺点<br>
+1. 方法基于chrome引擎, 考虑到不同浏览器的版本, 以及不同设备上浏览器引擎差异, 所以有些css的兼容性问题仍然需要验证. 所以尺寸兼容性可以解决, 但是设备的兼容性测试仍然需要做. 好消息是大部分企业的h5一般都是布局不合理占多数.</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='chrome mobile emulation 及周边漫谈和相关应用+想法 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1697#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1697#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1697#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1697#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1697#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>20</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply1">1楼</a> · <abbr class="timeago" title="2014-12-15T22:01:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10610" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1697/replies/10610/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的太赞了.  赶紧占住广告位.</p>
+
+<p>我这边补刀下.<br>
+优点<br>
+1. 这个方法基于chrome, 可以便捷的识别跨尺寸的兼容问题. 简直就可以分分钟帮企业做个自动化服务了.<br>
+2. 获取响应速度的瀑布流图也非常的容易. 很容易做性能测试和瓶颈分析</p>
+
+<p>缺点<br>
+1. 方法基于chrome引擎, 考虑到不同浏览器的版本, 以及不同设备上浏览器引擎差异, 所以有些css的兼容性问题仍然需要验证. 所以尺寸兼容性可以解决, 但是设备的兼容性测试仍然需要做. 好消息是大部分企业的h5一般都是布局不合理占多数.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply2">2楼</a> · <abbr class="timeago" title="2014-12-15T22:06:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10611" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10611/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 思寒说的没错，h5在各种内核下的表现实在太多坑，不过另一个好消息是，国内主流都是webkit</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply3">3楼</a> · <abbr class="timeago" title="2014-12-15T22:06:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10612" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10612/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我把你补刀内容放到帖子里</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply4">4楼</a> · <abbr class="timeago" title="2014-12-15T22:14:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10613" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/1697/replies/10613/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="tspring" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这种技术可以实现原生app自动化测试？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply5">5楼</a> · <abbr class="timeago" title="2014-12-15T22:25:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10614" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10614/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> 正如我在文中提到的适用场景，其比较适合用于h5端移动web网站的测试，原生app的自动化测试是无法胜任的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../ansonwoo"><img alt="1835" class="uface" src="../user/large_avatar/1835.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../ansonwoo">ansonwoo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply6">6楼</a> · <abbr class="timeago" title="2014-12-16T09:06:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10615" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1835" href="http://testerhome.com/topics/1697/replies/10615/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="ansonwoo" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>digger plus还继续维护吗?</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply7">7楼</a> · <abbr class="timeago" title="2014-12-16T09:19:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10617" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/1697/replies/10617/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="tspring" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 那你哪些自动化脚本是用webdriver实现的还是jQuery写的？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../tobytang"><img alt="5b02a0940df4746f6cbf398adb331a8b" class="uface" src="../avatar/5b02a0940df4746f6cbf398adb331a8b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../tobytang">tobytang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply8">8楼</a> · <abbr class="timeago" title="2014-12-16T10:06:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10618" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="581" href="http://testerhome.com/topics/1697/replies/10618/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="tobytang" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个我也研究过一阵子，我对比过真实设备和用chrome模拟该设备时的差异，很多地方页面的表现还是存在较大差异的..如果实现目的对UI本身相关内容关注度比较高的话，估计要做进一步考虑</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../nickli"><img alt="80cbf9a06386767f1ad9ce43d4222feb" class="uface" src="../avatar/80cbf9a06386767f1ad9ce43d4222feb.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="李" href="../nickli">nickli</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply9">9楼</a> · <abbr class="timeago" title="2014-12-16T11:16:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10623" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1990" href="http://testerhome.com/topics/1697/replies/10623/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="nickli" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>支持楼主，还真没发现这个功能。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply10">10楼</a> · <abbr class="timeago" title="2014-12-16T12:11:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10626" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10626/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../ansonwoo" class="at_user" title="@ansonwoo"><i>@</i>ansonwoo</a> 当然，不过今年更新力度很小，团队内部考虑上线全新版本</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply11">11楼</a> · <abbr class="timeago" title="2014-12-16T12:12:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10627" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10627/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../tobytang" class="at_user" title="@tobytang"><i>@</i>tobytang</a> 拿这个跟真实设备比是不现实的，只能说，可以利用这种方法或者思路来获取必要价值</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../xie_0723"><img alt="1439" class="uface" src="../user/large_avatar/1439.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xie0723" href="../xie_0723">xie_0723</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply12">12楼</a> · <abbr class="timeago" title="2014-12-16T13:30:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10630" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1439" href="http://testerhome.com/topics/1697/replies/10630/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="xie_0723" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight python"><span class="k">print</span> <span class="s">"nb"</span>
+</pre>
+
+<p>有这个工具，仅限于web移动端的自动化测试，就不需要再重新学习appium啦，^_^ ，直接使用selenium的环境，操作web页面的元素就OK。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply13">13楼</a> · <abbr class="timeago" title="2014-12-16T15:33:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10636" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10636/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../xie_0723" class="at_user" title="@xie_0723"><i>@</i>xie_0723</a> 具体问题具体分析，仅此而已。这样，我们能够始终覆盖产品测试的方方面面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply14">14楼</a> · <abbr class="timeago" title="2014-12-16T18:02:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10647" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1697/replies/10647/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="seveniruby" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../xie_0723" class="at_user" title="@xie_0723"><i>@</i>xie_0723</a>  这个点赞方式我喜欢. 可以在论坛提倡.  纯web app的测试, 可以不用appium了.  这种方式更轻量级.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply15">15楼</a> · <abbr class="timeago" title="2014-12-16T18:04:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10649" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10649/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 透过现象看本质，往往能让测试少走很多弯路。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply16">16楼</a> · <abbr class="timeago" title="2014-12-16T18:13:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10650" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1697/replies/10650/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="seveniruby" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 是的, 有很多工作其实用逻辑思维, 可以避免的.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply17">17楼</a> · <abbr class="timeago" title="2014-12-19T00:17:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10694" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1697/replies/10694/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="anikikun" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>终于抽时间细读了啊。<br>
+强赞。<br>
+最近对于周期非常短的专题类型的触屏应用的兼容行测试非常头疼..</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply18">18楼</a> · <abbr class="timeago" title="2014-12-19T09:53:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10699" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/10699/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 就是那一堆堆运营页面，如今，single page遍地，继续深入研究，还会有更多干货产出。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../yangeren"><img alt="679" class="uface" src="../user/large_avatar/679.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="翰子" href="../yangeren">yangeren</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply19">19楼</a> · <abbr class="timeago" title="2015-01-08T17:59:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="11338" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="679" href="http://testerhome.com/topics/1697/replies/11338/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="yangeren" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 强赞！！<br>
+但现在有一类h5是内嵌在app应用里的，并且js方法还是由app传进去的，这种情况应该很难用这种方法实现吧，只能用appium。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1697#reply20">20楼</a> · <abbr class="timeago" title="2015-01-09T00:33:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11373" data-state="" data-type="Reply" href="1697#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1697/replies/11373/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="qddegtya" href="1697#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1697#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../yangeren" class="at_user" title="@yangeren"><i>@</i>yangeren</a> 俗称Hybrid，app里的页面要想获得原生能力就要由原生app往webview里注入一段js</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @saraben 期待“念念不忘，必有回响”在我身上印证的那一天到来
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1697#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

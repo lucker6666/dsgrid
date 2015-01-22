@@ -1,0 +1,823 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 通过无线连接的方式来做 Appium 自动化 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">通过无线连接的方式来做 Appium 自动化</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+     · 
+    于<abbr class="timeago" title="2014-09-11T17:38:16+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="davidyang" href="../davidyang">davidyang</a> 于<abbr class="timeago" title="2015-01-08T11:59:14+08:00"></abbr>回复
+     · 
+    910次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>感谢TesterHome里各种大牛，提出的宝贵思路，我这里只是将他们的想法综合了一下，试出来的成果，谢谢大家分享你们的智慧。</p>
+
+<p>简单说下背景:<br>
+由于公司要测试APP 产品的耗电问题，我们采取的办法很low，对各个模块功能进行大量的手动测试，再通过Emmagee或GT得出来的结果来评估产品耗电，流量，CPU,内存的消耗等。由于手工效率太低，而且不准确，我们就决定用自动化来实现，但用自动化又面临了一个USB接电脑供电的问题，从而导致计算出来的功耗与手动跑的有很大的误差。<br>
+万般寻找，终于在Testerhome里等到牛人给了我解决的思路和方案，感受颇深，仅仅的几个字就解决了我的问题，而且很优雅。</p>
+
+<p>直入主题。</p>
+
+<p>我们通常做安卓自动化的时候，总是需要将手机连接到电脑，直到<a href="../cjtcwyk" class="at_user" title="@cjtcwyk"><i>@</i>cjtcwyk</a> 提出的可使用 adb connect 命令来实现无线连接手机，一听到果断入手搜索相关APP，走完一遍流程，原来是如此的简单。</p>
+
+<p>我们可以在商店里面下一个叫 Wireless ADB（下图为豌豆荚），安装完关闭豌豆荚<br>
+<img src="../photo/2014/aaad5cdc61f5417ce9bee3d79ac373ce.png" alt=""></p>
+
+<p>安装完后图标如下：<br>
+<img src="../photo/2014/c481e961d5b6f5695789dfeaa474a21b.png" alt=""></p>
+
+<p>接下来至少要保证 2 件 事情：<br>
+1，确保手机已经Root了<br>
+2，手机和PC 要在一个网段(从PC端可以ping通手机端的IP地址)</p>
+
+<p>这2件事情办好就好办多了，打开安装后的Wireless ADB.<br>
+<img src="../photo/2014/c0efb732597212dcf4d5c86b6fb45a97.png" alt=""></p>
+
+<p>勾中Wireless ADB 的checkbox，后它就认为是开启了<br>
+当然这里我们还可以设置它的端口，默认为5555</p>
+
+<p>下一步开始通过无线来连接手机，在PC端CMD 下 输入你手机的IP地址和它的端口号后回车<br>
+<img src="../photo/2014/79999e14faa3218f7f1cecc8d89c6e98.png" alt=""></p>
+
+<p>成功连接上。</p>
+
+<p>如果出现了 not implement 这个错误，请关掉豌豆荚，360 等软件，很可能是有冲突</p>
+
+<p><img src="../photo/2014/68fe45014daf868a067b265e74b54dc0.png" alt=""></p>
+
+<p>连接成功后，就可以开始正常的自动化工作了。</p>
+
+<p>启动appium 和 adb connect<br>
+<img src="../photo/2014/377f52482a4733457631273832a08fc5.png" alt=""></p>
+
+<p>无线启动appium感觉比有线稍微慢一点点，大概也就10来秒，可以接受范围<br>
+<img src="../photo/2014/2be9a3244da3a96f3c1b6cc2043ac36e.png" alt=""></p>
+
+<p>成功无线运行脚本测试APP.</p>
+
+<p>差不多就这些了，经测试脚本运行的速度和有线并无太大的差异<br>
+至少我们可以解决这几个问题：<br>
+1，我们不必非要连接数据线做安卓的自动化测试（感觉演示的时候会很酷...）<br>
+2，我们可以更精确的来衡量功耗的使用<br>
+3，手机电池寿命更长。。。。哈哈哈<br>
+等等，相信还有很多好处。。<br>
+再次感谢各位大牛，文采不佳，大家凑合着看。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='通过无线连接的方式来做 Appium 自动化 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1383#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1383#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1383#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1383#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1383#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>23</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply1">1楼</a> · <abbr class="timeago" title="2014-09-11T17:45:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8512" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1383/replies/8512/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哈哈，有意思。 其实 不管有线无线。 对于adb server 而言都是一样的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply2">2楼</a> · <abbr class="timeago" title="2014-09-11T17:56:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8515" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/1383/replies/8515/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seasoncool2011" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <br>
+哈哈，确实。。多一种方式，就多一种乐趣啊。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply3">3楼</a> · <abbr class="timeago" title="2014-09-11T20:35:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8523" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/1383/replies/8523/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="luis" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不错，从论坛得到的最后又分享出来，这就是开源精神！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply4">4楼</a> · <abbr class="timeago" title="2014-09-11T22:26:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8525" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1383/replies/8525/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个大赞～这个就是回馈啊～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply5">5楼</a> · <abbr class="timeago" title="2014-09-12T02:00:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8529" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1383/replies/8529/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个无线连接, 可以大做文章的, 之前用它做了很多的试验. 如果创建一个vpn, 其实就可以通过无线来控制很多终端了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply6">6楼</a> · <abbr class="timeago" title="2014-09-12T08:00:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8530" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1383/replies/8530/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="htmlbiji" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>PC端要装无线网卡吗？没有的话ping不通的吧。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply7">7楼</a> · <abbr class="timeago" title="2014-09-12T08:45:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8531" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/1383/replies/8531/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seasoncool2011" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哈哈哈，谢谢大家鼓励，确实很不错的功能。</p>
+
+<p><a href="../htmlbiji" class="at_user" title="@htmlbiji"><i>@</i>htmlbiji</a>  无须PC端安装无线网卡，只用保证PC 和 手机端，在同一个网络即可。<br>
+PC 的网段好查看，手机的网段 可以在无线连接里设置。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../cy_suncheng"><img alt="703" class="uface" src="../user/large_avatar/703.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="CY" href="../cy_suncheng">cy_suncheng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply8">8楼</a> · <abbr class="timeago" title="2014-09-12T09:28:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8534" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="703" href="http://testerhome.com/topics/1383/replies/8534/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="cy_suncheng" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>试验了，已经成功，赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../xiang2743"><img alt="1401" class="uface" src="../user/large_avatar/1401.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="mike" href="../xiang2743">xiang2743</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply9">9楼</a> · <abbr class="timeago" title="2014-09-12T10:28:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8536" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1401" href="http://testerhome.com/topics/1383/replies/8536/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="xiang2743" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞一个，太棒了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../229max"><img alt="1552" class="uface" src="../user/large_avatar/1552.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Max.Bai" href="../229max">229max</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply10">10楼</a> · <abbr class="timeago" title="2014-09-12T10:38:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8538" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1552" href="http://testerhome.com/topics/1383/replies/8538/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="229max" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> Appium连接grid 怎么测试app， 我连接上了可以测试浏览器，但是测试不了app</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../sziitash"><img alt="1181" class="uface" src="../user/large_avatar/1181.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="benlee" href="../sziitash">sziitash</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply11">11楼</a> · <abbr class="timeago" title="2014-09-12T11:49:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8540" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1181" href="http://testerhome.com/topics/1383/replies/8540/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="sziitash" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个好顶赞。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply12">12楼</a> · <abbr class="timeago" title="2014-09-12T12:36:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8541" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1383/replies/8541/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="umbrella1978" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>给你32个赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../pajack"><img alt="1035" class="uface" src="../user/large_avatar/1035.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Pajack" href="../pajack">pajack</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply13">13楼</a> · <abbr class="timeago" title="2014-09-12T19:53:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8571" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1035" href="http://testerhome.com/topics/1383/replies/8571/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="pajack" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>无线连接挺好的，特别是用真机跑时， 但稳定性如何，估计得观察~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply14">14楼</a> · <abbr class="timeago" title="2014-09-13T15:19:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8585" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1383/replies/8585/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="xiaomayi0323" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>豌豆荚，应用宝等手机管理工具的无线连接，也应该和这是一个道理吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply15">15楼</a> · <abbr class="timeago" title="2014-09-13T15:50:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8588" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/1383/replies/8588/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="seasoncool2011" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../pajack" class="at_user" title="@pajack"><i>@</i>pajack</a> <br>
+稳定性方面，虽然没有长时间测试，但经过这几天的运行情况，在wifi稳定的情况下，表现还是很稳定的，和连接数据线无太大的区别。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply16">16楼</a> · <abbr class="timeago" title="2014-09-13T15:55:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8589" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/1383/replies/8589/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="seasoncool2011" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> <br>
+感觉和豌豆荚和其它无线连接的方式不是一个套路。<br>
+我们起初尝试过用豌豆荚无线连接，可是在 adb devices 里面找不到设备列表，反之用wireless adb 是可以 通过 它来连接上设备的，可能原理上还是有区别。<br>
+希望大牛们指出 异同。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply17">17楼</a> · <abbr class="timeago" title="2014-09-13T16:26:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8591" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1383/replies/8591/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="xiaomayi0323" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1383#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../seasoncool2011" class="at_user" title="@seasoncool2011"><i>@</i>seasoncool2011</a> <br>
+真心不错，我现在也可以跑起来，以后做演示就方便啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../cjtcwyk"><img alt="306" class="uface" src="../user/large_avatar/306.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../cjtcwyk">cjtcwyk</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply18">18楼</a> · <abbr class="timeago" title="2014-09-18T15:47:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8709" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="306" href="http://testerhome.com/topics/1383/replies/8709/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="cjtcwyk" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1383#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../seasoncool2011" class="at_user" title="@seasoncool2011"><i>@</i>seasoncool2011</a> 实际上不在一个网段也是可以的，只要在同一个网络里就可以，在我公司只要都在内网上都没问题 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../jerome"><img alt="1146" class="uface" src="../user/large_avatar/1146.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lijingbo" href="../jerome">jerome</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply19">19楼</a> · <abbr class="timeago" title="2014-09-18T21:39:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8722" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1146" href="http://testerhome.com/topics/1383/replies/8722/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="jerome" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好东西，稍后我也尝试下这种方案，谢谢。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../gghappy"><img alt="746a8d45403c547801d1f5701d68c2d1" class="uface" src="../avatar/746a8d45403c547801d1f5701d68c2d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="gghappy" href="../gghappy">gghappy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply20">20楼</a> · <abbr class="timeago" title="2014-09-21T23:55:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8771" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1616" href="http://testerhome.com/topics/1383/replies/8771/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="gghappy" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>具体耗电量的测试方案 是否可以分享一下呢？ 我的邮箱 gghappy360@126.com  谢谢！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../mggao"><img alt="603" class="uface" src="../user/large_avatar/603.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="高明国" href="../mggao">mggao</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply21">21楼</a> · <abbr class="timeago" title="2014-09-23T18:05:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8825" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="603" href="http://testerhome.com/topics/1383/replies/8825/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="mggao" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个赞，可否分享下耗电量测试方案。403937185@qq.com</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply22">22楼</a> · <abbr class="timeago" title="2014-09-24T21:27:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8864" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/1383/replies/8864/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="seasoncool2011" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../gghappy" class="at_user" title="@gghappy"><i>@</i>gghappy</a> <a href="../mggao" class="at_user" title="@mggao"><i>@</i>mggao</a> <br>
+不好意思哈，方案中包含了很多公司产品的信息，这块不能分享给大家。<br>
+大概的思路 就是 我们通过模拟用户的常用操作，比如微信，通过发送大量的信息，图片，名片，大size的文件，来定位某个模块 消耗的功耗，流量，温度，内存以及CPU等等，还有很多指标。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1383#reply23">23楼</a> · <abbr class="timeago" title="2015-01-08T11:59:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11287" data-state="" data-type="Reply" href="1383#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/1383/replies/11287/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="davidyang" href="1383#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢分享，ios的设备怎么无线连接呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @jacky 希望一天天的进步，小学妹等着我啊
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1383#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 Appium 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 Appium 节点最新发帖.</description>
+    <item>
+      <title>Appium</title>
+      <description>&lt;p&gt;请教下，为什么我每次启动appium.exe都要帮我初始化一下程序。&lt;/p&gt;
+
+&lt;p&gt;已经选择了 No Reset了，而且App Path 也没有勾选.&lt;/p&gt;
+&lt;h4&gt;-*- coding: UTF-8 -*-&lt;/h4&gt;
+&lt;p&gt;import os&lt;br&gt;
+import unittest&lt;br&gt;
+import platform&lt;br&gt;
+import sys&lt;br&gt;
+from appium import webdriver&lt;/p&gt;
+&lt;h4&gt;PATH = lambda p: os.path.abspath(&lt;/h4&gt;&lt;h4&gt;os.path.join(os.path.dirname(&lt;strong&gt;file&lt;/strong&gt;), p)&lt;/h4&gt;&lt;h4&gt;)&lt;/h4&gt;
+&lt;p&gt;desired_caps = {}&lt;br&gt;
+desired_caps['platformName'] = 'Android'&lt;br&gt;
+desired_caps['platformVersion'] = '4.2.2'&lt;br&gt;
+desired_caps['deviceName'] = '0123456789ABCDEF'&lt;/p&gt;
+&lt;h4&gt;desired_caps['app'] = PATH('C:\Users\xxx\Desktop\APK\xxxxxx.apk')&lt;/h4&gt;
+&lt;p&gt;desired_caps['appActivity']=NaviViewManager'&lt;br&gt;
+desired_caps['appPackage']=ABC.info'&lt;br&gt;
+driver = webdriver.Remote('&lt;a href="http://127.0.0.1:4723/wd/hub,desired_caps" rel="nofollow" target="_blank"&gt;http://127.0.0.1:4723/wd/hub,desired_caps&lt;/a&gt;')&lt;/p&gt;
+
+&lt;p&gt;这个也是通过网上的教程去写的，是不是哪里出了问题，希望各位能够指导下，谢谢&lt;/p&gt;</description>
+      <author>lovelorn0327</author>
+      <pubDate>Thu, 22 Jan 2015 09:25:52 +0800</pubDate>
+      <link>http://testerhome.com/topics/1917</link>
+      <guid>http://testerhome.com/topics/1917</guid>
+    </item>
+    <item>
+      <title>如何测试微信公众号里面的页面</title>
+      <description>&lt;p&gt;我们是一家电商公司，微信公众号里面的页面是H5页面，如何切换content进去测试h5页面呢？&lt;/p&gt;
+
+&lt;p&gt;Thread.sleep(15000);// &lt;br&gt;
+        for(String winHandle : driver.getContextHandles()){&lt;br&gt;
+            System.out.println(winHandle);&lt;br&gt;
+        }&lt;/p&gt;
+
+&lt;p&gt;NATIVE_APP&lt;/p&gt;
+
+&lt;p&gt;请各位帮忙看看&lt;/p&gt;</description>
+      <author>app_testing</author>
+      <pubDate>Wed, 21 Jan 2015 11:29:17 +0800</pubDate>
+      <link>http://testerhome.com/topics/1912</link>
+      <guid>http://testerhome.com/topics/1912</guid>
+    </item>
+    <item>
+      <title>appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化</title>
+      <description>&lt;p&gt;1 如题，软件处于开发期，用appium inspector 获得ios控件xpath编写测试脚本，发现控件xpath经常会变，导致测试脚本需要经常修改。希望能获得控件的id或其他能唯一定位控件位置的参数来定位控件位置，有什么好用的工具获得控件的id或者通过何种方式能唯一定位控件位置呢？&lt;br&gt;
+请教了ios开发，这里说的ios控件id貌似是tag_name吧，可是有很多控件没有定义tag_name,此时如何定位呢？class name或者什么方式呢？&lt;br&gt;
+2 xpath定位控件的所有格式都有哪些呢？希望各位前辈指点下&lt;/p&gt;</description>
+      <author>crease</author>
+      <pubDate>Wed, 21 Jan 2015 11:10:38 +0800</pubDate>
+      <link>http://testerhome.com/topics/1910</link>
+      <guid>http://testerhome.com/topics/1910</guid>
+    </item>
+    <item>
+      <title>Appium 框架中，是如何做延时处理的？</title>
+      <description>&lt;p&gt;经常在测试时会遇到网络情况不好的时候，而此时需要打开这个界面后，才能执行这个操作。&lt;br&gt;
+如果此时因为网络慢，而导致在执行当前操作时，该操作界面还没有来得及显示在屏幕上，该如何处理？&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;elementExist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;locator&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;wait&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+         &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+             &lt;span class="n"&gt;wait&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WebDriverWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;until&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ExpectedCondition&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Boolean&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                 &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;Boolean&lt;/span&gt; &lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;locator&lt;/span&gt;&lt;span class="o"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;isDisplayed&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+                 &lt;span class="o"&gt;}&lt;/span&gt;
+             &lt;span class="o"&gt;});&lt;/span&gt;
+         &lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="k"&gt;catch&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+
+         &lt;span class="o"&gt;}&lt;/span&gt;
+         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>wangcityboy</author>
+      <pubDate>Tue, 20 Jan 2015 16:30:38 +0800</pubDate>
+      <link>http://testerhome.com/topics/1907</link>
+      <guid>http://testerhome.com/topics/1907</guid>
+    </item>
+    <item>
+      <title>安卓怎么用 Appium 定位元素呢</title>
+      <description>&lt;p&gt;设置了Appium配置，然后运行Appium，运行Inpector，但是跑不起来，报错了。&lt;br&gt;
+错误信息是：&lt;br&gt;
+info: [debug] Error: Command failed: ADB server didn't ACK&lt;br&gt;
+* could not start server *&lt;/p&gt;
+
+&lt;p&gt;at ChildProcess.exithandler (child_process.js:658:15)&lt;br&gt;
+    at ChildProcess.emit (events.js:98:17)&lt;br&gt;
+    at maybeClose (child_process.js:766:16)&lt;br&gt;
+    at Socket.&amp;lt;anonymous&amp;gt; (child_process.js:979:11)&lt;br&gt;
+    at Socket.emit (events.js:95:17)&lt;br&gt;
+    at Pipe.close (net.js:466:12)&lt;br&gt;
+info: [debug] Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: Command failed: ADB server didn't ACK\n* could not start server &lt;em&gt;\n)","killed":false,"code":255,"signal":null,"origValue":"Command failed: ADB server didn't ACK\n&lt;/em&gt; could not start server *\n"},"sessionId":null}&lt;br&gt;
+info: &amp;lt;-- POST /wd/hub/session 500 17166.155 ms - 296 &lt;/p&gt;
+
+&lt;p&gt;这个是什么问题呢？&lt;/p&gt;</description>
+      <author>ceshichen</author>
+      <pubDate>Tue, 20 Jan 2015 16:13:01 +0800</pubDate>
+      <link>http://testerhome.com/topics/1906</link>
+      <guid>http://testerhome.com/topics/1906</guid>
+    </item>
+    <item>
+      <title>iOS pullFile 接口获取 iOS 真机设备文件提示没有实现</title>
+      <description>&lt;p&gt;Appium Client SDK 版本:1.2.1&lt;br&gt;
+Appium Server 版本：1.3.4&lt;/p&gt;
+
+&lt;p&gt;经过测试，Android平台下，pullFile取设备文件，接口是实现了的，并且测试通过。&lt;br&gt;
+但是在IOS平台下，pullFile抛出未实现的异常。&lt;/p&gt;
+
+&lt;p&gt;请教一个论坛的达人，&lt;br&gt;
+1. Appium在哪个版本支持了获取IOS设备文件pullFile功能？&lt;br&gt;
+2. 还有没有其他替代的方案，可以获取当前App所在目录下的文件？&lt;/p&gt;
+
+&lt;p&gt;谢谢。&lt;/p&gt;</description>
+      <author>sevenseven</author>
+      <pubDate>Tue, 20 Jan 2015 14:09:58 +0800</pubDate>
+      <link>http://testerhome.com/topics/1904</link>
+      <guid>http://testerhome.com/topics/1904</guid>
+    </item>
+    <item>
+      <title>Appium 已支持中文输入（给还不知道已支持中文输入的同学）</title>
+      <description>&lt;p&gt;Appium 1.3.3以上。&lt;br&gt;
+java：&lt;br&gt;
+capabilities增加下面两项：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"unicodeKeyboard"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"True"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"resetKeyboard"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"True"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;python：&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;"unicodeKeyboard"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"True"&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;"resetKeyboard"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"True"&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>xuxu</author>
+      <pubDate>Tue, 20 Jan 2015 12:33:26 +0800</pubDate>
+      <link>http://testerhome.com/topics/1903</link>
+      <guid>http://testerhome.com/topics/1903</guid>
+    </item>
+    <item>
+      <title>Appium 偶尔会找不到 iOS 上的控件</title>
+      <description>&lt;p&gt;大家遇到过这个问题么？Appium运行App，写了Python脚本，循环执行同一个动作。一样的流程，Appium会有一定的概率，找不到对应的控件，导致Crash。你们有碰到过这问题么&lt;/p&gt;</description>
+      <author>ceshichen</author>
+      <pubDate>Tue, 20 Jan 2015 00:04:21 +0800</pubDate>
+      <link>http://testerhome.com/topics/1902</link>
+      <guid>http://testerhome.com/topics/1902</guid>
+    </item>
+    <item>
+      <title>Appium 中如何实现自定义的 UiWatcher 类</title>
+      <description>&lt;p&gt;Android的app跑appium时有时会弹出一些alert，Appium中如何实现监听这个对话框? UIAutomator 里有这个UiWacher: &lt;a href="http://developer.android.com/tools/help/uiautomator/UiWatcher.html" rel="nofollow" target="_blank"&gt;http://developer.android.com/tools/help/uiautomator/UiWatcher.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Appium的server段代码中也自定义了一些watcher来处理anr和crash，但是没找到如何在client端创建自定义的Watcher，求指教...&lt;/p&gt;</description>
+      <author>xiaorudk</author>
+      <pubDate>Mon, 19 Jan 2015 17:22:39 +0800</pubDate>
+      <link>http://testerhome.com/topics/1900</link>
+      <guid>http://testerhome.com/topics/1900</guid>
+    </item>
+    <item>
+      <title>Appium + Selenium Grid2 = Appium Parallel Execution</title>
+      <description>&lt;p&gt;Hi all,&lt;/p&gt;
+
+&lt;p&gt;今天要分享一下我用appium + selenium grd2 來達到 appium parallel execution的經驗&lt;br&gt;
+我這邊主要試的是iOS device的parallel execution&lt;/p&gt;
+
+&lt;p&gt;簡單說一下selenium grid的架構，他需要一台hub來連接多個node&lt;br&gt;
+hub用來分配test到各個node上面去執行，因為appium所用的web driver是和selenium是同一套&lt;br&gt;
+所以說appium可以用於selenium grid上面, 也就是說我可以針對iOS或android的原生app去平行化跑automation&lt;br&gt;
+&lt;img src="/photo/2015/dc49796233439d55cc73c9637dc54b6d.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;準備資料：Mac OS*3(1台mac mini搭配裡面2個Mac OS VM)，這邊我把mac mini當作hub，另外兩個Mac OS VM當作node使用&lt;br&gt;
+為什麼要各自的Mac OS VM呢？因為Mac OS的限制，一台Mac OS只能跑一台iOS device&lt;br&gt;
+所以我用了VM，一個VM接一台iOS device；至於android就沒有這個限制了，所以說你可以同一台machine上面既跑hub也跑多個node都沒關係&lt;/p&gt;
+
+&lt;p&gt;首先在這3台Mac OS都裝上appium，怎麼裝appium我就不詳細描述了&lt;/p&gt;
+
+&lt;p&gt;接著在mac mini上面，下載最新版的selenium grid 2 &lt;br&gt;
+&lt;a href="http://selenium-release.storage.googleapis.com/index.html" rel="nofollow" target="_blank"&gt;http://selenium-release.storage.googleapis.com/index.html&lt;/a&gt;&lt;br&gt;
+我這邊下載的版本是selenium-server-standalone-2.44.0.jar&lt;/p&gt;
+
+&lt;p&gt;在來在另外兩台Mac OS VM上面，分別找個位置去建立一個configuration file&lt;br&gt;
+我的configuration如下&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="s"&gt;"capabilities"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+
+        &lt;span class="p"&gt;{&lt;/span&gt;
+
+            &lt;span class="s"&gt;"browserName"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"iphone 6"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+            &lt;span class="s"&gt;"version"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"8.0"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+            &lt;span class="s"&gt;"maxInstances"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+            &lt;span class="s"&gt;"platform"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"MAC"&lt;/span&gt;
+
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="p"&gt;],&lt;/span&gt;
+
+    &lt;span class="s"&gt;"configuration"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+        &lt;span class="s"&gt;"cleanUpCycle"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"timeout"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;30000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"hub"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"http://10.1.200.113:4444/grid/register"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"host"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"10.1.201.178"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"proxy"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"org.openqa.grid.selenium.proxy.DefaultRemoteProxy"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"maxSession"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"port"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4723&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"hubPort"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4444&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"hubHost"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"10.1.200.113"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"url"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"http://10.1.201.178:4723/wd/hub"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"remoteHost"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"http://10.1.201.178:4723"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"register"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="s"&gt;"registerCycle"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+         &lt;span class="s"&gt;"role"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"node"&lt;/span&gt;
+
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;記得要把相對應的address改成你的環境裡面的設定&lt;/p&gt;
+
+&lt;p&gt;在來就是執行的部分&lt;/p&gt;
+
+&lt;p&gt;在hub上面打開terminal，run以下的command&lt;/p&gt;
+
+&lt;p&gt;java -jar selenium-server-standa-2.44.0.jar -port 4444 -role hub -nodeTimeout 600&lt;/p&gt;
+
+&lt;p&gt;不加-port 4444也行，因為預設的port就是4444&lt;/p&gt;
+
+&lt;p&gt;接著在各個node上面先連結你的testing device，這邊就是iPhone，連到node上面&lt;/p&gt;
+
+&lt;p&gt;打開terminal，run以下的command&lt;/p&gt;
+
+&lt;p&gt;appium -a 10.1.201.178 -p 4723 -U $(your device's udid)  --nodeconfig $(your absolute path to  config.json)&lt;/p&gt;
+
+&lt;p&gt;其中 10.1.201.178是你node的ip address，port是你appium要開的port。這兩個資料要和你的config.json裡面設定的要一樣, 記得把各個參數改成你相對應的環境參數，這邊nodeconfig的位址記得改成絕對路徑&lt;/p&gt;
+
+&lt;p&gt;輸入完之後，你可以從node的terminal裡面看到&lt;/p&gt;
+
+&lt;p&gt;info: --&amp;gt; GET /wd/hub/status {}&lt;/p&gt;
+
+&lt;p&gt;info: [debug] Responding to client with success: {"status":0,"value":{"build":{"version":"1.3.4","revision":"c8c79a85fbd6870cd6fc3d66d038a115ebe22efe"}}}&lt;/p&gt;
+
+&lt;p&gt;的訊息&lt;/p&gt;
+
+&lt;p&gt;接著在hub的terminal裡面也會看到連結成功的訊息&lt;/p&gt;
+
+&lt;p&gt;或者從hub機器裡，打開browser，輸入&lt;a href="http://localhost:444" rel="nofollow" target="_blank"&gt;http://localhost:444&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;也可以看到這台hub所連接的node的資訊&lt;br&gt;
+&lt;img src="/photo/2015/3a269a226384854c776e426c1d1591f1.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;如果到這邊都沒問題的話，就可以run你的test case了&lt;/p&gt;
+
+&lt;p&gt;你要測試的app記得放在node機器裡面，如果你的app位置是放在local的話&lt;/p&gt;
+
+&lt;p&gt;run你的test case就和run appium一樣，只是你要把server address和port改成hub的位址資訊&lt;/p&gt;
+
+&lt;p&gt;連結到hub之後，hub就會自動的把你的test case轉到node上面去run&lt;/p&gt;
+
+&lt;p&gt;run了一次，還沒跑完的時候，在run一次test case，hub會幫你把test case轉到另一台free的node上面去run，這樣子就是appium parallel execution&lt;/p&gt;
+
+&lt;p&gt;大概就是這樣&lt;/p&gt;</description>
+      <author>colorhaake</author>
+      <pubDate>Fri, 16 Jan 2015 16:49:52 +0800</pubDate>
+      <link>http://testerhome.com/topics/1888</link>
+      <guid>http://testerhome.com/topics/1888</guid>
+    </item>
+    <item>
+      <title>appium 在 Xcode 6.1.1 ios8.1 环境下 swipe 方法没效果？？求解答。</title>
+      <description>&lt;p&gt;我把我调试的代码贴上来吧：&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;appium&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt;
+&lt;span class="n"&gt;PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abspath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;__file__&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'platformName'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'ios'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'browserName'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;''&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'platformVersion'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'8.1'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'deviceName'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'iPhone 5s'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'app'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PATH&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'/Users/kadanlin/Library/Developer/Xcode/DerivedData/TCAApp-fsxxgsvxmaxgpkaabtbazmedziep/Build/Products/Debug-iphonesimulator/TCAApp.app'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Remote&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://127.0.0.1:4723/wd/hub'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;welPage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_element_by_xpath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;#这里注释一下，因为我获取ios的屏幕大小失败，所以我用另外一种方式去获取屏幕的大小，就是welPage这个元素，因为它是全屏显示的，所以就用它的大小来代替屏幕的大小，我的滑动是从右到左的滑动&lt;/span&gt;
+&lt;span class="n"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;welPage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__getattribute__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'size'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'width'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'height'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;start_x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;span class="n"&gt;start_y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+&lt;span class="n"&gt;end_x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;
+&lt;span class="n"&gt;end_y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'start'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;#一种是传变量进去、另一种是传坐标进去，两种都失败了&lt;/span&gt;
+&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;swipe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;start_x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;start_y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end_x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end_y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;800&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;#driver.swipe(320, 300, 10, 300, 800)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'end'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;以上代码在appium中执行没错误，返回结果也是成功，swipe方法前后的打印语句也成功输出来了&lt;br&gt;
+我的环境是：Xcode 6.1.1、  appium 1.3.4、ios 8.1模拟器&lt;/p&gt;</description>
+      <author>demon_ke</author>
+      <pubDate>Fri, 16 Jan 2015 15:02:09 +0800</pubDate>
+      <link>http://testerhome.com/topics/1885</link>
+      <guid>http://testerhome.com/topics/1885</guid>
+    </item>
+    <item>
+      <title>求助，IOS 模拟器中触屏手势运行报错</title>
+      <description>&lt;p&gt;环境如下：&lt;br&gt;
+OS X 10.9.4&lt;br&gt;
+XCODE 5.1.1&lt;br&gt;
+APPIUM 1.3.4&lt;br&gt;
+IOS 模拟器7.1&lt;br&gt;
+JAVA+APPIUM&lt;/p&gt;
+
+&lt;p&gt;我使用IPad模拟器模拟Safari的操作，调用的代码如下，可以正常进入模拟器&lt;/p&gt;
+&lt;pre class="highlight java"&gt;        &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt; &lt;span class="n"&gt;capabilities&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MobileCapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;BROWSER_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"safari"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MobileCapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PLATFORM_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"ios"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MobileCapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PLATFORM_VERSION&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"7.1"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MobileCapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;DEVICE_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"iPad Simulator"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MobileCapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;HAS_TOUCHSCREEN&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;IOSDriver&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"http://127.0.0.1:4723/wd/hub"&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt;
+                &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;  
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;timeouts&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;implicitlyWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TimeUnit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SECONDS&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;但是在运行中只要调用关于TouchAction相关的API就会报错，比如代码：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;performTouchAction&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TouchAction&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;tap&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;btnSignIn&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;或者&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tap&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;btnSignIn&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;运行到都会报错：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;openqa&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;selenium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;WebDriverException&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Not&lt;/span&gt; &lt;span class="n"&gt;yet&lt;/span&gt; &lt;span class="n"&gt;implemented&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Please&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt; &lt;span class="nl"&gt;us:&lt;/span&gt; &lt;span class="nl"&gt;http:&lt;/span&gt;&lt;span class="c1"&gt;//appium.io/get-involved.html (WARNING: The server did not provide any stacktrace information)&lt;/span&gt;
+&lt;span class="n"&gt;Command&lt;/span&gt; &lt;span class="n"&gt;duration&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="nl"&gt;timeout:&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;milliseconds&lt;/span&gt;
+&lt;span class="n"&gt;Build&lt;/span&gt; &lt;span class="nl"&gt;info:&lt;/span&gt; &lt;span class="nl"&gt;version:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="mf"&gt;2.44&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;revision:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="mi"&gt;76&lt;/span&gt;&lt;span class="n"&gt;d78cf&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;time:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="mi"&gt;2014&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;03&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;00&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;
+&lt;span class="n"&gt;System&lt;/span&gt; &lt;span class="nl"&gt;info:&lt;/span&gt; &lt;span class="nl"&gt;host:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;adsl&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;172&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;110&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;dsl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sndg02&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sbcglobal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;net&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;ip:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="mf"&gt;172.10&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;1.110&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;Mac&lt;/span&gt; &lt;span class="n"&gt;OS&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;arch&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;x86_64&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="mf"&gt;10.9&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="mf"&gt;1.8&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;_25&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;
+&lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="nl"&gt;info:&lt;/span&gt; &lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ios&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;IOSDriver&lt;/span&gt;
+&lt;span class="n"&gt;Capabilities&lt;/span&gt; &lt;span class="o"&gt;[{&lt;/span&gt;&lt;span class="n"&gt;networkConnectionEnabled&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;safari&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;warnings&lt;/span&gt;&lt;span class="o"&gt;={},&lt;/span&gt; &lt;span class="n"&gt;databaseEnabled&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;hasTouchScreen&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;deviceName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;iPhone&lt;/span&gt; &lt;span class="n"&gt;Simulator&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;platform&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;MAC&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;desired&lt;/span&gt;&lt;span class="o"&gt;={&lt;/span&gt;&lt;span class="n"&gt;platformVersion&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;7.1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;browserName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;safari&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;platformName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;iOS&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;hasTouchScreen&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;deviceName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;iPhone&lt;/span&gt; &lt;span class="n"&gt;Simulator&lt;/span&gt;&lt;span class="o"&gt;},&lt;/span&gt; &lt;span class="n"&gt;platformVersion&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;7.1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;webStorageEnabled&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;locationContextEnabled&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;browserName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;safari&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;takesScreenshot&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;javascriptEnabled&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;platformName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;iOS&lt;/span&gt;&lt;span class="o"&gt;}]&lt;/span&gt;
+&lt;span class="n"&gt;Session&lt;/span&gt; &lt;span class="nl"&gt;ID:&lt;/span&gt; &lt;span class="n"&gt;c510e2c9&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="n"&gt;f57&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;461&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;abf4&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="n"&gt;e8ddf32e81&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;sun&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NativeConstructorAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInstance0&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Native&lt;/span&gt; &lt;span class="n"&gt;Method&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;sun&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NativeConstructorAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInstance&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;NativeConstructorAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;62&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;sun&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;DelegatingConstructorAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInstance&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DelegatingConstructorAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;45&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Constructor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInstance&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Constructor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;408&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;openqa&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;selenium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;remote&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ErrorHandler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;createThrowable&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ErrorHandler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;204&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;openqa&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;selenium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;remote&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ErrorHandler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;throwIfResponseFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ErrorHandler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;156&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;openqa&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;selenium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;remote&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RemoteWebDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;execute&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RemoteWebDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;599&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;execute&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;performTouchAction&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;304&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;MultiTouchAction&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;perform&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MultiTouchAction&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;74&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tap&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;331&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;debugs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;REACHitTest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;test&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;REACHitTest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;sun&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NativeMethodAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invoke0&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Native&lt;/span&gt; &lt;span class="n"&gt;Method&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;sun&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NativeMethodAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invoke&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;NativeMethodAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;62&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;sun&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;DelegatingMethodAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invoke&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DelegatingMethodAccessorImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;43&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reflect&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Method&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invoke&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Method&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;483&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;FrameworkMethod&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runReflectiveCall&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;FrameworkMethod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;47&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ReflectiveCallable&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ReflectiveCallable&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;FrameworkMethod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invokeExplosively&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;FrameworkMethod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;44&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;statements&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;InvokeMethod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;evaluate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;InvokeMethod&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;17&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;statements&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RunBefores&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;evaluate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RunBefores&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;statements&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RunAfters&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;evaluate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RunAfters&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runLeaf&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;271&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;BlockJUnit4ClassRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runChild&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BlockJUnit4ClassRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;BlockJUnit4ClassRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runChild&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BlockJUnit4ClassRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;238&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;schedule&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;63&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runChildren&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;236&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;access&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;000&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;53&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;evaluate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;229&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runners&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParentRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;309&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eclipse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;jdt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit4&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;JUnit4TestReference&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;JUnit4TestReference&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eclipse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;jdt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;TestExecution&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestExecution&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;38&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eclipse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;jdt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runTests&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;459&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eclipse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;jdt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runTests&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;675&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eclipse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;jdt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;382&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eclipse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;jdt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;main&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RemoteTestRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;java&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;192&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;球好心的大神们帮忙看看，有人跟我一样的问题么？？&lt;br&gt;
+急啊！！！&lt;/p&gt;</description>
+      <author>inuyashajyy</author>
+      <pubDate>Fri, 16 Jan 2015 15:01:44 +0800</pubDate>
+      <link>http://testerhome.com/topics/1884</link>
+      <guid>http://testerhome.com/topics/1884</guid>
+    </item>
+    <item>
+      <title>如何遍历 listview</title>
+      <description>&lt;p&gt;&lt;img src="/photo/2015/d7a2a4f16443378a2713f08fc9f446fb.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;如图  如何遍历listview，查找控件上是否有找“下载暂停”这个textview&lt;/p&gt;</description>
+      <author>xingjizhao</author>
+      <pubDate>Thu, 15 Jan 2015 15:08:07 +0800</pubDate>
+      <link>http://testerhome.com/topics/1875</link>
+      <guid>http://testerhome.com/topics/1875</guid>
+    </item>
+    <item>
+      <title>appium 中重签名的问题</title>
+      <description>&lt;p&gt;现在测试一个nfc功能的apk&lt;br&gt;
+用360助手安装，功能ok&lt;br&gt;
+用adb安装，功能ok&lt;br&gt;
+用appium安装，提示不支持nfc功能。&lt;/p&gt;
+
+&lt;p&gt;仔细看了下，appium安装之后，会对apk进行修改，估计是重签名了。此apk应该有防重签名的功能。&lt;/p&gt;
+
+&lt;p&gt;问题1，如何让appium安装apk时不进行重签名。&lt;br&gt;
+问题2，看了一个帖子说，启动appium时可以把签名文件的路径传进去。我方是测试方，向用户索要签名文件，合理么？&lt;/p&gt;
+
+&lt;p&gt;还有别的解决此问题的方法么&lt;/p&gt;</description>
+      <author>xingjizhao</author>
+      <pubDate>Thu, 15 Jan 2015 10:20:36 +0800</pubDate>
+      <link>http://testerhome.com/topics/1869</link>
+      <guid>http://testerhome.com/topics/1869</guid>
+    </item>
+    <item>
+      <title>appium 在 Android4.4 下无法捕捉到弹出窗口</title>
+      <description>&lt;p&gt;背景是这样的，之前用appium做自动化用的真机是4.3的note2，没有问题。后来因为要做webview的测试，换了个4.4的真机note3。结果发现之前没问题的案例报错了。&lt;br&gt;
+检查发现是弹出窗口的点击语句报错，找不到对象元素。&lt;br&gt;
+再使用uiautomatorviewer查看界面，发现uiautomatorviewer也捕捉不到这个弹出窗口，只能捕捉到弹出窗口后面的界面元素。&lt;br&gt;
+但我换回来4.3再用uiautomatorviewer是可以正常捕捉到弹出窗口的。&lt;br&gt;
+找开发看了一下弹出窗口是从PopupWindow继承来的一个自定义窗口，改了些样式而已。&lt;br&gt;
+不知道大家有没碰到过这种情况？怎么解决？&lt;/p&gt;</description>
+      <author>nailgogogogo</author>
+      <pubDate>Thu, 15 Jan 2015 10:02:03 +0800</pubDate>
+      <link>http://testerhome.com/topics/1868</link>
+      <guid>http://testerhome.com/topics/1868</guid>
+    </item>
+    <item>
+      <title>selendroid 下 webview 页面，通过 xpath 无法定位到</title>
+      <description>&lt;p&gt;预置条件：使用4.3系统的android手机。&lt;/p&gt;
+
+&lt;p&gt;xpath的路径已经在web测试是ok的，为什么对于webview页面不能通过xpath获取呢？ 通过id和class_name也都是ok的，好疑惑，求大神帮忙看下，不甚感激。&lt;/p&gt;
+
+&lt;p&gt;代码片段：&lt;br&gt;
+mytest = driver.find_element_by_xpath("//p[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt;='aricle-info']/span[1]")&lt;/p&gt;
+
+&lt;p&gt;appium log：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;info: &amp;lt;-- GET /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/title 200 9.189 ms - 118 &lt;br&gt;
+info: --&amp;gt; POST /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/element {"using":"xpath","sessionId":"0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4","value":"//p[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt;='aricle-info']/span[1]"}&lt;br&gt;
+info: [debug] Proxying command to localhost:8080&lt;br&gt;
+info: [debug] Making http request with opts: {"url":"&lt;a href="http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/element,method:POST,json:%7Busing:xpath,sessionId:0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4,value://p%5B@user3=&amp;#39;aricle-info&amp;#39;%5D/span%5B1%5D%7D" rel="nofollow" target="_blank"&gt;http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/element,method:POST,json:{using:xpath,sessionId:0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4,value://p[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt;='aricle-info']/span[1]}&lt;/a&gt;"}&lt;br&gt;
+info: [debug] Responding to client with error: {"status":13,"value":{"message":"An unknown server-side error occurred while processing the command.","origValue":"{\"message\":\"Unable to locate an element with the xpath expression \/\/p[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt;='aricle-info']\/span[1] because of the following error:\nError: INVALID_EXPRESSION_ERR: DOM XPath Exception 51\"}\nio.selendroid.exceptions.SelendroidException: {\"message\":\"Unable to locate an element with the xpath expression \/\/p[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt;='aricle-info']\/span[1] because of the following error:\nError: INVALID_EXPRESSION_ERR: DOM XPath Exception 51\"}\n\tat io.selendroid.server.model.SelendroidWebDriver.executeAtom(SelendroidWebDriver.java:206)\n\tat io.selendroid.server.model.SelendroidWebDriver.executeAtom(SelendroidWebDriver.java:176)\n\tat io.selendroid.server.model.DefaultSelendroidDriver$WebviewSearchScope.lookupElement(DefaultSelendroidDriver.java:428)\n\tat io.selendroid.server.model.internal.AbstractWebElementContext.findElementByXPath(AbstractWebElementContext.java:204)\n\tat io.selendroid.server.model.internal.AbstractWebElementContext.findElement(AbstractWebElementContext.java:147)\n\tat io.selendroid.server.model.By$ByXPath.findElement(By.java:231)\n\tat io.selendroid.server.model.DefaultSelendroidDriver.findElement(DefaultSelendroidDriver.java:116)\n\tat io.selendroid.server.handler.FindElement.safeHandle(FindElement.java:42)\n\tat io.selendroid.server.SafeRequestHandler.handle(SafeRequestHandler.java:83)\n\tat io.selendroid.server.AndroidServlet.handleRequest(AndroidServlet.java:319)\n\tat io.selendroid.server.BaseServlet.handleHttpRequest(BaseServlet.java:67)\n\tat io.selendroid.server.http.ServerHandler.channelRead(ServerHandler.java:53)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:333)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:319)\n\tat io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead(AbstractTrafficShapingHandler.java:223)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:333)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:319)\n\tat io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:333)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:319)\n\tat io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:163)\n\tat io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:148)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:333)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:319)\n\tat io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:787)\n\tat io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:125)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:511)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeysPlain(NioEventLoop.java:430)\n\tat io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:384)\n\tat io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:354)\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:116)\n\tat io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:137)\n\tat java.lang.Thread.run(Thread.java:841)\n"},"sessionId":"0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4"}&lt;br&gt;
+info: &amp;lt;-- POST /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/element 500 460.679 ms - 3802 &lt;br&gt;
+info: --&amp;gt; GET /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/screenshot {}&lt;br&gt;
+info: [debug] Proxying command to localhost:8080&lt;br&gt;
+info: [debug] Making http request with opts: {"url":"&lt;a href="http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/screenshot,method:GET" rel="nofollow" target="_blank"&gt;http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/screenshot,method:GET&lt;/a&gt;"}&lt;br&gt;
+info: [debug] Proxied response received with status 200: "{\"value\":\"iVBORw0KGgoAAAANSUhEUgAAAtAAAAUACAYAAABuzmU9AAAABHNCSVQICAgIfAhkiAAD055JREFU\neJzs3Xd4U+XbB\/Bv0r0XdDEKlL2HCBaQoewlCMgeIktAhuBAAQFBwAH+2IIFGSJtmQKyR0Eoe0MB\nWWW0lBa60pkm7x81sSc5GadNF+\/3c11cN1knJ22T3Oc593M\/AKCWyWRqRkZGRkZGRkZGRkYzYrHY\nCUZGRkZGRkZGRsYSElEcdoKRkZGRkZGRkZGxxMRisROMjIyMjIyMjIyMJSSiOOwEIyMjIyMjIyMj\nY4mJxWInGBkZGRkZGRkZGUtIRHHYCUZGRkZGRkZGRsYSE4vFTjAyMjIyMjIyMjKWkIjisBOMjIyM\njIyMjIyMJSYWi51gZGRkZGRkZGRkLCERxWEnGBkZGRkZGRkZGUtMLBY7wcjIyMjIyMjIyFhCIorD\nTjAyMjIyMjIyMjKWmFgsdoKRkZGRkZGRkZGxhEQUh51gZGRkZGRkZGRkLClRJpPJ1GoAMgCMjIyM\njIyMjIyMjMajvDjsBCMjIyMjIyMjI2NJifLisBOMjIyMjIyMjIyMJSVyBJqRkZGRkZGRkZFRQuQI\nNCMjIyMjIyMjI6OU+O+MQiIiIiIiMoO8qHeAiIiIiKgkYQJNRERERCQBE2giIiIiIgmYQBMRERER\nScAEmoiIiIhIAibQREREREQSMIEmIiIiIpKACTQRERERkQRMoImIiIiIJMhJoGUyMDIyMjIyMjIy\nMjKajnLIZIBaDUZGRkZGRkZGRkZG01FeHHaCkZGRkZGRkZGRsaREjkAzMjIyMjIyMjIySogcgWZk\nZGRkZGRkZGSUEOWyfy8wMjIyMjIyMjIyMpqOcvW\/FxgZGRkZGRkZGRkZTUd5cdgJRkZGRkZGRkZG\nxpISOQLNyMjIyMjIyMjIKCFyBJqRkZGRkZGRkZFRWpSrZTn10GBkZGRkZGRkZGRkNB7lxWEnGBkZ\nGRkZGRkZGUtKlBeHnWBkZGRkZGRkZGQsKZEj0IyMjIyMjIyMjIwSIkegGRkZGRkZGRkZGSVEmVwu\nV6sByAAwMjIyMjIyMjIyMhqP8uKwE4yMjIyMjIyMjIwlJcqLw04wMjIyMjIyMjIylpTIEWhGRkZG\nRkZGRkZGCZEj0IyMjIyMjIyMjIxSYnp6uhpERERERGQWeVHvABERERFRScIEmoiIiIhIAibQRERE\nREQSMIEmIiIiIpKACTQRERERkQRMoImIiIiIJGACTUREREQkARNoIiIiIiIJmEATEREREUnABJqI\niIiISAIm0EREREREEjCBJiIiIiKSgAk0EREREZEETKCJiIiIiCRgAk1EREREJAETaCIiIiIiCZhA\nExERERFJwASaiIiIiEgCJtBERERERBIwgSYiIiIikoAJNBERERGRBEygiYiIiIgkYAJNRERERCRB\nsUmgFRnZmBXyBJFP04p6V4iIiIiIDCoWCbQiIxuzQ5\/iwn0FZoU8ZRJNRERERMVWkSfQmuT51pOc\npDk1IxtPX2YV8V4REREREYkr0gRaN3mWARjXyRfv1HEtyt0iIiIiIjKoyBJoQ8lz27puRbVLRERE\nREQmFUkCzeSZiIiIiEoq68J+QibPRERERCTFoxcZuPooFRW87VDV3wF21rIi3Z9CTaBTCyF5VqkB\nuYV\/pgkKJV4kKeHmaAVvNxvLbpyIiIiIDLoWlYp5255Cka5CixouqF7Goah3qfAS6NSMbMwq4OR5\n76UEHLqSiO8GlIOdjX51yuP4TKRlqpClVEGpAjKVaqRmZCMtU4XUjJx\/ialKJKZmIzE1GwkKJeKS\nlchSqgEAbeq4YWJnX8E2YxOzcPafFFy4r0B1f8v+Qo\/fTEKtcg7o2MADlXzsLLptIiIiomX7YhCb\nqCzw5xnX0QelXaUPQh69noilfz1HVrYaXd\/wwEfveqNox55zFEoCXRjJ88sUJTYcfwFFugorDjzH\nxM5+evcZu\/pBnrcvlwMPY9P1rn8cn4lfDsYCAC7cU+R5+4Y8ic9EQGk7JtBERERkcbeepCEqLrPA\nnycjSy3p\/ooMlWCBvdrlHVC\/giPO\/5Ni8DFyuQwqVc7zONjJUbucY9532IQCT6ALI3kGAE9na0zo\n5Id5257iyLUk1K\/ghFa1DLfD8\/Owgb2tHA62VnCwkcHR3gpOdnK4OljBxcEKbo5WcHeyhpujFTyc\nrODmZG3yiOf9pp4WfU1bI15adHtEREREuY3r6It0CcntjD8eAwC6vOGBNys7m\/240q7mp5wX7iuw\nYv9zxCb+ty7I9ag0XI96avRxNlYyZGXnvJaK3nb4+cMKZj+nVAWaQBdW8qzRtKoz3q3rhkNXE7Fi\n\/3NUK+MAP\/f\/Thd4uVgjPlmJhYPKW7x+Ri4DhrQqbdFtXotKw51nXJWRiIiICobUfCjQ1x73YtLR\noIIj6lew7Ajvk5eZ+PVwrPaMvo2VDI0CneBsb2XysWq1GoevJWkvly1VsGfuCyyBLuzkWeOjd7xx\n5WEqXiRl4fudz7BwUHlYW3pWIREREdFrJDYxC4\/jM\/EqRQk\/D8O1yvdicspZI5+lw9FOvBtyepYa\nd56lo4K3Ld6q6mLyuZ8nZmH7mZfYfzkB2SrAxcEKH7YpjXfqmJczvkjKwuLd0QByBjT7NvdCn6BS\nZj02rwokgRZLnsd2LJxWdY52cnzcwQezQp4gPVOF+GQlfNg5g4iIiMigo9eTsOlEnNn3Dz0Vj9BT\n8Sbvt+uLagZvexyfiW0RL3H0RiJUKkAmA9rVc0Onhh5YdywW\/h62qFHW8Ai5Sg3svfgKG47HIS1T\nBV93G0zo7ItaBVj7rGHxBNpQ8tyuXuH1eW5UyQmfdvNDUDUX2Fjpjz4\/iM2ArbX5a8goMlQAgFrl\nHCS1yEvNUGlrcayMPJ2VXAYruQy2RdzTkIiIiKh2ecMJ6PWoVJP3u\/88Han\/5k7G\/HbsBc7ezZkU\n+EagE4a0Ko2A0nY4cSsJ1x6l4tqjKIxs64OODdz1HnvlUSrWHonF\/ecZkMmArm94YHDLUqJd2AqC\nRRPo4pA8a7SsaXgC4Yr9z\/O0zTVjKknqA\/1J8ENBAbwp68YFwtO50Ne2ISIiIgKQk4iOeNfb4O0f\nr36AJ\/GZmNu\/HOoYTKAzMHHtQ5PJ7Kdd\/RB8JBbv1nVDtVytgFvUcIWrozXmbX2KFfuf42FsBka2\n9YGVHLgbnY6N4XG49CCnTrqqvz1GvOsteHxhsFi2VpySZ1PsbOSo5m9v1n2zstX\/vaZ8DBD7uosn\n3ooMFZLTsvO+YSIiIqJCkv1vmzhLnDN3sJVjbAdf0dvqBThi3oBy+CbkKf66lIBD1xIR6GOvbWvn\n5WKNgW+XRps6rkXSF9oiCXRRJ8+LdsfgRVLOSK\/m1EL7+m4GfymzPiiDc\/8oUNXf3mRx++FrSbj1\nJA0Bpe3y1AAcAGb3LWdwpmpKejb6L\/4nT9slIiIisqToV5mIfmX47LnmtueJWfAycL\/oV5q+0tJ6\nP+sq52WHDvXdsOXveGQp1Yh8mgZ3J2u839QTHRu4Q5GRXWSLquQ7gU7NyMZXm59oZ2UWxcjznWdp\nePpS2AT8vMiiJppf44X7qdh25iXUamBwq1Lo1dTL4LZ3nsvpxdyxoX79DREREdHr5Pw9Bc7fu2\/y\nfj\/viTF5H81KzlLdepqG4zeScOJWsvYsvYOtHAPfLqXNL385+BwHriSiWhkHTO9VBq4OplvdWVK+\nE+i5W59pk2egaMo2Punsq13h5uCVBJy4lQwfd1u9+2X\/O6HvrarOqOJnjx93RWP9sTg8ic\/E2A6+\nehMOj99MwsPYDLg5WqG1kUVZiIiIiF4XVY3UE2vWp7CzkSGgtHg57IPn6cjKVksqfb0TnY6IOyk4\neSsJMQn\/jWxX9XdA54ZueLumG6zkOY0gvt\/5DE\/iM+HvaYOxHXwKPXkGLJBAuzkKd\/rZy4JfDlJX\njVxNwGMTs3DiVjLsRDpaZPx7JGRrLUfTKs6YP7Acvg3LWbnwRWIWvuxZRtusOz1Lhd+O5bRz6de8\nFBxsC2dWJxEREVFRMTWJsNv82wCApR9VNNgmWDOJ0NpIC7KMLBWuRqXhwr0UnPtHoS3FBQAnezne\nruGKDg3cUdHbTnv\/9cfjsf3Mf6s0N6zkjJO3knHyVvJ\/21WqsPPsK1Txs8e7dd1EO3hYQr4T6Cnd\n\/ZCUlo2rj3Jqj7f9+8KGtrbsqnz5pVSpkZ6Z01LF2T7nFxroY4+Fg8pjVsgTXItKwxcbozCjd1l4\nu9lg1YFYxCVloXxpO7Svz\/INIiIi+v8tJf2\/pgcuZqwOaMi95+n4bEOUoMTD1lqGxpWd0bKmKxoF\nOgmqAv6OTEbw0Rd4odPZbPf5Vwaf4250Tiu9YptAy2UyzO5bFj\/sisHJWzlLKBbHJDo+WQkgpx+z\nu9N\/L7u0qw3mDyyPedue4XpUKj7bEIWGlZxw+Foi7Gxk+Ky7n9EezkRERESvi9vP0rWdLnQ9e\/Vf\nlUFUXIbBbTyINXwbkDOA2bKmK87+k4LGgc54s4oTGlR0gr1O27trUanYfDJe2yCiSRVnVPW3h6ez\n4aYONx6n4tDVRACQ1HpYKot04ZDLZJjSLafjRXFNoh\/H5fzS\/Txs9RZDcba3wqwPyuKnP6Pxd2Sy\n9gc\/pr0PyltgLfXYxCyD\/aBT0k03GiciIiIqDHeepeGzDVEm72fOfYwZ094H4zr6ii5Qd\/lhKrb8\nHY8bj3MSZ193G4xs64M3Ap2MbvPyw1ScjMwp56jq74DP3vPP1z4aY7E+0MU9ib7279FL9TLiBe8y\nWU5PwdzU+eu+orX0L9MzVYmIiIiKir+nDTycrfEqRYmgauItfk\/d\/q\/W2NB9gJwWd\/di0o0mvLqN\nGzKVapyMTMLeiwm48yynOUVpNxv0CfJCq5ouJhdlOXQtCcv3xUCZrUb1Mg6Y2acsnOwKroTAosve\nFdckWqXO6agBAI0rO+vdfic6HSsPPMc\/0emwsZLBxdEKL5OV+HlPDOKTlegTZLjNnTH+njaITcwy\nunBLepYKd56lw8PZGlZS1gknIiIispAWNVzRooYr9l1OQGlXGzSqpJ\/8zgl7inP\/pOCjd73R7Q0P\nizzv05eZ2Hc5AUeuJWlb1nk6W6PXW55oX98dB68mYuyah\/iihz8q++rnUhlKNVYdiMGhqzl5Xqva\nrhjfUb+zmqVZfN3o4phER9xJxstkJdydrPFG4H8J9LNXWQg9FY\/D1zS1Mtb47L0yqOpnj+1nX2Lt\nkRfYGB6HlylKjGzrI3qawZjZH5Sz5MsgIiIiKjCHriZi+b7nsLORY26\/soJ2di+SsnDhfgoA4E2R\nwci8UKmBuVuf4kl8TpltRR87dHvDA2\/XdNUmwAmKbMQmZuHLTVH4tJs\/mlb577lvPU3D0r9i8Dgu\nE3IZMPDtUuj1Vt4GPaWyeAINFK8kOi1ThV8PvwAA9GjiAWsrGa5FpWLPhQScvpMMtTqnfKNLIw8M\nallKW8De401PONtbYelfMdh7MQHJ6SpM6uILa44SExER0WuoTR03nLmbgjN3UzD9jyeY1NVPm7Cu\nOxYHlQqoE+AIX3fLTM6Ty4CxHXyw7cwrvPemB+qU11+1uX9zL3i5WGP5vhh8t+0pPnrHG61qu2JT\neBz+upQAtRrw87DBpC5+qF7GcP9qSyuQBBoouiRa02Ll0oOclQgfx2ciMVWJ8qXt4GJvhREr7gsm\n9DWs5IRBLUsh0Ef\/tEDbum6wluestnPiZhKS05SY1rOM3ixRIiIiopJOLgOmdvfHgh1Pce4fBeZt\nfYrub3rAw8kaJ\/4thR34dimLPmetco6oVU4\/cc6tfT03ONrK8P3OaKw+FIvVh2K1t3Vo4I4P25Qu\n9NyswBJooPCT6OhXWVh39IX28t3odFT1s8fsvmXhbG+FlPRsbfLcKNAJ7zf1RG0Tv7TWtd1gYy3H\nj7ueIVGRjaTUbNi7MYEmIiKi14+ttQxfvV8W646+wI6zL7Hz7H+9lt+t6ypYvK6wPHuVpZ1YqFHZ\n1x6j2\/ugqp\/4HLOCVqAJNFB4SfT1qFR8t\/0ZAMDRTo7UDBWm\/\/EYYzv4oEWN\/5bhHtPeB\/UqOMHf\nw\/zTD82ru8DLpTwCfexhK7LCIZBTx3P4WlL+XoQOzXKZRERERIVFJgPqV3TEjrMvBdcfuZ6EtEw1\n3gh0Qs1yjvCzUCmHmFcKJSLupODErSRcjxLmQ+M7+eLdum4oyqJaWXp6uoWatRmnUqsFi60AQM8m\nnhZJog9fS8Kyf1uXtKjhgkld\/bBy\/3McuJIzObBGWQe0qe2Git62cHeyhoOtHFZyGeS5BpLV6pwk\nWKVW5\/xfpdZeVqlybstUqpGpVMHfwxaO\/7ZGuXBfgVkhT\/L9GowZ2dYbXRpZZrYrERERkS6VGrj9\nNA1n\/0nBiVvJgnJXOxsZSrnY4OnLTMFjHO3kKF\/KDr7uNijtZgMPJyu4O1nD2d4KjnZyONjKYWst\ng42VDNZWMjjbWxlsyJCtAu5Gp+HKw1RceZSKG49TBe2Ea5VzRLfG7mhSxUVyU4eCUOAj0BoFNRKd\nnJaN5ftzkudGgU6Y3NUfVnLg4w6+8HG3wR8n43HrSRpuPbHMaK6djRzrxweK3masJ2Je5O63SERE\nRGRJd6PTcS0qFTcep+HG41SkZvy3uJuttQwtarjg\/aZeKOtlCwC4\/SwNEXdScPVRKu4\/z1kqO\/Jp\nmsGVC3PzdLbG6jGVIP+3u0Z8shJ3o9PxT0w67kSn4c6zdMHzA0BZL1u0rOmKlrVcLTZx0VIKLYEG\nDCfRMhkwpFXekmgXByt0fcMDF+4p8Fl3f+2y23IZ0PstL7Sq5Yrwm8m4+ECBVylKJKVlI0upRrZm\nhPnfaIrs36Od5tVd4GCrXwMtlwFf9LDsijdT1kexjIOIiIgKxPXHqYK5Y3I5UKe8I5rXcEWzas5w\ntrcS3L+avwOq\/dvaLitbjUcvMvA4LgPRCUq8SMxCbFIWEhRKJKVmIzk9G6pc+XCXN9wFvZmPXk\/E\n+uNxgu3b2chRN8ABDSo6oWElZ0nltoWt0Eo4chMr53i\/qWeek+jUDBWS0rKL5OjkeWIWTtxMgkwm\nw\/tNPS267RO3kvAyJRt1AxxR0Tv\/S4oTERERaajUwMIdz+BkL0eDik5oUNHJoqv3pWWqkJapQnqW\nGqVcrAXzyLKy1ZgT9gSezjao6mePqv72qOBtV2LaBRdJAg1YPokmIiIiIioMRdaPTVPO0TxXh4yt\nES\/x27EXRh5FRERERFS0irShsaEkWrcmhoiIiIiouCjyFUF0k2i5TIZK3rZFvFdEREREROIKtQuH\nIZokWi4DmlZxEoxIExEREREVJ0U2iZCIiIiIqCQq8hIOIiIiIqKShAk0EREREZEETKCJiIiIiCRg\nAk1EREREJAETaCIiIiIiCZhAExERERFJwASaiIiIiEgCJtBERERERBIwgSYiIiIikoAJNBERERGR\nBEygiYiIiIgkYAJNRERERCQBE2giIiIiIgmYQBMRERERScAEmoiIiIhIAibQREREREQSMIEmIiIi\nIpKACTQRERERkQRMoImIiIiIJGACTUREREQkARNoIiIiIiIJmEATEREREUnABJqIiIiISAIm0ERE\nREREEjCBJiIiIiKSgAk0EREREZEETKCJiIiIiCRgAk1EREREJAETaCIiIiIiCZhAExERERFJwASa\niIiIiEgCJtBERERERBIwgSYiIiIikoAJNBERERGRBEygiYiIiIgkYAJNRERERCQBE2giIiIiIgmY\nQBMRERERScAEmoiIiIhIAibQREREREQSMIEmIiIiIpKACTQRERERkQRMoImIiIiIJGACTUREREQk\nARNoIiIiIiIJmEATEREREUnABJqIiIiISAIm0EREREREEjCBJiIiIiKSgAk0EREREZEETKCJiIiI\niCRgAk1EREREJAETaCIiIiIiCZhAExERERFJwASaiIiIiEgCJtBERERERBIwgSYiIiIikoAJNBER\nERGRBEygiYiIiIgkYAJNRERERCQBE2giIiIiIgmYQBMRERERScAEmoiIiIhIAibQREREREQSMIEm\nIiIiIpKACTQRERERkQRMoImIiIiIJGACTUREREQkARNoIiIiIiIJmEATEREREUnABJqIiIiISAIm\n0EREREREEjCBJiIiIiKSgAk0EREREZEETKCJiIiIiCRgAk1EREREJIF1Ue8AUV6kpaXh2bNn2svu\n7u7w8vKSvJ3Lly\/D29sb\/v7+Ftu33bt3IyEhAX5+fvD19UVgYCDs7e3NeuyOHTuQmZmJypUro3Ll\nynB1dbXYfhERlUTh4eG4ffs2Bg4cCAcHh6LeHSIAgCw9PV1d1DthzLNnzyya3NDr4ciRI+jUqZP2\n8sSJEzF\/\/nzJ22nWrBkuX76MNm3aYMCAAejZsydsbW3zvF\/nz59Hq1atoFQqAQAVK1bEuXPn4Ozs\nbPKx0dHRqFGjBtLT0wEAQUFBOHLkSJ73hYjoddCqVStERESgVKlSGDVqFEaNGgVvb+9Ce\/7x48fD\n29sbQUFBaNKkiVmf5xqBgYHaz3Qg52AgMDDQYvsWHByML7\/8Unv5p59+woABAyy2\/cKQlpaGrVu3\nIjs7G0OGDCnq3TFbsRyBvn\/\/PrZs2YKQkBDcv38fV69eRUBAQIE8V1xcHN5+++0C2XZiYiLi4+MF\n150+fRoNGjQokOcrTtLT06FQKJCSkoKEhAQkJiZq46tXr7SXO3bsiHfffdfgdlJTU+Ho6Cj5+V++\nfInr16+jRYsWkMlkove5efMmLly4AAA4ePAgLl68iPfee0\/yc+Xe12HDhmmTZysrKwQHB5v9Ybtg\nwQLBB+306dPzvC\/0esnIyEBYWBj27duHCxcuIC4uDmlpaXBzc0NgYCCGDRuGoUOHFvVuElnc0aNH\nERERASDn+3ru3LkoV65cof29X7t2DatXr9ZednJywqNHj7Sf6+np6bhz5w7q1q0r+vi4uDhkZGRo\nL2u+H6SaO3eu9ucAAOvXr4eHhwcyMjKQmJiovT4zMzNP29elVqsRHx+PBw8e4P79+9p\/48ePN\/ha\npVIoFPjqq6+wefNmJCYmwsXFBV26dMnT2eSiUCwT6FGjRuHEiRPay7Nnz8avv\/5aIM+lVCpx\/\/79\nAtm2GHd390J7LlP27NmDixcvQqVSQa1Wi8asrCxkZmYiIyND8P\/MzEzt\/1NSUqBQKJCamgqFQgGF\nQgGVSmXWPqSmphpMoLdu3YrJkydjxowZGD58uKTXtnz5cnz77bcoX748+vbti8GDB6Ny5cqC+2zY\nsEFwefDgwWaXWuhSq9Vo37497t69q73OyckJly9fxuXLlw0+ztraGiNGjMClS5ewcuVKwW2RkZGI\njIw0ex9GjhwJKysr6TtPxVp4eDiGDx+Ox&lt;br&gt;
+info: &amp;lt;-- GET /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/screenshot 200 1697.485 ms - 349190 &lt;br&gt;
+info: --&amp;gt; POST /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/elements {"using":"class name","sessionId":"0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4","value":"android.widget.TextView"}&lt;br&gt;
+info: [debug] Proxying command to localhost:8080&lt;br&gt;
+info: [debug] Making http request with opts: {"url":"&lt;a href="http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/elements,method:POST,json:%7Busing:class" rel="nofollow" target="_blank"&gt;http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/elements,method:POST,json:{using:class&lt;/a&gt;" name","sessionId":"0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4","value":"android.widget.TextView"}}&lt;br&gt;
+info: [debug] Proxied response received with status 200: {"value":[],"status":0,"sessionId":"0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4"}&lt;br&gt;
+info: &amp;lt;-- POST /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4/elements 200 5187.780 ms - 74 &lt;br&gt;
+info: --&amp;gt; DELETE /wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4 {}&lt;br&gt;
+info: Shutting down appium session&lt;br&gt;
+info: [debug] Stopping selendroid server&lt;br&gt;
+info: [debug] Making http request with opts: {"url":"&lt;a href="http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4,method:DELETE" rel="nofollow" target="_blank"&gt;http://localhost:8080/wd/hub/session/0f2e01e4-f938-6f7f-ae72-8b9eeebdc6a4,method:DELETE&lt;/a&gt;"}&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+      <author>gaoxing200851</author>
+      <pubDate>Wed, 14 Jan 2015 13:47:47 +0800</pubDate>
+      <link>http://testerhome.com/topics/1865</link>
+      <guid>http://testerhome.com/topics/1865</guid>
+    </item>
+    <item>
+      <title>Appium Wrapper for Java</title>
+      <description>&lt;p&gt;基于Appium的移动测试框架，Appium的Wrapper很关键。Talk is cheap, Java版本代码如下：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ctrip&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lanucher&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="cm"&gt;/**
+ * A service wrapper for Appium Server
+ * 
+ * @author ltyao
+ *
+ */&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AppiumServer&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;Logger&lt;/span&gt; &lt;span class="n"&gt;logger&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LoggerFactory&lt;/span&gt;
+            &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLogger&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AppiumServer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;START_TIMEOUT_MILLISECONDS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;30000&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;HttpClient&lt;/span&gt; &lt;span class="n"&gt;httpClient&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HttpClients&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;createDefault&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;STATUS_PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"/wd/hub/status"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"/wd/hub"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"localhost"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// private volatile boolean started = false;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt; &lt;span class="n"&gt;process&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;appiumPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;bootstrapPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;selendroidPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;robotPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;appiumLog&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;AndroidDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;AppiumServer&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;AppiumServer&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AndroidDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;device&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;stopAppium&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;WinProcess&lt;/span&gt; &lt;span class="n"&gt;winp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WinProcess&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;process&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;warn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"try to kill process {} Recursively"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;winp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPid&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;winp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;killRecursively&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;warn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"stopAppium"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;startAppium&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;startAppium&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;START_TIMEOUT_MILLISECONDS&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;startAppium&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;milliseconds&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cmds&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;buildCmds&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+        &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;ProcessBuilder&lt;/span&gt; &lt;span class="n"&gt;pb&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ProcessBuilder&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;redirectErrorStream&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+        &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"start appium with {}"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+
+        &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Runnable&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="nd"&gt;@Override&lt;/span&gt;
+            &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;process&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;start&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+                    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;exitvalue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;process&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitFor&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+                    &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;warn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"appium server exitvalue {}"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;exitvalue&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;warn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"startAppium"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}).&lt;/span&gt;&lt;span class="na"&gt;start&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+        &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;currentTimeMillis&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;isRunning&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;currentTimeMillis&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;milliseconds&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stopAppium&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+                &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;AppiumTimeoutException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Appium can't be lanuched in "&lt;/span&gt;
+                        &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;milliseconds&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;" seconds"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;isRunning&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;warn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"started appium server {}"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;restartAppium&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stopAppium&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;startAppium&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isRunning&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;URI&lt;/span&gt; &lt;span class="n"&gt;uri&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;URIBuilder&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;setScheme&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"http"&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;setHost&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;appiumPort&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;setPath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;STATUS_PATH&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+            &lt;span class="n"&gt;HttpGet&lt;/span&gt; &lt;span class="n"&gt;httpget&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;HttpResponse&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;httpget&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;HttpGet&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;httpClient&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;execute&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;httpget&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;HttpEntity&lt;/span&gt; &lt;span class="n"&gt;entity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getEntity&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;rs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EntityUtils&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;entity&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;JsonElement&lt;/span&gt; &lt;span class="n"&gt;json&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;JsonParser&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rs&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getAsJsonObject&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"status"&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;getAsInt&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="c1"&gt;// logger.warn("isRunning", e);&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt; &lt;span class="n"&gt;getURL&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;URI&lt;/span&gt; &lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;uri&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;URIBuilder&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;setScheme&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"http"&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;setHost&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;appiumPort&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;setPath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toURL&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;URISyntaxException&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;MalformedURLException&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;CapException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"getURL"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getPid&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;WinProcess&lt;/span&gt; &lt;span class="n"&gt;winp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WinProcess&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;process&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;winp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPid&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;warn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * need to be checked
+     * 
+     * @return
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;buildCmds&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+        &lt;span class="n"&gt;appiumPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AvailablePortFinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getNextAvailable&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AvailablePortFinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getNextAvailable&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;bootstrapPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AvailablePortFinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getNextAvailable&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;selendroidPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AvailablePortFinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getNextAvailable&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cmds&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"appium.cmd"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"--port=%d"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;appiumPort&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"--chromedriver-port=%d"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"--selendroid-port=%d"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;selendroidPort&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"--bootstrap-port=%d"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bootstrapPort&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appiumLog&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Environment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appiumLog&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;qappiumLog&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;StringUtils&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;quoteArgument&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appiumLog&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"--log=%s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;qappiumLog&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"--log-timestamp"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+        &lt;span class="c1"&gt;// switch (config.getDriverType()) {&lt;/span&gt;
+        &lt;span class="c1"&gt;// case Selendroid:&lt;/span&gt;
+        &lt;span class="c1"&gt;// selendroidPort = AvailablePortFinder.getNextAvailable();&lt;/span&gt;
+        &lt;span class="c1"&gt;// cmds.add(String.format("--selendroid-port=%d", selendroidPort));&lt;/span&gt;
+        &lt;span class="c1"&gt;//&lt;/span&gt;
+        &lt;span class="c1"&gt;// break;&lt;/span&gt;
+        &lt;span class="c1"&gt;// case ChromeDriver:&lt;/span&gt;
+        &lt;span class="c1"&gt;// chromeDriverPort = AvailablePortFinder.getNextAvailable();&lt;/span&gt;
+        &lt;span class="c1"&gt;// cmds.add(String.format("--chromedriver-port=%d", chromeDriverPort));&lt;/span&gt;
+        &lt;span class="c1"&gt;//&lt;/span&gt;
+        &lt;span class="c1"&gt;// default:&lt;/span&gt;
+        &lt;span class="c1"&gt;// break;&lt;/span&gt;
+        &lt;span class="c1"&gt;// }&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cmds&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getAppiumPort&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;appiumPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setAppiumPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;appiumPort&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appiumPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;appiumPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getBootstrapPort&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;bootstrapPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setBootstrapPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;bootstrapPort&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;bootstrapPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bootstrapPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getSelendroidPort&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;selendroidPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setSelendroidPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;selendroidPort&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;selendroidPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;selendroidPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getChromeDriverPort&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setChromeDriverPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;chromeDriverPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getRobotPort&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;robotPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setRobotPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;robotPort&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;robotPort&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;robotPort&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getAppiumLog&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;appiumLog&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;Device&lt;/span&gt; &lt;span class="n"&gt;getDevice&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setDevice&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AndroidDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;device&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;"AppiumServer [pid="&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;getPid&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;",ip="&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;", appiumPort="&lt;/span&gt;
+                &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;appiumPort&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;", bootstrapPort="&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;bootstrapPort&lt;/span&gt;
+                &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;", selendroidPort="&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;selendroidPort&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;", chromeDriverPort="&lt;/span&gt;
+                &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;chromeDriverPort&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;", appiumLog="&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;appiumLog&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;"]"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>cosyman</author>
+      <pubDate>Wed, 14 Jan 2015 12:07:59 +0800</pubDate>
+      <link>http://testerhome.com/topics/1864</link>
+      <guid>http://testerhome.com/topics/1864</guid>
+    </item>
+    <item>
+      <title>如何获取 textView 中的文本</title>
+      <description>&lt;p&gt;.elementByXPath("...").text('text', function(err, text){&lt;br&gt;
+        console.log("text = "+text);&lt;br&gt;
+ }).&lt;/p&gt;
+
+&lt;p&gt;js的代码是这样写的么？&lt;/p&gt;
+
+&lt;p&gt;如果直接var t = driver..elementByXPath("...").text();&lt;br&gt;
+t是一个[object promise]，不是一个字符串&lt;/p&gt;</description>
+      <author>xingjizhao</author>
+      <pubDate>Wed, 14 Jan 2015 10:53:40 +0800</pubDate>
+      <link>http://testerhome.com/topics/1861</link>
+      <guid>http://testerhome.com/topics/1861</guid>
+    </item>
+    <item>
+      <title>Appium 能测试 Android 系统的原生 App 吗？</title>
+      <description>&lt;p&gt;各位大神，小弟需要对android 手机的无线进行操作，主要是一些自动的连接，自动断开路由器的热点的动作，我搭建了一套windows + applium的环境，对着demo，可以对外部的app 进行安装和测试。但是对于系统本身自带的app，比如到setting里面设置无线，不知道如果操作。&lt;br&gt;
+请问，对于android系统自带的APP或者setting，appium 能进行操作吗？有没有一些例子可以参考？&lt;/p&gt;</description>
+      <author>roytest001</author>
+      <pubDate>Tue, 13 Jan 2015 23:21:05 +0800</pubDate>
+      <link>http://testerhome.com/topics/1859</link>
+      <guid>http://testerhome.com/topics/1859</guid>
+    </item>
+    <item>
+      <title>inspector 启动失败，错误提示 Could not find a device to launch</title>
+      <description>&lt;p&gt;我的问题是：&lt;br&gt;
+我用Xcodebuild后能调用模拟器跑应用&lt;br&gt;
+但是我在appium里面选择相同的模拟器却提示我找不到模拟器&lt;br&gt;
+日志如下：&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Failed&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;Appium&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;err&lt;/span&gt; &lt;span class="n"&gt;was&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Could&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;launch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;You&lt;/span&gt; &lt;span class="n"&gt;requested&lt;/span&gt; &lt;span class="s"&gt;'iPhone 5 (7B6CC851-AF86-49FB-A284-66ABE561515D) (8.1 Simulator)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;but&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;available&lt;/span&gt; &lt;span class="n"&gt;devices&lt;/span&gt; &lt;span class="n"&gt;were&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;"iPad 2 (8.1 Simulator) [C4F5C689-7FBB-4DDF-8F2B-E75C0D5E1C19]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPad Air (8.1 Simulator) [48E9CC6D-4287-4BE5-A2A2-7B2EB73B6D85]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPad Retina (8.1 Simulator) [6B7F75C6-E883-4C1A-BD3A-94C4E76E8BEB]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPhone 4s (8.1 Simulator) [6AA78592-7CCC-482B-A417-567AB4DCA0F1]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPhone 5 (8.1 Simulator) [7B6CC851-AF86-49FB-A284-66ABE561515D]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPhone 5s (8.1 Simulator) [4D3A7F95-0BFE-44B4-A9A4-7A202D266915]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPhone 6 (8.1 Simulator) [7630E4C1-9F04-4F51-88C5-A35610E424FC]"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"iPhone 6 Plus (8.1 Simulator) [07B6A817-FE6B-4BD2-97C1-4C5CED1A9D1C]"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>demon_ke</author>
+      <pubDate>Tue, 13 Jan 2015 17:21:55 +0800</pubDate>
+      <link>http://testerhome.com/topics/1856</link>
+      <guid>http://testerhome.com/topics/1856</guid>
+    </item>
+  </channel>
+</rss>

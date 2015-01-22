@@ -1,0 +1,300 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 谷歌的端到端测试方法：隔离式服务器 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" />
+  </div>
+  <h1 class="entry-title">谷歌的端到端测试方法：隔离式服务器</h1>
+  <div class="info leader">
+    <a class="node" href="node1">资讯点评</a>
+     · 
+    匿名
+     · 
+    于<abbr class="timeago" title="2012-10-25T18:15:02+08:00"></abbr>发布
+     · 
+    285次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/webcs/2012/1024/205641.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/webcs/2012/1024/205641.html</a></p>
+<pre>　　Web 应用的测试经常需要进行从用户角度的系统性的功能测试，涉及到从用户请求到服务器响应的整个过程，也叫做端到端测试。在最近的 Google Test Blog 上，我看到一篇文章，觉得是进行这种测试一个不错的思路，翻译如下，供大家参考。
+
+　　隔离式服务器
+
+　　By Chaitali Narla and Diego Salas (原文地址)
+
+　　让我们考虑一个复杂的 Web 应用程序。 实现它的可能是成堆的服务器，而且每台服务器都运行着不同的任务并相互通讯。 每个用户操作都会访问这个服务器集群，并经历一次从用户到数据存储再到用户的往返。 包括 GMail 和 Google+ 在内的很多 Google 的 Web 应用都是这样工作的。 那么我们如何为它们编写端到端的测试 (end-to-end test) 呢?
+
+　　“端到端”的测试
+
+　　在 Google 测试世界里，端到端测试是指作用于从用户请求到响应的整个流程和全部服务器集群的测试。下面是一个简化的由端到端测试所涵盖的被测系统 (SUT) 的示意图。注意图中被测系统的的前端服务器连接到了一个第三方后台服务器，但是这个第三方服务器并不被图中特定的用户请求所使用。
+
+
+
+　　为这样的系统编写一个快速而可靠的端到端测试所面临的一个挑战是要避免网络访问。涉及到网络访问的测试要比那些只访问本地资源的测试执行得慢，而且访问外部服务器可能由于外部服务器不可用或不稳定而带来怪异的结果。
+
+　　隔离式服务器
+
+　　我们在 Google 设计端到端测试的一个技巧就是使用隔离式服务器 (Hemetic Servers)。
+
+　　什么是隔离式服务器? 简短的定义就是“单机服务器”。 如果你能在一台单独的没有网络连接的机器上启动整个服务，并使其正常工作，它就是一台隔离式服务器! “隔离”的概念从更广义上来讲适用于所有隔离的系统而不一定是单台机器，但这里提到的是一个特例。
+
+　　为什么隔离式服务器很有用呢? 因为如果整个被测系统由隔离式服务器构成，它就能在一台单独的机器上启动来用于测试;根本不需要网络连接! 这台单机可以是物理机，也可以是虚拟机。
+
+　　设计隔离式服务器
+
+　　构建隔离式服务器的过程需要从新服务器设计阶段的前期就要开始。需要注意下面一些事情：
+
+　　服务器中所有与其他服务器的连接都需要在运行时注入。这可以通过一种适合的依赖注入形式完成，例如命令行标志或者 Guice 。
+
+　　所有必需的静态文件都要打入服务器的二进制包。
+
+　　如果服务器需要访问数据库，则需要保证数据库能被数据文件或者内存数据库模拟。
+
+　　满足上述要求保证了我们的服务器具有高度的可配置性，从而有条件成为隔离式服务器。但它目前还不能被用于测试，我们还需要完成下面一些事情：
+
+　　确保我们的测试不会访问到的连接点都具有相应的模拟对象，这样可以验证这些连接确实没被访问。
+
+　　提供可以容易地向数据存储填充测试数据的功能单元。
+
+　　提供日志记录模块，可以帮助跟踪请求/相应回路在被测系统中流转的过程。
+
+　　在测试中使用隔离式服务器
+
+　　我们看一下前面提到的那个被测系统。假设里面的所有服务器都是隔离式服务器，那我们的对同样一条用户请求的端到端测试就会是下面这个样子：
+
+
+
+　　这个端到端测试执行了以下步骤：
+
+　　在单独的一台机器上启动图中所示的整个被测系统
+
+　　通过测试客户端向服务器发送请求
+
+　　验证服务器响应
+
+　　需要注意的是图中到模拟服务器的连接在这个测试中并不需要。如果被测试的请求需要连接这个后端服务，我们就需要在这个连接点也提供一个隔离式服务器。
+
+　　由于没有用到网络连接，这个端到端测试就更加可靠了。因为它所需要的所有东西都在内存或者本地硬盘存储，这个测试也会更加快速。我们在持续构建中执行这样的测试，让它们可以在每次提交影响到被测系统中任意一台服务器的情况下被运行。如果测试失败，就可以通过日志模块帮助在被测系统中跟踪失败出现的位置。
+
+　　我们在大量的端到端测试中用到了隔离式服务器。一些基本的例子包括：
+
+　　对使用了 Guice 框架的服务器进行启动测试，用来验证在启动过程中没有 Guice 的错误。
+
+　　后台服务器的 API 测试
+
+　　微型环境的基准性能测试
+
+　　前台服务器的 UI 和 API 测试
+
+　　结语
+
+　　隔离式服务器还是存在局限性的。每次执行端到端测试的时候都启动整个被测系统，这回延长测试执行的时间。如果你的测试所用需资源是有限的，如内存和 CPU，隔离式服务器的使用可能会由于交互的复杂性而使得资源不足。使用内存数据存储也会让测试集的大小比生产环境数据存储小得多。
+
+　　隔离式服务器是一个很好的测试工具。但像其他工具一样，需要在使用前好好思考它的适用性。
+</pre>
+
+
+<p>文章分类:Web测试</p>
+
+<p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/webcs/2012/1024/205641.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/webcs/2012/1024/205641.html</a></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='谷歌的端到端测试方法：隔离式服务器 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="61#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="61#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="61#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="61#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="61#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    帮忙推广 TesterHome 吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1378" title="《刀塔传奇》之互联网从业人员评测">《刀塔传奇》之互联网从业人员评测</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="61#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

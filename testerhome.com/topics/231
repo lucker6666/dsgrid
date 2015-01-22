@@ -1,0 +1,440 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | robolectric 无脑例子 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">robolectric 无脑例子</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2013-11-27T17:06:48+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="jason" href="../jason">jason</a> 于<abbr class="timeago" title="2013-11-28T08:43:10+08:00"></abbr>回复
+     · 
+    856次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这个是我曾经在百度技术沙龙上推荐的一个框架，也是我很推崇的一个框架。<br>
+具体的环境配置比较多，我就不在这里做翻译了，相关可以查看：<a href="http://robolectric.org/eclipse-quick-start.html" rel="nofollow" target="_blank">http://robolectric.org/eclipse-quick-start.html</a></p>
+
+<p>总结：代码上来讲，robolectric的代码其实和robotium或者instrumentation的代码差不多，还是和功能测试，页面交互测试比较贴近，但是区别在于，被测工程是Android Project，而测试工程是Java Project，执行的测试是Junit Test，并非Android Junit Test。所以其执行的时候相当于直接将交互的操作直接在JVM内部运行了，好处就是跳过了模拟器，变成了一种类似UT的方式，效率非常高。</p>
+
+<p>然后我们来看下主工程MyProject：</p>
+
+<p>MyProject的代码如下：</p>
+<pre class="highlight python"><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">myproject</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.view.Menu</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.view.View</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.Button</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.TextView</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MainActivity</span> <span class="n">extends</span> <span class="n">Activity</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">Button</span> <span class="n">bt1</span><span class="p">;</span>
+    <span class="n">public</span> <span class="n">TextView</span> <span class="n">tv1</span><span class="p">;</span>
+    <span class="nd">@Override</span>
+    <span class="n">protected</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">super</span><span class="o">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
+        <span class="nb">set</span><span class="n">ContentView</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">activity_main</span><span class="p">);</span>
+        <span class="n">bt1</span> <span class="o">=</span> <span class="p">(</span><span class="n">Button</span><span class="p">)</span> <span class="n">findViewById</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="nb">id</span><span class="o">.</span><span class="n">button1</span><span class="p">);</span>
+        <span class="n">tv1</span> <span class="o">=</span> <span class="p">(</span><span class="n">TextView</span><span class="p">)</span> <span class="n">findViewById</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="nb">id</span><span class="o">.</span><span class="n">textView1</span><span class="p">);</span>
+        <span class="n">bt1</span><span class="o">.</span><span class="nb">set</span><span class="n">OnClickListener</span><span class="p">(</span><span class="n">new</span> <span class="n">View</span><span class="o">.</span><span class="n">OnClickListener</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nd">@Override</span>
+            <span class="n">public</span> <span class="n">void</span> <span class="n">onClick</span><span class="p">(</span><span class="n">View</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+                <span class="o">//</span> <span class="n">TODO</span> <span class="n">Auto</span><span class="o">-</span><span class="n">generated</span> <span class="n">method</span> <span class="n">stub</span>
+                <span class="n">tv1</span><span class="o">.</span><span class="nb">set</span><span class="n">Text</span><span class="p">(</span><span class="s">"the text is changed"</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="nb">bool</span><span class="n">ean</span> <span class="n">onCreateOptionsMenu</span><span class="p">(</span><span class="n">Menu</span> <span class="n">menu</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">//</span> <span class="n">Inflate</span> <span class="n">the</span> <span class="n">menu</span><span class="p">;</span> <span class="n">this</span> <span class="n">adds</span> <span class="n">items</span> <span class="n">to</span> <span class="n">the</span> <span class="n">action</span> <span class="n">bar</span> <span class="k">if</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">present</span><span class="o">.</span>
+        <span class="n">getMenuInflater</span><span class="p">()</span><span class="o">.</span><span class="n">inflate</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">main</span><span class="p">,</span> <span class="n">menu</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+</pre>
+<p>MyProjectTest的工程如下：</p>
+<pre class="highlight python"><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">android.widget.Button</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.ImageView</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.TextView</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">com.example.myproject.MainActivity</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">com.example.myproject.R</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.robolectric.Robolectric</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.robolectric.RobolectricTestRunner</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.BeforeClass</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="nn">org.hamcrest.CoreMatchers.equalTo</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="nn">org.junit.Assert.assertThat</span><span class="p">;</span>
+
+<span class="nd">@RunWith</span><span class="p">(</span><span class="n">RobolectricTestRunner</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MyActivityTest</span> <span class="p">{</span>
+
+<span class="n">private</span> <span class="n">MainActivity</span> <span class="n">activity</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">Button</span> <span class="n">testButton</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">Button</span> <span class="n">trackerRecentActivityButton</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">Button</span> <span class="n">injectedActivityButton</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">ImageView</span> <span class="n">pivotalLogo</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">TextView</span> <span class="n">testText</span><span class="p">;</span>
+
+
+
+<span class="nd">@Test</span>
+<span class="n">public</span> <span class="n">void</span> <span class="n">shouldHaveActivity</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+       <span class="n">activity</span> <span class="o">=</span> <span class="n">Robolectric</span><span class="o">.</span><span class="n">buildActivity</span><span class="p">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="n">class</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">();</span>
+       <span class="n">assertThat</span><span class="p">((</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">MainActivity</span><span class="o">&gt;</span><span class="p">)</span> <span class="n">activity</span><span class="o">.</span><span class="n">getClass</span><span class="p">(),</span> <span class="n">equalTo</span><span class="p">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="n">class</span><span class="p">));</span>
+
+<span class="p">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">shouldHaveHappySmiles</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">String</span> <span class="n">hello</span> <span class="o">=</span> <span class="n">new</span> <span class="n">MainActivity</span><span class="p">()</span><span class="o">.</span><span class="n">getResources</span><span class="p">()</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="nb">str</span><span class="n">ing</span><span class="o">.</span><span class="n">hello_world</span><span class="p">);</span>
+        <span class="n">assertThat</span><span class="p">(</span><span class="n">hello</span><span class="p">,</span> <span class="n">equalTo</span><span class="p">(</span><span class="s">"Hello world!"</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="nd">@Test</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">shouldHaveAButtonThatSaysPressMe</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+           <span class="n">activity</span> <span class="o">=</span> <span class="n">Robolectric</span><span class="o">.</span><span class="n">buildActivity</span><span class="p">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="n">class</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">();</span>
+            <span class="n">testButton</span> <span class="o">=</span> <span class="p">(</span><span class="n">Button</span><span class="p">)</span> <span class="n">activity</span><span class="o">.</span><span class="n">findViewById</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="nb">id</span><span class="o">.</span><span class="n">button1</span><span class="p">);</span>
+        <span class="n">assertThat</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="n">testButton</span><span class="o">.</span><span class="n">getText</span><span class="p">(),</span> <span class="n">equalTo</span><span class="p">(</span><span class="s">"monkeytest"</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="nd">@Test</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">shouldHaveClickButtonSuccess</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+       <span class="n">activity</span> <span class="o">=</span> <span class="n">Robolectric</span><span class="o">.</span><span class="n">buildActivity</span><span class="p">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="n">class</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">testButton</span> <span class="o">=</span> <span class="p">(</span><span class="n">Button</span><span class="p">)</span> <span class="n">activity</span><span class="o">.</span><span class="n">findViewById</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="nb">id</span><span class="o">.</span><span class="n">button1</span><span class="p">);</span>
+        <span class="n">testText</span> <span class="o">=</span> <span class="p">(</span><span class="n">TextView</span><span class="p">)</span> <span class="n">activity</span><span class="o">.</span><span class="n">findViewById</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="nb">id</span><span class="o">.</span><span class="n">textView1</span><span class="p">);</span>
+        <span class="n">testButton</span><span class="o">.</span><span class="n">performClick</span><span class="p">();</span>
+        <span class="n">assertThat</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="n">testText</span><span class="o">.</span><span class="n">getText</span><span class="p">(),</span><span class="n">equalTo</span><span class="p">(</span><span class="s">"the text is changed"</span><span class="p">));</span>
+
+
+    <span class="p">}</span>
+
+
+<span class="p">}</span>
+
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='robolectric 无脑例子 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="231#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="231#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="231#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="231#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="231#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="231#reply1">1楼</a> · <abbr class="timeago" title="2013-11-27T19:15:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="829" data-state="" data-type="Reply" href="231#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/231/replies/829/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="guo" href="231#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>从jvm上跑android程序？<br>
+我觉得手机端的程序大多都不会太复杂，感觉测试上不是很需要高效，更需要贴近真实场景</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="231#reply2">2楼</a> · <abbr class="timeago" title="2013-11-27T19:57:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="830" data-state="" data-type="Reply" href="231#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/231/replies/830/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="231#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="231#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 手机测试需要分层  开发自测使用这个框架是很方便的  类似于单测和集成测试 分层测试是更好的体系</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="231#reply3">3楼</a> · <abbr class="timeago" title="2013-11-27T23:00:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="832" data-state="" data-type="Reply" href="231#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/231/replies/832/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="231#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="231#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 说的没错。复杂不复杂主要是看测试，开发的分析，设计。毕竟app就我目前看起来，要简单的很简单，要复杂的，会极其复杂。测试比开发难做太多了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../jason"><img alt="Ad3d15b150aff57a23f3f4a83f8e03b7" class="uface" src="../avatar/ad3d15b150aff57a23f3f4a83f8e03b7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="吴颖敏" href="../jason">jason</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="231#reply4">4楼</a> · <abbr class="timeago" title="2013-11-28T08:43:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="834" data-state="" data-type="Reply" href="231#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="119" href="http://testerhome.com/topics/231/replies/834/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="jason" href="231#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>robolectric 的好处是从另一个角度去剖析了android代码，作为单测更好的简化了测试的后期投入。本身shadow的使用就已经提供了不错的思路，思寒之前提到的mock底层，如果底层是interface，结合easy mock基本都有方法这样测试。robolectric这个需要测试去推动开发使用，将测试交出去robolectric是非常不错的选择。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @z7039585: 想换个好工作 找个妹纸~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="231#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

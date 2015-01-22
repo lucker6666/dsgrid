@@ -1,0 +1,634 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 你是如何做移动应用的性能测试的？ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">你是如何做移动应用的性能测试的？</h1>
+  <div class="info leader">
+    <a class="node" href="node32">移动性能测试</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-01-05T11:59:43+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-02-19T11:18:23+08:00"></abbr>回复
+     · 
+    622次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这是 <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a>  的总结 (感谢~)</p>
+
+<p>我测，用的网易的Emmagee+安测试+腾讯的GT+adb dump再取平均值~~看下那些操作或activity消耗，然后大致比一下同类产品，然后就消耗大的地方去问问开发能优化么~</p>
+
+<p>之前在模拟器运行apk，反应速度就不及真机，没法考虑用它来看性能，到后来只有适配UI时才偶尔用用模拟器，别的测试绝对不用模拟器了~</p>
+
+<p>那些工具运行起来后，我一般是手动跑测试，主要看的的是热点功能（可由后来数据统计来确定）、主打卖点功能来测试。自动化考虑过，但结合以前的测手机系统时的经验，影响性能的因素太多，自动化察觉不到时还是要手动来过一遍（脚本偶尔也闹情绪），而我这目前手动盯着来测还能顶得住，就没用自动化来跑。</p>
+
+<p>奉上 Emmagee 链接 <a href="https://github.com/NetEase/Emmagee" rel="nofollow" target="_blank">https://github.com/NetEase/Emmagee</a></p>
+
+<p>Unlike most other performance test tools that only do system-level monitoring, Emmagee provides the ability to monitor any single App. Other advantages that you should not miss:</p>
+
+<ul>
+<li>Open source</li>
+<li>Easy to use</li>
+<li>Process-specific monitoring, including CPU, memory, network traffic, battery current and status</li>
+<li>Floating window that renders real-time process status</li>
+<li>CSV format report that can be converted into any other format you want</li>
+<li>User-defined collecting interval</li>
+<li>Fully support Android 2.2 and above</li>
+</ul>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='你是如何做移动应用的性能测试的？ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="357#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="357#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="357#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="357#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="357#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>15</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply1">1楼</a> · <abbr class="timeago" title="2014-01-05T13:58:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1782" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/357/replies/1782/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我看过一部分的代码  发现他们读取进程特定的内存 网络等指标都是读取系统的proc下的文件数据  所以读取的数据都应该是一致的 每次的不同只是环境不同导致的 </p>
+
+<p>耗电量这种数据 一般也是跟io 网络紧密相关的 也就是跟业务相关的 相同业务的对比才有意义 </p>
+
+<p>另外同样的业务行为在不同的硬件上导致的耗电量也相差很多 比如内存小的手机很容易发生内存dump 导致存储卡发热  内存大的就好些   网络访问较多时手机的gsm芯片也会发热 3g就好很多  </p>
+
+<p>我的看法是评估性能是否靠谱 还需要在各种真机上测试 并把性能数据和硬件关联起来做历史版本的对比分析 </p>
+
+<p>对于研发阶段，可以只关注cpu io mem network 自己app自身窗体的响应和渲染时间 以及渲染的成本   耗电量可以统筹分析  </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply2">2楼</a> · <abbr class="timeago" title="2014-01-05T20:37:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1785" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/357/replies/1785/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="mingway_hu" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我之前是找几个功能稳定的版本，然后就要查看的几个点，拿到各个版本的数据，再问问开发哪个版本更靠谱、那个靠谱的版本的优化空间、优化后能达到什么水平，然后以这个为大概的参考。之后的版本和这个作对比，只要浮动不是太大、或是由于功能改动导致的浮动较大但在合理范围和可接受范围（需要和产品经理确认）内，我都不会去细究其原因。版本出现大改动，之前的参考数据基本上就废了。。。</p>
+
+<p>请Dev协助这块，（个人感受）最好是挑一个接触过该项目的但不主做该项目的、能力较强的Dev，然后再挑该项目的主管，交流时间尽量选在吃饭或下班回家路上等闲暇时间（这时候他们易说真话，本人亲测~~#）来请教或套话（套话的内容和过程多数时候感觉很有意思，信息量一般也比工作期间的沟通多得多，知识面也能稍稍的得到拓展（这点可能对日后再发生类似问题时快速确认问题原因有帮助））~拿到两类Dev的话之后，这对确定参考数据的选取和分析判断有巨大的帮助~</p>
+
+<p>（引两句我们Dev同事说的题外话：写code是个良心活儿；其实哪有坑我都知道，但是不太想承认，也懒得去改。后来在与Dev沟通时和测试时能深刻感受到，有时能通过沟通对一个人做事的态度进行大致的判断，再结合套来的信息哪有坑哪没好好写，然后针对他负责的区域进行有针对性的测试，就能有意外收获~~#）</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply3">3楼</a> · <abbr class="timeago" title="2014-01-05T22:11:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1786" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/357/replies/1786/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 我想请你来讲下第三期的公开课 =，来说说性能测试这块怎样？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply4">4楼</a> · <abbr class="timeago" title="2014-01-05T22:56:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1787" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/357/replies/1787/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 赞同赞同～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply5">5楼</a> · <abbr class="timeago" title="2014-01-06T12:00:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1808" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/357/replies/1808/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="mingway_hu" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>  我只是写了点我个人是如何获取所需的数据、为了确认数据准确性而采用的一些**笨办法**。<br>
+总的目的就是为了质量，除了找bug之外，就是防bug。通过查看性能上的变化来推测质量的风险。实际上每个人一看这些字就能明白和做到，本身并没有太多实质上的东西，写成文字就足够了~</p>
+
+<p>我感觉还是让monkey哥还有‘安测试’的作者来讲更合适些：）</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply6">6楼</a> · <abbr class="timeago" title="2014-01-06T12:52:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1814" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/357/replies/1814/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="seveniruby" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>  @喜力 有什么性能方面的经典bug吗.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply7">7楼</a> · <abbr class="timeago" title="2014-01-06T13:35:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1815" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/357/replies/1815/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="mingway_hu" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a><br><br>
+1、有次把一半成品给老总装上了，老总后来反应说在家用时启动的有点慢，后来我看了下流量。。。启动后要下载1MB多的图片。。。然后就有了内容运营同学上传各种图片尺寸、大小的规则~（图片这个事后又发现了内存泄露的问题。。。）<br>
+2、还有就是部分功能反映过慢，查看完内存消耗后发现是复用旧代码时没删干净。。。</p>
+
+<p>我常遇到大都是这类的问题。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply8">8楼</a> · <abbr class="timeago" title="2014-01-06T15:23:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1826" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/357/replies/1826/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="seveniruby" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 我认识一个中科院的教授, 他们也在带徒弟研究内存泄漏的问题. 到时候可以拿他们的成果试试.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply9">9楼</a> · <abbr class="timeago" title="2014-01-06T17:56:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1839" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/357/replies/1839/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="mingway_hu" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  Cool! 思寒大哥你搞定后教教我们O(∩_∩)O哈<br>
+关于内存泄露那块，下班路上闲聊时我们开发说过他知道，说有时间教我怎么看。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../fastpoint"><img alt="Bbb27d00618d05ebb2e9fd8d8b0ebdbc" class="uface" src="../avatar/bbb27d00618d05ebb2e9fd8d8b0ebdbc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="fastpoint-冬瓜" href="../fastpoint">fastpoint</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply10">10楼</a> · <abbr class="timeago" title="2014-01-15T21:47:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2185" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="369" href="http://testerhome.com/topics/357/replies/2185/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="fastpoint" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>第一种，让开发加入时间戳和业务跟踪线，相信我费不了他们什么时间，如果开发不愿意可以自己做，锻炼一下有好处。<br>
+第二种，直接阅读code是最有效的，有关内存泄漏基本上都是a=new a，b=new b，c=new c，c=a，c=b造成的，gc不一定能收回b和c原来分配的内存空间。另外有记忆的是我们以前常说傻开发最喜欢用string a=“哈哈哈”+“哎哎哎”，而好开发更喜欢用stringbuffer和串联add函数一样，你看多了自然就知道了。<br>
+第三种，对于所有的涉及到io和网络get任何xml、html、image等等，甚至dom的element都要在load的时候进行一次秒读，可以做个工具，这是针对web的，原生的android控件还是有质量保证的，但是web控件臭名昭著的跟当年的ie web控件一样，需要多多留意。<br>
+暂时就想这么多。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply11">11楼</a> · <abbr class="timeago" title="2014-01-24T14:20:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2357" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/357/replies/2357/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="mingway_hu" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  思寒大哥，这个是我们开发组老大推荐我看的关于OOM的两篇文~我道行浅，看的不是很明白，你帮忙看下这个咋样~~？<br><a href="http://www.blogjava.net/rosen/archive/2010/05/21/321575.html" rel="nofollow" target="_blank">http://www.blogjava.net/rosen/archive/2010/05/21/321575.html</a><br><a href="http://www.blogjava.net/rosen/archive/2010/06/13/323522.html" rel="nofollow" target="_blank">http://www.blogjava.net/rosen/archive/2010/06/13/323522.html</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply12">12楼</a> · <abbr class="timeago" title="2014-01-24T15:09:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2358" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/357/replies/2358/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="seveniruby" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a>  monkey才是性能测试的高手, 我还没涉猎到这一块.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply13">13楼</a> · <abbr class="timeago" title="2014-01-24T15:12:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2359" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/357/replies/2359/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="mingway_hu" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 他说是好文。值得开发和测试一看~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply14">14楼</a> · <abbr class="timeago" title="2014-01-24T15:18:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2360" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/357/replies/2360/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="seveniruby" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 写的挺好, MAT的底层使用的是什么技术, 最好也可以深入分析下. 应该调用的都是jvm底层的机制, 性能分析最好是可以深入的了解下jvm的机制. 我也是刚转到java. 也打算年后好好的研究jvm</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="357#reply15">15楼</a> · <abbr class="timeago" title="2014-02-19T11:18:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2607" data-state="" data-type="Reply" href="357#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/357/replies/2607/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="monkey" href="357#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="357#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 其实我觉得现在的情况是这样的，性能我们都还在关在门外，内部实现是可以了解的。但是关键是我们找不到场景去进行研究，大部分的情况下都被其他琐事所缠住了。在没有自己写什么工具分析之前我觉得都是门外汉。。= =</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @luis: 希望项目自动化测试有个好的开始，14年我能hold住场子。。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1831" title="如何选用 seed 的值？">如何选用 seed 的值？</a></li>
+    <li><a href="1734" title="基于变化取性能响应时间尝试">基于变化取性能响应时间尝试</a></li>
+    <li><a href="1591" title="性能测试专题卡斯访谈录">性能测试专题卡斯访谈录</a></li>
+    <li><a href="846" title="Android 应用性能自动化测试工具初探（二）">Android 应用性能自动化测试工具初探（二）</a></li>
+    <li><a href="833" title="Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart">Android 应用性能自动化测试工具初探（一） je...</a></li>
+    <li><a href="651" title="xcode5.1 下面安装 reportlab 的问题">xcode5.1 下面安装 reportlab 的问题</a></li>
+    <li><a href="637" title="python 之 Android 通用性能开源工具 0.000001 版">python 之 Android 通用性能开源工具 0...</a></li>
+    <li><a href="621" title="Android 应用性能测试 apk 分享">Android 应用性能测试 apk 分享</a></li>
+    <li><a href="617" title="腾讯 APP 场测 / 随身测神器-GT">腾讯 APP 场测 / 随身测神器-GT</a></li>
+    <li><a href="568" title="移动测试初探-续">移动测试初探-续</a></li>
+    <li><a href="536" title="adb shell ps -x 这个命令什么意思">adb shell ps -x 这个命令什么意思</a></li>
+    <li><a href="529" title="Android 应用性能测试方案一之 log 分析">Android 应用性能测试方案一之 log 分析</a></li>
+    <li><a href="505" title="移动端相关功耗测试杂谈">移动端相关功耗测试杂谈</a></li>
+    <li><a href="503" title="Android 性能测试初探（六）">Android 性能测试初探（六）</a></li>
+    <li><a href="502" title=" Android 性能测试初探（五）"> Android 性能测试初探（五）</a></li>
+    <li><a href="488" title="traceView 简单 demo">traceView 简单 demo</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="357#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

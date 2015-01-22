@@ -1,0 +1,341 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | CTS 设备管理之设备分类 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">CTS 设备管理之设备分类</h1>
+  <div class="info leader">
+    <a class="node" href="node42">Android CTS</a>
+     · 
+    <a data-author="true" data-name="doctorq" href="../doctorq">doctorq</a>
+     · 
+    于<abbr class="timeago" title="2015-01-14T12:06:56+08:00"></abbr>发布
+     · 
+    157次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><a href="1858" target="_blank">上一篇文章</a>已经讲了cts如何自动检测到设备，效果就是无需我们再去调用<code>ADB</code>的<code>getIDevice()</code>得到设备,利用的是ADB中提供的观察者模式做到了这一点，那么得到设备后我们如何对这些设备进行管理的呢？</p>
+<h4>设备分类</h4>
+<p>cts中将设备分为3种状态：处于验证中的设备，可用设备，执行任务的设备。这三种状态的设备分别用3个集合保存：</p>
+<pre class="highlight java"><span class="c1">//处于验证中的设备集合</span>
+<span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">IDeviceStateMonitor</span><span class="o">&gt;</span> <span class="n">mCheckDeviceMap</span><span class="o">;</span>
+<span class="c1">//可用设备的集合</span>
+<span class="kd">private</span> <span class="n">ConditionPriorityBlockingQueue</span><span class="o">&lt;</span><span class="n">IDevice</span><span class="o">&gt;</span> <span class="n">mAvailableDeviceQueue</span><span class="o">;</span>
+<span class="c1">//执行任务的设备集合</span>
+<span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">IManagedTestDevice</span><span class="o">&gt;</span> <span class="n">mAllocatedDeviceMap</span><span class="o">;</span>
+</pre>
+<h4>1.处于验证中的设备集合</h4>
+<p><code>mCheckDeviceMap</code>是一个<code>Map</code>，<code>key</code>值表示设备的<code>SN</code>号，<code>value</code>值表示当前设备的状态监听器对象<code>IDeviceStateMonitor</code>(以后会讲到)。当一个新设备被检测的时候会首先放到该Map中，然后会调用<code>IDeviceStateMonitor</code>.<code>waitForDeviceShell(final long waitTime)</code>来对设备进行一个扫描，扫描通过以后，就会将设备添加到可用设备集合<code>mAvailableDeviceQueue</code>中。但是不管扫描成不成功，经过检测步骤后，都会从<code>mCheckDeviceMap</code>设备集合中删除该设备。所以可以说该容器这是临时存放设备用的，为的是对设备进行验证是否可用，就像机场里过安检一样。</p>
+<h4>2.可用的设备集合</h4>
+<p><code>mAvailableDeviceQueue</code>是一个<a href="http://baike.baidu.com/view/1267829.htm" target="_blank">优先队列</a>，且是线程安全的，这是<code>cts</code>自定义的一个队列数据结构。你可以传入条件选择设备，比如按设备号选择，按平台号选择都可以。返回的是一个<code>IDevice</code>对象，这是原生的<code>ADB</code>中定义的接口类。该集合是一个中间集合，它从<code>mCheckDeviceMap</code>中得到集合，然后等到用户使用设备后，就将集合中的某个元素"送给"了执行任务的设备集合<code>mAllocatedDeviceMap</code>。</p>
+<h4>3.执行任务的设备集合</h4>
+<p><code>mAllocatedDeviceMap</code>集合是一个Map，<code>key</code>值表示设备的<code>SN</code>号，<code>value</code>值表示的是cts自己定义的设备对象的接口<code>IManagedTestDevice</code>。当用户选择一个可用设备后，是从可用设备集合<code>mAvailableDeviceQueue</code>中得到了一个<code>IDevice</code>,然后<code>cts</code>使用外观模式，将其封装到了继承自<code>IManagedTestDevice</code>接口的对象<code>TestDevice</code>(这个类很重要，以后会单独讲)中，里面有很多关于设备的方法可以被调用，那么用户实际能操作就是这个<code>TestDevice</code>类。等待任务完成后，该设备将“送还”到可用设备集合中，这只是一个借用的过程，用完了就还给了它，这样的话这个设备还可以继续执行其他任务。</p>
+<h4>4.总结</h4>
+<p>通过上面的介绍，我们用一幅图来描述一下3个集合之间的关系。</p>
+
+<p><img src="../photo/2015/40f070b5d28e2a7fc7f89d3a43850be6.png" alt=""></p>
+<h4>检测设备后分类</h4>
+<p>终于到了揭晓庐山真面目的时候，以上的种种解释，包括第一篇文章的铺垫，都是为了下面的内容铺垫的，讲代码的东西就是这么的麻烦。先上代码：</p>
+<pre class="highlight java"><span class="kd">private</span> <span class="kd">class</span> <span class="nc">ManagedDeviceListener</span> <span class="kd">implements</span> <span class="n">IDeviceChangeListener</span> <span class="o">{</span>
+
+        <span class="cm">/**
+         * {@inheritDoc}
+         */</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceChanged</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">,</span> <span class="kt">int</span> <span class="n">changeMask</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">IManagedTestDevice</span> <span class="n">testDevice</span> <span class="o">=</span> <span class="n">mAllocatedDeviceMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+            <span class="k">if</span> <span class="o">((</span><span class="n">changeMask</span> <span class="o">&amp;</span> <span class="n">IDevice</span><span class="o">.</span><span class="na">CHANGE_STATE</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">testDevice</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">TestDeviceState</span> <span class="n">newState</span> <span class="o">=</span> <span class="n">TestDeviceState</span><span class="o">.</span><span class="na">getStateByDdms</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getState</span><span class="o">());</span>
+                    <span class="n">testDevice</span><span class="o">.</span><span class="na">setDeviceState</span><span class="o">(</span><span class="n">newState</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mCheckDeviceMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">IDeviceStateMonitor</span> <span class="n">monitor</span> <span class="o">=</span> <span class="n">mCheckDeviceMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+                    <span class="n">monitor</span><span class="o">.</span><span class="na">setState</span><span class="o">(</span><span class="n">TestDeviceState</span><span class="o">.</span><span class="na">getStateByDdms</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getState</span><span class="o">()));</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">mAvailableDeviceQueue</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">device</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">device</span><span class="o">.</span><span class="na">getState</span><span class="o">()</span> <span class="o">==</span><span class="n">IDevice</span><span class="o">.</span><span class="na">DeviceState</span><span class="o">.</span><span class="na">ONLINE</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">checkAndAddAvailableDevice</span><span class="o">(</span><span class="n">device</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="cm">/**
+         * {@inheritDoc}
+         */</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceConnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">CLog</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"Detected device connect %s, id %d"</span><span class="o">,</span> <span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">(),</span> <span class="n">device</span><span class="o">.</span><span class="na">hashCode</span><span class="o">());</span>
+            <span class="n">IManagedTestDevice</span> <span class="n">testDevice</span> <span class="o">=</span> <span class="n">mAllocatedDeviceMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">testDevice</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">isValidDeviceSerial</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">())</span> <span class="o">&amp;&amp;</span> <span class="n">device</span><span class="o">.</span><span class="na">getState</span><span class="o">()</span> <span class="o">==</span> <span class="n">IDevice</span><span class="o">.</span><span class="na">DeviceState</span><span class="o">.</span><span class="na">ONLINE</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">checkAndAddAvailableDevice</span><span class="o">(</span><span class="n">device</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mCheckDeviceMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">IDeviceStateMonitor</span> <span class="n">monitor</span> <span class="o">=</span> <span class="n">mCheckDeviceMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+                    <span class="n">monitor</span><span class="o">.</span><span class="na">setState</span><span class="o">(</span><span class="n">TestDeviceState</span><span class="o">.</span><span class="na">getStateByDdms</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getState</span><span class="o">()));</span>
+                <span class="o">}</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="c1">// this device is known already. However DDMS will allocate a</span>
+                <span class="c1">// new IDevice, so need</span>
+                <span class="c1">// to update the TestDevice record with the new device</span>
+                <span class="n">CLog</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"Updating IDevice for device %s"</span><span class="o">,</span> <span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+                <span class="n">testDevice</span><span class="o">.</span><span class="na">setIDevice</span><span class="o">(</span><span class="n">device</span><span class="o">);</span>
+                <span class="n">TestDeviceState</span> <span class="n">newState</span> <span class="o">=</span> <span class="n">TestDeviceState</span><span class="o">.</span><span class="na">getStateByDdms</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getState</span><span class="o">());</span>
+                <span class="n">testDevice</span><span class="o">.</span><span class="na">setDeviceState</span><span class="o">(</span><span class="n">newState</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isValidDeviceSerial</span><span class="o">(</span><span class="n">String</span> <span class="n">serial</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">serial</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">serial</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"?"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="cm">/**
+         * {@inheritDoc}
+         */</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceDisconnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">disconnectedDevice</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">mAvailableDeviceQueue</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">disconnectedDevice</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">CLog</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="s">"Removed disconnected device %s from available queue"</span><span class="o">,</span><span class="n">disconnectedDevice</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+            <span class="o">}</span>
+            <span class="n">IManagedTestDevice</span> <span class="n">testDevice</span> <span class="o">=</span> <span class="n">mAllocatedDeviceMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">disconnectedDevice</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">testDevice</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">testDevice</span><span class="o">.</span><span class="na">setDeviceState</span><span class="o">(</span><span class="n">TestDeviceState</span><span class="o">.</span><span class="na">NOT_AVAILABLE</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mCheckDeviceMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">disconnectedDevice</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">()))</span> <span class="o">{</span>
+                <span class="n">IDeviceStateMonitor</span> <span class="n">monitor</span> <span class="o">=</span> <span class="n">mCheckDeviceMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">disconnectedDevice</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+                <span class="n">monitor</span><span class="o">.</span><span class="na">setState</span><span class="o">(</span><span class="n">TestDeviceState</span><span class="o">.</span><span class="na">NOT_AVAILABLE</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">updateDeviceMonitor</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+</pre>
+
+<p>上面的代码我在第一篇文章中有涉及，只是那个时候我把三个监听方法里的具体实现给隐藏了，现在终于把它展现出来了。</p>
+<h4>deviceChanged方法</h4>
+<p>该方法会在设备连接的时候调用，但是我们做了个判断，就是设备状态的改变，那就说明该设备连接前<code>ADB</code>已经知道了该设备的存在，只是它与之前的状态发生了变化，所以在设备第一次连接的时候，该方法里的代码块是不会被调用的。那么再具体说说操作步骤：</p>
+
+<p><code>1</code>.首先判断设备的改变是否是状态的改变，因为设备的变化很有多种，我们需要关心的设备于PC连接状态的改变，所以需要做判断。</p>
+
+<p><code>2</code>.然后从<code>mAllocatedDeviceMap</code>集合中尝试获得发生改变的设备，这一步是为了检查是否会影响到执行任务的设备。因为在任务执行过程中，不是每时每刻都能去检测状态，所以cts采用的是被动判断，如果状态发生改变，需要通知正在执行任务的设备监听器，由监听器去做相应的处理。</p>
+
+<p><code>3</code>.如果确定状态发生改变的设备是正在执行任务的设备，就需要将其状态设置为新状态。</p>
+
+<p><code>4</code>.如果不是正在执行任务的设备，那么再去验证是否属于另外2个集合中的设备。</p>
+
+<p><code>5</code>.如果是检测集合<code>mCheckDeviceMap</code>中的元素，那么也要重新设置设备状态，不过这个时候是从检测设备集合中得到设备再改变它的状态。</p>
+
+<p><code>6</code>.如果改变的设备既不是执行任务的设备，也不是检测中的设备，这个时候我们要判断是否是新设备，这个时候可能有人会有疑问？为什么不判断是否存在于可分配设备中呢？这得从<code>deviceChanged</code>的调用机制来说，<code>deviceChanged</code>只在设备连接进来的时候会调用，设备掉线的时候该方法不会被调用，那么自然这个里面无需判断是否是可分配设备中。只需要判断传进来的<code>IDevice</code>的状态是否在线且不在可分配设备列表中，这个时候就要按新设备来处理啦。另外判断是否在该集合中是需要在<code>deviceDisconnected</code>中判断的。</p>
+<h4>deviceConnected方法</h4>
+<p>这个方法会在有设备连接的时候调用，不管是新设备还是旧设备。它的处理步骤如下：</p>
+
+<p><code>1</code>.首先判断该设备是否正在执行任务，如果正在执行任务，<code>ok</code>！我们需要更新该设备的状态。如果不是进入第二步:<br>
+<code>2</code>.如果在线且通过判断其<code>SN</code>号是可用的，如果条件不通过，跳到第三步，如果通过的话，这个时候需要进行操作判断是否可以放到可用设备集合中。<br>
+<code>3</code>.是否存在于检测设备集合中，如果存在就将其设备更新下。</p>
+<h4>deviceDisconnected方法</h4>
+<p>这个方法会在设备离线的时候调用，<br>
+<code>1</code>.首先试着从可用集合中删除该设备，然后进入第二步。<br>
+<code>2</code>.剩下的处理方式和上面的<code>deviceConnected</code>一样。</p>
+<h4>总结</h4>
+<p>设备管理的复杂性较之我所讲的，我所能说的也只是皮毛，希望对此有兴趣研究研究源码。提示一下，在研究源码之前先了解一下23种设计模式中常用模式，对你的理解会很有帮助。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='CTS 设备管理之设备分类 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1863#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1863#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1863#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1863#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1863#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    快来晒出你的星语心愿吧 http://testerhome.com/topics/533
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1914" title="求留下 testerhome">求留下 testerhome</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1863#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

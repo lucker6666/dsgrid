@@ -1,0 +1,427 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | appium1.1 版本运行手机应用，junit 抛空指针异常 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../tom_ma"><img alt="808" class="uface" src="../user/large_avatar/808.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">appium1.1 版本运行手机应用，junit 抛空指针异常</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="tom_ma" href="../tom_ma">tom_ma</a>
+     · 
+    于<abbr class="timeago" title="2014-06-17T18:35:46+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="miting" href="../miting">miting</a> 于<abbr class="timeago" title="2014-06-23T15:37:05+08:00"></abbr>回复
+     · 
+    411次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>环境：appium1.1，windows 7，htc one</p>
+
+<p>代码如下：</p>
+<pre class="highlight java">
+ <span class="kd">private</span> <span class="n">AppiumDriver</span> <span class="n">driver</span><span class="o">;</span>
+
+        <span class="nd">@Before</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="c1">// set up appium</span>
+<span class="c1">//          File classpathRoot = new File(System.getProperty("user.dir"));</span>
+            <span class="c1">//存放app目录：apps</span>
+<span class="c1">//          File appDir = new File(classpathRoot, "apps");</span>
+<span class="c1">//            File app = new File(appDir, "GHome--release-tag-v4.7.0-20140606-01.apk");</span>
+            <span class="c1">//配置webdriver</span>
+            <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platformName"</span><span class="o">,</span> <span class="s">"Android"</span><span class="o">);</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platform"</span><span class="o">,</span> <span class="s">"WINDOWS"</span><span class="o">);</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"deviceName"</span><span class="o">,</span><span class="s">"HTC"</span><span class="o">);</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platformVersion"</span><span class="o">,</span> <span class="s">"4.2"</span><span class="o">);</span>
+<span class="c1">//          capabilities.setCapability("app", app.getAbsolutePath());</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"appPackage"</span><span class="o">,</span> <span class="s">"com.sdo.sdaccountkey"</span><span class="o">);</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"appActivity"</span><span class="o">,</span> <span class="s">".ui.guide.TXZFirstActivity"</span><span class="o">);</span>
+<span class="c1">//          capabilities.setCapability("appActivity", ".ui.guide.TXZFreshManGuideActivity");</span>
+            <span class="c1">//appium的独特地方,使用自己的AppiumDriver, 它本身是继承自WebDriver</span>
+            <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AppiumDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+            <span class="c1">//设置超时</span>
+            <span class="n">driver</span><span class="o">.</span><span class="na">manage</span><span class="o">().</span><span class="na">timeouts</span><span class="o">().</span><span class="na">implicitlyWait</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nd">@Test</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">guideFreshMan</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>
+        <span class="c1">//向下滑动，appium0.18的用法</span>
+           <span class="n">JavascriptExecutor</span> <span class="n">jse</span><span class="o">=(</span><span class="n">JavascriptExecutor</span><span class="o">)</span><span class="n">driver</span><span class="o">;</span>
+            <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;</span> <span class="n">scriptObject</span><span class="o">=</span><span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;();</span>
+            <span class="n">scriptObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"startX"</span><span class="o">,</span> <span class="mf">400.0</span><span class="o">);</span>
+            <span class="n">scriptObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"startY"</span><span class="o">,</span> <span class="mf">2.0</span><span class="o">);</span>
+            <span class="n">scriptObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"endX"</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">);</span>
+            <span class="n">scriptObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"endY"</span><span class="o">,</span> <span class="mf">2.0</span><span class="o">);</span>
+            <span class="n">scriptObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"duration"</span><span class="o">,</span> <span class="mf">0.1</span><span class="o">);</span>
+            <span class="n">jse</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: swipe"</span><span class="o">,</span> <span class="n">scriptObject</span><span class="o">);</span>
+            <span class="c1">//driver.swipe(157, 1029, 156, 1, 1);   </span>
+          <span class="c1">//点击立即体验按钮</span>
+          <span class="n">WebElement</span> <span class="n">expierence</span>  <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="c1">//searchHisotry = driver.findElementByXPath("//android.widget.ListView//android.widget.RelativeLayout[@index=1]");</span>
+          <span class="n">expierence</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElementByXPath</span><span class="o">(</span><span class="s">"//android.widget.RelativeLayout[last()]"</span><span class="o">);</span>
+          <span class="n">expierence</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>   
+         <span class="o">}</span>
+        <span class="nd">@After</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="n">driver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+        <span class="o">}</span>
+</pre>
+<p>appium输入日志如下：</p>
+<pre class="highlight java"><span class="o">&gt;</span> <span class="nl">info:</span> <span class="n">UiAutomator</span> <span class="n">shut</span> <span class="n">down</span> <span class="n">normally</span>
+<span class="o">&gt;</span> <span class="nl">ERROR:</span> <span class="nl">error:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">an</span> <span class="n">Appium</span> <span class="n">session</span><span class="o">,</span> <span class="n">err</span> <span class="nl">was:</span> <span class="nl">Error:</span> <span class="n">com</span><span class="o">.</span><span class="na">sdo</span><span class="o">.</span><span class="na">sdaccountkey</span><span class="o">/.</span><span class="na">ui</span><span class="o">.</span><span class="na">guide</span><span class="o">.</span><span class="na">TXZFirstActivity</span> <span class="n">never</span> <span class="n">started</span><span class="o">.</span> <span class="nl">Current:</span> <span class="n">com</span><span class="o">.</span><span class="na">sdo</span><span class="o">.</span><span class="na">sdaccountkey</span><span class="o">/.</span><span class="na">ui</span><span class="o">.</span><span class="na">guide</span><span class="o">.</span><span class="na">TXZFreshManGuideActivity</span>
+<span class="o">&gt;</span> <span class="nl">info:</span> <span class="n">Cleaning</span> <span class="n">up</span> <span class="n">android</span> <span class="n">objects</span>
+<span class="o">&gt;</span> <span class="nl">info:</span> <span class="n">Cleaning</span> <span class="n">up</span> <span class="n">appium</span> <span class="n">session</span>
+<span class="o">&gt;</span> <span class="nl">info:</span> <span class="nl">Error:</span> <span class="n">com</span><span class="o">.</span><span class="na">sdo</span><span class="o">.</span><span class="na">sdaccountkey</span><span class="o">/.</span><span class="na">ui</span><span class="o">.</span><span class="na">guide</span><span class="o">.</span><span class="na">TXZFirstActivity</span> <span class="n">never</span> <span class="n">started</span><span class="o">.</span> <span class="nl">Current:</span> <span class="n">com</span><span class="o">.</span><span class="na">sdo</span><span class="o">.</span><span class="na">sdaccountkey</span><span class="o">/.</span><span class="na">ui</span><span class="o">.</span><span class="na">guide</span><span class="o">.</span><span class="na">TXZFreshManGuideActivity</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="kc">null</span><span class="o">.&lt;</span><span class="n">anonymous</span><span class="o">&gt;</span> <span class="o">(</span><span class="nl">D:</span><span class="err">\</span><span class="n">Appium</span><span class="o">-</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">0</span><span class="err">\</span><span class="n">node_modules</span><span class="err">\</span><span class="n">appium</span><span class="err">\</span><span class="n">lib</span><span class="err">\</span><span class="n">devices</span><span class="err">\</span><span class="n">android</span><span class="err">\</span><span class="n">adb</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">1276</span><span class="o">:</span><span class="mi">12</span><span class="o">)</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="kc">null</span><span class="o">.&lt;</span><span class="n">anonymous</span><span class="o">&gt;</span> <span class="o">(</span><span class="nl">D:</span><span class="err">\</span><span class="n">Appium</span><span class="o">-</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">0</span><span class="err">\</span><span class="n">node_modules</span><span class="err">\</span><span class="n">appium</span><span class="err">\</span><span class="n">lib</span><span class="err">\</span><span class="n">devices</span><span class="err">\</span><span class="n">android</span><span class="err">\</span><span class="n">adb</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">1221</span><span class="o">:</span><span class="mi">7</span><span class="o">)</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="nl">D:</span><span class="err">\</span><span class="n">Appium</span><span class="o">-</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">0</span><span class="err">\</span><span class="n">node_modules</span><span class="err">\</span><span class="n">appium</span><span class="err">\</span><span class="n">lib</span><span class="err">\</span><span class="n">devices</span><span class="err">\</span><span class="n">android</span><span class="err">\</span><span class="n">adb</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">153</span><span class="o">:</span><span class="mi">5</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="n">ChildProcess</span><span class="o">.</span><span class="na">exithandler</span> <span class="o">(</span><span class="n">child_process</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">635</span><span class="o">:</span><span class="mi">7</span><span class="o">)</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="n">ChildProcess</span><span class="o">.</span><span class="na">EventEmitter</span><span class="o">.</span><span class="na">emit</span> <span class="o">(</span><span class="n">events</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">98</span><span class="o">:</span><span class="mi">17</span><span class="o">)</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="n">maybeClose</span> <span class="o">(</span><span class="n">child_process</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">743</span><span class="o">:</span><span class="mi">16</span><span class="o">)</span>
+<span class="o">&gt;</span>     <span class="n">at</span> <span class="n">Process</span><span class="o">.</span><span class="na">ChildProcess</span><span class="o">.</span><span class="na">_handle</span><span class="o">.</span><span class="na">onexit</span> <span class="o">(</span><span class="n">child_process</span><span class="o">.</span><span class="na">js</span><span class="o">:</span><span class="mi">810</span><span class="o">:</span><span class="mi">5</span><span class="o">)</span>
+<span class="o">&gt;</span> <span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">error:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">33</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"message"</span><span class="o">:</span><span class="s">"A new session could not be created. (Original error: com.sdo.sdaccountkey/.ui.guide.TXZFirstActivity never started. Current: com.sdo.sdaccountkey/.ui.guide.TXZFreshManGuideActivity)"</span><span class="o">,</span><span class="s">"origValue"</span><span class="o">:</span><span class="s">"com.sdo.sdaccountkey/.ui.guide.TXZFirstActivity never started. Current: com.sdo.sdaccountkey/.ui.guide.TXZFreshManGuideActivity"</span><span class="o">},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="kc">null</span><span class="o">}</span>
+<span class="o">&gt;</span> <span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span> <span class="mi">500</span> <span class="mi">26417</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">404</span><span class="n">b</span>
+</pre>
+<p>Eclipse运行时的截图如下：</p>
+
+<p><img src="../photo/2014/72830ae539b7ce0e5d3b674282880ede.png" alt=""></p>
+
+<p>PS：同样的环境，我替换掉里面的变量，可以在手机淘宝上成功运行代码。。这尼玛算咋回事呢？有小伙伴能帮忙看下异常引起的原因吗？ 万分感谢！</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='appium1.1 版本运行手机应用，junit 抛空指针异常 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1022#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1022#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1022#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1022#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1022#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>5</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../tom_ma"><img alt="808" class="uface" src="../user/large_avatar/808.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tom_ma" href="../tom_ma">tom_ma</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1022#reply1">1楼</a> · <abbr class="timeago" title="2014-06-17T18:42:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5833" data-state="" data-type="Reply" href="1022#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="808" href="http://testerhome.com/topics/1022/replies/5833/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="tom_ma" href="1022#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>另外应用启动时，logcat输入如下：<br>
+cmp=com.sdo.sdaccountkey/.ui.guide.TXZFirstActivity} from pid 1260<br>
+06-17 16:57:02.733: I/ActivityManager(698): Start proc com.sdo.sdaccountkey for activity com.sdo.sdaccountkey/.ui.guide.TXZFirstActivity: pid=10645 uid=10096 gids={50096, 1015, 3003, 5012, 1006, 1028}<br>
+06-17 16:57:03.003: I/ActivityManager(698): START u0 {cmp=com.sdo.sdaccountkey/.ui.guide.TXZFreshManGuideActivity} from pid 10645<br>
+06-17 16:57:03.323: I/ActivityManager(698): Displayed com.sdo.sdaccountkey/.ui.guide.TXZFreshManGuideActivity: +318ms (total +614ms)</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../happyjiejie"><img alt="1048" class="uface" src="../user/large_avatar/1048.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="刘杰" href="../happyjiejie">happyjiejie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1022#reply2">2楼</a> · <abbr class="timeago" title="2014-06-18T17:41:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5858" data-state="" data-type="Reply" href="1022#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1048" href="http://testerhome.com/topics/1022/replies/5858/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="happyjiejie" href="1022#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这是log信息是在控制台输入：abd shell logcat 然后点击你要测试的应用，然后出现的这些信息吗？我的出特别多的信息，把这些重要的都给覆盖了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1022#reply3">3楼</a> · <abbr class="timeago" title="2014-06-18T19:59:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5867" data-state="" data-type="Reply" href="1022#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1022/replies/5867/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1022#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>把这两句</p>
+<pre class="highlight plaintext">capabilities.setCapability("appPackage", "com.sdo.sdaccountkey");
+            capabilities.setCapability("appActivity", ".ui.guide.TXZFirstActivity");
+</pre>
+<p>去掉试试看。<br>
+另外加头像。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../tom_ma"><img alt="808" class="uface" src="../user/large_avatar/808.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tom_ma" href="../tom_ma">tom_ma</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1022#reply4">4楼</a> · <abbr class="timeago" title="2014-06-20T17:32:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5934" data-state="" data-type="Reply" href="1022#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="808" href="http://testerhome.com/topics/1022/replies/5934/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="tom_ma" href="1022#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 头像已加，另外尝试亲建议的去掉那两行后，appium会直接报错。 <br>
+info: Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: No app set; either start appium with --app or pass in an 'app' value in desired capabilities, or set androidPackage to launch pre-existing app on device)","origValue":"No app set; either start appium with --app or pass in an 'app' value in desired capabilities, or set androidPackage to launch pre-existing app on device"},"sessionId":null}</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../miting"><img alt="743" class="uface" src="../user/large_avatar/743.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="miting" href="../miting">miting</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1022#reply5">5楼</a> · <abbr class="timeago" title="2014-06-23T15:37:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6003" data-state="" data-type="Reply" href="1022#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="743" href="http://testerhome.com/topics/1022/replies/6003/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="miting" href="1022#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>capabilities.setCapability("appActivity", ".ui.guide.TXZFirstActivity");</p>
+
+<p>appActivity是用全路径试试</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    每个人都会遇到困难, 希望朋友的陪伴能够给你带来新的温暖
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1022#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

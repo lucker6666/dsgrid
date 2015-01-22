@@ -1,0 +1,350 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 移动安全第二帖——iOS 外部修改 VisibleView &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">移动安全第二帖——iOS 外部修改 VisibleView</h1>
+  <div class="info leader">
+    <a class="node" href="node34">移动安全测试</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-09-10T19:36:17+08:00"></abbr>发布
+     · 
+    725次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这个模块开着貌似一直没有人动。所以我还是来动下吧。</p>
+
+<p>其实之前我中秋节在微博和微信上面问过大家，谁知道alpine是什么？么有人回我。其实是iOS 默认的ssh的密码。不过前提是你需要jiabrake以及下载bigboss的套件。</p>
+
+<p>接着你可以使用进行ssh的登录<br>
+<code>ssh root@ &lt;ip&gt;</code></p>
+
+<p>登录之后，我们使用<code>ps aux</code>来进行当前活动进程的查询，如下显示：</p>
+<pre class="highlight shell">USER       PID %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
+root        47  13.9  1.1   387432  11788   ??  Ss   Thu09AM  73:15.45 /usr/libexec/locationd
+mobile     266  10.5  2.3   541452  23640   ??  Ss   Thu09AM 582:06.60 /usr/libexec/backboardd
+mobile   13349   1.7  3.3   485808  34400   ??  Ss    7:16PM   0:03.76 /var/mobile/Applications/2F3A9C01-109E-4BC1-94E1-18514425FCB9/etao4iphone.app/etao4iphone
+mobile     267   1.6  5.1   750464  52664   ??  Ss   Thu09AM  94:38.79 /System/Library/CoreServices/SpringBoard.app/SpringBoard
+mobile      33   0.1  0.3   373632   2828   ??  Ss   Thu09AM   1:30.19 /System/Library/PrivateFrameworks/AssistantServices.framework/assistantd
+root         1   0.1  0.1   348888   1336   ??  Ss   Thu09AM   3:26.53 /sbin/launchd
+mobile   13294   0.0  0.6   374608   6616   ??  Ss    7:03PM   0:01.68 /usr/libexec/ptpd -t usb
+mobile   13291   0.0  0.2   348608   2160   ??  Ss    7:03PM   0:00.08 /System/Library/SystemConfiguration/EAPOLController.bundle/eapolclient -i en0 -u 501 -g 501
+mobile   13166   0.0  3.1   508356  32692   ??  Ss    4:37PM   0:10.78 /var/mobile/Applications/5E6E414A-E888-45D7-99CA-07C93E903024/QZone.app/QZone
+mobile   13078   0.0  5.7   627504  59504   ??  Ss    3:46PM   0:57.11 /var/mobile/Applications/D16CF421-3424-4941-830B-9C1E8E6685E8/QQ.app/QQ
+mobile   13049   0.0  0.3   371808   2612   ??  Ss    3:35PM   0:00.26 /usr/libexec/librariand
+root     13043   0.0  0.2   348488   1908   ??  Ss    3:35PM   0:00.06 /System/Library/Frameworks/Security.framework/CloudKeychainProxy.bundle/CloudKeychainProxy
+mobile   13041   0.0  0.2   349476   2240   ??  Us    3:34PM   0:00.21 /usr/libexec/mobile_installation_proxy
+mobile   13035   0.0  0.2   348944   1916   ??  Ss    3:34PM   0:00.06 /usr/libexec/notification_proxy
+mobile   13031   0.0  0.2   348940   1888   ??  Ss    3:34PM   0:00.07 /usr/libexec/mobile_assertion_agent
+mobile   13025   0.0  0.2   349008   1608   ??  Ss    3:34PM   0:00.24 /usr/libexec/afcd
+mobile   13020   0.0  0.6   449372   6064   ??  Ss    3:34PM   0:01.11 /Applications/MobileSlideShow.app/MobileSlideShow
+mobile   12859   0.0  8.8   758312  91276   ??  Ss    2:26PM  12:58.23 /var/mobile/Applications/7F58E5E1-F2CC-48F5-BDAB-F7C2E82EBC9E/dgame.app/dgame
+mobile   12788   0.0  0.3   372848   2616   ??  Ss    2:00PM   0:00.31 /System/Library/PrivateFrameworks/CoreRecents.framework/recentsd
+mobile   12786   0.0  0.1   348816    896   ??  Ss    2:00PM   0:00.11 /usr/libexec/xpcd
+mobile   12784   0.0  0.3   402692   3036   ??  Ss    2:00PM   0:01.71 com.apple.imdpersistence.IMDPersistenceAgent
+mobile   12783   0.0  1.4   535044  14252   ??  Ss    2:00PM   0:14.30 /Applications/MobileSMS.app/MobileSMS
+mobile   12745   0.0  0.2   419704   1784   ??  Ss    1:45PM   0:00.51 /Applications/MobileCal.app/MobileCal
+mobile   12736   0.0  1.5   520940  15712   ??  Ss    1:43PM   0:08.41 /Applications/MobilePhone.app/MobilePhone
+mobile   12730   0.0  0.5   373964   5620   ??  Ss    1:41PM   0:01.74 /System/Library/PrivateFrameworks/HomeSharing.framework/Support/itunescloudd
+mobile   12727   0.0  0.3   558336   3016   ??  Ss    1:41PM   0:17.37 /var/mobile/Applications/0514266A-2319-4B13-B6ED-4332C2C8543B/DPScope.app/DPScope
+mobile   12725   0.0  0.5   372488   4940   ??  Ss    1:41PM   0:01.27 /System/Library/PrivateFrameworks/MusicLibrary.framework/Support/medialibraryd
+mobile   12666   0.0  0.8   513504   8768   ??  Ss    1:24PM   0:08.63 /var/mobile/Applications/9C8BD179-3888-4B68-914B-61765CAC8CAA/AlipayMerchant.app/AlipayMerchant
+mobile   12661   0.0  3.2   622892  32984   ??  Ss    1:22PM   1:20.43 /var/mobile/Applications/77ED19CA-346A-417D-9979-DEE123F2E2AB/BetaTest.app/BetaTest
+mobile   12642   0.0  7.6   697780  78944   ??  Ss    1:14PM   4:02.13 /var/mobile/Applications/B753CC5C-5874-496C-83BD-BC3848DF784B/MicroMessenger.app/MicroMessenger
+root     12460   0.0  0.0   349852    456   ??  Ss   11:48AM   0:00.02 /System/Library/PrivateFrameworks/CoreSymbolication.framework/coresymbolicationd
+mobile   12259   0.0  0.1   348440   1392   ??  Ss   10:00AM   0:00.11 /System/Library/PrivateFrameworks/CommunicationsFilter.framework/CMFSyncAgent.app/CMFSyncAgent
+mobile   12215   0.0  0.3   372660   3620   ??  Ss    9:49AM   0:01.74 /System/Library/Frameworks/EventKit.framework/Support/calaccessd
+mobile   12163   0.0  0.3   372192   3496   ??  Ss    9:48AM   0:01.60 /System/Library/Frameworks/Accounts.framework/accountsd
+mobile   12160   0.0  0.2   372464   1764   ??  Ss    9:48AM   0:00.59 /usr/libexec/timed
+mobile   11440   0.0  0.2   372348   2536   ??  Ss   11:22PM   0:02.55 /System/Library/PrivateFrameworks/GeoServices.framework/geod
+mobile   11400   0.0  1.1   387340  11660   ??  Ss   11:01PM   0:13.62 /System/Library/Frameworks/AssetsLibrary.framework/Support/assetsd
+root     10940   0.0  0.1   381000   1020   ??  Ss   Tue06PM   0:00.88 /usr/libexec/sandboxd
+mobile   10907   0.0  0.1   348540   1400   ??  Ss   Tue06PM   0:00.96 /usr/libexec/MobileGestaltHelper
+root      3672   0.0  0.2   352560   2104   ??  SNs  Sat01AM   0:00.23 /usr/bin/python /Applications/iNalyzer5.app/mi.py
+root      2547   0.0  0.1   348540    692   ??  Ss   Fri11AM   0:18.56 /System/Library/Frameworks/SystemConfiguration.framework/SCHelper
+mobile     531   0.0  0.1   371844    940   ??  Ss   Thu10AM   0:00.44 /System/Library/PrivateFrameworks/CloudServices.framework/Support/EscrowSecurityAlert.app/Escrow
+root       283   0.0  0.1   347984    716   ??  Ss   Thu09AM   0:00.09 /usr/libexec/XXAssistInstaller
+root       262   0.0  0.1   372232    868   ??  Ss   Thu09AM   0:01.20 /usr/sbin/filecoordinationd
+root       255   0.0  0.2   372948   2464   ??  Ss   Thu09AM   0:01.72 /usr/libexec/mobileassetd
+mobile     250   0.0  1.3   460016  13244   ??  Ss   Thu09AM   6:51.85 /System/Library/TextInput/kbd
+mobile     207   0.0  0.1   372352   1320   ??  Us   Thu09AM   0:03.28 /System/Library/PrivateFrameworks/TouchRemote.framework/Support/touchsetupd
+mobile     197   0.0  0.2   372520   1808   ??  Ss   Thu09AM   0:05.63 /System/Library/PrivateFrameworks/TCC.framework/tccd
+mobile     191   0.0  0.6   378028   6276   ??  Ss   Thu09AM   5:46.37 /System/Library/PrivateFrameworks/DataAccess.framework/Support/dataaccessd
+mobile     183   0.0  0.6   377568   5912   ??  Ss   Thu09AM   2:51.89 /usr/libexec/gamed
+mobile     180   0.0  1.3   382408  13016   ??  Ss   Thu09AM   6:25.30 /System/Library/PrivateFrameworks/iTunesStore.framework/Support/itunesstored
+mobile     177   0.0  0.5   375104   5588   ??  Ss   Thu09AM   7:39.60 /usr/libexec/DuetLST
+_securityd   168   0.0  0.5   375884   4892   ??  Ss   Thu09AM   2:04.05 /usr/libexec/securityd
+mobile     162   0.0  0.4   374688   3780   ??  Ss   Thu09AM   3:23.13 /System/Library/PrivateFrameworks/ApplePushService.framework/apsd
+mobile     158   0.0  0.1   348512   1000   ??  Ss   Thu09AM   0:35.48 /usr/sbin/WirelessCoexManagerd
+root       156   0.0  0.1   371588    984   ??  Ss   Thu09AM   0:01.58 /usr/sbin/distnoted daemon
+root       150   0.0  0.1   348948    672   ??  Ss   Thu09AM   0:01.55 /usr/libexec/networkd_privileged
+mobile     148   0.0  0.3   372540   2640   ??  Ss   Thu09AM   0:28.89 /usr/libexec/lsd
+_networkd   144   0.0  0.4   375816   4628   ??  Ss   Thu09AM  16:30.65 /usr/libexec/networkd
+mobile      79   0.0  0.1   371960   1136   ??  Ss   Thu09AM   0:04.99 /usr/sbin/wirelessproxd
+root        78   0.0  0.6   375964   6224   ??  Ss   Thu09AM  10:17.38 /usr/sbin/wifid
+mobile      76   0.0  0.1   348680   1100   ??  Ss   Thu09AM   0:00.59 /System/Library/PrivateFrameworks/VisualVoicemail.framework/vmd
+root        72   0.0  0.1   351500    696   ??  Us   Thu09AM   4:36.36 /usr/sbin/syslogd
+mobile      70   0.0  0.3   372748   2796   ??  Ss   Thu09AM   0:57.93 /usr/libexec/sharingd
+mobile      69   0.0  0.2   372524   2064   ??  Ss   Thu09AM   0:14.32 /usr/libexec/routined
+root        67   0.0  0.1   371668   1212   ??  Ss   Thu09AM   3:23.07 /System/Library/CoreServices/powerd.bundle/powerd
+root        58   0.0  0.2   372372   2532   ??  Ss   Thu09AM   0:16.77 /usr/libexec/lockdownd
+mobile      56   0.0  0.2   372932   1888   ??  Ss   Thu09AM   4:39.19 /usr/libexec/installd --idleExit
+mobile      51   0.0  1.0   433420  10832   ??  Ss   Thu09AM  65:49.70 /usr/sbin/mediaserverd
+mobile      50   0.0  0.2   372976   2248   ??  Ss   Thu09AM   0:53.69 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+_mdnsresponder    48   0.0  0.2   349768   1868   ??  Ss   Thu09AM   3:52.74 /usr/sbin/mDNSResponder
+mobile      46   0.0  0.3   371956   2672   ??  Ss   Thu09AM   0:39.60 /System/Library/PrivateFrameworks/IMCore.framework/imagent.app/imagent
+mobile      45   0.0  0.2   373152   2288   ??  Ss   Thu09AM   0:48.89 /System/Library/PrivateFrameworks/IDSCore.framework/identityservicesd.app/identityservicesd
+root     13352   0.0  0.0   339564    472 s000  R+    7:16PM   0:00.01 ps aux
+root        43   0.0  0.2   349500   1584   ??  Ss   Thu09AM   1:09.39 /usr/libexec/fseventsd
+mobile      42   0.0  0.4   356808   3700   ??  Ss   Thu09AM   0:30.51 /usr/sbin/fairplayd.H2
+root        39   0.0  0.3   377136   3596   ??  Ss   Thu09AM  16:38.74 /usr/libexec/configd
+mobile      32   0.0  0.4   377704   3748   ??  Ss   Thu09AM  37:24.92 /System/Library/PrivateFrameworks/AggregateDictionary.framework/Support/aggregated
+_wireless    27   0.0  0.9   392200   9132   ??  Ss   Thu09AM  58:04.18 /System/Library/Frameworks/CoreTelephony.framework/Support/CommCenter
+mobile      26   0.0  0.2   374032   1948   ??  Ss   Thu09AM   0:14.44 /usr/sbin/BTServer
+root        23   0.0  0.2   375268   2548   ??  Ss   Thu09AM   0:10.78 /usr/libexec/XXAssistCenter
+root        22   0.0  0.4   377068   3804   ??  Ss   Thu09AM  30:22.69 /usr/libexec/UserEventAgent <span class="o">(</span>System<span class="o">)</span>
+root        18   0.0  0.1   349356    996   ??  Ss   Thu09AM   1:49.70 /usr/sbin/notifyd
+mobile      44   0.0  0.1   372136   1180   ??  Ss   Thu09AM   3:10.11 /System/Library/PrivateFrameworks/IAP.framework/Support/iaptransportd
+mobile   13350   0.0  0.2   349500   2144   ??  Ss    7:16PM   0:00.10 /System/Library/Frameworks/UIKit.framework/Support/pasteboardd
+root     13336   0.0  0.1   348404   1064 s000  Ss    7:11PM   0:00.05 -sh
+root     13335   0.0  0.1   349608   1520   ??  S     7:11PM   0:00.31 sshd: root@ttys000 
+mobile   13331   0.0  7.8   653636  81384   ??  Ss    7:11PM   0:24.60 /var/mobile/Applications/FFCF781D-EE4C-48D3-A2CE-C6D12EA549CF/ZAKER.app/ZAKER
+mobile   13308   0.0  0.9   375064   9868   ??  Ss    7:04PM   0:07.65 /usr/libexec/deleted --idleExit
+</pre>
+
+<p>然后我们拿一淘的应用为例，首先我们找到他的进程。<br>
+<code>mobile   13349   1.7  3.3   485808  34400   ??  Ss    7:16PM   0:03.76 /var/mobile/Applications/2F3A9C01-109E-4BC1-94E1-18514425FCB9/etao4iphone.app/etao4iphone</code></p>
+
+<p>他的进城号是13349，然后我们使用<code>cycript -p 13349</code>来勾住这个应用。<br>
+接着开始获取他的可见属性的View，并修改它的属性。</p>
+<pre class="highlight shell"><span class="gp">cy# </span>var app <span class="o">=</span> <span class="o">[</span>UIApplication sharedApplication]  
+<span class="c">#"&lt;UIApplication: 0x17582b70&gt;"</span>
+<span class="gp">cy# </span>app.delegate  
+<span class="c">#"&lt;etao4iphoneAppDelegate: 0x176a6df0&gt;"</span>
+<span class="gp">cy# </span>var keyWindow <span class="o">=</span> app.keyWindow  
+<span class="c">#"&lt;UIWindow: 0x175e0890; frame = (0 0; 320 568); gestureRecognizers = &lt;NSArray: 0x175e0d60&gt;; layer = &lt;UIWindowLayer: 0x175e09c0&gt;&gt;"</span>
+<span class="gp">cy# </span>var rootController <span class="o">=</span> keyWindow.rootViewController  
+<span class="c">#"&lt;ETBaseUINavigationController: 0x175e1690&gt;"</span>
+<span class="gp">cy# </span>var visibleController <span class="o">=</span> rootController.visibleViewController 
+<span class="c">#"&lt;ETUITabBarController: 0x176fb5f0&gt;"</span>
+<span class="gp">cy# </span>visibleController.childViewControllers  
+@[#<span class="s2">"&lt;ETHomePageViewController: 0x175e1b20&gt;"</span>,#<span class="s2">"&lt;ETCommunityMainViewController: 0x176f7bb0&gt;"</span>,#<span class="s2">"&lt;ETHaitaoIndexViewController: 0x176f8ca0&gt;"</span>,#<span class="s2">"&lt;ETGoodsIndexMainViewController: 0x176f9ac0&gt;"</span>,#<span class="s2">"&lt;ETMineViewController: 0x176fa7f0&gt;"</span><span class="o">]</span>
+<span class="gp">cy# </span>var assetsController <span class="o">=</span> new Instance<span class="o">(</span>0x175e1b20<span class="o">)</span>
+<span class="c">#"&lt;ETHomePageViewController: 0x175e1b20&gt;"</span>
+<span class="gp">cy# </span>assetsController.view.backgroundColor <span class="o">=</span> <span class="o">[</span>UIColor redColor]  
+<span class="c">#"UIDeviceRGBColorSpace 1 0 0 1"</span>
+</pre>
+
+<p>然后我们可见到如下界面：<br>
+<img src="../photo/2014/5f9b4736de537b92609415c8106d2bd5.jpg" alt=""></p>
+
+<p>到此我们就从外部修改了View的属性。</p>
+
+<p>未完待续</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='移动安全第二帖——iOS 外部修改 VisibleView via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1376#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1376#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1376#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1376#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1376#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1576" title="Android 安全测试初探（三）">Android 安全测试初探（三）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1376#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

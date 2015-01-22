@@ -1,0 +1,685 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | IOS 使用 appium 提示 Instruments crashed on startup &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">IOS 使用 appium 提示 Instruments crashed on startup</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="panzhigang" href="../panzhigang">panzhigang</a>
+     · 
+    于<abbr class="timeago" title="2014-11-12T17:16:22+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="kristina" href="../kristina">kristina</a> 于<abbr class="timeago" title="2015-01-05T14:12:46+08:00"></abbr>回复
+     · 
+    649次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><strong>环境信息</strong><br>
+appium:1.3.1<br>
+ios:8.1</p>
+
+<p><strong>代码：</strong></p>
+<pre class="highlight java">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span>
+    <span class="o">{</span>
+        <span class="c1">// 配置appiumDriver</span>
+        <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platformName"</span><span class="o">,</span> <span class="s">"IOS"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"deviceName"</span><span class="o">,</span> <span class="s">"iPhone 6"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"platformVersion"</span><span class="o">,</span> <span class="s">"8.1"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="s">"/Users/pan/Music/iTunes/iTunes Media/Mobile Applications/ecmc 4.4.0.ipa"</span><span class="o">);</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AppiumDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+    <span class="o">}</span>
+
+</pre>
+
+<p><strong>appium server日志：</strong></p>
+<pre class="highlight plaintext">...
+info: [debug] Not setting locale
+info: [debug] No iOS / app preferences to set
+info: [debug] Starting iOS 8.* simulator log capture
+info: [debug] Not pre-launching simulator
+info: [debug] No device id or app, not installing to real device.
+info: [debug] Starting command proxy.
+info: [debug] Instruments socket server started at /tmp/instruments_sock
+info: [debug] Starting instruments
+info: [debug] Instruments is at: /Applications/Xcode.app/Contents/Developer/usr/bin/instruments
+info: Launching instruments
+info: [debug] Attempting to run app on iPhone 6 (8.1 Simulator)
+info: [debug] Spawning instruments with command: /Applications/Xcode.app/Contents/Developer/usr/bin/instruments -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.xrplugin/Contents/Resources/Automation.tracetemplate -D /tmp/appium-instruments/instrumentscli0.trace -w "iPhone 6 (8.1 Simulator)" /var/folders/mk/6zc3832x0xq6wyzf_vb9dyth0000gp/T/1141012-1123-18r1mft/Payload/ecmc.app -e UIASCRIPT "/Users/pan/Library/Application Support/appium/bootstrap/bootstrap-06a3f3a7491d04aa.js" -e UIARESULTSPATH /tmp/appium-instruments
+info: [debug] And extra without-delay env: {"DYLD_INSERT_LIBRARIES":"/usr/local/lib/node_modules/appium/node_modules/appium-instruments/thirdparty/iwd6/InstrumentsShim.dylib","LIB_PATH":"/usr/local/lib/node_modules/appium/node_modules/appium-instruments/thirdparty/iwd6"}
+info: [debug] And launch timeouts (in ms): {"global":90000}
+info: [debug] [INST] Waiting for device to boot...
+info: [debug] [INST STDERR] Instruments Trace Error : Target failed to run: Failed looking up pid of launched process
+info: [debug] [INSTSERVER] Instruments exited with code 253
+info: [debug] Killall instruments
+info: [debug] Instruments crashed on startup
+info: [debug] We exceeded the number of retries allowed for instruments to successfully start; failing launch
+info: [debug] Stopping iOS log capture
+info: [debug] Running ios sim reset flow
+info: [debug] Killing the simulator process
+info: [debug] Killall iOS Simulator
+info: [debug] Killing any other simulator daemons
+info: [debug] Cleaning sim data files
+info: [debug] Executing: xcrun simctl erase A98CA3E4-F325-4BEF-862D-392022427324
+info: [debug] Executing: xcrun simctl erase A98CA3E4-F325-4BEF-862D-392022427324
+info: [debug] Executing: xcrun simctl erase A98CA3E4-F325-4BEF-862D-392022427324
+info: [debug] Executing: xcrun simctl erase A98CA3E4-F325-4BEF-862D-392022427324
+info: [debug] Executing: xcrun simctl erase A98CA3E4-F325-4BEF-862D-392022427324
+error: Could not reset simulator. Leaving as is. Error: Command failed:  // stderr: 
+info: [debug] Cleaning app data files
+info: [debug] Deleting /Users/pan/Library/Developer/CoreSimulator/Devices/A98CA3E4-F325-4BEF-862D-392022427324/data/Containers/Data/Application/87EDDD84-876A-4919-BC01-4A13112401A4
+info: [debug] Deleting /Users/pan/Library/Developer/CoreSimulator/Devices/A98CA3E4-F325-4BEF-862D-392022427324/data/Containers/Bundle/Application/A842B069-2BCD-4CF9-A5A5-A18ADF48673B
+info: [debug] Deleting /Users/pan/Library/Developer/CoreSimulator/Devices/A98CA3E4-F325-4BEF-862D-392022427324/data/Library/Preferences/com.jsmcc.ZP7267A6ES.plist
+info: [debug] Cleaning up appium session
+error: Failed to start an Appium session, err was: Error: Instruments crashed on startup
+info: [debug] Error: Instruments crashed on startup
+    at Instruments.onInstrumentsExit (/usr/local/lib/node_modules/appium/node_modules/appium-instruments/lib/instruments.js:392:31)
+    at null.&lt;anonymous&gt; (/usr/local/lib/node_modules/appium/node_modules/appium-instruments/lib/instruments.js:313:12)
+    at ChildProcess.emit (events.js:98:17)
+    at Process.ChildProcess._handle.onexit (child_process.js:810:12)
+info: [debug] Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: Instruments crashed on startup)","origValue":"Instruments crashed on startup"},"sessionId":null}
+info: &lt;-- POST /wd/hub/session 500 236396.827 ms - 182 
+</pre>
+
+<p><strong>eclipse错误信息：</strong></p>
+<pre class="highlight plaintext">org.openqa.selenium.SessionNotCreatedException: A new session could not be created. (Original error: Instruments crashed on startup) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 237.89 seconds
+Build info: version: '2.42.2', revision: '6a6995d', time: '2014-06-03 17:42:30'
+System info: host: 'promote.cache-dns.local', ip: '192.168.134.128', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.9.5', java.version: '1.6.0_65'
+Driver info: io.appium.java_client.AppiumDriver
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
+    at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:204)
+    at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:156)
+    at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:599)
+    at io.appium.java_client.AppiumDriver.execute(AppiumDriver.java:84)
+    at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:240)
+    at org.openqa.selenium.remote.RemoteWebDriver.&lt;init&gt;(RemoteWebDriver.java:126)
+    at org.openqa.selenium.remote.RemoteWebDriver.&lt;init&gt;(RemoteWebDriver.java:153)
+    at io.appium.java_client.AppiumDriver.&lt;init&gt;(AppiumDriver.java:43)
+    at cn.xwtec.app.Connection.setUp(Connection.java:34)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+    at java.lang.reflect.Method.invoke(Method.java:597)
+    at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+    at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+    at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+    at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
+    at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+    at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+    at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+    at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+    at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+    at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+    at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+    at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+    at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+    at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+    at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+    at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+java.lang.NullPointerException
+    at cn.xwtec.app.Connection.tearDown(Connection.java:40)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+......
+</pre>
+
+<p>有哪个兄弟遇到这问题的帮忙看下吧</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='IOS 使用 appium 提示 Instruments crashed on startup via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>14</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../wozaihouma"><img alt="1892" class="uface" src="../user/large_avatar/1892.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="敌方解说员" href="../wozaihouma">wozaihouma</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply1">1楼</a> · <abbr class="timeago" title="2014-11-12T20:25:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9799" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1892" href="http://testerhome.com/topics/1582/replies/9799/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="wozaihouma" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>ios 8.1 在设置里面 有个 developer ，把里面的  enable ui automation 打开</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="panzhigang" href="../panzhigang">panzhigang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply2">2楼</a> · <abbr class="timeago" title="2014-11-13T09:45:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9803" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="331" href="http://testerhome.com/topics/1582/replies/9803/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="panzhigang" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../wozaihouma" class="at_user" title="@wozaihouma"><i>@</i>wozaihouma</a> 我用的是模拟器，enable ui automation 已经打开，执行出现上面的问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply3">3楼</a> · <abbr class="timeago" title="2014-11-13T10:41:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9806" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1582/replies/9806/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="xiaomayi0323" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1582#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../panzhigang" class="at_user" title="@panzhigang"><i>@</i>panzhigang</a> 重启机子试试或者直接用UIAutomation跑一下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../liqing380"><img alt="1270" class="uface" src="../user/large_avatar/1270.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="TesterLee" href="../liqing380">liqing380</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply4">4楼</a> · <abbr class="timeago" title="2014-11-13T10:53:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9808" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1270" href="http://testerhome.com/topics/1582/replies/9808/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="liqing380" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="https://github.com/appium/appium/issues/3842" rel="nofollow" target="_blank">https://github.com/appium/appium/issues/3842</a> </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../april46"><img alt="1742" class="uface" src="../user/large_avatar/1742.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="SongBoya" href="../april46">april46</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply5">5楼</a> · <abbr class="timeago" title="2014-11-13T11:40:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9811" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1742" href="http://testerhome.com/topics/1582/replies/9811/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="april46" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>用的模拟器吗？ipa文件好像不能安装到模拟器上。换app为后缀的文件试试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="panzhigang" href="../panzhigang">panzhigang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply6">6楼</a> · <abbr class="timeago" title="2014-11-13T14:03:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9818" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="331" href="http://testerhome.com/topics/1582/replies/9818/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="panzhigang" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a>   已经重启了，还是不行  请问下你说的用UIAutomation跑一下是怎么玩的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="panzhigang" href="../panzhigang">panzhigang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply7">7楼</a> · <abbr class="timeago" title="2014-11-13T14:05:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9819" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="331" href="http://testerhome.com/topics/1582/replies/9819/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="panzhigang" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../liqing380" class="at_user" title="@liqing380"><i>@</i>liqing380</a>   我看那个建议里面有这么一句“i don't think it's a good idea to use an app that's already in the sim folder”  是说不建议把app存在手机里的意思吗？ 我app是在mac系统里的 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="panzhigang" href="../panzhigang">panzhigang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply8">8楼</a> · <abbr class="timeago" title="2014-11-13T14:05:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9820" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="331" href="http://testerhome.com/topics/1582/replies/9820/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="panzhigang" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../april46" class="at_user" title="@april46"><i>@</i>april46</a>  是用的模拟器  我用app后缀的试了，还是一样的问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="panzhigang" href="../panzhigang">panzhigang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply9">9楼</a> · <abbr class="timeago" title="2014-11-13T14:11:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9821" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="331" href="http://testerhome.com/topics/1582/replies/9821/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="panzhigang" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> <a href="../liqing380" class="at_user" title="@liqing380"><i>@</i>liqing380</a> <a href="../april46" class="at_user" title="@april46"><i>@</i>april46</a> <br>
+我手动使用Instruments -w 51DC074E-59DC-437B-AD4B-4EC70B715047 执行了下，提示</p>
+<pre class="highlight plaintext">Waiting for device to boot...
+Instruments Usage Error : Could not remove existing output document 'file:///Applications/Xcode.app/Contents/Applications/instrumentscli0.trace': Error Domain=NSCocoaErrorDomain Code=513 "You don’t have permission to save the file “instrumentscli0.trace” in the folder “Applications”." UserInfo=0x7fefe0604160 {NSFilePath=/Applications/Xcode.app/Contents/Applications/instrumentscli0.trace, NSUnderlyingError=0x7fefe06c0890 "The operation couldn’t be completed. Permission denied"}.
+</pre>
+
+<p>我看了下/Applications/Xcode.app/Contents/Applications里文件用户和组分别是：root wheel<br>
+能不能麻烦看下这个目录下文件的属主</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../april46"><img alt="1742" class="uface" src="../user/large_avatar/1742.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="SongBoya" href="../april46">april46</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply10">10楼</a> · <abbr class="timeago" title="2014-11-14T09:40:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9828" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1742" href="http://testerhome.com/topics/1582/replies/9828/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="april46" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../panzhigang" class="at_user" title="@panzhigang"><i>@</i>panzhigang</a> 没遇到这种情况~~我上次配置8.1也打不开。。。不然你试试7.1？如果7.1可以的话。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply11">11楼</a> · <abbr class="timeago" title="2014-11-14T10:25:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9832" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1582/replies/9832/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="xiaomayi0323" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1582#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../panzhigang" class="at_user" title="@panzhigang"><i>@</i>panzhigang</a> 就是直接使用UIAutomation，可以看一下我发的这篇帖子<br>
+<a href="1432" rel="nofollow" target="_blank">http://testerhome.com/topics/1432</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../kristina"><img alt="2112" class="uface" src="../user/large_avatar/2112.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="顾佳佳" href="../kristina">kristina</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply12">12楼</a> · <abbr class="timeago" title="2014-12-31T17:39:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10998" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2112" href="http://testerhome.com/topics/1582/replies/10998/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="kristina" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主我也遇到来这样的问题，请问你解决了吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../panzhigang"><img alt="331" class="uface" src="../user/large_avatar/331.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="panzhigang" href="../panzhigang">panzhigang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply13">13楼</a> · <abbr class="timeago" title="2015-01-04T09:12:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11045" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="331" href="http://testerhome.com/topics/1582/replies/11045/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="panzhigang" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../kristina" class="at_user" title="@kristina"><i>@</i>kristina</a>  重新编译个模拟器的app文件就可以了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="deleted">14楼 已删除.</div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../kristina"><img alt="2112" class="uface" src="../user/large_avatar/2112.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="顾佳佳" href="../kristina">kristina</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1582#reply15">15楼</a> · <abbr class="timeago" title="2015-01-05T14:12:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11124" data-state="" data-type="Reply" href="1582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2112" href="http://testerhome.com/topics/1582/replies/11124/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="kristina" href="1582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1582#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../panzhigang" class="at_user" title="@panzhigang"><i>@</i>panzhigang</a> 嗯谢了，不过后来发现不是这个问题导致～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    每个人都会遇到困难, 希望朋友的陪伴能够给你带来新的温暖
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1582#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

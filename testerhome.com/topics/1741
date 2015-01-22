@@ -1,0 +1,723 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 数据分析 R 语言之基础图形绘制入门 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">数据分析 R 语言之基础图形绘制入门</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="思寒" href="../seveniruby">seveniruby</a>
+     · 
+    于<abbr class="timeago" title="2014-12-29T18:28:10+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="doctorq" href="../doctorq">doctorq</a> 于<abbr class="timeago" title="2015-01-15T13:43:59+08:00"></abbr>回复
+     · 
+    509次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>答应小A的文章, 拖了很久. 所以今天赶紧补上了.</p>
+<h4>R简介</h4>
+<p>首先自己去官网下载R和R-Studio, R语言是什么, 我就不科普了. 粗浅的理解就是科学计算+绘图工具<br>
+R-Studio是个简单的IDE. 可用于基础的调试学习.<br>
+RScript可以执行R脚本. 支持参数传递. 自己写的脚本有时候需要放到jenkins去跑, 就需要这个工具.<br>
+R可以直接进入交互命令行. 一般在linux下调试用.<br>
+语法基本还是老式的C风格. R继承自S语言. </p>
+<h4>读取数据</h4>
+<p>R语言可以读取大部分的数据格式, 比如数据库, 文件 hadoop的HDFS等.还包括其他的数据分析工具, 比如IBM的SPSS等等.</p>
+
+<p>R的读取输入的功能基本都在于read.*系列的函数. 最常用的是read.csv和read.table. 因为其他格式数据基本都可以转换到这两个格式上.<br>
+我以Testin网站上公布的他们拥有的所有机型列表数据作为分析演示的数据.<br>
+<img src="../photo/2014/1d02930083974db2ebbefa700ece3de3.png" alt=""></p>
+
+<p>首先读取数据</p>
+<pre class="highlight plaintext">devices=read.csv("testin_devices.csv")
+</pre>
+
+<p>此时devices就是一个变量, 他表示一个行列数据, 类似于数据库中的数据表的概念.<br>
+他的devices$品牌 表示品牌这一列的数据<br>
+R语言的运算基于行列运算, 比如devices$count=1 表示把所有的count那一列的数据全部变成1. <br>
+正是这种计算方式导致了R的代码中很少看到for循环和if判断</p>
+<h4>基础绘图</h4>
+<p>可以直接使用plot绘图</p>
+<pre class="highlight plaintext">plot(devices$品牌)
+</pre>
+
+<p><img src="../photo/2014/675de3fc90e6b1ad610fe9847f6246b8.png" alt=""></p>
+
+<p>数据太多,看不到细节的数据. 把结果输出到一个很大的png图形中</p>
+<pre class="highlight plaintext">png("4.png", width=12000, height=1200)
+plot(devices$品牌)
+dev.off()
+</pre>
+
+<p><img src="../photo/2014/4441ac13008711091e1795b8839ab38c.png" alt=""><br>
+这样的结果看起来也很费劲. 所以我们继续优化.<br>
+按照从大到小的顺序进行排列岂不是更好.</p>
+
+<p>之前使用plot函数的时候, 会自动统计各个品牌的分布情况. 现在是我们要自己去排序<br>
+所以需要自己先计算每个品牌的总设备类型数</p>
+<pre class="highlight plaintext">devices2=aggregate(count~品牌, devices, sum)
+#然后根据count的结果, 进行反向的排序. 也就是高的在前, 低的在后
+devices2 = transform(devices2, 品牌=reorder(品牌, -count))
+#重新绘图
+plot(devices2$品牌, devices2$count)
+</pre>
+
+<p><img src="../photo/2014/1933714cfb4b4851ada7f82705ba6912.png" alt=""></p>
+
+<p>只看前二十名</p>
+<pre class="highlight plaintext">devices4=devices3[rev(order(devices3$count))[1:20],]
+plot(devices4$品牌, devices4$count)
+</pre>
+
+<p><img src="../photo/2014/f31672f19bdcdafa305cf4b3cbf28ece.png" alt=""><br>
+这个时候会发现默认的plot lines很不人性化, 不够智能. </p>
+<h4>更好的ggplot绘图体系</h4>
+<p>这几年新的ggplot2库逐渐普及, 他可以更简单更友好的绘制图形. <br>
+所以我现在基本都使用ggplot2了<br>
+ggplot2有自己的绘图理念, 他认为所有的绘图函数都应该可以通过+连接起来. <br>
+类似于函数式编程或者bash的管道概念.</p>
+<pre class="highlight plaintext">#创建数据
+g=ggplot(data=devices4, aes(品牌, count))
+g+geom_bar(stat="identity")
+</pre>
+
+<p><img src="../photo/2014/94b333ec23fc0b1d5aa09b443c72641b.png" alt=""><br>
+切换下坐标方式, 实现更好的显示所有的品牌名字</p>
+<pre class="highlight plaintext"> g+geom_bar(stat="identity")+coord_flip()
+</pre>
+
+<p><img src="../photo/2014/8fe33a5946848cbc68dd9d9445361fd9.png" alt=""></p>
+
+<p>调整下颜色</p>
+<pre class="highlight plaintext"> g+geom_bar(stat="identity", color="blue", fill="white")+coord_flip()
+</pre>
+
+<p><img src="../photo/2014/b236755096ffa10e9f5f1bb982f0b19c.png" alt=""></p>
+
+<p>#标记数字</p>
+<pre class="highlight plaintext">g+geom_bar(stat="identity", color="blue", fill="white")+coord_flip()+geom_text(label=devices4$count, size=3, hjust=1.2)
+</pre>
+
+<p><img src="../photo/2014/849b80550a25339bf250bde2b8d10f29.png" alt=""></p>
+<h4>参考资料</h4>
+<p>R语言与网站分析<br>
+R数据可视化手册<br>
+R语言实战</p>
+<h4>待续</h4>
+<ol>
+<li>网络图的画法</li>
+<li>机器学习算法在测试中的应用</li>
+</ol>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='数据分析 R 语言之基础图形绘制入门 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1741#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1741#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1741#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1741#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1741#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>17</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply1">1楼</a> · <abbr class="timeago" title="2014-12-29T18:44:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10923" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1741/replies/10923/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我也想学习下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../sunrise"><img alt="1902" class="uface" src="../user/large_avatar/1902.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="扮猪吃老虎" href="../sunrise">sunrise</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply2">2楼</a> · <abbr class="timeago" title="2014-12-29T18:48:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10924" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1902" href="http://testerhome.com/topics/1741/replies/10924/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="sunrise" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mark，很棒，学习了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply3">3楼</a> · <abbr class="timeago" title="2014-12-29T20:35:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10925" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1741/replies/10925/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="kasi" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mk</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply4">4楼</a> · <abbr class="timeago" title="2014-12-30T12:41:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10935" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1741/replies/10935/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="qddegtya" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我已经推荐很多人学习R语言了，现在暂时没有太多的精力去学R，对于那些经常要跟数据打交道的测试人员来说，R语言可以为你们增色不少，再者，上海这座金融如此发达的城市里，学会R语言可以让职业道路更加宽广吧~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply5">5楼</a> · <abbr class="timeago" title="2014-12-30T12:47:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10936" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1741/replies/10936/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="anikikun" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mark学习</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply6">6楼</a> · <abbr class="timeago" title="2014-12-30T21:52:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10961" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1741/replies/10961/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>话说没有d3js 那种很酷炫的图么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../sgq1117"><img alt="46c154818536b6e4169a875b823bd406" class="uface" src="../avatar/46c154818536b6e4169a875b823bd406.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="孙国权" href="../sgq1117">sgq1117</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply7">7楼</a> · <abbr class="timeago" title="2014-12-30T23:15:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10963" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="46" href="http://testerhome.com/topics/1741/replies/10963/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="sgq1117" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个必须顶、我也在学习R</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../sgq1117"><img alt="46c154818536b6e4169a875b823bd406" class="uface" src="../avatar/46c154818536b6e4169a875b823bd406.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="孙国权" href="../sgq1117">sgq1117</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply8">8楼</a> · <abbr class="timeago" title="2014-12-30T23:22:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10964" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="46" href="http://testerhome.com/topics/1741/replies/10964/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="sgq1117" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>R语言核心技术手册（第2版）<br>
+R数据可视化手册<br>
+R语言与网站分析<br>
+自己全买了诶</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply9">9楼</a> · <abbr class="timeago" title="2014-12-31T00:01:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10967" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1741/replies/10967/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>R太高大上le。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply10">10楼</a> · <abbr class="timeago" title="2014-12-31T12:52:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10980" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1741/replies/10980/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="seveniruby" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1741#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>  我觉得它和awk很像. awk是基于行串行的字段处理. R是基于列计算的统计软件. 语法也都是类C的. 只是R多了一个图形功能.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply11">11楼</a> · <abbr class="timeago" title="2014-12-31T12:52:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10981" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1741/replies/10981/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="seveniruby" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1741#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../sgq1117" class="at_user" title="@sgq1117"><i>@</i>sgq1117</a> 厉害. 多练习下就行了  我今年又打算再入手四本高级版的书.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply12">12楼</a> · <abbr class="timeago" title="2014-12-31T12:55:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10982" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1741/replies/10982/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="seveniruby" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1741#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 没有. 他只是绘图展示信息, 并不再看重美化效果. 而且也不具备交互效果. 只是静态图. <br>
+R语言自己可以输出特定的格式来跟d3, google map之类的api交互, 网上有人写了不少扩展来实现和D3的融合.<br>
+R本身还是偏科学计算和基础的信息表达. </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply13">13楼</a> · <abbr class="timeago" title="2014-12-31T13:38:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10987" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1741/replies/10987/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="monkey" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1741#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 的确，不过R制图更牛逼</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply14">14楼</a> · <abbr class="timeago" title="2014-12-31T13:42:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10989" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1741/replies/10989/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="seveniruby" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1741#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 自己分析用R, 搞定了数据分析, 剩下的产品化就可以转成js来展现. 大多数人都是使用R做内部的分析和报告. js的方式适合做成更强大的产品. </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply15">15楼</a> · <abbr class="timeago" title="2014-12-31T16:49:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10994" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1741/replies/10994/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="qddegtya" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1741#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 的确如此~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../uncle_mm"><img alt="1960" class="uface" src="../user/large_avatar/1960.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="uncle" href="../uncle_mm">uncle_mm</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply16">16楼</a> · <abbr class="timeago" title="2015-01-12T10:16:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11463" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1960" href="http://testerhome.com/topics/1741/replies/11463/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="uncle_mm" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mark学习</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="doctorq" href="../doctorq">doctorq</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1741#reply17">17楼</a> · <abbr class="timeago" title="2015-01-15T13:43:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11634" data-state="" data-type="Reply" href="1741#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1011" href="http://testerhome.com/topics/1741/replies/11634/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="doctorq" href="1741#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好东西，好好自学一下。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1896" title="你应该学会使用的 5 个 ruby 方法">你应该学会使用的 5 个 ruby 方法</a></li>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+    <li><a href="1838" title="小而美的 ghost driver">小而美的 ghost driver</a></li>
+    <li><a href="1814" title="定制 Gradle 编译时候遇到的坑，慢慢垒">定制 Gradle 编译时候遇到的坑，慢慢垒</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1741#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

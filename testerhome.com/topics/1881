@@ -1,0 +1,333 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | CTS 框架解析之 case 的组织 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">CTS 框架解析之 case 的组织</h1>
+  <div class="info leader">
+    <a class="node" href="node42">Android CTS</a>
+     · 
+    <a data-author="true" data-name="doctorq" href="../doctorq">doctorq</a>
+     · 
+    于<abbr class="timeago" title="2015-01-16T13:15:46+08:00"></abbr>发布
+     · 
+    121次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>uml图</h4>
+<p>以"作孽"的<code>UML</code>知识画成的关系图：</p>
+
+<p><img src="../photo/2015/91f306c33e7c8935f5fde63c167769a6.png" alt=""></p>
+<h4>解释</h4>
+<p>上图涉及5个类：<code>ddmlib</code>提供的<code>TestIdentifier</code>类，<code>cts</code>自定义的<code>IRemoteTest</code>接口、<code>ITestPackageDef</code>接口、<code>TestFilter</code>类和<code>TestPackage</code>类。具体意义如下：</p>
+<h4>TestIdentifier</h4>
+<p><code>ddmlib</code>为我们提供的属于<code>instrumentation</code>测试的<code>case</code>实体类，里面有2个属性，case的类名和方法名。这样我们就可以找到一个case。</p>
+<h4>IRemoteTest</h4>
+<p>一种测试类型的接口定义，该测试类型可以直接将结果发送到监听器，让其处理。所以测试runner部分只管撒了欢的跑，抓结果的模块是单独存在的。</p>
+<h4>ITestPackageDef</h4>
+<p>case相关信息的容器，信息从哪里来？举个例子，写<code>uiautomator case</code>的人都了解，我们写的case都要打成jar包，随着jar一起生成的还有一个与jar包名一样的xml文件，我们的信息就是从该xml文件里来，里面定义了jar包的标识符，测试包名等信息。</p>
+<h4>TestFilter</h4>
+<p>case的过滤器类，定义一些过滤的条件。里面有2个集合保存了要被过滤掉的case的类名或<code>TestIdentifier</code>对象，以及1个特殊的类名和方法名，这个属性默认是为<code>null</code>，一般情况下需要你去设值，如果不设置，那么这个条件就不作为过滤的条件，来具体看看删选的处理代码：</p>
+<pre class="highlight java"><span class="kd">public</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">TestIdentifier</span><span class="o">&gt;</span> <span class="n">filter</span><span class="o">(</span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">TestIdentifier</span> <span class="o">&gt;</span> <span class="n">tests</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">TestIdentifier</span><span class="o">&gt;</span> <span class="n">filteredTests</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">TestIdentifier</span><span class="o">&gt;(</span><span class="n">tests</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">TestIdentifier</span> <span class="n">test</span> <span class="o">:</span> <span class="n">tests</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">mIncludedClass</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">test</span><span class="o">.</span><span class="na">getClassName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">mIncludedClass</span><span class="o">))</span> <span class="o">{</span>
+                <span class="c1">// skip</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">mIncludedMethod</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">test</span><span class="o">.</span><span class="na">getTestName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">mIncludedMethod</span><span class="o">))</span> <span class="o">{</span>
+                <span class="c1">// skip</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">mExcludedClasses</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">getClassName</span><span class="o">()))</span> <span class="o">{</span>
+                <span class="c1">// skip</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">mExcludedTests</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">test</span><span class="o">))</span> <span class="o">{</span>
+                <span class="c1">// skip</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">filteredTests</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">test</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">filteredTests</span><span class="o">,</span> <span class="k">new</span> <span class="n">TestIdComparator</span><span class="o">());</span>
+        <span class="k">return</span> <span class="n">filteredTests</span><span class="o">;</span>
+    <span class="o">}</span>
+
+</pre>
+
+<p>代码块很简单，随着条件分支一步一步过滤，最后剩下来的case添加到新集合中返回。</p>
+<h4>TestPackage</h4>
+<p>包含上面3个实体对象(除了<code>TestFilter</code>)，一个TestPackage代表了一个case包(jar或者apk等)相关的所有信息，例如一个<code>uiautomator</code>写出的jar包，那么一个jar包就需要定义一个<code>TestPackage</code>对象：该jar包包含的case集合，该jar包执行的测试类型，以及jar一些相关属性信息。有了这些就足够了，case就可以执行run的动作了。cts执行的时候只需要得到TestPackage对象集合(代表一个个的case包对象)，就可以遍历得到所有要执行的case。</p>
+<h4>具体执行过程</h4>
+<p>cts中是以plan来定义要跑的case包集合，plan则是一个xml文件，里面定义了一个或多个case包的标识信息。这样去case的目录下就可以找到case包以及case包的xml配置文件。当我们传入一个plan进入cts后，发生了什么？(一下方法都是CtsTest中的方法)</p>
+<h4>buildTestsToRun方法</h4>
+<p>当测试执行的时候，cts会先调用该方法获得所有TestPackage对象，上面说过，获得这个就足够了。具体该实现：</p>
+<pre class="highlight java"><span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TestPackage</span><span class="o">&gt;</span> <span class="n">buildTestsToRun</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">TestPackage</span><span class="o">&gt;</span> <span class="n">testPkgList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TestPackage</span><span class="o">&gt;();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 获得testcases目录下所有的xml文件解析出来的case包对象</span>
+            <span class="n">ITestPackageRepo</span> <span class="n">testRepo</span> <span class="o">=</span> <span class="n">createTestCaseRepo</span><span class="o">();</span>
+            <span class="c1">// 得到本次plan所需跑的case</span>
+            <span class="n">Collection</span><span class="o">&lt;</span><span class="n">ITestPackageDef</span><span class="o">&gt;</span> <span class="n">testPkgDefs</span> <span class="o">=</span> <span class="n">getTestPackagesToRun</span><span class="o">(</span><span class="n">testRepo</span><span class="o">);</span>
+
+            <span class="k">for</span> <span class="o">(</span><span class="n">ITestPackageDef</span> <span class="n">testPkgDef</span> <span class="o">:</span> <span class="n">testPkgDefs</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">addTestPackage</span><span class="o">(</span><span class="n">testPkgList</span><span class="o">,</span> <span class="n">testPkgDef</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">testPkgList</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">WARN</span><span class="o">,</span> <span class="n">LOG_TAG</span><span class="o">,</span> <span class="s">"No tests to run"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">"failed to find CTS plan file"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">"failed to parse CTS plan file"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ConfigurationException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">"failed to process arguments"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">testPkgList</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>首先会去将固定路径下的(cts根目录下的repository\testcases)下所有xml文件解析出来，这些xml文件都是和case包一一对应的，你不能去解析jar包或者apk包吧，所以需要一个case包配置文件的存在，这样我们读取xml的信息就可以得到相关的信息。然后我们要筛选出本次plan需要跑的case包。</p>
+<h4>getTestPackagesToRun方法</h4>
+<p>该方法里有4条分支，每条分支代表不同的执行任务的标识。<br>
+<code>1</code>以plan名定义的任务<br>
+<code>2</code>.以case包的uri定义的集合所定义的任务<br>
+<code>3</code>.以class定义的(一个类中的所有case)任务<br>
+<code>4</code>.以sessionID(cts为之前跑过的任务都定义了一个session)所定义的任务，这个是重跑之前的任务。</p>
+
+<p>我们来只看第一种，以plan方式启动的任务。</p>
+<pre class="highlight java"><span class="kd">private</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">ITestPackageDef</span><span class="o">&gt;</span> <span class="n">getTestPackagesToRun</span><span class="o">(</span><span class="n">ITestPackageRepo</span> <span class="n">testRepo</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ParseException</span><span class="o">,</span> <span class="n">FileNotFoundException</span><span class="o">,</span> <span class="n">ConfigurationException</span> <span class="o">{</span>
+        <span class="c1">// use LinkedHashSet to have predictable iteration order</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">ITestPackageDef</span><span class="o">&gt;</span> <span class="n">testPkgDefs</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedHashSet</span><span class="o">&lt;</span><span class="n">ITestPackageDef</span><span class="o">&gt;();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mPlanName</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">LOG_TAG</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"Executing CTS test plan %s"</span><span class="o">,</span> <span class="n">mPlanName</span><span class="o">));</span>
+            <span class="n">File</span> <span class="n">ctsPlanFile</span> <span class="o">=</span> <span class="n">mCtsBuildHelper</span><span class="o">.</span><span class="na">getTestPlanFile</span><span class="o">(</span><span class="n">mPlanName</span><span class="o">);</span>
+            <span class="n">ITestPlan</span> <span class="n">plan</span> <span class="o">=</span> <span class="n">createPlan</span><span class="o">(</span><span class="n">mPlanName</span><span class="o">);</span>
+            <span class="n">plan</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">createXmlStream</span><span class="o">(</span><span class="n">ctsPlanFile</span><span class="o">));</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">uri</span> <span class="o">:</span> <span class="n">plan</span><span class="o">.</span><span class="na">getTestUris</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(!</span><span class="n">mExcludedPackageNames</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">uri</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">ITestPackageDef</span> <span class="n">testPackage</span> <span class="o">=</span> <span class="n">testRepo</span><span class="o">.</span><span class="na">getTestPackage</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
+                    <span class="n">testPackage</span><span class="o">.</span><span class="na">setExcludedTestFilter</span><span class="o">(</span><span class="n">plan</span><span class="o">.</span><span class="na">getExcludedTestFilter</span><span class="o">(</span><span class="n">uri</span><span class="o">));</span>
+                    <span class="n">testPkgDefs</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">testPackage</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mPackageNames</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">......</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mClassName</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">......</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mContinueSessionId</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">......</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="c1">// should never get here - was checkFields() not called?</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">"nothing to run?"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">testPkgDefs</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>该分支中，首先根据plan名找到所有xml文件，然后解析xml文件，得到case。这样我们就得到了ITestPackageDef对象，遍历得到所有这样的对象，然后将该对象集合返回。回到上面的<code>buildTestsToRun()</code>中，然后根据返回的集合元素创建<code>TestPackage</code>对象集合，这样我们的处理过程就完成了。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='CTS 框架解析之 case 的组织 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1881#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1881#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1881#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1881#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1881#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1914" title="求留下 testerhome">求留下 testerhome</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1881#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

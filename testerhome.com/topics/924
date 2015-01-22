@@ -1,0 +1,706 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 作为移动测试人员，你应该知道的移动自动化测试协议 Mobile JSON Wire Protocol Specification &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">作为移动测试人员，你应该知道的移动自动化测试协议 Mobile JSON Wire Protocol Specification</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="乙醇" href="../easonhan007">easonhan007</a>
+     · 
+    于<abbr class="timeago" title="2014-05-26T12:41:18+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="easonhan007" href="../easonhan007">easonhan007</a> 于<abbr class="timeago" title="2014-05-26T13:13:24+08:00"></abbr>回复
+     · 
+    1269次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>如果你没有耐心看完，请记住下面几个重点：</p>
+
+<ul>
+<li>移动端测试工具的设计要follow下面的规格，否则哪一天这个规格不小心w3c了，你的工具就成野路子了；</li>
+<li>这个规格定义了新的New desired capability keys，这个非常重要，背下来就好；</li>
+<li>这个规格定义了新的定位方法，对于工具的使用者来说，这是核心，非常重要；</li>
+<li>这个规格对移动化做了更多detail的定义，比如网络状态等；</li>
+<li>webview的定位规格；</li>
+</ul><h4>Mobile JSON Wire Protocol Specification  这个标题就不翻译了</h4>
+<p><a href="https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile">源地址</a></p>
+<h4>
+<em>DRAFT</em>草稿(注意，这是草稿，也就是说会变的)</h4><h4>Introduction简介</h4>
+<p>下面这段的大意是以前的JsonWireProtocol现在需要进行扩展了。因为要支持移动化了。</p>
+
+<p>This specification is designed to extend the <a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">JSON Wire<br>
+Protocol</a> (JSONWP),<br>
+a W3C working draft for web browser automation. The JSONWP has been greatly<br>
+successful for that purpose. The need for automation of native and hybrid<br>
+mobile applications can be met by the extension of the JSONWP, which already<br>
+has a proven basic automation framework (architecture, interaction model,<br>
+etc...).</p>
+
+<p>最初的版本是由下面一群牛人在Mozilla的办公室里捣鼓出来的。</p>
+
+<p>The initial details of this specification were worked out at a series of<br>
+meetings held in Mozilla's offices in London in August of 2013. The<br>
+participants were:</p>
+
+<ul>
+<li>David Burns (Mozilla) - <a href="924">website</a> - <a href="924">twitter</a>
+</li>
+<li>Dominik Dary (eBay) - <a href="924">website</a> - <a href="924">twitter</a>
+</li>
+<li>Jonathan Lipps (Sauce Labs) - <a href="http://jonathanlipps.com">website</a> - <a href="http://twitter.com/jlipps">twitter</a>
+</li>
+<li>Jason ? (Facebook) - <a href="924">website</a> - <a href="924">twitter</a>
+</li>
+<li>François Reynaud (eBay) - <a href="924">website</a> - <a href="924">twitter</a>
+</li>
+<li>Simon Stewart (Facebook) - <a href="924">website</a> - <a href="924">twitter</a>
+</li>
+<li>Santiago Suarez Ordoñez (Sauce Labs) - <a href="924">website</a> - <a href="924">twitter</a>
+</li>
+</ul><h4>Sessions 会话</h4>
+<p>跟webdriver一样，POST  /session这个URI，然后server给你返回一个sessionId。<br>
+然后通过这个sessionId，你可以得寸进尺，为所欲为。</p>
+
+<p>如果server没办法start session，那么返回的状态码是500。</p>
+
+<p>Session通过DELETE /session/:id这个URI进行销毁，跟webdriver一样。</p>
+
+<p>下面一段是关于AUT的，有兴趣自研。</p>
+
+<p>Sessions work just like WebDriver: you POST to /session and receive a sessionId<br>
+as a response if the server can give you one, at which point you can send<br>
+further automation commands. If the server can't start a session, for example<br>
+if another session is running and only one session can be handled at a time,<br>
+the server must return the appropriate 500 response. Sessions are ended with<br>
+a DELETE to /session/:id as per the original WebDriver spec.</p>
+
+<p>The server may but is not required to launch the AUT or a device/simulator in<br>
+the process of creating a session. It may but is not required to perform some<br>
+kind of cleaning or resetting of the AUT in order to provide a clean test<br>
+environment. It may but is not required to stop the running AUT at the session<br>
+end. It may but is not required to remove the AUT from the device or otherwise<br>
+reset the device state after the session is complete. In general, it is the<br>
+responsibility of the user to manage the test environment; it is not a part of<br>
+this specification. But a server conforming to this specification may by other<br>
+means provide that functionality as a convenience.</p>
+<h4>Desired Capabilities 不知道怎么翻，反正就是做配置的</h4>
+<p>有一些新的key了</p>
+
+<ul>
+<li>
+<code>automationName</code>: 用来指定测试工具，是 <code>appium</code>呢？还是 <code>ios-driver</code>或者是 <code>selendroid</code>
+</li>
+<li>
+<code>platformName</code>: 测试平台。 e.g., <code>Android</code>, <code>iOS</code>
+</li>
+<li>
+<code>platformVersion</code>: 平台版本 e.g., <code>4.3</code> (for Android) or <code>6.1</code> (for iOS)</li>
+<li>
+<code>deviceName</code>: 测试设备名称，要有版本信息的。, e.g., <code>Nexus 4</code>, <code>iPhone 4S</code>, <code>iPhone Simulator</code>, <code>iPad Mini</code>
+</li>
+<li>
+<code>app</code> (可选): AUT的路径或者是uri</li>
+<li>
+<code>browserName</code> (可选): 浏览器，其实就是webdriver的session, e.g., <code>Safari</code>, <code>Chrome</code>
+</li>
+</ul><p>New desired capability keys:</p>
+
+<ul>
+<li>
+<code>automationName</code>: specific automation tool, e.g., <code>appium</code>, <code>ios-driver</code>, <code>selendroid</code>
+</li>
+<li>
+<code>platformName</code>: platform to automate, e.g., <code>Android</code>, <code>iOS</code>
+</li>
+<li>
+<code>platformVersion</code>: platform version e.g., <code>4.3</code> (for Android) or <code>6.1</code> (for iOS)</li>
+<li>
+<code>deviceName</code>: specific device names including version information, e.g., <code>Nexus 4</code>, <code>iPhone 4S</code>, <code>iPhone Simulator</code>, <code>iPad Mini</code>
+</li>
+<li>
+<code>app</code> (optional): path or uri to AUT</li>
+<li>
+<code>browserName</code> (optional): web browser to automate as a webdriver session, e.g., <code>Safari</code>, <code>Chrome</code>
+</li>
+</ul><h4>Locator Strategies 新的定位策略，重点</h4>
+<p>非HTML平台，下面的这些策略是需要支持的。</p>
+
+<ul>
+<li>
+<code>class name</code>:就是个字符串，其实就是SDK里控件的类名。注意，android里要带包名的。, e.g., <code>UIAPickerWheel</code> for iOS or <code>android.widget.Button</code> for Android
+
+<ul>
+<li>这些应该完全匹配由基础自动化框架提供的类名(via google翻译)</li>
+</ul>
+</li>
+<li>
+<code>accessibility id</code>: 就是代表元素可访问的id或者是label的字符串。, e.g., for iOS the accessibility identifier and for Android the content-description</li>
+<li>
+<code>xpath</code>: 老熟人了，不罗嗦</li>
+</ul><p>The following locator strategies must be supported for non-HTML-based platforms:</p>
+
+<ul>
+<li>
+<code>class name</code>: a string representing the UI element type for a given platform, e.g., <code>UIAPickerWheel</code> for iOS or <code>android.widget.Button</code> for Android
+
+<ul>
+<li>These should exactly match the class names given by the underlying automation frameworks</li>
+</ul>
+</li>
+<li>
+<code>accessibility id</code>: a string representing the accessibility id or label attached to a given element, e.g., for iOS the accessibility identifier and for Android the content-description</li>
+<li>
+<code>xpath</code>: a valid xpath string applied to the XML document that would be retrieved using the page source command</li>
+</ul><p>下面这些是可选的，也就是说想支持就支持，不想就算了</p>
+
+<p>The following locator strategies may be supported, depending on the automation<br>
+platform:</p>
+
+<ul>
+<li>
+<code>id</code>: 字符串，代表对象的resource ID</li>
+<li>
+<code>-android uiautomator</code>: 字符串，就是 UiAutomator的定位符 (Android only)
+
+<ul>
+<li>TODO: 具体描述一下</li>
+</ul>
+</li>
+<li>
+<code>-ios uiautomation</code>: 字符串，也就是 UIAutomation 的定位符 (iOS-only)</li>
+<li>TODO: 指出server是否需要指明其支持这些策略。</li>
+</ul><p>如果是用webdriver的模式或者是使用了HTML的平台，那么需要支持webdriver的定位策略。不罗嗦。</p>
+
+<ul>
+<li>
+<code>id</code>: a string corresponding to a resource ID</li>
+<li>
+<code>-android uiautomator</code>: a string corresponding to a recursive element search using the UiAutomator library (Android only)
+
+<ul>
+<li>TODO: specify this</li>
+</ul>
+</li>
+<li>
+<code>-ios uiautomation</code>: a string corresponding to a recursive element search using the UIAutomation library (iOS-only)</li>
+<li>TODO: figure out whether server should report support of these strategies</li>
+</ul><p>If automating a mobile browser in WebDriver mode, or a platform that uses HTML<br>
+as its element hierarchy, the usual array of WebDriver commands must be<br>
+supported instead, with their usual semantics.</p>
+<h4>Page Source 页面源码，真牵强</h4>
+<p>所有的平台必须支持GET source命令。返回代表其UI层级的xml(html)。</p>
+
+<p>其他的不翻了。</p>
+
+<p>All platforms must respond to the <code>GET source</code> command with an XML (or HTML in<br>
+the case of HTML-based platforms) document representing the UI hierarchy. The<br>
+precise structure of the document may differ from platform to platform. Schemas<br>
+that must be followed for iOS and Android automation are as follows:</p>
+
+<p>TODO: get together schemas for UIAutomation (iOS), Instruments (Android), and<br>
+UiAutomator (Android).</p>
+
+<p>The elements in these documents may be augmented with such attributes as, for<br>
+example, ids, in order to support internal behaviors.</p>
+<h4>Touch Gestures 触摸手势</h4>
+<p>所有平台都要支持Mozila提出的Multi-Action API（这个谁能告诉我怎么翻），在一些情况下如果无法支持，直接返回500.</p>
+
+<p>All platforms must adopt the Multi-Action API pioneered by Mozilla. In some<br>
+cases it will not be possible to support the full range of gestures potentially<br>
+described by this API on a given platform. In this case, the platform should<br>
+respond with a 500 when it cannot faithfully render the requested gesture.</p>
+
+<p>TODO: show what the gestures API actually looks like in terms of server<br>
+endpoints that must be supported.</p>
+<h4>Device Modes 设备模式</h4>
+<p>设备有很多的网络连接状态，为了能够精准控制，我们提供了下面的endpoints。</p>
+
+<ul>
+<li>GET /session/:sessionid/network_connection
+
+<ul>
+<li>返回 ConnectionType</li>
+</ul>
+</li>
+<li>POST /session/:sessionid/network_connection
+
+<ul>
+<li>接受一个 ConnectionType</li>
+<li>返回 ConnectionType</li>
+</ul>
+</li>
+</ul><p>Remote端必须相应"networkConnectionEnabled"这个capability。</p>
+
+<p>其他的自己看。</p>
+
+<p>Devices have various states of network connectivity. In order to control<br>
+those states we have the following endpoints:</p>
+
+<ul>
+<li>GET /session/:sessionid/network_connection
+
+<ul>
+<li>returns ConnectionType</li>
+</ul>
+</li>
+<li>POST /session/:sessionid/network_connection
+
+<ul>
+<li>accepts a ConnectionType</li>
+<li>returns ConnectionType</li>
+</ul>
+</li>
+</ul><p>Setting the network connection in the POST returns the ConnectionType because<br>
+the device might not be capable of the network connection type requested.</p>
+
+<p>The remote end MUST reply with the capability "networkConnectionEnabled"</p>
+
+<p>ConnectionType - 连接类型</p>
+
+<p>这里是指定了具体的值，可以不用理解。</p>
+<h4>Value (Alias)      | Data | Wifi | Airplane Mode </h4>
+<p>1 (Airplane Mode)  | 0    | 0    | 1<br>
+6 (All network on) | 1    | 1    | 0<br>
+4 (Data only)      | 1    | 0    | 0<br>
+2 (Wifi only)      | 0    | 1    | 0<br>
+0 (None)           | 0    | 0    | 0</p>
+
+<p>如果是飞行模式，那么就返回:</p>
+
+<p>{ "name": "network_connection", "parameters": { "type": 1 } }</p>
+
+<p>以后将支持更多的类型，比如3G，4G，LTE。</p>
+
+<p>Is a bit mask that should be translated to an integer value when serialized.</p>
+<h4>Value (Alias)      | Data | Wifi | Airplane Mode </h4>
+<p>1 (Airplane Mode)  | 0    | 0    | 1<br>
+6 (All network on) | 1    | 1    | 0<br>
+4 (Data only)      | 1    | 0    | 0<br>
+2 (Wifi only)      | 0    | 1    | 0<br>
+0 (None)           | 0    | 0    | 0</p>
+
+<p>Example payload for setting "Airplane Mode":</p>
+
+<p>{ "name": "network_connection", "parameters": { "type": 1 } }</p>
+
+<p>Data is the upper bits since in the future we may want to support setting<br>
+certain types of Data the device is capable of. For example 3G, 4G, LTE.</p>
+<h4>Other Device Features</h4>
+<p>Mobile devices have a variety of sensors and input methods. These are automated<br>
+as follows:</p>
+
+<ul>
+<li>The virtual keyboard: use sendKeys</li>
+<li>acceleromator: TODO <a href="http://testerhome.com/mdas" class="at_user" title="@mdas"><i>@</i>mdas</a> is working on this</li>
+<li>geolocation: use regular webdriver endpoints</li>
+<li>rotation (different from orientation): TODO</li>
+<li>battery level: not in spec, perhaps exposed via executeScript</li>
+<li>network speed: not in spec, perhaps exposed via executeScript</li>
+</ul><h4>WebViews and Other Contexts</h4>
+<p>One common feature of mobile platforms is the ability to embed a chromeless<br>
+webbrowser inside of a 'native' application. These are called 'webviews', and,<br>
+if possible, a server for a given platform should implement support for<br>
+automating the webview using the full, regular, WebDriver API.</p>
+
+<p>This creates a situation where there are two potential contexts for automation<br>
+in a given AUT: the native layer and the webview layer. If providing webview<br>
+support, the server must have the following endpoints:</p>
+
+<ul>
+<li>GET /session/:sessionid/contexts
+
+<ul>
+<li>returns an array of strings representing available contexts, e.g.
+'WEBVIEW', or 'NATIVE'</li>
+</ul>
+</li>
+<li>GET /session/:sessionid/context
+
+<ul>
+<li>returns one of:</li>
+<li>a string representing the current context</li>
+<li>
+<code>null</code>, representing the default context ("no context")</li>
+</ul>
+</li>
+<li>POST /session/:sessionid/context
+
+<ul>
+<li>accepts one of:</li>
+<li>a string representing an available context</li>
+<li>
+<code>null</code>, signifying a return to the default context</li>
+</ul>
+</li>
+</ul><p>The first endpoint must return a possibly-empty array of strings. Each string<br>
+must be the arbitrary name of an available context, e.g., one of possibly<br>
+multiple webviews.  The second must interpret the body of the request as the<br>
+name of an available context. If that context is not found, a NoSuchContext<br>
+error must be returned.  If the context is available, the server must switch<br>
+automation to that context, such that all subsequent commands are taken to<br>
+apply to that context. If the body of the POST is <code>null</code>, the server must<br>
+return to the original context.</p>
+
+<p>If a server receives a request at an endpoint which is valid in some context<br>
+but not the currently active context (for example if a user calls<br><code>driver.get()</code> in a native context instead of a webview context), the server<br>
+must respond with an InvalidContentException.</p>
+<h4>Waiting for Conditions</h4>
+<p>The server must respond to the management commands for implicit wait timeouts,<br>
+such that when a user sets an implicit wait timeout and tries to find an<br>
+element(s), the server keeps trying to find the element(s) until that timeout<br>
+expires, rather than responding with the first failure to find the element(s).</p>
+
+<p>TODO: figure out what the serversidewait implementation will be and talk about<br>
+it.<br>
+Hide details<br>
+Change log<br>
+2a302804fc1d by Luke Inman-Semerau linman-s...<a href="http://testerhome.com/salesforce" class="at_user" title="@salesforce"><i>@</i>salesforce</a>.com on May 5, 2014   Diff<br>
+using "network_connectivity" enpoint<br>
+instead of toggling just airplane mode</p>
+
+<p>passing a 'bitmask' for the types of<br>
+network connectivity desired<br>
+Go to:<br><br>
+Double click a line to add a comment<br>
+Older revisions<br>
+ 7a8d40f61557 by Jonathan Lipps &lt;jlipps&gt; on Apr 2, 2014   Diff <br>
+ ba61c96e26c8 by Jonathan Lipps &lt;jlipps&gt; on Mar 27, 2014   Diff <br>
+ 5432d87357e0 by Jonathan Lipps &lt;jlipps&gt; on Feb 25, 2014   Diff <br>
+All revisions of this file<br>
+File info<br>
+Size: 9179 bytes, 198 lines<br>
+View raw file</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='作为移动测试人员，你应该知道的移动自动化测试协议 Mobile JSON Wire Protocol Specification via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="924#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="924#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="924#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="924#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="924#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>5</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="924#reply1">1楼</a> · <abbr class="timeago" title="2014-05-26T12:42:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5197" data-state="" data-type="Reply" href="924#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/924/replies/5197/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="924#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你不是说翻译的么…</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="乙醇" href="../easonhan007">easonhan007</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="924#reply2">2楼</a> · <abbr class="timeago" title="2014-05-26T12:48:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5198" data-state="" data-type="Reply" href="924#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="221" href="http://testerhome.com/topics/924/replies/5198/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="easonhan007" href="924#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在翻。别急</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="924#reply3">3楼</a> · <abbr class="timeago" title="2014-05-26T12:55:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5200" data-state="" data-type="Reply" href="924#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/924/replies/5200/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="924#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="924#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../easonhan007" class="at_user" title="@easonhan007"><i>@</i>easonhan007</a> 。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../yumiko"><img alt="22d8a1d115bce21f04ebc0aea27cf0e0" class="uface" src="../avatar/22d8a1d115bce21f04ebc0aea27cf0e0.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="周晓军" href="../yumiko">yumiko</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="924#reply4">4楼</a> · <abbr class="timeago" title="2014-05-26T12:57:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5201" data-state="" data-type="Reply" href="924#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="950" href="http://testerhome.com/topics/924/replies/5201/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="yumiko" href="924#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>等待翻译</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="乙醇" href="../easonhan007">easonhan007</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="924#reply5">5楼</a> · <abbr class="timeago" title="2014-05-26T13:13:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5204" data-state="" data-type="Reply" href="924#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="221" href="http://testerhome.com/topics/924/replies/5204/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="easonhan007" href="924#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其他的不用翻译了，重点我已经翻译完了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @xiaomayi0323: 我想去大海边旅游！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="924#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

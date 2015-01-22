@@ -1,0 +1,702 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome |  使用 Utf7ime 输入法实现中文输入 Windows+Java 平台（完整步骤版） &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title"> 使用 Utf7ime 输入法实现中文输入 Windows+Java 平台（完整步骤版）</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="王阳" href="../young">young</a>
+     · 
+    于<abbr class="timeago" title="2014-04-10T00:28:01+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="cheerfullchen" href="../cheerfullchen">cheerfullchen</a> 于<abbr class="timeago" title="2014-12-17T12:02:10+08:00"></abbr>回复
+     · 
+    1469次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>今天完成了对真机上的APP输入框的中文输入的操作，也研究了很久，很不易，特贴出来分享给广大才接触appium的tester希望对你们有帮助，不过我这个帖子是基于Windows+Java平台，其他平台恕我无能为力，也没精力去研究了。</p>
+
+<p>一、打包输入法生成apk文件：<br>
+1，去utf7ime的 github上把整个项目给下载下来，地址：<a href="https://github.com/sumio/uiautomator-unicode-input-helper" rel="nofollow" target="_blank">https://github.com/sumio/uiautomator-unicode-input-helper</a><br>
+点击"Download ZIP"按钮进行 打包下载，如图：<br><img src="../photo/2014/041ec772fc8ce331a17785deeba58369.png" alt=""><br>
+2，下载完成 以后解压到本地磁盘的任意位置比如C:\uiautomator-unicode-input-helper-master<br>
+3，打开Eclipse（安装了adt，并且配置好sdk home in eclispe不然不能打包）<br>
+4，点击File-&gt;Import -&gt;Existing Android Code Into Workspace-&gt;Next-&gt;点击Browser 选择刚才解压后的文件夹中的Utf7Ime文件夹-&gt;点击Done完成导入操作<br>
+5，将改项目中的project.properties重新命名成：default.properties<br>
+6，选中该项目，点击菜单栏上的project-&gt;clean..剩下的设置如图：<br><img src="../photo/2014/d39568322debd85a0c9d741196389633.png" alt=""><br>
+7，Build完成以后，选中该项目进行打包生成apk文件，右键-&gt;Android Tools-&gt;Export Signed Application Package...具体打包详情可以参考：<a href="http://blog.csdn.net/luoyin22/article/details/7862742" rel="nofollow" target="_blank">http://blog.csdn.net/luoyin22/article/details/7862742</a><br>
+8，把刚才打包的apk 装入真机（我的是安卓4.2.2）<br>
+9，在设置里面将本机的默认输入法设置成：UTF7 IME for UI Testing<br><img src="../photo/2014/8ee3b8574ccd6dcd1145b9c08699b654.jpg" alt=""></p>
+
+<p>二、导入Utf7ImeHelper.java和相关类到自己的appium工程<br>
+1，将C:\uiautomator-unicode-input-helper-master\helper-library文件夹下的所有的 java文件都放入自己的appium项目目录src下 如图所示：<br><img src="../photo/2014/fbe6f875e77dcf6ba6009871aa667574.png" alt=""><br>
+2，selenium类库要添加到工程中</p>
+
+<p>三、修改AndroidContactsTest.java中输入方法，主要在下面这段代码体现UTF7IME输入法的用途</p>
+<pre class="highlight java"><span class="n">textFieldsList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">sendKeys</span><span class="o">(</span><span class="n">Utf7ImeHelper</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"王 阳"</span><span class="o">));</span>
+</pre>
+<p>用Utf7ImeHelper去输入汉字。<br>
+参考代码：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">incito</span><span class="o">.</span><span class="na">appiumdemo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.After</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Before</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.interactions.HasTouchScreen</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.interactions.TouchScreen</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.CapabilityType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.DesiredCapabilities</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.RemoteTouchScreen</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.RemoteWebDriver</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.incito.inputhelp.Utf7ImeHelper</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AndroidContactsTest</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">WebDriver</span> <span class="n">driver</span><span class="o">;</span>
+
+    <span class="nd">@Before</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="c1">// set up appium</span>
+        <span class="n">File</span> <span class="n">classpathRoot</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"user.dir"</span><span class="o">));</span>
+        <span class="n">File</span> <span class="n">appDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">classpathRoot</span><span class="o">,</span> <span class="s">"apps"</span><span class="o">);</span>
+        <span class="n">File</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">appDir</span><span class="o">,</span> <span class="s">"ContactManager.apk"</span><span class="o">);</span>
+        <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span><span class="s">"Android"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"4.2.2"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"WINDOWS"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="n">app</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-package"</span><span class="o">,</span> <span class="s">"com.example.android.contactmanager"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-activity"</span><span class="o">,</span> <span class="s">".ContactManager"</span><span class="o">);</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SwipeableWebDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@After</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">addContact</span><span class="o">(){</span>
+        <span class="n">WebElement</span> <span class="n">el</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">"Add Contact"</span><span class="o">));</span>
+        <span class="n">el</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">WebElement</span><span class="o">&gt;</span> <span class="n">textFieldsList</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElements</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">tagName</span><span class="o">(</span><span class="s">"textfield"</span><span class="o">));</span>
+     <span class="c1">//主要在这里体现UTF7IME输入法的用途</span>
+       <span class="n">textFieldsList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">sendKeys</span><span class="o">(</span><span class="n">Utf7ImeHelper</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"王 阳"</span><span class="o">));</span>
+
+        <span class="n">textFieldsList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">"18872573204"</span><span class="o">);</span>
+        <span class="n">textFieldsList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">"stephenwang@gmail.com"</span><span class="o">);</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">"Save"</span><span class="o">)).</span><span class="na">click</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SwipeableWebDriver</span> <span class="kd">extends</span> <span class="n">RemoteWebDriver</span> <span class="kd">implements</span> <span class="n">HasTouchScreen</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="n">RemoteTouchScreen</span> <span class="n">touch</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="n">SwipeableWebDriver</span><span class="o">(</span><span class="n">URL</span> <span class="n">remoteAddress</span><span class="o">,</span> <span class="n">Capabilities</span> <span class="n">desiredCapabilities</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">super</span><span class="o">(</span><span class="n">remoteAddress</span><span class="o">,</span> <span class="n">desiredCapabilities</span><span class="o">);</span>
+            <span class="n">touch</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteTouchScreen</span><span class="o">(</span><span class="n">getExecuteMethod</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">TouchScreen</span> <span class="n">getTouch</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">touch</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+<p>四、运行查看结果：<br>
+1，启动appium服务<br>
+2，连接真机并启用调试模式<br>
+3，运行此代码,运行成功后 “王阳”打在了指定的输入框 如图：<br><img src="../photo/2014/7990ce4a99d06968f2f83aed5a4a5f19.png" alt=""></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title=' 使用 Utf7ime 输入法实现中文输入 Windows+Java 平台（完整步骤版） via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="678#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="678#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="678#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="678#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="678#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>16</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply1">1楼</a> · <abbr class="timeago" title="2014-04-10T01:03:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3745" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/678/replies/3745/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="young" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其中 的 二、导入Utf7ImeHelper.java和相关类到自己的appium工程  中可以完全把  这些java类 打包成jar包 然后使用</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply2">2楼</a> · <abbr class="timeago" title="2014-04-10T06:36:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3746" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/678/replies/3746/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../young" class="at_user" title="@young"><i>@</i>young</a> 太赞了，请问你能录个视频不？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply3">3楼</a> · <abbr class="timeago" title="2014-04-10T12:32:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3749" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/678/replies/3749/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="young" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="678#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 所有过程？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply4">4楼</a> · <abbr class="timeago" title="2014-04-10T17:53:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3754" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/678/replies/3754/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="678#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../young" class="at_user" title="@young"><i>@</i>young</a> 对啊。要做就做精品</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply5">5楼</a> · <abbr class="timeago" title="2014-04-10T20:16:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3755" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/678/replies/3755/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞, 非常细致的整理. </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../chuyaoyao"><img alt="354" class="uface" src="../user/large_avatar/354.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chuya0yao" href="../chuyaoyao">chuyaoyao</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply6">6楼</a> · <abbr class="timeago" title="2014-04-11T23:46:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3818" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="354" href="http://testerhome.com/topics/678/replies/3818/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="chuyaoyao" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>攒</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply7">7楼</a> · <abbr class="timeago" title="2014-04-14T16:24:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3859" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/678/replies/3859/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="young" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>视频就不做了吧  大家有问题留言</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../bxc168"><img alt="859" class="uface" src="../user/large_avatar/859.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="bxc518" href="../bxc168">bxc168</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply8">8楼</a> · <abbr class="timeago" title="2014-07-03T15:30:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6438" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="859" href="http://testerhome.com/topics/678/replies/6438/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="bxc168" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="678#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../young" class="at_user" title="@young"><i>@</i>young</a> hi，我使用这个方式，输出来的是一串数字...怎么办</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../kingswei6"><img alt="3136a1339a90a73f0c14c59422129f1b" class="uface" src="../avatar/3136a1339a90a73f0c14c59422129f1b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kingswei6">kingswei6</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply9">9楼</a> · <abbr class="timeago" title="2014-07-23T15:39:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6808" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1291" href="http://testerhome.com/topics/678/replies/6808/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="kingswei6" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我使用这个方式输出来的是乱码。。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../kingswei6"><img alt="3136a1339a90a73f0c14c59422129f1b" class="uface" src="../avatar/3136a1339a90a73f0c14c59422129f1b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kingswei6">kingswei6</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply10">10楼</a> · <abbr class="timeago" title="2014-07-23T15:46:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6809" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1291" href="http://testerhome.com/topics/678/replies/6809/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="kingswei6" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>WebElement editText = driver.findElementByClassName("android.widget.EditText");<br>
+editText.sendKeys(Utf7ImeHelper.e("自动化测试"));   楼主。。是乱码。。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../nailgogogogo"><img alt="C180538e08c6d18bcd7c17a768b7b13d" class="uface" src="../avatar/c180538e08c6d18bcd7c17a768b7b13d.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../nailgogogogo">nailgogogogo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply11">11楼</a> · <abbr class="timeago" title="2014-09-11T23:57:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8527" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1097" href="http://testerhome.com/topics/678/replies/8527/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="nailgogogogo" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>直接sendKeys("中文")就可以了，不要问我为什么，我是意外试出来的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply12">12楼</a> · <abbr class="timeago" title="2014-09-17T11:31:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8678" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/678/replies/8678/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="young" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="678#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../nailgogogogo" class="at_user" title="@nailgogogogo"><i>@</i>nailgogogogo</a> 可能是最新版本的原因吧  好久没研究了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../229max"><img alt="1552" class="uface" src="../user/large_avatar/1552.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Max.Bai" href="../229max">229max</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply13">13楼</a> · <abbr class="timeago" title="2014-09-22T17:25:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8797" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1552" href="http://testerhome.com/topics/678/replies/8797/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="229max" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../nailgogogogo" class="at_user" title="@nailgogogogo"><i>@</i>nailgogogogo</a> 什么版本的可以直接输入中文？ Android的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../eagle5479"><img alt="F278208642f037dd08e8fffaa2f8cdfc" class="uface" src="../avatar/f278208642f037dd08e8fffaa2f8cdfc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="eagle5479" href="../eagle5479">eagle5479</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply14">14楼</a> · <abbr class="timeago" title="2014-10-28T13:40:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9471" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1794" href="http://testerhome.com/topics/678/replies/9471/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="eagle5479" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>按此方法，我在手机运行输入中文时提示UTF7 IME FOR UI TESTING 停止运行，可有解释<br>
+LG NEXUS4</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply15">15楼</a> · <abbr class="timeago" title="2014-11-08T23:36:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9738" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/678/replies/9738/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="seasoncool2011" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>谢谢，学习了。<br>
+要是python能用就好了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../cheerfullchen"><img alt="2118" class="uface" src="../user/large_avatar/2118.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="一木" href="../cheerfullchen">cheerfullchen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="678#reply16">16楼</a> · <abbr class="timeago" title="2014-12-17T12:02:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10657" data-state="" data-type="Reply" href="678#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2118" href="http://testerhome.com/topics/678/replies/10657/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="cheerfullchen" href="678#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我也来感谢大神们的无私付出了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @saraben 期待“念念不忘，必有回响”在我身上印证的那一天到来
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="678#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

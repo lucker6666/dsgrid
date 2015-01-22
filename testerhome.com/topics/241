@@ -1,0 +1,793 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android Activity 测试指南 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android Activity 测试指南</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2013-12-02T18:24:24+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2013-12-02T23:29:07+08:00"></abbr>回复
+     · 
+    869次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <ol>
+<li>本文假设读者已经安装好了 Eclipse/ADT，以及配置好了 Android 开发环境。</li>
+<li>本文其实是 <a href="http://developer.android.com/tools/testing/activity_testing.html">Activity Testing</a> 的翻译。</li>
+</ol><h4>Activity 测试指南</h4>
+<p>Android 提供了强大的测试工具。这些工具继承于 JUnit 的同时扩展了额外的特性，提供更加便捷的系统对象 Mock 类，使用 instrumentation 操控被测应用。<br>
+整个 Android 测试环境在 Testing Fundamentals 文档里讨论过。</p>
+
+<p>这篇指南为我们展示了一个简单的 Android 应用，并引导我们一步一步为它创建测试应用。通过遍历整个过程，为我们介绍了 Android 测试工具。<br>
+这个测试应用展示了以下几个关键点：</p>
+
+<ul>
+<li>一个 Android 测试本身就是一个 Android 应用。通过 AndroidManifest.xml 将自己和被测应用联系在一起。</li>
+<li>和一般应用不同的是， Android 测试应用包含了一个或者多个测试用例而不是多个 Android component。每个测试用例都是一个类。</li>
+<li>Android test case classes 继承于 JUnit TestCase class。</li>
+<li>Android Activity 的 test case 继承于 JUnit TestCase class。而且通过 instrumentation， 可以和被测应用进行交互。 你可以直接发送按键事件和触摸事件给 UI。</li>
+<li>基于不同的 component （application, activity, content provider, 或者 service），你需要选择不同的 Android 测试用例类。</li>
+<li>Eclipse/ADT 提供的测试工具支持创建测试应用，运行测试应用和查看结果。</li>
+</ul><p>同时这个测试应用包含了一些方法，这些方法会执行以下的测试：</p>
+
+<ul>
+<li>初始条件测试。我们要测试被测应用是否正确地初始化了。这也是被测应用的 onCreate() 方法的单元测试。初始条件测试也为后续的测试提供了信心。</li>
+<li>UI 测试。测试 UI 操作是否正常正确工作。UI 测试展示了 activity 测试中 instrumentation 的特性。你可以从测试应用发送按键事件去被测应用，从而实现 UI 自动化测试。</li>
+<li>状态管理测试。 测试应用保持状态的代码。状态管理测试展示了 test runner 的 instrumentation 特性，你可以在测试任何 component 时候用到它。</li>
+</ul><h4>先决条件：</h4>
+<ul>
+<li>Android 编程的基础知识。如果你从没写过 Android 应用，先学下 <code>Building Your First App</code>。我们的被测应用来自于 Android SDK 里的面的样例代码 <code>Spinner</code>, 如果你想对 <code>Spinner</code> 了解更多，你可能需要看下 <code>Spinner</code> 样例代码。</li>
+<li>你需要熟悉 Android 测试框架和概念。如果你还没有探索过 Android 测试，那去读下 <code>Testing Fundamentals guide</code>。</li>
+<li>Eclipse 加 ADT。这篇指南描述了如何使用 Eclipse 和 ADT 配置和运行测试应用。如果你还没有安装 Eclipse 和 ADT 插件， 那先按照 Installing the SDK 里说的装好 Eclipse 和 ADT。如果你没用过 Eclipse，照着文档里的附录做吧。 </li>
+</ul><h4>安装样例代码</h4>
+<p>在这篇指南里，我们用的是 Android SDK 里面提供的样例代码 Spinner。你可以在 &lt;SDK_ROOT&gt;/samples/android-18/legacy/Spinner 找到被测应用的代码。同时，你可以在 &lt;SDK_ROOT&gt;/samples/android-18/legacy/SpinnerTest 里找到测试应用的代码。</p>
+
+<p>我们将会一步一步创建 SpinnerTest，当然你也可以先看一遍代码，然后再回过头来看我们的指南。</p>
+<h4>配置 Android 模拟器</h4>
+<p>在这篇指南里，我们会使用 Android 模拟器来运行应用。 我们需要一个 Android 虚拟机 （AVD），这个 AVD  API level 需要大于或者等于之前在项目里设置的。如果你不会创建 AVD 的话，先看看 Creating an AVD。</p>
+<h4>配置项目</h4>
+<p>我们先导入 SpinnerActivity 项目：</p>
+
+<ol>
+<li>打开 Eclipse, 选择 <em>File&gt;Import</em> 到 Import 窗口。</li>
+<li>选择 <em>Existing Android Code into Workspace</em>，进入 Import Projects 窗口。</li>
+<li>Root Directory 选择 <code>SpinnerActivity</code> 代码所在位置。 比如： <code>&lt;SDK_ROOT&gt;/samples/android-18/legacy/Spinner</code>。</li>
+<li>其他默认，点击 Finish。</li>
+</ol><p>Package Explorer 会列出代码的目录结构。</p>
+
+<p>接下来，我们为 SpinnerActivity 项目生成测试项目：</p>
+
+<ol>
+<li>在 Package Explorer 里面右击 SpinnerActivity 项目，选择 <em>Android Tools&gt;New Test Project...</em>， 会弹出 "New Android Test Project" 对话框。</li>
+<li>Project Name 命名为 SpinnerActivityTest， 然后选择 Next</li>
+<li>在 Select Test Target 里面选择 SpinnerActivity，然后点击 Finish。</li>
+<li>这样一个测试项目就生成了。</li>
+</ol><p>(注意，由于 Eclipse 版本不同，可能步骤提示可能不同，随机应变吧。)</p>
+
+<p>目前生成的测试项目，是一个空项目。 Eclipse 和 ADT 只是帮我们生成好了配置文件。我们主要看下 SpinnerActivityTest 底下的 AndroidManifest.xml</p>
+<pre class="highlight xml"><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;manifest</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+          <span class="na">package=</span><span class="s">"com.android.example.spinner.test"</span>
+          <span class="na">android:versionCode=</span><span class="s">"1"</span>
+          <span class="na">android:versionName=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;uses-sdk</span> <span class="na">android:minSdkVersion=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;application</span>  <span class="na">android:label=</span><span class="s">"@string/app_name"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;uses-library</span> <span class="na">android:name=</span><span class="s">"android.test.runner"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/application&gt;</span>
+    <span class="nt">&lt;instrumentation</span> <span class="na">android:name=</span><span class="s">"android.test.InstrumentationTestRunner"</span>
+                     <span class="na">android:targetPackage=</span><span class="s">"com.android.example.spinner"</span>
+                     <span class="na">android:label=</span><span class="s">"Tests for com.android.example.spinner"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/manifest&gt;</span>
+</pre>
+<p>Eclipse 已经帮我们注入了 Instrumentation。注意看 instrumentation 这个节点。通过 targetPackage 这个属性，Android 知道哪个是被测应用，并且如何启动被测程序。name 属性告诉 Android，当运行这个测试应用时，需要用 激活了Instrumentation 的 TestRunner。</p>
+<h4>创建测试用例类</h4>
+<p>接下来，我们需要创建测试类。在这篇指南里，我们将创建一个测试类，包含：</p>
+
+<ol>
+<li>测试配置。 我们一般用 JUnit 的 setUp 方法来做一些准备工作，和在跑每个测试前需要运行的任务。</li>
+<li>初始条件测试。 这是一个很好的测试技术。通过 instrumentation，我们可以在没有启动 主Activity 前就可以观察这个应用。初始条件测试会检查被测应用的某些重要对象是否初始化。如果这个测试都失败了，那别的基于该被测应用的测试也是没有意义的。
+&gt; 注意：初始条件测试和 JUnit 的 setUp 方法是不一样的。JUnit 的 setUp 方法在每个测试用例运行前运行，它的主要目的是创建一个干净的环境。初始条件测试只运行一次，它的目的是检查被测程序是否可以被测试了。</li>
+<li>UI 测试。我们会教你如何使用强大的 Android 自动化测试工具。</li>
+<li>状态管理测试。这里将会讲述一些 Android 如何保持状态的技术。从用户体验的角度来看，应用不应该丢失任何当前状态，无论是突然有电话进来或者内存不够导致崩溃。Android Activity 的生命周期提供了方法维护这些状态，我们的被测程序中也用到了。这里，我们会验证这些方法。</li>
+</ol><p>Android 测试其实就是一个包含了一个或者多个测试类的特殊的应用。每一个测试类都有很多测试方法。我们先创建一个测试类，如何试着添加一些测试方法。</p>
+
+<p>首先我们要选择一种 Android test case class 来继承。根据不同的 component，选择不同的 Android test case class 。这里我们测试 Activity，所以选择和 Activity 有关的。我们在真实环境中用的最多的是 <em>ActivityInstrumentationTestCase2</em>。 这个类提供了很多便捷的方法可以直接和 UI 交互。</p>
+<h4>添加测试类文件</h4>
+<ol>
+<li>展开前面生成的 SpinnerActivityTest 的 src 文件夹。</li>
+<li>在 com.android.example.spinner.test 这个package 创建一个类，这个类必须继承 ActivityInstrumentationTestCase2。
+如：</li>
+</ol><pre class="highlight java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpinnerActivityTest</span> <span class="kd">extends</span> <span class="n">ActivityInstrumentationTestCase2</span><span class="o">&lt;</span><span class="n">SpinnerActivity</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="o">...</span>
+<span class="o">}</span>
+</pre><h4>添加构造函数</h4>
+<p>为了确保测试应用正确实例化了，你必须配置一个构造函数，test runner 在实例化测试类的时候，会调用这个构造函数。这个构造函数必须是无参的，它的主要作用就是把信息传递给父类的默认构造函数。看代码：</p>
+<pre class="highlight java">    <span class="cm">/*
+     * Constructor for the test class. Required by Android test classes. The constructor
+     * must call the super constructor, providing the Android package name of the app under test
+     * and the Java class name of the activity in that application that handles the MAIN intent.
+     */</span>
+    <span class="kd">public</span> <span class="n">SpinnerActivityTest</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="kd">super</span><span class="o">(</span><span class="s">"com.android.example.spinner"</span><span class="o">,</span> <span class="n">SpinnerActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+</pre>
+<p>不过 <code>super("com.android.example.spinner", SpinnerActivity.class);</code> 这个已经 deprecated 了。 看代码：</p>
+<pre class="highlight java"><span class="cm">/**
+     * Creates an {@link ActivityInstrumentationTestCase2}.
+     *
+     * @param pkg ignored - no longer in use.
+     * @param activityClass The activity to test. This must be a class in the instrumentation
+     * targetPackage specified in the AndroidManifest.xml
+     *
+     * @deprecated use {@link #ActivityInstrumentationTestCase2(Class)} instead
+     */</span>
+    <span class="nd">@Deprecated</span>
+    <span class="kd">public</span> <span class="n">ActivityInstrumentationTestCase2</span><span class="o">(</span><span class="n">String</span> <span class="n">pkg</span><span class="o">,</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">activityClass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="n">activityClass</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * Creates an {@link ActivityInstrumentationTestCase2}.
+     *
+     * @param activityClass The activity to test. This must be a class in the instrumentation
+     * targetPackage specified in the AndroidManifest.xml
+     */</span>
+    <span class="kd">public</span> <span class="n">ActivityInstrumentationTestCase2</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">activityClass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mActivityClass</span> <span class="o">=</span> <span class="n">activityClass</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre><h4>添加 setUp 方法</h4>
+<p>setUp() 方法其实就是 JUnit 的 setUp() 方法。直接看代码，</p>
+<pre class="highlight java">    <span class="cm">/* 里面涉及的实例变量，假设已经存在了。 */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+        <span class="cm">/*
+         * Call the super constructor (required by JUnit)
+         */</span>
+
+        <span class="kd">super</span><span class="o">.</span><span class="na">setUp</span><span class="o">();</span>
+
+        <span class="cm">/*
+         * prepare to send key events to the app under test by turning off touch mode.
+         * Must be done before the first call to getActivity()
+         */</span>
+
+        <span class="n">setActivityInitialTouchMode</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+
+        <span class="cm">/*
+         * Start the app under test by starting its main activity. The test runner already knows
+         * which activity this is from the call to the super constructor, as mentioned
+         * previously. The tests can now use instrumentation to directly access the main
+         * activity through mActivity.
+         */</span>
+        <span class="n">mActivity</span> <span class="o">=</span> <span class="n">getActivity</span><span class="o">();</span>
+
+        <span class="cm">/*
+         * Get references to objects in the application under test. These are
+         * tested to ensure that the app under test has initialized correctly.
+         */</span>
+
+        <span class="n">mSpinner</span> <span class="o">=</span> <span class="o">(</span><span class="n">Spinner</span><span class="o">)</span><span class="n">mActivity</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">spinner</span><span class="o">.</span><span class="na">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">Spinner01</span><span class="o">);</span>
+
+        <span class="n">mPlanetData</span> <span class="o">=</span> <span class="n">mSpinner</span><span class="o">.</span><span class="na">getAdapter</span><span class="o">();</span>
+
+    <span class="o">}</span>
+</pre>
+<p>我们在 setUp 方法里去拿一些数据，以便每次测试运行需要。值得关注的是 <code>setActivityInitialTouchMode(false);</code>，如果要发送按键事件给被测应用的话，必须在开始任何 Activity 前关闭 touch 模式，否则发送会被忽略。看它的代码实现：</p>
+<pre class="highlight java"> <span class="cm">/**
+     * Call this method before the first call to {@link #getActivity} to set the initial touch
+     * mode for the Activity under test.
+     * 
+     * &lt;p&gt;If you do not call this, the touch mode will be false.  If you call this after
+     * your Activity has been started, it will have no effect.
+     * 
+     * &lt;p&gt;&lt;b&gt;NOTE:&lt;/b&gt; Activities under test may not be started from within the UI thread.
+     * If your test method is annotated with {@link android.test.UiThreadTest}, then you must call
+     * {@link #setActivityInitialTouchMode(boolean)} from {@link #setUp()}.
+     * 
+     * @param initialTouchMode true if the Activity should be placed into "touch mode" when started
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setActivityInitialTouchMode</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">initialTouchMode</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mInitialTouchMode</span> <span class="o">=</span> <span class="n">initialTouchMode</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+<p>事实上在 ActivityInstrumentationTestCase2 的 setUp 方法里，已经将 touchMode 设置为 false 了。</p>
+<h4>添加初始条件测试</h4>
+<p>初始条件测试要验证：</p>
+
+<ol>
+<li>Spinner 里面的 item 的 listener 是否初始化成功。</li>
+<li>给 Spinner 提供数据的 adapter 是否初始化成功。</li>
+<li>adapter 里面数据的个数正确。</li>
+</ol><p>看代码：</p>
+<pre class="highlight java">    <span class="cm">/*
+     * Tests the initial values of key objects in the app under test, to ensure the initial
+     * conditions make sense. If one of these is not initialized correctly, then subsequent
+     * tests are suspect and should be ignored.
+     */</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">testPreconditions</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="cm">/*
+         *  An example of an initialization test. Assert that the item select listener in
+         *  the main Activity is not null (has been set to a valid callback)
+         */</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">mSpinner</span><span class="o">.</span><span class="na">getOnItemSelectedListener</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">);</span>
+
+        <span class="cm">/*
+         * Test that the spinner's backing mLocalAdapter was initialized correctly.
+         */</span>
+
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">mPlanetData</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">);</span>
+
+        <span class="cm">/*
+         *  Also ensure that the backing mLocalAdapter has the correct number of entries.
+         */</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">mPlanetData</span><span class="o">.</span><span class="na">getCount</span><span class="o">(),</span> <span class="n">ADAPTER_COUNT</span><span class="o">);</span>
+    <span class="o">}</span>
+
+</pre><h4>添加一个 UI 测试</h4>
+<p>现在创建一个测试： 从 Spinner 插件里选择一个项目。这个测试会发送按键事件给 UI。我们要确保选择的项目是我们期盼的。</p>
+
+<p>这个测试显示了 instrumentation 的威力。只有基于 instrumentation 的测试类才能发送按键事件(触摸事件)给被测应用。使用 instrumentation， 就可以不用通过截图，录制或者人工来测试 UI。</p>
+
+<p>为了使用 Spinner，首先我们用 <code>requestFocus()</code> 和 <code>setSelection()</code> 取得焦点并默认选中一个。两个方法都是和 View 直接交互，所以我们需要用特殊的形式调用他们。</p>
+
+<p>测试应用里面，直接和被测应用的 View 交互的代码，必须放在被测应用的线程（也叫UI线程）里。我们用 <code>Activity.runOnUiThread()</code> 方法。这个方法需要一个匿名的 <code>Runnable</code> 类作为参数。我们可以重写 <code>Runnable</code> 类的 <code>run()</code> 方法.</p>
+
+<p>我们用 <code>sendKeys()</code> 方法发送按键事件给 UI。这个方法不需要在 UI 线程内运行，因为 Android 通过 instrumentation 把按键事件传递给被测应用。</p>
+
+<p>我们来看代码：</p>
+<pre class="highlight java"><span class="cm">/*
+     * Tests the UI of the main activity. Sends key events (keystrokes) to the UI, then checks
+     * if the resulting spinner state is consistent with the attempted selection.
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">testSpinnerUI</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="cm">/*
+         * Request focus for the spinner widget in the application under test,
+         * and set its initial position. This code interacts with the app's View
+         *  so it has to run on the app's thread not the test's thread.
+         *
+         * To do this, pass the necessary code to the application with
+         * runOnUiThread(). The parameter is an anonymous Runnable object that
+         * contains the Java statements put in it by its run() method.
+         */</span>
+         <span class="cm">/* 这里需要注意， 主要是因为 mSpinner 是一个 View。*/</span>
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">runOnUiThread</span><span class="o">(</span>
+            <span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+                <span class="kd">public</span> <span class="kt">void</span> <span class="n">run</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="n">mSpinner</span><span class="o">.</span><span class="na">requestFocus</span><span class="o">();</span>
+                    <span class="n">mSpinner</span><span class="o">.</span><span class="na">setSelection</span><span class="o">(</span><span class="n">INITIAL_POSITION</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">);</span>
+
+        <span class="c1">// Activate the spinner by clicking the center keypad key</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="n">KeyEvent</span><span class="o">.</span><span class="na">KEYCODE_DPAD_CENTER</span><span class="o">);</span>
+
+        <span class="c1">// send 5 down arrow keys to the spinner</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">TEST_POSITION</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+
+            <span class="k">this</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="n">KeyEvent</span><span class="o">.</span><span class="na">KEYCODE_DPAD_DOWN</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// select the item at the current spinner position</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="n">KeyEvent</span><span class="o">.</span><span class="na">KEYCODE_DPAD_CENTER</span><span class="o">);</span>
+
+        <span class="c1">// get the position of the selected item</span>
+
+        <span class="n">mPos</span> <span class="o">=</span> <span class="n">mSpinner</span><span class="o">.</span><span class="na">getSelectedItemPosition</span><span class="o">();</span>
+
+        <span class="cm">/*
+         * from the spinner's data mLocalAdapter, get the object at the selected position
+         * (this is a String value)
+         */</span>
+
+        <span class="n">mSelection</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="n">mSpinner</span><span class="o">.</span><span class="na">getItemAtPosition</span><span class="o">(</span><span class="n">mPos</span><span class="o">);</span>
+
+        <span class="cm">/*
+         * Get the TextView widget that displays the result of selecting an item from the spinner
+         */</span>
+
+        <span class="n">TextView</span> <span class="n">resultView</span> <span class="o">=</span>
+                <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">mActivity</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">spinner</span><span class="o">.</span><span class="na">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">SpinnerResult</span><span class="o">);</span>
+
+        <span class="c1">// Get the String value in the EditText object</span>
+
+        <span class="n">String</span> <span class="n">resultText</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">resultView</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+
+        <span class="cm">/*
+         * Confirm that the EditText contains the same value as the data in the mLocalAdapter
+         */</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">resultText</span><span class="o">,</span><span class="n">mSelection</span><span class="o">);</span>
+    <span class="o">}</span>
+
+
+</pre>
+<p>需要解释的一点是， <code>sendKeys()</code> 方法是来自 ActivityInstrumentationTestCase2 的父类的父类 <code>InstrumentationTestCase</code>。 大致的实现是得到 <code>instrumentation</code> ，然后调用 <code>instrumentation</code> 的 <code>sendKeyDownUpSync</code> 方法，有兴趣的人可以去看下实现。</p>
+
+<p>至此，一个简单的 UI 测试就写好了。大家可以试着运行下。</p>
+<h4>添加状态管理测试</h4>
+<p>我们现在要写两个测试来验证 SpinnerActivity 暂停或者终止的时候是否会保持状态。在我们的例子里，状态就是 spinner 的当前选项。当用户选了一个项目，然后暂停或者关闭应用，然后在恢复或者重新打开应用，之前的那个项目应该还是选中的状态。</p>
+
+<p>保持状态是应用的一个非常重要的特性。通常我们会遇到：</p>
+
+<ol>
+<li>用户可能为了接听电话从当前应用中切换出去，等接完电话再切换回来。</li>
+<li>在手机切换横竖屏时，Android 系统本身也可能会重启或者关闭一个 Activity。</li>
+<li>手机内存不够了，关闭一些暂时没用的 Activity 来释放资源。</li>
+</ol><p>每种情况，最好的用户体验是当我们再回到这个UI时候，系统还为我们保持着离开时候的状态。</p>
+
+<p>我们的被测应用 SpinnerActivity 是这样保持状态的：(具体实现可以看代码)</p>
+
+<ol>
+<li>Activity 隐藏。其他的界面出现，Spinner 隐藏的时候，它会把 Spinner 的当前位置和值存在一个临时表单里。只要 Spinner 应用运行着，这些值就会被保留着。</li>
+<li>应用被关闭。当 SpinnerActivity 被关闭的时候，它会把当前位置和值保存到一个永久的表单（其实就是 SharedPreferences）里去。当这个 Activity 重启的时候，会从这个表单里读取位置和值出来，恢复到关闭前的状态。</li>
+<li>Activity 重现（或者是重绘？）当 Spinner 界面重新出现的时候，它应该恢复到隐藏之前的状态。</li>
+<li>应用重启。当用户再次启动 Spinner 的时候，它会恢复到关闭前的状态。</li>
+</ol><p>对于 Activity 而言， 隐藏就是 <code>paused</code>, 重现就是 <code>resume</code>。这是 Activity 生命周期中重要的知识点， Activity 类提供了两个回调方法：</p>
+
+<ul>
+<li>onPaused()</li>
+<li>onResume()</li>
+</ul><p>SpinnerActivity 就用了这两个方法来保存和恢复状态。</p>
+
+<p>####测试用例 1：整个应用关闭后重启，Spinner 的选项会被保持。</p>
+
+<ol>
+<li>用 instrumentation 设置 Spinner 变量</li>
+<li>用 Activity.finish() 方法关闭 Activity</li>
+<li>用 instrumentation 的 getActivity() 方法重启</li>
+<li>验证当前的状态是否和关闭前的一致</li>
+</ol><p>看代码：</p>
+<pre class="highlight java"><span class="cm">/*
+     *  Tests that the activity under test maintains the spinner state when the activity halts
+     *  and then restarts (for example, if the device reboots). Sets the spinner to a
+     *  certain state, calls finish() on the activity, restarts the activity, and then
+     *  checks that the spinner has the same state.
+     *
+     */</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">testStateDestroy</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="cm">/*
+         * Set the position and value of the spinner in the Activity. The test runner's
+         * instrumentation enables this by running the test app and the main app in the same
+         * process.
+         */</span>
+
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">setSpinnerPosition</span><span class="o">(</span><span class="n">TEST_STATE_DESTROY_POSITION</span><span class="o">);</span>
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">setSpinnerSelection</span><span class="o">(</span><span class="n">TEST_STATE_DESTROY_SELECTION</span><span class="o">);</span>
+
+        <span class="c1">// Halt the Activity by calling Activity.finish() on it</span>
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">finish</span><span class="o">();</span>
+
+        <span class="c1">// Restart the activity by calling ActivityInstrumentationTestCase2.getActivity()</span>
+
+        <span class="n">mActivity</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getActivity</span><span class="o">();</span>
+
+        <span class="cm">/*
+         * Get the current position and selection from the activity.
+         */</span>
+
+        <span class="kt">int</span> <span class="n">currentPosition</span> <span class="o">=</span> <span class="n">mActivity</span><span class="o">.</span><span class="na">getSpinnerPosition</span><span class="o">();</span>
+        <span class="n">String</span> <span class="n">currentSelection</span> <span class="o">=</span> <span class="n">mActivity</span><span class="o">.</span><span class="na">getSpinnerSelection</span><span class="o">();</span>
+
+        <span class="c1">// test that they are the same.</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">TEST_STATE_DESTROY_POSITION</span><span class="o">,</span> <span class="n">currentPosition</span><span class="o">);</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">TEST_STATE_DESTROY_SELECTION</span><span class="o">,</span> <span class="n">currentSelection</span><span class="o">);</span>
+    <span class="o">}</span>
+
+</pre>
+<p>####测试用例 2：Activity 暂停后恢复，Spinner 的选项会被保持。</p>
+
+<ol>
+<li>用 instrumentation 设置 Spinner 变量</li>
+<li>强行调用 onPaused() 和 onResume() 方法</li>
+<li>验证状态是否保持一致</li>
+</ol><p>看代码：</p>
+<pre class="highlight java"><span class="cm">/*
+     * Tests that the activity under test maintains the spinner's state when the activity is
+     * paused and then resumed.
+     *
+     * Calls the activity's onResume() method. Changes the spinner's state by
+     * altering the activity's View. This means the test must run
+     * on the UI Thread. All the statements in the test method may be run on
+     * that thread, so instead of using the runOnUiThread() method, the
+     * @UiThreadTest is used.
+     */</span>
+    <span class="nd">@UiThreadTest</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">testStatePause</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="cm">/*
+         * Get the instrumentation object for this application. This object
+         * does all the instrumentation work for the test runner
+         */</span>
+
+        <span class="n">Instrumentation</span> <span class="n">instr</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getInstrumentation</span><span class="o">();</span>
+
+        <span class="cm">/*
+         * Set the activity's fields for the position and value of the spinner
+         */</span>
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">setSpinnerPosition</span><span class="o">(</span><span class="n">TEST_STATE_PAUSE_POSITION</span><span class="o">);</span>
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">setSpinnerSelection</span><span class="o">(</span><span class="n">TEST_STATE_PAUSE_SELECTION</span><span class="o">);</span>
+
+        <span class="cm">/*
+         *  Use the instrumentation to onPause() on the currently running Activity.
+         *  This analogous to calling finish() in the testStateDestroy() method.
+         *  This way demonstrates using the test class' instrumentation.
+         */</span>
+
+        <span class="n">instr</span><span class="o">.</span><span class="na">callActivityOnPause</span><span class="o">(</span><span class="n">mActivity</span><span class="o">);</span>
+
+        <span class="cm">/*
+         * Set the spinner to a test position
+         */</span>
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">setSpinnerPosition</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+
+        <span class="n">mActivity</span><span class="o">.</span><span class="na">setSpinnerSelection</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+
+        <span class="cm">/*
+         * Call the activity's onResume() method. This forces the activity
+         * to restore its state.
+         */</span>
+
+        <span class="n">instr</span><span class="o">.</span><span class="na">callActivityOnResume</span><span class="o">(</span><span class="n">mActivity</span><span class="o">);</span>
+
+        <span class="cm">/*
+         * Get the current state of the spinner
+         */</span>
+
+        <span class="kt">int</span> <span class="n">currentPosition</span> <span class="o">=</span> <span class="n">mActivity</span><span class="o">.</span><span class="na">getSpinnerPosition</span><span class="o">();</span>
+
+        <span class="n">String</span> <span class="n">currentSelection</span> <span class="o">=</span> <span class="n">mActivity</span><span class="o">.</span><span class="na">getSpinnerSelection</span><span class="o">();</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">TEST_STATE_PAUSE_POSITION</span><span class="o">,</span><span class="n">currentPosition</span><span class="o">);</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">TEST_STATE_PAUSE_SELECTION</span><span class="o">,</span><span class="n">currentSelection</span><span class="o">);</span>
+  <span class="o">}</span>
+
+</pre>
+<p>需要注意的是，第二个测试使用了 <a href="http://testerhome.com/UiThreadTest" class="at_user" title="@UiThreadTest"><i>@</i>UiThreadTest</a> 注释。这是因为 <code>instr.callActivityOnResume(mActivity)</code> 实际上调用了 SpinnerActivity 的 onResume 方法。而在这个 onResume 方法里，代码直接操纵了 View。</p>
+<pre class="highlight java">        <span class="n">Spinner</span> <span class="n">restoreSpinner</span> <span class="o">=</span> <span class="o">(</span><span class="n">Spinner</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">Spinner01</span><span class="o">);</span>
+        <span class="n">restoreSpinner</span><span class="o">.</span><span class="na">setSelection</span><span class="o">(</span><span class="n">getSpinnerPosition</span><span class="o">());</span>
+</pre>
+<p>所有和 View 直接交互的代码，必须放在 UI 线程中执行。</p>
+<h4>总结</h4>
+<p>至此，我们所有的测试代码都完成了。接下来就是运行和调试，就不细说了。想看详细的可以移步 <a href="http://developer.android.com/tools/testing/activity_testing.html">Activity Testing</a>。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android Activity 测试指南 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="241#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="241#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="241#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="241#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="241#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="241#reply1">1楼</a> · <abbr class="timeago" title="2013-12-02T23:12:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="859" data-state="" data-type="Reply" href="241#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/241/replies/859/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="241#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这是sdk docs？＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="241#reply2">2楼</a> · <abbr class="timeago" title="2013-12-02T23:25:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="860" data-state="" data-type="Reply" href="241#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/241/replies/860/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="241#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="241#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 不是就是官网的测试文章</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="241#reply3">3楼</a> · <abbr class="timeago" title="2013-12-02T23:26:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="861" data-state="" data-type="Reply" href="241#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/241/replies/861/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="241#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="241#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 写的好详细啊.</p>
+
+<p>另外</p>
+<pre class="highlight plaintext">super("com.android.example.spinner", SpinnerActivity.class);
+</pre>
+<p>这个使用class.for_name方法就可以不依赖测试项目的源代码了. 这样设计更好</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="241#reply4">4楼</a> · <abbr class="timeago" title="2013-12-02T23:29:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="862" data-state="" data-type="Reply" href="241#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/241/replies/862/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="241#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="241#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 恩恩我就是这个意思。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    请没有头像的同学，上传头像吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="241#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Robotium 专题（四）： Robotium 中部分常用的方法集锦 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Robotium 专题（四）： Robotium 中部分常用的方法集锦</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="" href="../bill">bill</a>
+     · 
+    于<abbr class="timeago" title="2014-12-10T15:10:06+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="buyixiong2007" href="../buyixiong2007">buyixiong2007</a> 于<abbr class="timeago" title="2015-01-05T17:12:04+08:00"></abbr>回复
+     · 
+    512次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这几天一直在忙着产品上线，没有做更新，最近用robotium的地方也不是太多，只是在回归某个应用的时候会写一些Case，对于新的robotium.jar，还没来得急研究，里面多了几个软键盘操作的方法，明天抽空研究下。<br>
+今天就把平时用的较多的方法做个笔记，方便以后使用。</p>
+
+<p>①  点击：</p>
+<pre class="highlight java"><span class="n">clickOnButton</span><span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="c1">//Clicks on a Button with a given index.</span>
+<span class="n">clickOnButton</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Clicks on a Button with a given text.</span>
+<span class="n">clickOnCheckBox</span><span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="c1">//Clicks on a CheckBox with a given index.</span>
+<span class="n">clickOnView</span><span class="o">(</span><span class="n">View</span><span class="o">)</span> <span class="c1">//Clicks on a given View.</span>
+<span class="n">clickOnText</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Clicks on a View displaying a given text.</span>
+<span class="n">clickLongOnText</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Long clicks on a given View.</span>
+<span class="n">clickOnRadioButton</span><span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="c1">//Clicks on a RadioButton with a given index.</span>
+<span class="n">clickOnScreen</span><span class="o">(</span><span class="kt">float</span><span class="o">,</span> <span class="kt">float</span><span class="o">)</span> <span class="c1">//Clicks on a given coordinate on the screen.</span>
+</pre>
+
+<p>②  取得：</p>
+<pre class="highlight java"><span class="n">getCurrentActivity</span><span class="o">()</span> <span class="c1">//Returns the current Activity.</span>
+<span class="n">getText</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Returns a TextView which shows a given text.</span>
+<span class="n">getView</span><span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="c1">//Returns a View with a given id.</span>
+<span class="n">getEditText</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Returns an EditText which shows a given text.  </span>
+<span class="n">getImage</span><span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="c1">//Returns an ImageView with a given index.</span>
+</pre>
+
+<p>③  拖拽：</p>
+<pre class="highlight java"><span class="n">drag</span><span class="o">(</span><span class="kt">float</span><span class="o">,</span> <span class="kt">float</span><span class="o">,</span> <span class="kt">float</span><span class="o">,</span> <span class="kt">float</span><span class="o">,</span> <span class="kt">int</span><span class="o">)</span> <span class="c1">//Simulate touching a given location and dragging it to a new location.</span>
+</pre>
+
+<p>④  搜索：</p>
+<pre class="highlight java"><span class="n">searchText</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Searches for a text string and returns true if at least one item is found with the expected text.</span>
+<span class="n">searchEditText</span><span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="c1">//Searches for a text string in the EditText objects located in the current Activity.</span>
+<span class="n">searchButton</span><span class="o">(</span><span class="n">String</span><span class="o">,</span> <span class="kt">boolean</span><span class="o">)</span> <span class="c1">//Searches for a Button with the given text string and returns true if at least one Button is found.</span>
+</pre>
+
+
+
+
+<pre class="highlight java"><span class="n">clickOnMenuItem</span><span class="o">(</span><span class="n">String</span><span class="o">);</span>
+</pre>
+
+<p>功能是点击Menu按钮，选择文本描述为String的菜单，如我们的例子是"Add note"</p>
+<pre class="highlight java"><span class="n">assertCurrentActivity</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">,</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+</pre>
+
+<p>这个是判断当前的activity是否和我预期的一致<br>
+message是描述性的文字<br>
+name是指activity的名字<br>
+关于如何知道activity 名字，目前的方法是得看源码中的 AndroidManifest.xml--Application label--Application Nodes，在那里我们可以看到所有的activity的name</p>
+<pre class="highlight java"><span class="n">enterText</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span><span class="o">,</span><span class="n">string</span> <span class="n">text</span><span class="o">);</span>
+</pre>
+
+<p>index用来标识写到哪个EditText中。如果当前只打开一个EditText，那index=0<br>
+text：就是我们要写入的内容</p>
+<pre class="highlight java"><span class="n">goBack</span><span class="o">();</span>
+</pre>
+
+<p>相当于手机上的 返回键（back key)</p>
+<pre class="highlight java"><span class="n">goBackToActivity</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+</pre>
+
+<p>返回到指定的activity</p>
+<pre class="highlight java"><span class="n">searchText</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">)</span>
+</pre>
+
+<p>在当前的activity中搜索是否含有text的内容</p>
+<pre class="highlight java"><span class="n">clickInList</span><span class="err">（</span><span class="kt">int</span> <span class="n">index</span><span class="o">);</span>
+</pre>
+
+<p>点击list表的第index行，进入该文本界面</p>
+<pre class="highlight java"><span class="n">solo</span><span class="o">.</span><span class="na">setActivityOrientation</span><span class="o">(</span><span class="n">Solo</span><span class="o">.</span><span class="na">LANDSCAPE</span><span class="o">);</span>
+</pre>
+
+<p>setActivityOrientation，设置手机屏幕显示方式<br>
+LANDSCAPE：横向显示<br>
+Portrait：竖向显示</p>
+<pre class="highlight java"><span class="n">clickOnText</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">);</span>
+</pre>
+
+<p>点击包含该文字的地方<br>
+其中text可以用正则表达式表示<br>
+(?i)----忽略大小写。默认情况是大小写敏感的。<br>
+正则表达式与java保持一致</p>
+<pre class="highlight java"><span class="n">clickLongOnText</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">);</span>
+</pre>
+
+<p>长时间按住所选的文字</p>
+
+<p>这里需要注意：被测apk和测试apk必须使用相同的签名。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Robotium 专题（四）： Robotium 中部分常用的方法集锦 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1677#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1677#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1677#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1677#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1677#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>6</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../uncle_mm"><img alt="1960" class="uface" src="../user/large_avatar/1960.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="uncle" href="../uncle_mm">uncle_mm</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1677#reply1">1楼</a> · <abbr class="timeago" title="2014-12-10T15:15:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10466" data-state="" data-type="Reply" href="1677#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1960" href="http://testerhome.com/topics/1677/replies/10466/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="uncle_mm" href="1677#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞一个！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1677#reply2">2楼</a> · <abbr class="timeago" title="2014-12-10T15:49:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10470" data-state="" data-type="Reply" href="1677#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1677/replies/10470/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="1677#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>等来了第四篇，注意代码块用代码块格式！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1677#reply3">3楼</a> · <abbr class="timeago" title="2014-12-10T16:10:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10474" data-state="" data-type="Reply" href="1677#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1677/replies/10474/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="shixue33" href="1677#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>获取Activity名字，可以用adb shell dumpsys activity top | findstr ACTIVITY</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1677#reply4">4楼</a> · <abbr class="timeago" title="2014-12-10T16:12:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10476" data-state="" data-type="Reply" href="1677#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1677/replies/10476/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="shixue33" href="1677#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有一系列的waitfor方法，我觉得对于提高代码的健壮性很有效果</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1677#reply5">5楼</a> · <abbr class="timeago" title="2014-12-16T15:56:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10638" data-state="" data-type="Reply" href="1677#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1677/replies/10638/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="bill" href="1677#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1677#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 嗯，是的，你也多分享下啊！哈哈！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../buyixiong2007"><img alt="61c50cac265cd2bdb5f3129a35168c3c" class="uface" src="../avatar/61c50cac265cd2bdb5f3129a35168c3c.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="布衣熊2007" href="../buyixiong2007">buyixiong2007</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1677#reply6">6楼</a> · <abbr class="timeago" title="2015-01-05T17:12:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11143" data-state="" data-type="Reply" href="1677#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1190" href="http://testerhome.com/topics/1677/replies/11143/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="buyixiong2007" href="1677#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 获取activity名字的命令太赞了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @jacky 希望一天天的进步，小学妹等着我啊
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1677#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

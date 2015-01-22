@@ -1,0 +1,304 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【转载】Android Monkey 测试结果分析 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【转载】Android Monkey 测试结果分析</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-03-20T22:19:24+08:00"></abbr>发布
+     · 
+    952次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>原文来自：<a href="http://www.douban.com/note/257030241/" rel="nofollow" target="_blank">http://www.douban.com/note/257030241/</a></p>
+<h4>初步分析方法</h4>
+<p>Monkey 测试出现错误后，一般的差错步骤为以下几步：</p>
+
+<ol>
+<li><p>找到是 monkey 里面的哪个地方出错</p></li>
+<li><p>查看 Monkey 里面出错前的一些事件动作，并手动执行该动作</p></li>
+<li><p>若以上步骤还不能找出，可以使用之前执行的 monkey 命令再执行一遍，注意 seed 值要一样</p></li>
+</ol><p>一般的测试结果分析：</p>
+
+<ol>
+<li><p>ANR 问题：在日志中搜索 <code>ANR</code></p></li>
+<li><p>崩溃问题：在日志中搜索 <code>Exception</code></p></li>
+</ol><h4>详细分析 monkey 日志：</h4>
+<p>将执行 Monkey 生成的 log，从手机中导出并打开查看该 log。</p>
+
+<p>在 log 的最开始都会显示 Monkey 执行的 seed 值、执行次数和测试的包名。</p>
+
+<p>首先我们需要查看 Monkey 测试中是否出现了 ANR 或者异常，具体方法如上述。</p>
+
+<p>然后我们要分析 log 中的具体信息，方法如下：</p>
+
+<p>查看log中第一个 <code>Switch</code>，主要是查看 Monkey 执行的是那一个 Activity，譬如下面的 log 中，执行的是<code>com.tencent.smtt.SplashActivity</code>，在下一个 <code>swtich</code> 之间的，如果出现了崩溃或其他异常，可以在该 <code>Activity</code> 中查找问题的所在。</p>
+<pre class="highlight plaintext">:Switch:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10000000;component=com.tencent.smtt/.SplashActivity;end
+
+  // Allowing start of Intent {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER]cmp=com.tencent.smtt/.SplashActivity } in package com.tencent.smtt
+
+</pre>
+<p>在下面的 log 中，<code>Sending Pointer ACTION_DOWN</code> 和 <code>Sending Pointer ACTION_UP</code> 代表当前执行了一个单击的操作;</p>
+
+<p><code>Sleeping for 500 milliseconds</code> 这句 log 是执行Monkey测试时，<code>throttle</code> 设定的间隔时间，每出现一次，就代表一个事件。</p>
+<pre class="highlight plaintext">SendKey(ACTION_DOWN) //KEYCODE_DPAD_DOWN   代表当前执行了一个点击下导航键的操作；
+
+Sending Pointer ACTION_MOVE     代表当前执行了一个滑动界面的操作。
+
+:Sending Pointer ACTION_DOWN x=47.0 y=438.0
+
+:Sending Pointer ACTION_UP x=47.0 y=438.0
+
+Sleeping for 500 milliseconds
+
+:SendKey (ACTION_DOWN): 20   //KEYCODE_DPAD_DOWN
+
+:SendKey (ACTION_UP): 20   //KEYCODE_DPAD_DOWN
+
+Sleeping for 500 milliseconds
+
+:Sending Pointer ACTION_MOVE x=-2.0 y=3.0
+
+:Sending Pointer ACTION_MOVE x=4.0 y=-3.0
+
+:Sending Pointer ACTION_MOVE x=-5.0 y=-3.0
+
+:Sending Pointer ACTION_MOVE x=3.0 y=4.0
+
+:Sending Pointer ACTION_MOVE x=-4.0 y=1.0
+
+:Sending Pointer ACTION_MOVE x=-1.0 y=-1.0
+
+:Sending Pointer ACTION_MOVE x=-2.0 y=-4.0
+</pre>
+<p>如果 Monkey 测试顺利执行完成，在 log 的最后，会打印出当前执行事件的次数和所花费的时间 <code>// Monkey finished</code> 代表执行完成。Monkey 执行中断，在 log 的最后也能查看到当前已执行的次数。Monkey 执行完成的 log 具体如下：</p>
+<pre class="highlight plaintext">Events injected: 6000
+
+:Dropped: keys=0 pointers=9 trackballs=0 flips=0
+
+## Network stats: elapsed time=808384ms (0ms mobile, 808384ms wifi, 0ms not connected)
+
+// Monkey finished
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【转载】Android Monkey 测试结果分析 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="598#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="598#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="598#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="598#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="598#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @roytest001: 在一个地方呆的太久了，希望能换个新环境，找一个自动化测试的工作
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+    <li><a href="1697" title="chrome mobile emulation 及周边漫谈和相关应用+想法">chrome mobile emulation 及周边...</a></li>
+    <li><a href="1696" title="谁有轻量级的 Android 模拟器推荐？ 电脑内存 1G 上可流畅运行的">谁有轻量级的 Android 模拟器推荐？ 电脑内存 ...</a></li>
+    <li><a href="1660" title="SDK 测试小结">SDK 测试小结</a></li>
+    <li><a href="1587" title="移动应用自动化测试的困惑">移动应用自动化测试的困惑</a></li>
+    <li><a href="1567" title="DDMS 中生成 Trace 的方法原理是什么">DDMS 中生成 Trace 的方法原理是什么</a></li>
+    <li><a href="1563" title="uiautomatorviewer 不能显示模拟器界面，黑屏，但是信息能出来？谁知道怎么回事？">uiautomatorviewer 不能显示模拟器界面...</a></li>
+    <li><a href="1557" title="通过 xcode 查看 app crash 日志这个方法在 ios8 下面都查看不到了">通过 xcode 查看 app crash 日志这个方...</a></li>
+    <li><a href="1553" title="如何做好移动互联网应用测试 ">如何做好移动互联网应用测试 </a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="598#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

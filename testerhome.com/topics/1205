@@ -1,0 +1,423 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android Gradle Espresso tests &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android Gradle Espresso tests</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-08-01T01:28:45+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-08-01T10:35:16+08:00"></abbr>回复
+     · 
+    619次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>先让我吐槽一下！！我只想对Gradle说两个字“卧槽！！！”。</p>
+
+<p>好了，淡定一点。故事是这样的，我犯贱了，用eclipse玩gradle，不知道是不是和这个有关系。<br>
+我们来看下gradle Espresso的工程结构：<br>
+<img src="../photo/2014/5bd0588f264c6044ae457c698c162514.png" alt=""></p>
+
+<p>首先我们先建立了gradle的工程，在根目录的<code>gradle.build</code>中我们添加如下脚本：</p>
+<pre class="highlight ruby"><span class="sr">//</span> <span class="no">Top</span><span class="o">-</span><span class="n">level</span> <span class="n">build</span> <span class="n">file</span> <span class="n">where</span> <span class="n">you</span> <span class="n">can</span> <span class="n">add</span> <span class="n">configuration</span> <span class="n">options</span> <span class="n">common</span> <span class="n">to</span> <span class="n">all</span> <span class="nb">sub</span><span class="o">-</span><span class="n">projects</span><span class="o">/</span><span class="n">modules</span><span class="o">.</span>
+
+<span class="n">buildscript</span> <span class="p">{</span>
+    <span class="n">repositories</span> <span class="p">{</span>
+        <span class="n">jcenter</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">dependencies</span> <span class="p">{</span>
+        <span class="n">classpath</span> <span class="s1">'com.android.tools.build:gradle:0.12.+'</span>
+        <span class="sr">//</span> <span class="no">NOTE</span><span class="p">:</span> <span class="no">Do</span> <span class="n">not</span> <span class="n">place</span> <span class="n">your</span> <span class="n">application</span> <span class="n">dependencies</span> <span class="n">here</span><span class="p">;</span> <span class="n">they</span> <span class="n">belong</span>
+        <span class="sr">//</span> <span class="k">in</span> <span class="n">the</span> <span class="n">individual</span> <span class="k">module</span> <span class="nn">build</span><span class="p">.</span><span class="nf">gradle</span> <span class="n">files</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="n">allprojects</span> <span class="p">{</span>
+    <span class="n">repositories</span> <span class="p">{</span>
+        <span class="n">jcenter</span><span class="p">()</span>
+        <span class="n">maven</span> <span class="p">{</span>
+            <span class="n">url</span> <span class="s2">"http://ci.novoda.com/maven/releases"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+
+<p>然后我们需要注意的就是添加testrunner，在app的gradle.build中我们添加如下脚本：</p>
+<pre class="highlight ruby"><span class="n">apply</span> <span class="ss">plugin: </span><span class="s1">'com.android.application'</span>
+
+<span class="n">android</span> <span class="p">{</span>
+    <span class="n">compileSdkVersion</span> <span class="mi">20</span>
+    <span class="n">buildToolsVersion</span> <span class="s2">"20.0.0"</span>
+
+    <span class="n">defaultConfig</span> <span class="p">{</span>
+        <span class="n">applicationId</span> <span class="s2">"com.blundell.tests"</span>
+        <span class="n">minSdkVersion</span> <span class="mi">15</span>
+        <span class="n">targetSdkVersion</span> <span class="mi">20</span>
+        <span class="n">versionCode</span> <span class="mi">1</span>
+        <span class="n">versionName</span> <span class="s2">"1.0"</span>
+        <span class="n">testInstrumentationRunner</span> <span class="s2">"com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">dependencies</span> <span class="p">{</span>
+    <span class="n">androidTestCompile</span> <span class="s2">"com.google.android:android-espresso-bundled:1.1.0-SNAPSHOT"</span>
+<span class="p">}</span>
+</pre>
+
+<p>然后开始抓狂了。我尝试着进行eclipse的导入，首先是这个界面：<br>
+<img src="../photo/2014/21aca7ed8185b6e0350c3ecf049d9802.png" alt=""></p>
+
+<p>然后我选择了这个工程之后，出现了警告：<br>
+<img src="../photo/2014/3f6685dba1213ef8ce48bf720be1c626.png" alt=""></p>
+
+<p>然后我就2了，竟然咩有发现build model，当发现的时候，自然而然的点击build model，出现了<br>
+<img src="../photo/2014/4dbc6a88f4f924b4898c65085a0c0e12.png" alt=""></p>
+
+<p>然后我开心的以为应该好了，这个时候发现竟然出来了Android HOME没有成功配置的错误，我就莫名了，最终发现原来是根目录下缺少了<code>local.properties</code>文件，当机立断，我新建了一个，增加了<code>sdk.dir</code>，然后还是无用。我继续苦逼搜索，竟然被我发现了这个神器：<br>
+<a href="https://github.com/JakeWharton/sdk-manager-plugin" rel="nofollow" target="_blank">https://github.com/JakeWharton/sdk-manager-plugin</a><br>
+<img src="../photo/2014/08c06aee5390a4488ff978f8889fff02.png" alt=""></p>
+
+<p>接着我开始跪舔，在gradle.build中增加了如下脚本：</p>
+<pre class="highlight ruby">
+ <span class="n">dependencies</span> <span class="p">{</span>
+    <span class="n">classpath</span> <span class="s1">'com.android.tools.build:gradle:0.12.+'</span>
+    <span class="n">classpath</span> <span class="s1">'com.jakewharton.sdkmanager:gradle-plugin:0.12.+'</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">apply</span> <span class="ss">plugin: </span><span class="s1">'android-sdk-manager'</span>
+<span class="n">apply</span> <span class="ss">plugin: </span><span class="s1">'android'</span>
+</pre>
+
+<p>我跪舔了之后竟然就好了，build model我以为能够顺利通过，没有想到继续报错。出现了<br>
+<code>gradle Cannot invoke method startsWith() on null object</code>这个错误，好了，这下我完全没有方向了，继续google，经过google之后我总结出来一个结论，这个sdkmanager有bug。。就是这个nullpointerexception。然后我就再次删除了这个依赖，重新进行build model，老天竟然让我过了。。。。</p>
+
+<p>接着本地根目录执行<code>gradle task</code>，我们能够看到如下提示：<br>
+<img src="../photo/2014/0c977448778edd84083612f3c7446861.png" alt=""></p>
+
+<p>我们继续使用<code>gradle connectedAndroidTest</code>这个命令，看到了test都执行成功了。<br>
+<img src="../photo/2014/40f1947292b79ba7c1fbfa998b305363.png" alt=""></p>
+
+<p>嗯，所以其实我还是完全不知道什么情况，但是一路太坎坷了。。我给大家跪了。。。</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android Gradle Espresso tests via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1205#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1205#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1205#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1205#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1205#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1205#reply1">1楼</a> · <abbr class="timeago" title="2014-08-01T01:37:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7134" data-state="" data-type="Reply" href="1205#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1205/replies/7134/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="shixue33" href="1205#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>精神支持一下。。。都这么晚了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1205#reply2">2楼</a> · <abbr class="timeago" title="2014-08-01T07:06:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7135" data-state="" data-type="Reply" href="1205#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1205/replies/7135/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="1205#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1205#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 咩咩～～感谢妹子～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../55hhy"><img alt="268" class="uface" src="../user/large_avatar/268.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="郝辉燕" href="../55hhy">55hhy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1205#reply3">3楼</a> · <abbr class="timeago" title="2014-08-01T10:31:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7139" data-state="" data-type="Reply" href="1205#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="268" href="http://testerhome.com/topics/1205/replies/7139/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="55hhy" href="1205#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>额！ eclipse ＋ gradle！！ 我想说gradle在android studio上更好用，关于文中的那些代码加入是可以直接生成的。目前看来gradle用命令行执行要比直接在IDE上执行稳定，这个是实践总结。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1205#reply4">4楼</a> · <abbr class="timeago" title="2014-08-01T10:35:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7141" data-state="" data-type="Reply" href="1205#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1205/replies/7141/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="1205#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1205#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../55hhy" class="at_user" title="@55hhy"><i>@</i>55hhy</a> 同学。。。这个是坑，才是文章的主旨。。否则都是命令，谁来走坑。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @roytest001: 在一个地方呆的太久了，希望能换个新环境，找一个自动化测试的工作
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+    <li><a href="1697" title="chrome mobile emulation 及周边漫谈和相关应用+想法">chrome mobile emulation 及周边...</a></li>
+    <li><a href="1696" title="谁有轻量级的 Android 模拟器推荐？ 电脑内存 1G 上可流畅运行的">谁有轻量级的 Android 模拟器推荐？ 电脑内存 ...</a></li>
+    <li><a href="1660" title="SDK 测试小结">SDK 测试小结</a></li>
+    <li><a href="1587" title="移动应用自动化测试的困惑">移动应用自动化测试的困惑</a></li>
+    <li><a href="1567" title="DDMS 中生成 Trace 的方法原理是什么">DDMS 中生成 Trace 的方法原理是什么</a></li>
+    <li><a href="1563" title="uiautomatorviewer 不能显示模拟器界面，黑屏，但是信息能出来？谁知道怎么回事？">uiautomatorviewer 不能显示模拟器界面...</a></li>
+    <li><a href="1557" title="通过 xcode 查看 app crash 日志这个方法在 ios8 下面都查看不到了">通过 xcode 查看 app crash 日志这个方...</a></li>
+    <li><a href="1553" title="如何做好移动互联网应用测试 ">如何做好移动互联网应用测试 </a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1205#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

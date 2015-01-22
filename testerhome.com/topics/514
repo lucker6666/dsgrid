@@ -1,0 +1,376 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium 上 iOS 拖拽实现 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium 上 iOS 拖拽实现</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="Anson" href="../532589730">532589730</a>
+     · 
+    于<abbr class="timeago" title="2014-02-24T18:12:16+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="532589730" href="../532589730">532589730</a> 于<abbr class="timeago" title="2014-02-27T09:51:48+08:00"></abbr>回复
+     · 
+    641次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>上星期做测试，需要把页面中的某个位置上的东东拖到另个位置上(同一页面)。</p>
+
+<p>查看了下 python 的例子，发现有个 slider 的例子，使用的是 <code>action</code>，<code>touchaction</code>，<code>flick</code> 等方法，但我机器上却报错，无法运行。</p>
+
+<p>大概 google 了下 <code>touchaction</code> 的用法，找了1个多小时不得其所，算了，自己用最笨的方法解决算了，用 swipe 方法搞定了。</p>
+
+<p>我的需求很算单，如图。</p>
+
+<p><img src="../photo/2014/1cab9a5543ea21bafb281a8b5c13a017.png" alt=""></p>
+
+<p>把红色框住的 "banana"(dragable object = do) 拖放到红色框住的蓝色框 (droppable slot = ds)。</p>
+
+<p>由于 do 是一个区域，ds 也是一个区域，反复试了下，最可靠的做法就是: 点击并按住 do 的中间部位，拖动 do 到 ds 的中间部位。</p>
+
+<p>这其中就涉及到计算 do 和 ds 的中间部位的座标了，找到了，就拖动了:</p>
+
+<p>我使用下面的方法计算 do, ds 的中间部位的座标，python, 在 unit test 中。<br>
+其中怎么找 do，和 ds就不说了。</p>
+<pre class="highlight python">    <span class="c">#drap and drop one element by 1 touch and by WebElement</span>
+    <span class="k">def</span> <span class="nf">_dd_by_elem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startElem</span><span class="p">,</span> <span class="n">endElem</span><span class="p">):</span>
+        <span class="n">sX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">startElem</span><span class="o">.</span><span class="n">location</span><span class="p">[</span><span class="s">'x'</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">startElem</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="s">'width'</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">sY</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">startElem</span><span class="o">.</span><span class="n">location</span><span class="p">[</span><span class="s">'y'</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">startElem</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="s">'height'</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">eX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">endElem</span><span class="o">.</span><span class="n">location</span><span class="p">[</span><span class="s">'x'</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">endElem</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="s">'width'</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">eY</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">endElem</span><span class="o">.</span><span class="n">location</span><span class="p">[</span><span class="s">'y'</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">endElem</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="s">'height'</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s">"touchCount"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"startX"</span><span class="p">:</span> <span class="n">sX</span><span class="p">,</span> <span class="s">"startY"</span><span class="p">:</span> <span class="n">sY</span><span class="p">,</span> <span class="s">"endX"</span><span class="p">:</span> <span class="n">eX</span><span class="p">,</span> <span class="s">"endY"</span><span class="p">:</span> <span class="n">eY</span><span class="p">,</span> <span class="s">"duration"</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s">"mobile: swipe"</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">pass</span>
+</pre>
+<p>此中有3个关键点:</p>
+
+<ul>
+<li>do 的点击点。如果点击并拖动在边缘上，是拖不动的，这个要看要求了，并非都是如此。</li>
+<li>放落的区间也是有要求，放在边缘上是放不进去的，这个要看要求了，并非都是如此。</li>
+<li>swipe的持续时间。duration不能太短，尝试过0.7的值，发现拖不动，设置成1秒后有机会拖不动，所以设成了1.2秒，如果最后再加个检查就更好了。</li>
+</ul><p>这方法挺费时间的，每个拖动至少需要1秒钟，如果师兄有更好的方法，不妨提供出来。</p>
+
+<p>这里问一个 <code>longClick</code> 怎么用呢? </p>
+
+<p>有会的师兄请给出个代码。<br>
+谢谢。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium 上 iOS 拖拽实现 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="514#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="514#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="514#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="514#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="514#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="514#reply1">1楼</a> · <abbr class="timeago" title="2014-02-24T21:07:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2729" data-state="" data-type="Reply" href="514#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/514/replies/2729/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="514#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>longClick 在安卓上实现了， ios 没实现吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="514#reply2">2楼</a> · <abbr class="timeago" title="2014-02-24T21:11:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2730" data-state="" data-type="Reply" href="514#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/514/replies/2730/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="514#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight plaintext">last_image = find_elements(:tag_name, :ImageView).last
+mobile(:longClick, element: last_image.ref)
+</pre>
+<p><a href="../532589730" class="at_user" title="@532589730"><i>@</i>532589730</a> 类似这样</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="514#reply3">3楼</a> · <abbr class="timeago" title="2014-02-24T22:39:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2735" data-state="" data-type="Reply" href="514#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/514/replies/2735/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="514#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好一个拖动，不错的思路~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="514#reply4">4楼</a> · <abbr class="timeago" title="2014-02-27T09:51:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2826" data-state="" data-type="Reply" href="514#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/514/replies/2826/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="532589730" href="514#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="514#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <br>
+这是ruby?<br>
+不太会看这代码，无所谓了，现在想想用可能swipe也能实现，原地swipe，把时间加长。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @meiyu 有希望，有爱的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="514#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

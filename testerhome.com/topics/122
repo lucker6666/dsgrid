@@ -1,0 +1,382 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | LR关联的问题，回放脚本可以成功，但是场景中关联部分成功部分报错 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../wxa1"><img alt="Bdc99e1aadd0d692bf65c8168e736483" class="uface" src="../avatar/bdc99e1aadd0d692bf65c8168e736483.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">LR关联的问题，回放脚本可以成功，但是场景中关联部分成功部分报错</h1>
+  <div class="info leader">
+    <a class="node" href="node3">性能测试工具</a>
+     · 
+    <a data-author="true" data-name="王旭" href="../wxa1">wxa1</a>
+     · 
+    于<abbr class="timeago" title="2012-12-27T10:21:51+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="andyguo" href="../andyguo">andyguo</a> 于<abbr class="timeago" title="2012-12-27T13:04:15+08:00"></abbr>回复
+     · 
+    350次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>情况描述如题，错误代码如下<br />
+Action.c(172): Error -26377: No match found for the requested parameter &quot;WCSParam45&quot;. Check whether the requested boundaries exist in the response data. Also, if the data you want to save exceeds 1024 bytes, use web_set_max_html_param_len to increase the parameter size<br />
+1、我使用的自动关联，单次回放可以成功，是不是可以排除关联函数的问题？；<br />
+2、其次肯定不是字节长度的问题，因为变量都是系统返回的32位MD5码，1024足够了<br />
+百度了半天原因应该是因为前置的操作没有成功导致没有取到关联的变量值，这个的概率比较大，那就接下来请大神看看我的操作问题<br />
+脚本如下（省略了extrares中的内容）</p>
+
+<p>lr_start_transaction(&quot;优化&quot;);</p>
+<pre>    /* Registering parameter(s) from source task id 65
+    // {WCSParam2} = &quot;351288cd84422bf48229ae1cc0ccb275&quot;
+    // */
+    web_reg_save_param(&quot;WCSParam2&quot;,
+            &quot;LB/DIG=3&amp;md5=&quot;,
+            &quot;RB/DIG=&amp;show=&quot;,
+            &quot;Ord=1&quot;,
+            &quot;Search=Body&quot;,
+            &quot;RelFrameId=1&quot;,
+            LAST);
+
+    web_url(&quot;优化词条&quot;,
+            &quot;URL=http://d3m2.zhongsou.com/Keyword/ylogs?kid={ID}&amp;action=seo&quot;,
+            &quot;TargetFrame=&quot;,
+            &quot;Resource=0&quot;,
+            &quot;RecContentType=text/html&quot;,
+            &quot;Referer=http://d3m2.zhongsou.com/Keyword/seo&quot;,
+            &quot;Snapshot=t4.inf&quot;,
+            &quot;Mode=HTML&quot;,
+            EXTRARES,                
+            LAST);
+
+    web_custom_request(&quot;autodata&quot;,
+            &quot;URL=http://d3m2.zhongsou.com/Searchsource/autodata&quot;,
+            &quot;Method=POST&quot;,
+            &quot;TargetFrame=&quot;,
+            &quot;Resource=0&quot;,
+            &quot;RecContentType=text/html&quot;,
+            &quot;Referer=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;faction=seo&quot;,
+            &quot;Snapshot=t5.inf&quot;,
+            &quot;Mode=HTML&quot;,
+            &quot;EncType=application/x-www-form-urlencoded; charset=UTF-8&quot;,
+            &quot;BodyBinary=kid={ID}&amp;keyword={word}&amp;columns=鏂伴椈鍔ㄦ&quot;
+            &quot;\\x80\\x81&quot;
+            &quot;&amp;typeid=3&amp;md5={WCSParam2}&quot;,
+            EXTRARES,                
+            LAST);
+
+    /* Registering parameter(s) from source task id 135
+    // {WCSParam45} = &quot;50dae4a7f66f8deb140004cc&quot;
+    // */
+    web_reg_save_param(&quot;WCSParam45&quot;,
+            &quot;LB/DIG=type=\&quot;checkbox\&quot;  value=\&quot;&quot;,
+            &quot;RB/DIG=\&quot; /&gt;&lt;/td&gt;&quot;,
+            &quot;Ord=1&quot;,
+            &quot;Search=Body&quot;,
+            &quot;RelFrameId=1&quot;,
+            LAST);
+
+    /* Registering parameter(s) from source task id 135
+    // {WCSParam47} = &quot;50dae4a7f66f8deb140004cb&quot;
+    // */
+    web_reg_save_param(&quot;WCSParam47&quot;,
+            &quot;LB/DIG=type=\&quot;checkbox\&quot;  value=\&quot;&quot;,
+            &quot;RB/DIG=\&quot; /&gt;&lt;/td&gt;&quot;,
+            &quot;Ord=2&quot;,
+            &quot;Search=Body&quot;,
+            &quot;RelFrameId=1&quot;,
+            LAST);
+
+    web_url(&quot;index&quot;,
+            &quot;URL=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;faction=seo&amp;keyword={word}&amp;columns=%E6%96%B0%E9%97%BB%E5%8A%A8%E6%80%81&quot;,
+            &quot;TargetFrame=&quot;,
+            &quot;Resource=0&quot;,
+            &quot;RecContentType=text/html&quot;,
+            &quot;Referer=&quot;,
+            &quot;Snapshot=t6.inf&quot;,
+            &quot;Mode=HTML&quot;,
+            EXTRARES,                
+            LAST);
+
+    web_custom_request(&quot;temporary&quot;,
+            &quot;URL=http://d3m2.zhongsou.com/Searchsource/temporary&quot;,
+            &quot;Method=POST&quot;,
+            &quot;TargetFrame=&quot;,
+            &quot;Resource=0&quot;,
+            &quot;RecContentType=text/html&quot;,
+            &quot;Referer=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;faction=seo&amp;keyword={word}&amp;columns=%E6%96%B0%E9%97%BB%E5%8A%A8%E6%80%81&quot;,
+            &quot;Snapshot=t7.inf&quot;,
+            &quot;Mode=HTML&quot;,
+            &quot;EncType=application/x-www-form-urlencoded; charset=UTF-8&quot;,
+            &quot;BodyBinary=typeid=3&amp;id={WCSParam45},{WCSParam47}&amp;kid={ID}&amp;md5={WCSParam2}&amp;temporary_keyword={word}&amp;temporary_columns=鏂伴椈鍔ㄦ&quot;
+            &quot;\\x80\\x81&quot;
+            &quot;&quot;,
+            EXTRARES,                
+            LAST);
+
+    web_url(&quot;index_2&quot;,
+            &quot;URL=http://d3m2.zhongsou.com/Searchsource/index?kid={ID}&amp;faction=seo&amp;keyword={word}&amp;columns=%E6%96%B0%E9%97%BB%E5%8A%A8%E6%80%81&quot;,
+            &quot;TargetFrame=&quot;,
+            &quot;Resource=0&quot;,
+            &quot;RecContentType=text/html&quot;,
+            &quot;Referer=&quot;,
+            &quot;Snapshot=t8.inf&quot;,
+            &quot;Mode=HTML&quot;,
+            EXTRARES,                
+            LAST);
+    lr_end_transaction(&quot;优化&quot;, LR_AUTO);
+</pre>
+
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='LR关联的问题，回放脚本可以成功，但是场景中关联部分成功部分报错 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="122#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="122#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="122#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="122#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="122#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>2</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../wxa1"><img alt="Bdc99e1aadd0d692bf65c8168e736483" class="uface" src="../avatar/bdc99e1aadd0d692bf65c8168e736483.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王旭" href="../wxa1">wxa1</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="122#reply1">1楼</a> · <abbr class="timeago" title="2012-12-27T10:22:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="176" data-state="" data-type="Reply" href="122#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="74" href="http://testerhome.com/topics/122/replies/176/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="wxa1" href="122#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在autodata刷新数据之后刷新出的数据每条都有一个对应的MD5，但是数据所处的位置在页面框内并不固定，是不是那个”ord=“的问题，如果是的话应该怎么修改？改成ord=all ？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../andyguo"><img alt="4a5d9984b41706825eca94ed02142daa" class="uface" src="../avatar/4a5d9984b41706825eca94ed02142daa.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="郭振华" href="../andyguo">andyguo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="122#reply2">2楼</a> · <abbr class="timeago" title="2012-12-27T13:04:15+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="177" data-state="" data-type="Reply" href="122#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="83" href="http://testerhome.com/topics/122/replies/177/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="andyguo" href="122#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>1、首先确定你关联的值左右边界是固定的吗？如果不是看看是否可以使用正则来实现<br />
+2、ord这个参数的作用是：如果你关联的值，在一个页面中有多处存在，ord可以决定你来取第几个，默认ord为1，就是只取第一个，如果你想取第二个，可以设置ord=2，如果你都想取出来就可以设置ord=all 这样就把所有相匹配的值都取出来，作为一个数组来赋给你定义的变量</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscar: 每个人都有每个人的追求和生活方式；我们可以什么都没有，没房、没车、没脑瓜，但是我们得有做人的尊严。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="122" title="LR关联的问题，回放脚本可以成功，但是场景中关联部分成功部分报错">LR关联的问题，回放脚本可以成功，但是场景中关联部分成...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="122#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

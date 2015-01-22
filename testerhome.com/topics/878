@@ -1,0 +1,889 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 锤子便签的 monkeyrunner 测试脚本 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">锤子便签的 monkeyrunner 测试脚本</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="plus" href="../zouaiyong">zouaiyong</a>
+     · 
+    于<abbr class="timeago" title="2014-05-17T22:38:29+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="davidyang" href="../davidyang">davidyang</a> 于<abbr class="timeago" title="2014-11-19T10:48:11+08:00"></abbr>回复
+     · 
+    1786次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>　MonkeyRunner可能大家已经听过无数次了，大家在网上也看过了各种关于的它的资料了，我这里就不再过多的啰嗦它的用途了，它可以对app做功能测试也可以对手机Rom做功能测试，在没有app源码的情况下monkeyrunner可以做到很好的功能测试。MonkeyRunner有一个录制脚本的工具和回放的功能，大家去下载monkeyrecody.py和monkeyplayback.py这两个脚本就可以了，这个我这里也不讲了，网上去google可以搜到很好的教程，<br>
+　　下面是我对锤子便签的一个MonkeyRunner测试脚本。这里会用到点击，拖动，截图，截图对比的一些方法，基本上我们写monkeyrunner测试脚本中常调用到的方法都用到了，这里对锤子便签测试思路是这样的：先按照正常的操作使用步骤，一步步的操作下去，每操作一步都截图，操作完成之后，再来对截图进行对比并打印出对比结果在log文本里。这里用到的是坐标点的定位方法。<br>
+　　</p>
+<pre class="highlight python">
+<span class="c">#!/usr/bin/env monkeyrunner</span>
+<span class="c"># encoding=utf-8  </span>
+
+
+<span class="c">#导入python中自带的time模块和sys模块，脚本中都要用到它们。</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c">#MonkeyRunner自带的三个api</span>
+<span class="kn">from</span> <span class="nn">com.android.monkeyrunner</span> <span class="kn">import</span> <span class="n">MonkeyRunner</span> <span class="p">,</span><span class="n">MonkeyDevice</span> <span class="p">,</span><span class="n">MonkeyImage</span>
+
+
+<span class="c">#这个函数时确认年月日时分秒</span>
+<span class="n">now</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="nb">str</span><span class="n">ftime</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">Y-</span><span class="si">%</span><span class="s">m-</span><span class="si">%</span><span class="s">d-</span><span class="si">%</span><span class="s">H-</span><span class="si">%</span><span class="s">M-</span><span class="si">%</span><span class="s">S"</span><span class="p">)</span>
+<span class="c">#指定我们要保存图片的位置和打印log的位置</span>
+<span class="n">path</span><span class="o">=</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture</span><span class="se">\\</span><span class="s">'</span>
+<span class="n">logpath</span><span class="o">=</span><span class="s">"D:</span><span class="se">\\</span><span class="s">log</span><span class="se">\\</span><span class="s">"</span>
+
+<span class="c">#python中获取当前运行的文件的名字</span>
+<span class="n">name</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">"</span><span class="se">\\</span><span class="s">"</span><span class="p">)</span>
+<span class="nb">file</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="s">"""
+可以尝试输入这两句语句就可以明白上面的两个python方法了。
+print(name)
+print(filename)
+"""</span>
+
+<span class="c">#新建一个log文件</span>
+<span class="n">log</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">logpath</span><span class="o">+</span><span class="nb">file</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">"-log"</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">".txt"</span><span class="p">,</span><span class="s">'w'</span><span class="p">)</span>
+<span class="c">#连接设备，两个参数分别是等待的时间(这里的时间都是秒为单位)，设备的序列号。</span>
+<span class="n">device</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">waitForConnection</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s">'b4726a2d'</span><span class="p">)</span>
+
+<span class="c">#安装锤子便签apk。参数是apk文件的位置，因为python不支持中文输入，所以在后面用了.decode('utf-8')这个方法转码。</span>
+<span class="n">device</span><span class="o">.</span><span class="n">installPackage</span> <span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">apk</span><span class="se">\\</span><span class="s">锤子便签.apk'</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="c">#打印出操作信息到log文件里</span>
+<span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"安装apk……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="c">#等待2秒</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c">#启动app，参数里是app的包名/活动名</span>
+<span class="n">device</span><span class="o">.</span><span class="n">startActivity</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">'com.smartisan.notes/.NotesActivity'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c">#打印操作信息</span>
+<span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"启动app……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="c">#截图</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存截图 </span>
+<span class="n">result</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"主页面"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">'.png'</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+<span class="c">#点击搜索款的位置坐标。</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span><span class="mi">155</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c">#输入smartisan字样</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">"smartisan"</span><span class="p">)</span>
+<span class="c">#截图</span>
+<span class="n">result1</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存截图</span>
+<span class="n">result1</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"搜索框截图"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span><span class="o">+</span><span class="s">'.png'</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+
+<span class="c">#移动第一个便签的位置到最后面去，参数是：一个起始点坐标，一个终点坐标，移动的时间，移动的步骤</span>
+<span class="n">device</span><span class="o">.</span><span class="n">drag</span><span class="p">((</span><span class="mi">232</span><span class="p">,</span><span class="mi">235</span><span class="p">),(</span><span class="mi">216</span><span class="p">,</span><span class="mi">472</span><span class="p">),</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c">#截图</span>
+<span class="n">result2</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存截图</span>
+<span class="n">result2</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"移动便签"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">".png"</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+
+<span class="c">#第一个便签向右滑动</span>
+<span class="n">device</span><span class="o">.</span><span class="n">drag</span><span class="p">((</span><span class="mi">109</span><span class="p">,</span><span class="mi">360</span><span class="p">),(</span><span class="mi">322</span><span class="p">,</span><span class="mi">360</span><span class="p">))</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c">#截图</span>
+<span class="n">result3</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存截图</span>
+<span class="n">result3</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"右移动便签"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">".png"</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+<span class="c">#点击最后一个便签的位置</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">182</span><span class="p">,</span><span class="mi">583</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="c">#点击发送的位置</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">324</span><span class="p">,</span><span class="mi">73</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="c">#点击发送至长微博的位置</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">227</span><span class="p">,</span><span class="mi">789</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="c">#点击生成长微博的位置</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">228</span><span class="p">,</span><span class="mi">791</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c">#截图</span>
+<span class="n">result4</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存图片</span>
+<span class="n">result4</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"发长微博截图"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">'.png'</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+<span class="c">#点击下一步的位置</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">426</span><span class="p">,</span><span class="mi">81</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c">#截图</span>
+<span class="n">result5</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存截图</span>
+<span class="n">result5</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"输入微博账号"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">'.png'</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+<span class="c">#点击输入微博账号和密码的几个位置，分别输入账号和密码</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">196</span><span class="p">,</span><span class="mi">311</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">"powermo@126.com"</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">168</span><span class="p">,</span><span class="mi">378</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">device</span><span class="o">.</span><span class="nb">type</span><span class="p">(</span><span class="s">"powermo1234"</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c">#点击登录</span>
+<span class="n">device</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="mi">237</span><span class="p">,</span><span class="mi">449</span><span class="p">,</span><span class="s">'DOWN_AND_UP'</span><span class="p">)</span>
+<span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c">#截图</span>
+<span class="n">result6</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">takeSnapshot</span><span class="p">()</span>
+<span class="c">#保存截图</span>
+<span class="n">result6</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s">"登陆微博"</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s">'.png'</span><span class="p">,</span><span class="s">'png'</span><span class="p">)</span>
+
+
+<span class="c">#下面就开始对之前的截图进行对比了</span>
+<span class="c">#第一张截图做对比，去文件中找到我们要对比的图片</span>
+<span class="n">resultTrue</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue.png'</span><span class="p">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"主页面对比图片……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="c">#判断图片相识度是否是为90%</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">resultTrue</span><span class="p">,</span><span class="mf">0.9</span><span class="p">)):</span>
+    <span class="c">#在命令行打印出信息</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"主页面图片对比成功"</span><span class="p">)</span>
+    <span class="c">#打印信息到log文件</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"主页面图片对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c">#打印信息到命令行</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"主页面图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"主页面图片对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+
+<span class="c">#去文件中找到我们规定的图片用来对比</span>
+<span class="n">result1True</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue1.png'</span><span class="p">)</span>
+<span class="c">#判断图片相识度是否是为90%</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result1</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">result1True</span><span class="p">,</span><span class="mf">0.9</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"搜索框图片对比成功"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"搜索框图片对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"搜索框图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"搜索框图片对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+
+
+<span class="c">#对移动便签图片对比</span>
+<span class="n">result2True</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue2.png'</span><span class="p">)</span>
+<span class="c">##判断图片相识度是否是为80%</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result2</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">result2True</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"移动便签对比成功"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"移动便签对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"移动便签图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"移动便签对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+
+
+
+<span class="c">#对移动便签图片进行对比，去文件中找我们规定的图片</span>
+<span class="n">result3True</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue3.png'</span><span class="p">)</span>
+<span class="c">##判断图片相识度是否是为80%</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result3</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">result3True</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"右移便签图片对比成功"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"右移便签图片对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"右移便签图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"右移便签图片对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c">#对长微博图片对比</span>
+<span class="n">result4True</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue4.png'</span><span class="p">)</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result4</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">result4True</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"发长微博图片对比成功"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"发长微博图片对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"发长微博图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"发长微博图片对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+
+<span class="n">result5True</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue5.png'</span><span class="p">)</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result5</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">result5True</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"输入微博账号图片对比成功"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"输入微博账号图片对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"输入微博账号图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"输入微博账号图片对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+
+<span class="n">result6True</span><span class="o">=</span><span class="n">MonkeyRunner</span><span class="o">.</span><span class="n">loadImageFromFile</span><span class="p">(</span><span class="s">'D:</span><span class="se">\\</span><span class="s">picture2</span><span class="se">\\</span><span class="s">shottrue6.png'</span><span class="p">)</span>
+<span class="k">if</span><span class="p">(</span><span class="n">result6</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">result6True</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"登陆微博图片对比成功"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"登陆微博图片对比成功……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"登陆微博图片对比失败"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"登陆微博图片对比失败……</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+
+
+
+
+
+
+
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='锤子便签的 monkeyrunner 测试脚本 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="878#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="878#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="878#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="878#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="878#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>18</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply1">1楼</a> · <abbr class="timeago" title="2014-05-17T22:45:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4926" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/878/replies/4926/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我们部门就是全部用 monkeyrunner 进行自动化的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lbxoqy"><img alt="C388622869416c7c31fe347c62f48d95" class="uface" src="../avatar/c388622869416c7c31fe347c62f48d95.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="哄哄" href="../lbxoqy">lbxoqy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply2">2楼</a> · <abbr class="timeago" title="2014-05-17T22:49:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4927" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="827" href="http://testerhome.com/topics/878/replies/4927/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lbxoqy" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不错不错</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="plus" href="../zouaiyong">zouaiyong</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply3">3楼</a> · <abbr class="timeago" title="2014-05-17T22:49:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4928" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="507" href="http://testerhome.com/topics/878/replies/4928/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="zouaiyong" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 你们牛逼，互相学习。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply4">4楼</a> · <abbr class="timeago" title="2014-05-17T22:50:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4930" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/878/replies/4930/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../zouaiyong" class="at_user" title="@zouaiyong"><i>@</i>zouaiyong</a> 不牛，主要是做自动化的同学厉害。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../mongnet"><img alt="727" class="uface" src="../user/large_avatar/727.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../mongnet">mongnet</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply5">5楼</a> · <abbr class="timeago" title="2014-05-17T22:53:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4931" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="727" href="http://testerhome.com/topics/878/replies/4931/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="mongnet" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>支持，后面试试看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../xiscoxu"><img alt="356" class="uface" src="../user/large_avatar/356.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../xiscoxu">xiscoxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply6">6楼</a> · <abbr class="timeago" title="2014-05-17T22:54:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4932" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="356" href="http://testerhome.com/topics/878/replies/4932/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="xiscoxu" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很详细</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply7">7楼</a> · <abbr class="timeago" title="2014-05-17T23:24:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4933" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/878/replies/4933/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>为什么不用Uiautomator啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="plus" href="../zouaiyong">zouaiyong</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply8">8楼</a> · <abbr class="timeago" title="2014-05-17T23:29:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4934" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="507" href="http://testerhome.com/topics/878/replies/4934/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="zouaiyong" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 下次发uiautomator的文档。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply9">9楼</a> · <abbr class="timeago" title="2014-05-17T23:30:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4935" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/878/replies/4935/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="seveniruby" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../zouaiyong" class="at_user" title="@zouaiyong"><i>@</i>zouaiyong</a> </p>
+<pre class="highlight plaintext">在没有app源码的情况下monkeyrunner应该是很好的功能测试工具。
+</pre>
+<p>我主要是觉得这句不太对, 貌似是Uiautomator. 当然4.1以下只能靠monkeyrunner+viewserver了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply10">10楼</a> · <abbr class="timeago" title="2014-05-17T23:32:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4936" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/878/replies/4936/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="seveniruby" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>代码写的挺漂亮. 赞. 对于绝对坐标, 你可以考虑通过viewserver来定位. 或者使用其他的方式, 写死不利于稳定.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply11">11楼</a> · <abbr class="timeago" title="2014-05-17T23:56:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4937" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/878/replies/4937/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="anikikun" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很赞！<br>
+照着这个思路写了个验证渠道包的脚本。<br>
+感觉挺实用。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="plus" href="../zouaiyong">zouaiyong</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply12">12楼</a> · <abbr class="timeago" title="2014-05-17T23:57:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4938" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="507" href="http://testerhome.com/topics/878/replies/4938/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="zouaiyong" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 嗯，大神正解，感谢大神指点。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply13">13楼</a> · <abbr class="timeago" title="2014-05-20T16:22:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5030" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/878/replies/5030/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="oscar" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 不是用appium吗？怎么还在研究monkeyrunner</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply14">14楼</a> · <abbr class="timeago" title="2014-05-20T18:29:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5043" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/878/replies/5043/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="seveniruby" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="878#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a> 各有优点. monkeyrunner也少不了.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../75281920"><img alt="428" class="uface" src="../user/large_avatar/428.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="雾山" href="../75281920">75281920</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply15">15楼</a> · <abbr class="timeago" title="2014-05-22T11:44:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5099" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="428" href="http://testerhome.com/topics/878/replies/5099/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="75281920" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>收藏了，</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../jerome"><img alt="1146" class="uface" src="../user/large_avatar/1146.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lijingbo" href="../jerome">jerome</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply16">16楼</a> · <abbr class="timeago" title="2014-09-18T22:23:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8723" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1146" href="http://testerhome.com/topics/878/replies/8723/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="jerome" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好东西，收藏了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../blue_momo2009"><img alt="791" class="uface" src="../user/large_avatar/791.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../blue_momo2009">blue_momo2009</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply17">17楼</a> · <abbr class="timeago" title="2014-11-03T16:28:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9617" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="791" href="http://testerhome.com/topics/878/replies/9617/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="blue_momo2009" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>device.installPackage ('D:\apk\锤子便签.apk'.decode('utf-8'))<br>
+我试过输入中文时使用decode，但是还是不能通过，<br>
+141103 16:25:52.879:S [main] [com.android.monkeyrunner.MonkeyRunnerOptions]Trace<br>
+back (most recent call last):<br>
+  File "d:\testwork\test03.py", line 19, in &lt;module&gt;<br>
+    randomButton=MonkeyDevice.getViewsByText('鏈洪??'.decode('utf-8'))<br>
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)<br>
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.<br>
+java:62)<br>
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAcces<br>
+sorImpl.java:43)<br>
+        at java.lang.reflect.Method.invoke(Method.java:483)</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="878#reply18">18楼</a> · <abbr class="timeago" title="2014-11-19T10:48:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9917" data-state="" data-type="Reply" href="878#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/878/replies/9917/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="davidyang" href="878#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>截图对比不错啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @z7039585: 想换个好工作 找个妹纸~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+    <li><a href="1697" title="chrome mobile emulation 及周边漫谈和相关应用+想法">chrome mobile emulation 及周边...</a></li>
+    <li><a href="1696" title="谁有轻量级的 Android 模拟器推荐？ 电脑内存 1G 上可流畅运行的">谁有轻量级的 Android 模拟器推荐？ 电脑内存 ...</a></li>
+    <li><a href="1660" title="SDK 测试小结">SDK 测试小结</a></li>
+    <li><a href="1587" title="移动应用自动化测试的困惑">移动应用自动化测试的困惑</a></li>
+    <li><a href="1567" title="DDMS 中生成 Trace 的方法原理是什么">DDMS 中生成 Trace 的方法原理是什么</a></li>
+    <li><a href="1563" title="uiautomatorviewer 不能显示模拟器界面，黑屏，但是信息能出来？谁知道怎么回事？">uiautomatorviewer 不能显示模拟器界面...</a></li>
+    <li><a href="1557" title="通过 xcode 查看 app crash 日志这个方法在 ios8 下面都查看不到了">通过 xcode 查看 app crash 日志这个方...</a></li>
+    <li><a href="1553" title="如何做好移动互联网应用测试 ">如何做好移动互联网应用测试 </a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="878#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

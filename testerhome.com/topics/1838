@@ -1,0 +1,483 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 小而美的 ghost driver &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">小而美的 ghost driver</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="乙醇" href="../easonhan007">easonhan007</a>
+     · 
+    于<abbr class="timeago" title="2015-01-12T09:43:06+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="easonhan007" href="../easonhan007">easonhan007</a> 于<abbr class="timeago" title="2015-01-14T12:49:04+08:00"></abbr>回复
+     · 
+    300次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>做过selenium自动化项目的同学应该都遇到过这样的问题：测试用例太多，运行速度过慢导致团队成员怨声载道。</p>
+
+<p>于是便有了selenium grid和多线程运行selenium测试用例的方法。这些方法各有利弊这里就不一一列举了。但总的来说，如果浏览器运行的速度足够快，那么多线程并发时的用例执行速度应该是可以满足实际项目需求的。</p>
+
+<p>再想象一下这样的情景：如果你手头的机器是没有gui的(这是可能的，我以前的几台centos的server根本就没有ui)，如何在这样的headless的机器上运行selenium用例呢？</p>
+
+<p>答案是可以用selenium自带的<a href="https://code.google.com/p/selenium/wiki/HtmlUnitDriver" target="_blank">HtmlUnitDriver</a>。不过可惜的是HtmlUnitDriver对js的支持不是特别完美，所以该方案可行但是不完善，不是特别适合用于真实项目。</p>
+
+<p>好在现在有了<a href="http://phantomjs.org/" target="_blank">phantomjs</a>和ghostdriver，我们可以用ghostdriver来运行selenium测试用例。所有的用例都是在没有gui的浏览器里运行，运行速度可以得到极大的提升。再加上phantomjs是基于webkit的，所以ghostdriver完全可以模拟chrome和safari的行为。</p>
+
+<p>在我的macbookpro上，chromedriver的表现不是特别令人满意，而我又没有安装firefox和safari driver，所以对于一般的页面(js交互不是特别多的页面)，我都是用ghost driver在调试问题，快速而简便。最主要是没有真实的浏览器弹出来，不会像chromedriver那样经常意外退出造成内存泄漏，也不会像firefox那样运行缓慢。</p>
+
+<p>下面简单介绍一下ghost driver 与selenium合体的过程。</p>
+<h4>背景知识</h4>
+<p>下面的内容要求你已经成功的安装好python的selenim binding。如果你有pip，直接运行 <code>pip install selenium</code>即可。如果被墙，请使用豆瓣源。</p>
+
+<p>或者成功的安装好ruby的watir-webdriver。如果你有gem，直接运行 <code>gem install watir-webdriver</code>即可。如果被墙，请使用<a href="http://ruby.taobao.org" target="_blank">淘宝源</a>。</p>
+<h4>安装ghost driver</h4>
+<p>ghost driver现在已经跟phantomjs合体，所以安装好最新版本的phantomjs就等于安装好了ghostdriver。</p>
+
+<p>在<a href="http://phantomjs.org/download.html" target="_blank">这里</a>下载对应平台的phantomjs。</p>
+
+<ul>
+<li><p>首先解压下载好的zip文件或tar文件(linux only);</p></li>
+<li><p>windows用户将解压过后的得到的phantomjs.exe文件加入系统的PATH中。简单点说如果你使用pyhon，就把phantomjs.exe放到python的安装目录下，ruby用户放到ruby/bin目录下；</p></li>
+<li><p>mac和linux用户可以把解压后得到的phantomjs建个软链到/usr/local/bin目录下。<code>ln -s /where/is/phantomjs /usr/local/bin/phantomjs</code>；</p></li>
+</ul>
+<h4>快速开始</h4>
+<p>python用户新建itest.py文件然后敲入下面的内容</p>
+<pre class="highlight python"><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+
+<span class="n">dr</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">PhantomJS</span><span class="p">(</span><span class="s">'phantomjs'</span><span class="p">)</span>
+<span class="n">dr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'http://baidu.info'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">dr</span><span class="o">.</span><span class="n">title</span>
+<span class="k">print</span> <span class="n">dr</span><span class="o">.</span><span class="n">current_url</span>
+<span class="n">dr</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre>
+
+<p>watir-webdriver用户新建文件itest.rb然后敲入下面的内容</p>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'watir-webdriver'</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="no">Watir</span><span class="o">::</span><span class="no">Browser</span><span class="p">.</span><span class="nf">new</span> <span class="ss">:phantomjs</span>
+<span class="n">b</span><span class="p">.</span><span class="nf">goto</span> <span class="s1">'www.baidu.com'</span>
+
+<span class="nb">puts</span> <span class="n">b</span><span class="p">.</span><span class="nf">title</span>
+<span class="nb">puts</span> <span class="n">b</span><span class="p">.</span><span class="nf">url</span>
+
+<span class="n">b</span><span class="p">.</span><span class="nf">close</span>
+</pre>
+<h4>讨论</h4>
+<ul>
+<li><p>ghostdriver尽管对js的支持是不错的，但是如果你的页面上js交互过多的话，ghostdriver是会缴械投降的；</p></li>
+<li><p>用ghostdriver+selenium的语法可以做一些不错的爬虫；</p></li>
+<li><p>用java用户请使用maven下载java的ghostdriver binding；</p></li>
+<li><p>当页面上有flash播放器时，phantom可能会萌萌哒的卡在那里一动不动；</p></li>
+<li><p>ghostdriver基于<a href="http://phantomjs.org/" target="_blank">phantomjs</a>，phantomjs可以做爬虫，简单的性能测试，ui自动化测试和其他一些工作； </p></li>
+<li><p>由于没有ui，当测试发生错误的时候调试的工作量就会变大；</p></li>
+</ul>
+<h4>看不到运行的过程，心中惶恐不安怎么办</h4>
+<p>答案是截图拯救测试人员，截图拯救世界。</p>
+
+<p>运行到关键的节点或步骤时截个图，即方便了调试又使你的测试拥有足够多的输出,一举两得何乐不为？</p>
+
+<p>python代码</p>
+<pre class="highlight python"><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+
+<span class="n">dr</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">PhantomJS</span><span class="p">(</span><span class="s">'phantomjs'</span><span class="p">)</span>
+<span class="n">dr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'http://baidu.info'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">dr</span><span class="o">.</span><span class="n">title</span>
+<span class="k">print</span> <span class="n">dr</span><span class="o">.</span><span class="n">current_url</span>
+
+<span class="n">dr</span><span class="o">.</span><span class="n">save_screenshot</span><span class="p">(</span><span class="s">'./baidu.png'</span><span class="p">)</span>
+
+<span class="n">dr</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+</pre>
+
+<p>ruby代码</p>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'watir-webdriver'</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="no">Watir</span><span class="o">::</span><span class="no">Browser</span><span class="p">.</span><span class="nf">new</span> <span class="ss">:phantomjs</span>
+<span class="n">b</span><span class="p">.</span><span class="nf">goto</span> <span class="s1">'www.baidu.com'</span>
+
+<span class="nb">puts</span> <span class="n">b</span><span class="p">.</span><span class="nf">title</span>
+<span class="nb">puts</span> <span class="n">b</span><span class="p">.</span><span class="nf">url</span>
+<span class="n">b</span><span class="p">.</span><span class="nf">driver</span><span class="p">.</span><span class="nf">save_screenshot</span><span class="p">(</span><span class="s1">'./baidu.jpg'</span><span class="p">)</span>
+
+<span class="n">b</span><span class="p">.</span><span class="nf">close</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='小而美的 ghost driver via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1838#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1838#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1838#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1838#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1838#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply1">1楼</a> · <abbr class="timeago" title="2015-01-12T09:47:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11459" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/1838/replies/11459/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="tspring" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>大神，为什么没有Java?</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="乙醇" href="../easonhan007">easonhan007</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply2">2楼</a> · <abbr class="timeago" title="2015-01-12T09:49:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11460" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="221" href="http://testerhome.com/topics/1838/replies/11460/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="easonhan007" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> java需要用java binding，有点麻烦，所以就没写了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../tspring"><img alt="692" class="uface" src="../user/large_avatar/692.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何新荣" href="../tspring">tspring</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply3">3楼</a> · <abbr class="timeago" title="2015-01-12T11:50:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11478" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="692" href="http://testerhome.com/topics/1838/replies/11478/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="tspring" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1838#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../easonhan007" class="at_user" title="@easonhan007"><i>@</i>easonhan007</a> 可以写写么?</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="乙醇" href="../easonhan007">easonhan007</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply4">4楼</a> · <abbr class="timeago" title="2015-01-12T16:47:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11514" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="221" href="http://testerhome.com/topics/1838/replies/11514/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="easonhan007" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../tspring" class="at_user" title="@tspring"><i>@</i>tspring</a> 去github上搜ghostdriver，我也只能帮你到这里了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seasoncool2011"><img alt="991" class="uface" src="../user/large_avatar/991.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../seasoncool2011">seasoncool2011</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply5">5楼</a> · <abbr class="timeago" title="2015-01-12T20:19:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11527" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="991" href="http://testerhome.com/topics/1838/replies/11527/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seasoncool2011" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个太厉害了，以前基于UI的web自动化确实很蛋疼，刚试了下，挺不错的，就是官方下载的有点慢，在CSDN上找的一个资源下的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../yangeren"><img alt="679" class="uface" src="../user/large_avatar/679.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="翰子" href="../yangeren">yangeren</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply6">6楼</a> · <abbr class="timeago" title="2015-01-13T21:41:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11573" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="679" href="http://testerhome.com/topics/1838/replies/11573/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="yangeren" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>抛弃ui的ui自动化测试，厉害！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="乙醇" href="../easonhan007">easonhan007</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1838#reply7">7楼</a> · <abbr class="timeago" title="2015-01-14T12:49:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11602" data-state="" data-type="Reply" href="1838#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="221" href="http://testerhome.com/topics/1838/replies/11602/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="easonhan007" href="1838#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../yangeren" class="at_user" title="@yangeren"><i>@</i>yangeren</a> 不是抛弃，而是更有效率的运行。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @roytest001: 在一个地方呆的太久了，希望能换个新环境，找一个自动化测试的工作
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1896" title="你应该学会使用的 5 个 ruby 方法">你应该学会使用的 5 个 ruby 方法</a></li>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+    <li><a href="1838" title="小而美的 ghost driver">小而美的 ghost driver</a></li>
+    <li><a href="1814" title="定制 Gradle 编译时候遇到的坑，慢慢垒">定制 Gradle 编译时候遇到的坑，慢慢垒</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1838#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

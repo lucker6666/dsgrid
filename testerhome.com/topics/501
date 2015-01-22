@@ -1,0 +1,554 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android 获取系统 cpu 信息，内存，版本，电量等信息 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android 获取系统 cpu 信息，内存，版本，电量等信息</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-02-22T16:13:20+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="young" href="../young">young</a> 于<abbr class="timeago" title="2014-04-03T18:29:16+08:00"></abbr>回复
+     · 
+    978次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>zz from <a href="http://www.cnblogs.com/brainy/archive/2012/05/30/2526752.html" rel="nofollow" target="_blank">http://www.cnblogs.com/brainy/archive/2012/05/30/2526752.html</a><br>
+未亲自验证过。</p>
+<h4>CPU频率，CPU信息：/proc/cpuinfo和/proc/stat</h4>
+<ul>
+<li>读取文件 <code>/proc/cpuinfo</code> 系统 <code>CPU</code> 的类型等多种信息。</li>
+<li>
+<p>读取文件 <code>/proc/stat</code> 所有 CPU 活动的信息来计算 CPU 使用率。</p>
+
+<p>下面我们就来讲讲如何通过代码来获取CPU频率：</p>
+</li>
+</ul><pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">orange</span><span class="o">.</span><span class="na">cpu</span><span class="o">;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.FileNotFoundException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.FileReader</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CpuManager</span> <span class="o">{</span>
+
+
+
+        <span class="c1">// 获取CPU最大频率（单位KHZ）</span>
+
+     <span class="c1">// "/system/bin/cat" 命令行</span>
+
+     <span class="c1">// "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq" 存储最大频率的文件的路径</span>
+
+        <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getMaxCpuFreq</span><span class="o">()</span> <span class="o">{</span>
+
+                <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+
+                <span class="n">ProcessBuilder</span> <span class="n">cmd</span><span class="o">;</span>
+
+                <span class="k">try</span> <span class="o">{</span>
+
+                        <span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">=</span> <span class="o">{</span> <span class="s">"/system/bin/cat"</span><span class="o">,</span>
+
+                                        <span class="s">"/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"</span> <span class="o">};</span>
+
+                        <span class="n">cmd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+
+                        <span class="n">Process</span> <span class="n">process</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+                        <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+
+                        <span class="kt">byte</span><span class="o">[]</span> <span class="n">re</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">24</span><span class="o">];</span>
+
+                        <span class="k">while</span> <span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">re</span><span class="o">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+
+                                <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">+</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">re</span><span class="o">);</span>
+
+                        <span class="o">}</span>
+
+                        <span class="n">in</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+
+                        <span class="n">result</span> <span class="o">=</span> <span class="s">"N/A"</span><span class="o">;</span>
+
+                <span class="o">}</span>
+
+                <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+
+        <span class="o">}</span>
+
+
+
+         <span class="c1">// 获取CPU最小频率（单位KHZ）</span>
+
+        <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getMinCpuFreq</span><span class="o">()</span> <span class="o">{</span>
+
+                <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+
+                <span class="n">ProcessBuilder</span> <span class="n">cmd</span><span class="o">;</span>
+
+                <span class="k">try</span> <span class="o">{</span>
+
+                        <span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">=</span> <span class="o">{</span> <span class="s">"/system/bin/cat"</span><span class="o">,</span>
+
+                                        <span class="s">"/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq"</span> <span class="o">};</span>
+
+                        <span class="n">cmd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+
+                        <span class="n">Process</span> <span class="n">process</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+                        <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+
+                        <span class="kt">byte</span><span class="o">[]</span> <span class="n">re</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">24</span><span class="o">];</span>
+
+                        <span class="k">while</span> <span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">re</span><span class="o">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+
+                                <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">+</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">re</span><span class="o">);</span>
+
+                        <span class="o">}</span>
+
+                        <span class="n">in</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+
+                        <span class="n">result</span> <span class="o">=</span> <span class="s">"N/A"</span><span class="o">;</span>
+
+                <span class="o">}</span>
+
+                <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+
+        <span class="o">}</span>
+
+
+
+         <span class="c1">// 实时获取CPU当前频率（单位KHZ）</span>
+
+        <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getCurCpuFreq</span><span class="o">()</span> <span class="o">{</span>
+
+                <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">"N/A"</span><span class="o">;</span>
+
+                <span class="k">try</span> <span class="o">{</span>
+
+                        <span class="n">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span>
+
+                                        <span class="s">"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"</span><span class="o">);</span>
+
+                        <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">fr</span><span class="o">);</span>
+
+                        <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+
+                <span class="o">}</span>
+
+                <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+
+        <span class="o">}</span>
+
+
+
+        <span class="c1">// 获取CPU名字</span>
+
+        <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getCpuName</span><span class="o">()</span> <span class="o">{</span>
+
+                <span class="k">try</span> <span class="o">{</span>
+
+                        <span class="n">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="s">"/proc/cpuinfo"</span><span class="o">);</span>
+
+                        <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">fr</span><span class="o">);</span>
+
+                        <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+
+                        <span class="n">String</span><span class="o">[]</span> <span class="n">array</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">":\\s+"</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+
+                        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+
+                        <span class="o">}</span>
+
+                        <span class="k">return</span> <span class="n">array</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+
+                <span class="o">}</span>
+
+                <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="o">}</span>
+
+<span class="o">}</span>
+</pre><h4>内存：<code>/proc/meminfo</code>
+</h4><pre class="highlight java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">getTotalMemory</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="n">String</span> <span class="n">str1</span> <span class="o">=</span> <span class="s">"/proc/meminfo"</span><span class="o">;</span>  
+        <span class="n">String</span> <span class="n">str2</span><span class="o">=</span><span class="s">""</span><span class="o">;</span>  
+        <span class="k">try</span> <span class="o">{</span>  
+            <span class="n">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="n">str1</span><span class="o">);</span>  
+            <span class="n">BufferedReader</span> <span class="n">localBufferedReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">fr</span><span class="o">,</span> <span class="mi">8192</span><span class="o">);</span>  
+            <span class="k">while</span> <span class="o">((</span><span class="n">str2</span> <span class="o">=</span> <span class="n">localBufferedReader</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>  
+                <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">"---"</span> <span class="o">+</span> <span class="n">str2</span><span class="o">);</span>  
+            <span class="o">}</span>  
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="o">}</span>  
+    <span class="o">}</span>  
+
+</pre><h4>Rom 大小</h4><pre class="highlight java"><span class="kd">public</span> <span class="kt">long</span><span class="o">[]</span> <span class="nf">getRomMemroy</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="kt">long</span><span class="o">[]</span> <span class="n">romInfo</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">long</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>  
+        <span class="c1">//Total rom memory  </span>
+        <span class="n">romInfo</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">getTotalInternalMemorySize</span><span class="o">();</span>  
+
+        <span class="c1">//Available rom memory  </span>
+        <span class="n">File</span> <span class="n">path</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getDataDirectory</span><span class="o">();</span>  
+        <span class="n">StatFs</span> <span class="n">stat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StatFs</span><span class="o">(</span><span class="n">path</span><span class="o">.</span><span class="na">getPath</span><span class="o">());</span>  
+        <span class="kt">long</span> <span class="n">blockSize</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="na">getBlockSize</span><span class="o">();</span>  
+        <span class="kt">long</span> <span class="n">availableBlocks</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="na">getAvailableBlocks</span><span class="o">();</span>  
+        <span class="n">romInfo</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">blockSize</span> <span class="o">*</span> <span class="n">availableBlocks</span><span class="o">;</span>  
+        <span class="n">getVersion</span><span class="o">();</span>  
+        <span class="k">return</span> <span class="n">romInfo</span><span class="o">;</span>  
+    <span class="o">}</span>  
+
+    <span class="kd">public</span> <span class="kt">long</span> <span class="n">getTotalInternalMemorySize</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="n">File</span> <span class="n">path</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getDataDirectory</span><span class="o">();</span>  
+        <span class="n">StatFs</span> <span class="n">stat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StatFs</span><span class="o">(</span><span class="n">path</span><span class="o">.</span><span class="na">getPath</span><span class="o">());</span>  
+        <span class="kt">long</span> <span class="n">blockSize</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="na">getBlockSize</span><span class="o">();</span>  
+        <span class="kt">long</span> <span class="n">totalBlocks</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="na">getBlockCount</span><span class="o">();</span>  
+        <span class="k">return</span> <span class="n">totalBlocks</span> <span class="o">*</span> <span class="n">blockSize</span><span class="o">;</span>  
+    <span class="o">}</span>  
+
+</pre><h4>sdCard大小</h4><pre class="highlight java"><span class="kd">public</span> <span class="kt">long</span><span class="o">[]</span> <span class="nf">getSDCardMemory</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="kt">long</span><span class="o">[]</span> <span class="n">sdCardInfo</span><span class="o">=</span><span class="k">new</span> <span class="kt">long</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>  
+        <span class="n">String</span> <span class="n">state</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageState</span><span class="o">();</span>  
+        <span class="k">if</span> <span class="o">(</span><span class="n">Environment</span><span class="o">.</span><span class="na">MEDIA_MOUNTED</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">state</span><span class="o">))</span> <span class="o">{</span>  
+            <span class="n">File</span> <span class="n">sdcardDir</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageDirectory</span><span class="o">();</span>  
+            <span class="n">StatFs</span> <span class="n">sf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StatFs</span><span class="o">(</span><span class="n">sdcardDir</span><span class="o">.</span><span class="na">getPath</span><span class="o">());</span>  
+            <span class="kt">long</span> <span class="n">bSize</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="na">getBlockSize</span><span class="o">();</span>  
+            <span class="kt">long</span> <span class="n">bCount</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="na">getBlockCount</span><span class="o">();</span>  
+            <span class="kt">long</span> <span class="n">availBlocks</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="na">getAvailableBlocks</span><span class="o">();</span>  
+
+            <span class="n">sdCardInfo</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">bSize</span> <span class="o">*</span> <span class="n">bCount</span><span class="o">;</span><span class="c1">//总大小  </span>
+            <span class="n">sdCardInfo</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">bSize</span> <span class="o">*</span> <span class="n">availBlocks</span><span class="o">;</span><span class="c1">//可用大小  </span>
+        <span class="o">}</span>  
+        <span class="k">return</span> <span class="n">sdCardInfo</span><span class="o">;</span>  
+    <span class="o">}</span>  
+<span class="err">　　</span> 
+</pre><h4>电池电量</h4><pre class="highlight java"><span class="kd">private</span> <span class="n">BroadcastReceiver</span> <span class="n">batteryReceiver</span><span class="o">=</span><span class="k">new</span> <span class="n">BroadcastReceiver</span><span class="o">(){</span>  
+
+        <span class="nd">@Override</span> 
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">onReceive</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">Intent</span> <span class="kt">int</span><span class="n">ent</span><span class="o">)</span> <span class="o">{</span>  
+            <span class="kt">int</span> <span class="n">level</span> <span class="o">=</span> <span class="kt">int</span><span class="n">ent</span><span class="o">.</span><span class="na">getIntExtra</span><span class="o">(</span><span class="s">"level"</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>  
+            <span class="c1">//  level加%就是当前电量了  </span>
+    <span class="o">}</span>  
+    <span class="o">};</span>  
+<span class="n">registerReceiver</span><span class="o">(</span><span class="n">batteryReceiver</span><span class="o">,</span> <span class="k">new</span> <span class="n">IntentFilter</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">ACTION_BATTERY_CHANGED</span><span class="o">));</span>  
+</pre><h4>系统的版本信息</h4><pre class="highlight java"><span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getVersion</span><span class="p">(</span><span class="o">){</span>  
+    <span class="n">String</span><span class="o">[]</span> <span class="n">version</span><span class="o">={</span><span class="s">"null"</span><span class="o">,</span><span class="s">"null"</span><span class="o">,</span><span class="s">"null"</span><span class="o">,</span><span class="s">"null"</span><span class="o">};</span>  
+    <span class="n">String</span> <span class="n">str1</span> <span class="o">=</span> <span class="s">"/proc/version"</span><span class="o">;</span>  
+    <span class="n">String</span> <span class="n">str2</span><span class="o">;</span>  
+    <span class="n">String</span><span class="o">[]</span> <span class="n">arrayOfString</span><span class="o">;</span>  
+    <span class="k">try</span> <span class="o">{</span>  
+        <span class="n">FileReader</span> <span class="n">localFileReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="n">str1</span><span class="o">);</span>  
+        <span class="n">BufferedReader</span> <span class="n">localBufferedReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span>  
+                <span class="n">localFileReader</span><span class="o">,</span> <span class="mi">8192</span><span class="o">);</span>  
+        <span class="n">str2</span> <span class="o">=</span> <span class="n">localBufferedReader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>  
+        <span class="n">arrayOfString</span> <span class="o">=</span> <span class="n">str2</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"\\s+"</span><span class="o">);</span>  
+        <span class="n">version</span><span class="o">[</span><span class="mi">0</span><span class="o">]=</span><span class="n">arrayOfString</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span><span class="c1">//KernelVersion  </span>
+        <span class="n">localBufferedReader</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>  
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>  
+    <span class="o">}</span>  
+    <span class="n">version</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">RELEASE</span><span class="o">;</span><span class="c1">// firmware version  </span>
+    <span class="n">version</span><span class="o">[</span><span class="mi">2</span><span class="o">]=</span><span class="n">Build</span><span class="o">.</span><span class="na">MODEL</span><span class="o">;</span><span class="c1">//model  </span>
+    <span class="n">version</span><span class="o">[</span><span class="mi">3</span><span class="o">]=</span><span class="n">Build</span><span class="o">.</span><span class="na">DISPLAY</span><span class="o">;</span><span class="c1">//system version  </span>
+    <span class="k">return</span> <span class="n">version</span><span class="o">;</span>  
+<span class="o">}</span>  
+
+</pre><h4>mac 地址和开机时间</h4><pre class="highlight java"><span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getOtherInfo</span><span class="p">(</span><span class="o">){</span>  
+    <span class="n">String</span><span class="o">[]</span> <span class="n">other</span><span class="o">={</span><span class="s">"null"</span><span class="o">,</span><span class="s">"null"</span><span class="o">};</span>  
+       <span class="n">WifiManager</span> <span class="n">wifiManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">WifiManager</span><span class="o">)</span> <span class="n">mContext</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">WIFI_SERVICE</span><span class="o">);</span>  
+       <span class="n">WifiInfo</span> <span class="n">wifiInfo</span> <span class="o">=</span> <span class="n">wifiManager</span><span class="o">.</span><span class="na">getConnectionInfo</span><span class="o">();</span>  
+       <span class="k">if</span><span class="o">(</span><span class="n">wifiInfo</span><span class="o">.</span><span class="na">getMacAddress</span><span class="o">()!=</span><span class="kc">null</span><span class="o">){</span>  
+        <span class="n">other</span><span class="o">[</span><span class="mi">0</span><span class="o">]=</span><span class="n">wifiInfo</span><span class="o">.</span><span class="na">getMacAddress</span><span class="o">();</span>  
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>  
+        <span class="n">other</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="s">"Fail"</span><span class="o">;</span>  
+    <span class="o">}</span>  
+    <span class="n">other</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">getTimes</span><span class="o">();</span>  
+       <span class="k">return</span> <span class="n">other</span><span class="o">;</span>  
+<span class="o">}</span>  
+<span class="kd">private</span> <span class="n">String</span> <span class="nf">getTimes</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>  
+    <span class="kt">long</span> <span class="n">ut</span> <span class="o">=</span> <span class="n">SystemClock</span><span class="o">.</span><span class="na">elapsedRealtime</span><span class="o">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="o">;</span>  
+    <span class="k">if</span> <span class="o">(</span><span class="n">ut</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="n">ut</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>  
+    <span class="o">}</span>  
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">((</span><span class="n">ut</span> <span class="o">/</span> <span class="mi">60</span><span class="o">)</span> <span class="o">%</span> <span class="mi">60</span><span class="o">);</span>  
+    <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">((</span><span class="n">ut</span> <span class="o">/</span> <span class="mi">3600</span><span class="o">));</span>  
+    <span class="k">return</span> <span class="n">h</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">mContext</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">string</span><span class="o">.</span><span class="na">info_times_hour</span><span class="o">)</span> <span class="o">+</span> <span class="n">m</span> <span class="o">+</span> <span class="s">" "</span>  
+            <span class="o">+</span> <span class="n">mContext</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">string</span><span class="o">.</span><span class="na">info_times_minute</span><span class="o">);</span>  
+<span class="o">}</span>  </pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android 获取系统 cpu 信息，内存，版本，电量等信息 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="501#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="501#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="501#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="501#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="501#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>1</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="501#reply1">1楼</a> · <abbr class="timeago" title="2014-04-03T18:29:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3553" data-state="" data-type="Reply" href="501#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/501/replies/3553/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="young" href="501#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在哪里看到过这篇文章</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="501#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

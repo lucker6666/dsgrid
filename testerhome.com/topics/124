@@ -1,0 +1,730 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 自动测试之关键字驱动测试模式初探 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" />
+  </div>
+  <h1 class="entry-title">自动测试之关键字驱动测试模式初探</h1>
+  <div class="info leader">
+    <a class="node" href="node1">资讯点评</a>
+     · 
+    匿名
+     · 
+    于<abbr class="timeago" title="2013-01-04T19:01:26+08:00"></abbr>发布
+     · 
+    241次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1227/205852.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1227/205852.html</a></p>
+<pre>　　曾经在“我看测试”这篇文章中论述过，“测试效率的提高关键是测试手段的改进”。尤其在软件测试领域，没有千遍一律的测试方法，别人都说好的商业工具拿到你产品线来却未必合适。没有最好只有更好，如何才能产出符合淘宝框架的特色测试工具呢?之前在入淘宝之初，对淘宝架构、测试工具不甚熟悉的情况下，提出过《基于TTCN-3的Web应用自动化测试框架》一文，但却与淘宝现有的测试工具不相符合。随着对淘宝环境逐渐熟悉，一直都在思考改进测试的方法，这种方法一定要以现在使用的ITEST为基础，在经过不断地实践摸索以后，结合自己的经验，提出以下测试理论，望大家参详。
+
+　　一、概念提出
+
+　　在阐述我的观点之前，先来看看下面的例子。
+
+　　在ITEST中，订购一个套餐的用例代码如下所示：
+
+　　/*****************************************代码分割线*****************************************/
+
+　　public class PlanSubTest extends BaseCase{
+
+　　final static String NICK= &amp;quot;leizang_test&amp;quot;;
+
+　　final static String PASS_WORD= &amp;quot;taobao1234&amp;quot;;
+
+　　<a href="http://testerhome.com/BeforeClass" class="at_user" title="@BeforeClass"><i>@</i>BeforeClass</a>
+
+　　public static void login(){
+
+　　command.login(LOGIN_URL, NICK, PASS_WORD);
+
+　　}
+
+　　<a href="http://testerhome.com/AfterClass" class="at_user" title="@AfterClass"><i>@</i>AfterClass</a>
+
+　　public static void loginOut(){
+
+　　command.loginOut();
+
+　　}
+
+　　<a href="http://testerhome.com/Before" class="at_user" title="@Before"><i>@</i>Before</a>
+
+　　public void cleanDB(){
+
+　　String nick= NICK;
+
+　　command.dbExecute(
+
+　　&amp;quot;DELETE FROM upp_sub_plan WHERE nick= &amp;#39;&amp;quot;+ nick+ &amp;quot;&amp;#39;&amp;quot;,
+
+　　&amp;quot;DELETE FROM upp_biz_order WHERE nick = &amp;#39;&amp;quot;+ nick+ &amp;quot;&amp;#39;&amp;quot;,
+
+　　&amp;quot;DELETE FROM upp_prod_subscription WHERE nick = &amp;#39;&amp;quot;+ nick+ &amp;quot;&amp;#39;&amp;quot;);
+
+　　}
+
+　　<a href="http://testerhome.com/Test" class="at_user" title="@Test"><i>@</i>Test</a>
+
+　　public void test_planSub_雷藏_case01(){
+
+　　logTestName();
+
+　　//构造入参
+
+　　SubOption subOption= new SubOption(getPlanSubUrl(827L), CycleEnum.HALF_YEAR, false);
+
+　　//从页面订购
+
+　　command.doSub(subOption);
+
+　　//结果校验
+
+　　Command.checkSubResult(subOption,
+
+　　TableEnum.UPP_BIZ_ORDER,
+
+　　TableEnum.UPP_SUB_PLAN,
+
+　　TableEnum.UPP_PROD_SUBSCRIPTION);
+
+　　}
+
+　　}
+
+　　/*****************************************代码分割线*****************************************/
+
+　　好了，虽然例子比较简单，但足以说明问题。
+
+　　“command”是在“BaseCase”中生成的一个静态的“遥控器”(姑且这么理解)：
+
+　　“protected static ActionCommand command= new ActionCommandImpl(); “
+
+　　它就像我们的电视遥控器，空调遥控器一样，一旦你拥有了它，你就可以发出遥控器所支持的各种指令。所以，下面就理所当然地发出了各种“登录”，“退出”，“清除数据库“，“订购”，“校验”等各种指令，而代码就会依照我们发出的指令去执行，这就是所谓“关键字驱动测试”理念。
+
+　　二、测试建模
+
+　　试想一下，现在呈现在你面前的是一个万能机器人，而操控这个机器人的“遥控器“就在你手中，你按下”做饭“键，它会去做饭，你按下”洗衣“键，它会遵照你的命令去洗衣服。但是”巧妇难为无米之炊“，更何况是个没有生命的机器人。你在发出”做饭“指令之前，需要事先给它准备好”米“和”水“，这样它才会按照你预期的要求去做。当它完成任务的时候你需要去检查看看它完成的如何，饭做熟了没有。按照这种思路，我们对”指挥机器人做饭“的任务进行分解：
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;1) &amp;lt;!--[endif]--&amp;gt;准备米和水
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;2) &amp;lt;!--[endif]--&amp;gt;发出做饭指令
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3) &amp;lt;!--[endif]--&amp;gt;检查饭做好了没有
+
+　　当你把这些跟上面的测试代码联系起来思考的时候，你会发现这一切是惊人的相似。在你对套餐订购进行测试的时候，你需要做如下几件事情：
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;1) &amp;lt;!--[endif]--&amp;gt;准备相关数据
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;2) &amp;lt;!--[endif]--&amp;gt;发出订购指令
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3) &amp;lt;!--[endif]--&amp;gt;校验订购结果
+
+　　我们在编写测试用例的时候，如果能够方便地准备“入参“、”预期“，然后发出指令，代码就能自动地完成测试工作那该多好啊!
+
+　　那如何才能实现我们这一套方便、智能系统呢?
+
+　　聪明的你可能已经发现，要想达成愿望，关键在于解决以下三个难点：
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;1) &amp;lt;!--[endif]--&amp;gt;相关数据准备方便(用户关心)
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;2) &amp;lt;!--[endif]--&amp;gt;要有一个好的遥控器(用户不关心，制造商的事情)
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3) &amp;lt;!--[endif]--&amp;gt;要有一个能正确完成指令的机器人(用户不关心，制造商的事情)
+
+　　这里存在对应关系：
+
+　　用户 ——&amp;gt;自动化用例编写者
+
+　　制造商——&amp;gt;测试框架搭建人员
+
+　　我们先来解决制造商的两个困扰。
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;1、 &amp;lt;!--[endif]--&amp;gt;制造商困扰之一——遥控器问题
+
+　　遥控器就是一个各种指令的集合。在这里涉及一个问题，“如何划分指令的粒度?”#p#分页标题#e#
+
+　　比如说“登录”，可以划分为：
+
+　　A.“获取登录页面”、“输入用户名”、“输入密码”、“提交”四个指令
+
+　　也可以不进行划分
+
+　　B.就一个“登录”指令，包含A中所有步骤，只是将“登录URL”，“用户名”，“密码”作为参数暴露
+
+　　这里我倾向于B的分法，也就是说“将一个流程作为一个指令，将流程中所涉及的所有可变因素作为指令的参数暴露”。这样，我们只要对每个流程做好封装，以后就可以一劳永逸地重复使用它。
+
+　　从技术的角度来看，我们可以定义一个接口，并将可供用户使用的指令放置其中。代码如下：
+
+　　/*****************************************代码分割线*****************************************/
+
+　　/**
+
+　　* 遥控器
+
+　　* <a href="http://testerhome.com/author" class="at_user" title="@author"><i>@</i>author</a> leizang.cs
+
+　　*
+
+　　*/
+
+　　public interface ActionCommand {
+
+　　/**
+
+　　* 用户登录
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> url 登录url
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> nick 用户名
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> passWord 密码
+
+　　*/
+
+　　public void login(String url, String nick, String passWord);
+
+　　/**
+
+　　* 退出
+
+　　*/
+
+　　public void loginOut();
+
+　　/**
+
+　　* 执行订购
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> subOption 订购入参
+
+　　*/
+
+　　public void doSub(SubOption subOption);
+
+　　/**
+
+　　* 订购成功后校验数据库
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> dbCheckOption 校验入参
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> needCheckedTables 需要校验的表格
+
+　　*/
+
+　　public void checkSubDB(SubDbCheckOption dbCheckOption, TableEnum...needCheckedTables);
+
+　　/**
+
+　　* 数据库修改或删除
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> sql 需要执行的sql
+
+　　*/
+
+　　public void dbExecute(String... sqls);
+
+　　}
+
+　　/*****************************************代码分割线*****************************************/
+
+　　这样我们第一个问题就解决了。下面来看第二个问题。
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;2、 &amp;lt;!--[endif]--&amp;gt;制造商困扰之二——机器人问题
+
+　　机器人可以正确执行遥控器发出的各种指令。从技术的角度说就是要求测试框架搭建人员，正确、稳定地实现遥控器中的各种指令。至于如何实现，这跟具体的产品线功能有关，这里仅给出我实现的部分代码，仅供参考：
+
+　　/*****************************************代码分割线*****************************************/
+
+　　public class ActionCommandImpl implements ActionCommand{
+
+　　private WebDriver driver;
+
+　　private JdbcTemplate jdbc;
+
+　　<a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a>
+
+　　public void dbExecute(String... sqls){
+
+　　for(String sql: sqls){
+
+　　jdbc= CommonUtil.getJdbcFromSql(sql);
+
+　　jdbc.execute(sql);
+
+　　}
+
+　　}
+
+　　<a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a>
+
+　　public void login(String url, String nick, String passWord){
+
+　　try{
+
+　　driver= new HtmlUnitDriver();
+
+　　driver.get(url);
+
+　　WebElement userName= driver.findElement(By.id(&amp;quot;TPL_username_1&amp;quot;));
+
+　　userName.sendKeys(nick);
+
+　　WebElement passWd= driver.findElement(By.name(&amp;quot;TPL_password&amp;quot;));
+
+　　passWd.sendKeys(passWord);
+
+　　WebElement submit= driver.findElement(By.className(&amp;quot;J_Submit&amp;quot;));
+
+　　submit.click();
+
+　　}finally{
+
+　　writePage();
+
+　　}
+
+　　}
+
+　　<a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a>
+
+　　public void loginOut(){
+
+　　driver.quit();
+
+　　}
+
+　　/**
+
+　　* <a href="http://testerhome.com/dscription" class="at_user" title="@dscription"><i>@</i>dscription</a> 订购接口
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> subOption 订购参数
+
+　　* <a href="http://testerhome.com/throws" class="at_user" title="@throws"><i>@</i>throws</a> ITestException
+
+　　*/
+
+　　<a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a>
+
+　　public void doSub(SubOption subOption)throws ITestException{
+
+　　if(subOption== null){
+
+　　Assert.fail(&amp;quot;订购参数不能为空!&amp;quot;);
+
+　　}
+
+　　String subUrl= subOption.getSubUrl();
+
+　　CycleEnum cycle= subOption.getCycle();
+
+　　log(&amp;quot;传入参数为：&amp;quot;);
+
+　　look(subOption);
+
+　　if(subUrl== null || subUrl.isEmpty()){
+
+　　Assert.fail(&amp;quot;订购Url不能为空!&amp;quot;);
+
+　　}
+
+　　if(cycle== null){
+
+　　Assert.fail(&amp;quot;订购周期不能为空!&amp;quot;);
+
+　　}
+
+　　try{
+
+　　driver.get(subUrl);
+
+　　log(&amp;quot;\n获取页面:&amp;quot;+ subUrl);
+
+　　WebElement period= null;
+
+　　switch(cycle){
+
+　　case ONE_MONTH:
+
+　　period=driver.findElement(By.id(&amp;quot;p-month&amp;quot;));
+
+　　period.setSelected();
+
+　　break;
+
+　　case ONE_SEASON:
+
+　　period=driver.findElement(By.id(&amp;quot;p-season&amp;quot;));
+
+　　period.setSelected();
+
+　　break;
+
+　　case HALF_YEAR:
+
+　　period=driver.findElement(By.id(&amp;quot;p-half&amp;quot;));
+
+　　period.setSelected();
+
+　　break;#p#分页标题#e#
+
+　　case ONE_YEAR:
+
+　　period=driver.findElement(By.id(&amp;quot;p-half&amp;quot;));
+
+　　period.setSelected();
+
+　　break;
+
+　　default:
+
+　　Assert.fail(&amp;quot;入参中周期值不合法!&amp;quot;);
+
+　　}
+
+　　WebElement isAgree= driver.findElement(By.id(&amp;quot;J_Agreement&amp;quot;));
+
+　　isAgree.click();
+
+　　((HtmlUnitDriver)driver).setJavascriptEnabled(true);
+
+　　String js= &amp;quot;document.getElementById(\&amp;quot;J_PayMoney\&amp;quot;).disabled = false&amp;quot;;
+
+　　((HtmlUnitDriver)driver).executeScript(js);
+
+　　log(&amp;quot;执行JS：&amp;quot;+ js);
+
+　　WebElement payMoney= driver.findElement(By.id(&amp;quot;J_PayMoney&amp;quot;));
+
+　　String prePayUrl= driver.getCurrentUrl();
+
+　　payMoney.click();
+
+　　String afterPayUrl= driver.getCurrentUrl();
+
+　　if(!isPageSkip(prePayUrl, afterPayUrl)){
+
+　　throw new ITestException(&amp;quot;订购失败!请查看&amp;quot;+ DIRECT+ &amp;quot;目录确认页面信息\n&amp;quot;);
+
+　　}
+
+　　WebElement bd= driver.findElement(By.className(&amp;quot;bd&amp;quot;));
+
+　　log(&amp;quot;\n&amp;quot;+ bd.getText());
+
+　　}catch(NoSuchElementException e1){
+
+　　throw new ITestException(e1);
+
+　　}finally{
+
+　　writePage();
+
+　　}
+
+　　}
+
+　　/**
+
+　　*
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> dbCheckOption 数据库校验参数
+
+　　* <a href="http://testerhome.com/param" class="at_user" title="@param"><i>@</i>param</a> checkedTables 需要校验的表
+
+　　*/
+
+　　<a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a>
+
+　　public void checkSubDB(SubDbCheckOption dbCheckOption, TableEnum...needCheckedTables){
+
+　　for(TableEnum table: needCheckedTables){
+
+　　log(&amp;quot;\n&amp;quot;);
+
+　　switch(table){
+
+　　case UPP_BIZ_ORDER:
+
+　　checkUppBizOrder(dbCheckOption);
+
+　　break;
+
+　　case UPP_SUB_PLAN:
+
+　　checkUppPlanSub(dbCheckOption);
+
+　　break;
+
+　　case UPP_PROD_SUBSCRIPTION:
+
+　　checkUppProdSubscription(dbCheckOption);
+
+　　break;
+
+　　default:
+
+　　Assert.fail(&amp;quot;暂无此表校验逻辑:&amp;quot;+ table.name());
+
+　　}
+
+　　}
+
+　　}
+
+　　/*****************************************代码分割线*****************************************/
+
+　　在这里我引入了JAVA的GUI测试技术。经过实践证明：
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;1) &amp;lt;!--[endif]--&amp;gt;对WebDriver的使用不仅方便，而且执行快速，平均一个用例5S就能运行完成
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;2) &amp;lt;!--[endif]--&amp;gt;更重要的是测试代码完全独立于开发代码，测试环境最接近真实的手工测试环境，用这种方法实现的自动化，只是模拟手工测试工作，并将其自动进行
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3) &amp;lt;!--[endif]--&amp;gt;指令正确实现以后，编写用例相当快捷方便，大大提高用例编写效率
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;4) &amp;lt;!--[endif]--&amp;gt;脚本稳定、健壮且易于维护，只要页面不发生变化，对指令的实现就无需变化，大大降低维护成本
+
+　　这样，上面提出的两个问题就解决了，我们编写出的代码就会像第一节所示的一样，只要准备好相关数据，发发指令就可以了。下面我们来解决用户的困扰。
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3、 &amp;lt;!--[endif]--&amp;gt;用户的困扰——数据准备问题
+
+　　还记得上节划分指令粒度的时候我们是按流程来划分的吗?在这里它的好处就体现出来了。我们把一个流程作为一个指令，将流程中涉及的可变因素作为参数暴露，并将指令在接口中定义，实现与定义分开，这样对于每一个指令来说，其参数个数是固定的，而且对于每条产品线来说指令的个数也比较有限。这非常有利于我们将其“模板化”。说到模板化，大家自然会想到界面，于是就有三种方式进行模板化：“页面”，“软件客户端”，“eclipse插件”。我认为最简单、最方便的当属“eclipse插件。”下面我给出插件示意图：
+
+
+
+　　&amp;lt;!--[endif]--&amp;gt;
+
+　　最左边①是用例的目录树，当选中一条用例后第②部分为该用例的有序指令，第③部分为“指令池”，可以从中选择需要的“指令”。
+
+　　这样我们编写用例就可以分为三步：
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;1、 &amp;lt;!--[endif]--&amp;gt;在①中新建一条用例并输入用例名称，此时第②部分应该为空
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;2、 &amp;lt;!--[endif]--&amp;gt;选择方法类型，有“<a href="http://testerhome.com/BeforeClass" class="at_user" title="@BeforeClass"><i>@</i>BeforeClass</a>”,”<a href="http://testerhome.com/Before" class="at_user" title="@Before"><i>@</i>Before</a>”,”<a href="http://testerhome.com/Test" class="at_user" title="@Test"><i>@</i>Test</a>”,”<a href="http://testerhome.com/After" class="at_user" title="@After"><i>@</i>After</a>”,”<a href="http://testerhome.com/AfterClass" class="at_user" title="@AfterClass"><i>@</i>AfterClass</a>”五种选择，并从③中选择需要的“指令”
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3、 &amp;lt;!--[endif]--&amp;gt;
+
+　　&amp;lt;!--[if !supportLists]--&amp;gt;3、 &amp;lt;!--[endif]--&amp;gt;存据填入期击ommand录入数据，双击“doSub”指令，此时弹出如下图所示的参数录入框，将数据填入其内并保存，保存后在eclipse中就会自动生成如第一节所列出的用例代码，其中“SUB_PLAN_URL”为poperties中定义的变量，也可以在界面中进行关联、维护。
+
+#p#分页标题#e#
+
+　　由此可见，用户只和界面打交道，在此进行用例的增、删、改、执行操作。这样，用例设计人员专心设计场景与用例，测试框架维护人员维护自己产品线的框架，分工协作，效率大大提升。
+
+　　好了，到此为止，我们所有的困难都解决了，下面给出该套测试框架的架构图。
+
+　　三、测试架构
+
+　　根据上面的论述，不难得出如下图所示的测试架构图：
+
+
+
+　　“话说天下大势，分久必合，合久必分”，其不仅可用于WEB层测试，也可以用作HSF接口测试，也就是说我们的测试工程可以不再需要根据应用划分为很多个，只要这一套就可以通吃所有应用。
+
+　　这一整套方案还在不断的研究实践过程中。
+</pre>
+
+
+<p>文章分类:自动测试</p>
+
+<p>Link  <a href="http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1227/205852.html" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/ceshijishu/zdcs/2012/1227/205852.html</a></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='自动测试之关键字驱动测试模式初探 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="124#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="124#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="124#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="124#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="124#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @ericzhang: :fire:跟老婆周游世界:smiley:
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1378" title="《刀塔传奇》之互联网从业人员评测">《刀塔传奇》之互联网从业人员评测</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="124#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

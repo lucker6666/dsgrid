@@ -1,0 +1,936 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium 上真机运行 Safari 曲线救国方式 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium 上真机运行 Safari 曲线救国方式</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2013-12-22T00:04:56+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a> 于<abbr class="timeago" title="2014-04-18T19:29:06+08:00"></abbr>回复
+     · 
+    2073次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>在 <a href="309" rel="nofollow" target="_blank">http://testerhome.com/topics/309</a> 里， <a href="../rockchensir" class="at_user" title="@rockchensir"><i>@</i>rockchensir</a> 提到了真机上运行 Safari。 于是花了点时间研究了下。</p>
+
+<p><strong>先看下，模拟器上如何启动 Safari</strong></p>
+
+<p><a href="https://github.com/appium/appium/blob/master/docs/mobile-web.md">Automating mobile web apps</a> 里讲的很清楚， </p>
+<pre class="highlight java"><span class="o">{</span>
+  <span class="nl">app:</span> <span class="err">'</span><span class="n">safari</span><span class="err">'</span>
+  <span class="o">,</span> <span class="nl">device:</span> <span class="err">'</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="err">'</span>
+  <span class="o">,</span> <span class="nl">version:</span> <span class="err">'</span><span class="mf">7.0</span><span class="err">'</span>
+<span class="o">}</span>
+</pre>
+<p>只要配置下 cap 的 app 参数就可以了。当然你要确保 <code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.0.sdk/Applications/MobileSafari.app</code> 是存在的。</p>
+
+<p>看下 sample code，</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">saucelabs</span><span class="o">.</span><span class="na">appium</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.junit.After</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Before</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.By</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.WebDriver</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.WebElement</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.DesiredCapabilities</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.openqa.selenium.remote.RemoteWebDriver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">Assert</span><span class="o">.*;</span>
+
+<span class="cm">/**
+ *
+ * Simple test which demonstrates how a test can be run against Mobile Safari running on an Appium instance.
+ *
+ * The test is based on https://github.com/appium/appium/blob/master/sample-code/examples/node/safari.js
+ *
+ * @author Ross Rowe
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SafariTest</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">WebDriver</span> <span class="n">driver</span><span class="o">;</span>
+
+    <span class="cm">/**
+     * Instantiates the {@link #driver} instance by using DesiredCapabilities which specify the
+     * 'iPhone Simulator' device and 'safari' app.
+     * @throws Exception
+     */</span>
+    <span class="nd">@Before</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span> <span class="s">"iPhone Simulator"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"version"</span><span class="o">,</span> <span class="s">"7.0"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="s">"safari"</span><span class="o">);</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteWebDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span>
+                <span class="n">capabilities</span><span class="o">);</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">manage</span><span class="o">().</span><span class="na">timeouts</span><span class="o">().</span><span class="na">implicitlyWait</span><span class="o">(</span><span class="mi">30</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * Navigates to http://saucelabs.com/test/guinea-pig and interacts with the browser.
+     *
+     * @throws Exception
+     */</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">runTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"http://saucelabs.com/test/guinea-pig"</span><span class="o">);</span>
+        <span class="n">WebElement</span> <span class="n">idElement</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"i_am_an_id"</span><span class="o">));</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">idElement</span><span class="o">);</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">idElement</span><span class="o">.</span><span class="na">getText</span><span class="o">(),</span> <span class="s">"I am a div"</span><span class="o">);</span>
+        <span class="n">WebElement</span> <span class="n">commentElement</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"comments"</span><span class="o">));</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">commentElement</span><span class="o">);</span>
+        <span class="n">commentElement</span><span class="o">.</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">"This is an awesome comment"</span><span class="o">);</span>
+        <span class="n">WebElement</span> <span class="n">submitElement</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"submit"</span><span class="o">));</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">submitElement</span><span class="o">);</span>
+        <span class="n">submitElement</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>
+        <span class="n">WebElement</span> <span class="n">yourCommentsElement</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"your_comments"</span><span class="o">));</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="n">yourCommentsElement</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">driver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"your_comments"</span><span class="o">)).</span><span class="na">getText</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">"This is an awesome comment"</span><span class="o">));</span>
+
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * Closes the {@link #driver} instance.
+     *
+     * @throws Exception
+     */</span>
+    <span class="nd">@After</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</pre>
+<p>像普通的 webdriver 测试一样，亲测可以运行。</p>
+
+<p><strong>在真机上运行 Safari</strong></p>
+
+<p>真机上运行 Safari 就没有那么简单了。</p>
+
+<p>在 <a href="https://github.com/appium/appium/issues/1083" rel="nofollow" target="_blank">https://github.com/appium/appium/issues/1083</a> 里，snevesbarros 提到：</p>
+
+<blockquote>
+<p><a href="http://testerhome.com/PavithraNavaneeth" class="at_user" title="@PavithraNavaneeth"><i>@</i>PavithraNavaneeth</a>, you have two options:</p>
+
+<p>Use the SafariLauncher which navigates to a URL causing Safari to launch.<br>
+It needs to have a 20 - 30 seconds delay after launching the app before it navigates to the link or else Appium ?&gt;thinks the app has crashed. <br>
+NOTE: In this case you will have to set the app to be the safari launcher app.</p>
+
+<p>Or if you dont want the 20 seconds delay then you can use the webview app.<br>
+The downside of this is that the webview isn't as good as safari at rendering certain elements (e.g. canvas).<br>
+NOTE: In this case you will have to set the app value to be the webview app.</p>
+
+<p>For both solutions you will have to run the ios-webkit-debug-proxyand build the app using a profile that allows it &gt;to be installed on your device.</p>
+
+<p>In NO case can you set the app to safari or set the bundle id to com.apple.mobilesafari for a real device. This will not work!</p>
+</blockquote>
+
+<p>按他说的，你是没有办法直接打开 safari 的， 我估计所有没有开发证书的应用我们都无法直接打开。所以只能曲线救国。一般两种方法：</p>
+
+<ul>
+<li>SafariLauncher</li>
+<li>WebViewApp</li>
+</ul><p>最新的 <a href="https://github.com/appium/appium/blob/master/docs/mobile-web.md">Automating mobile web apps</a> 里面也介绍了如何配置 SafariLauncher 在真机上运行 Safari。大家可以自行阅读。使用 SafariLauncher 我没能成功运行。不知道什么原因。</p>
+
+<p>不过我成功的启动了 WebViewApp， 并通过 WebViewApp 转到网站。看代码。</p>
+<pre class="highlight java">     <span class="c1">//setup the web driver and launch the webview app.</span>
+  <span class="n">DesiredCapabilities</span> <span class="n">desiredCapabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+  <span class="n">desiredCapabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span> <span class="s">"iPhone Simulator"</span><span class="o">);</span>
+  <span class="n">desiredCapabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="s">"http://appium.s3.amazonaws.com/WebViewApp6.0.app.zip"</span><span class="o">);</span>  
+  <span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">);</span>
+  <span class="n">RemoteWebDriver</span> <span class="n">remoteWebDriver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteWebDriver</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">desiredCapabilities</span><span class="o">);</span>
+
+  <span class="c1">//switch to the latest web view</span>
+  <span class="k">for</span><span class="o">(</span><span class="n">String</span> <span class="n">winHandle</span> <span class="o">:</span> <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">getWindowHandles</span><span class="o">()){</span>
+    <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">switchTo</span><span class="o">().</span><span class="na">window</span><span class="o">(</span><span class="n">winHandle</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"http://saucelabs.com/test/guinea-pig"</span><span class="o">);</span>
+  <span class="c1">//Interact with the elements on the guinea-pig page using id.</span>
+  <span class="n">WebElement</span> <span class="n">div</span> <span class="o">=</span> <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"i_am_an_id"</span><span class="o">));</span>
+  <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">"I am a div"</span><span class="o">,</span> <span class="n">div</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span> <span class="c1">//check the text retrieved matches expected value</span>
+  <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="s">"comments"</span><span class="o">)).</span><span class="na">sendKeys</span><span class="o">(</span><span class="s">"My comment"</span><span class="o">);</span> <span class="c1">//populate the comments field by id.</span>
+
+  <span class="c1">//leave the webview to go back to native app.</span>
+  <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: leaveWebView"</span><span class="o">);</span>      
+
+  <span class="c1">//close the app.</span>
+  <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+</pre>
+<p>这里的 WebViewApp 是直接从网上下载的， 你可以用 appium 下面 sample code 里面的 app 下面的 WebViewApp 来运行。</p>
+
+<p>总的来说 WebView 和 Safari 虽然有些许差异，但大部分还是一致的。不过目前而言， Appium 对 真机 iOS 上的 Safari 支持并不好。其实就像 Webdriver 一样， 驱动 Safari 也得费不少功夫。</p>
+
+<p>另外切记一点，无论是哪种方式，都必须使用 <code>ios-webkit-debug-proxy</code>, 并且要打开真机里面 Safari 的 debug 模式。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium 上真机运行 Safari 曲线救国方式 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="313#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="313#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="313#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="313#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="313#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>11</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../rockchensir"><img alt="280" class="uface" src="../user/large_avatar/280.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="huahua" href="../rockchensir">rockchensir</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply1">1楼</a> · <abbr class="timeago" title="2013-12-22T08:47:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1448" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="280" href="http://testerhome.com/topics/313/replies/1448/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="rockchensir" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>hi 你好<br>
+非常感谢你的帮助。</p>
+
+<p>我按照你的帖子，在我这台mac上运行起来有以下2个问题，我都尝试搜索了下。。。实在出于我的英文太烂了，用google翻译都是一只半解的，还请帮忙看下这些问题呀。</p>
+
+<p>1.当我在模拟器上launch safari的时候，每次都回先打开apple的网址，等加载完后，webdriver就抛出异常了，没有到达我制定的网址。</p>
+
+<p>APPIUM异常：</p>
+<pre class="highlight java"><span class="nl">info:</span> <span class="n">Welcome</span> <span class="n">to</span> <span class="n">Appium</span> <span class="n">v0</span><span class="o">.</span><span class="mf">12.3</span>
+
+<span class="nl">info:</span> <span class="n">Appium</span> <span class="n">REST</span> <span class="n">http</span> <span class="kt">int</span><span class="n">erface</span> <span class="n">listener</span> <span class="n">started</span> <span class="n">on</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="o">:</span><span class="mi">4723</span>
+   <span class="n">info</span>  <span class="o">-</span> <span class="n">socket</span><span class="o">.</span><span class="na">io</span> <span class="n">started</span>
+
+<span class="nl">info:</span> <span class="n">Not</span> <span class="n">spawning</span> <span class="n">instruments</span> <span class="n">force</span><span class="o">-</span><span class="n">quit</span> <span class="n">watcher</span> <span class="n">since</span> <span class="n">it</span> <span class="n">only</span> <span class="n">works</span> <span class="n">on</span> <span class="mf">10.9</span> <span class="n">and</span> <span class="n">you</span> <span class="n">have</span> <span class="mf">10.8</span><span class="o">.</span><span class="mi">5</span>
+
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">success:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">0</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"build"</span><span class="o">:{</span><span class="s">"version"</span><span class="o">:</span><span class="s">"0.12.3"</span><span class="o">,</span><span class="s">"revision"</span><span class="o">:</span><span class="s">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}}}</span>
+
+<span class="n">GET</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">status</span> <span class="mi">200</span> <span class="mi">7</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">144</span><span class="n">b</span>
+
+<span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">status</span>
+
+<span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{}</span>
+
+<span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span>
+
+<span class="nl">info:</span> <span class="n">Determining</span> <span class="n">current</span> <span class="n">user</span>
+
+<span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{</span><span class="s">"desiredCapabilities"</span><span class="o">:{</span><span class="s">"platform"</span><span class="o">:</span><span class="s">"iPhone Simulator"</span><span class="o">,</span><span class="s">"app"</span><span class="o">:</span><span class="s">"safari"</span><span class="o">,</span><span class="s">"version"</span><span class="o">:</span><span class="s">"7.0"</span><span class="o">}}</span>
+
+<span class="nl">info:</span> <span class="n">User</span> <span class="n">is</span> <span class="n">administrator</span>
+
+<span class="nl">error:</span> <span class="n">Could</span> <span class="n">not</span> <span class="n">find</span> <span class="n">support</span> <span class="n">directory</span> <span class="k">for</span> <span class="n">mobile</span> <span class="n">safari</span><span class="o">,</span> <span class="n">does</span> <span class="n">it</span> <span class="n">exist</span> <span class="n">at</span> <span class="n">Library</span><span class="o">/</span><span class="n">Application</span> <span class="n">Support</span><span class="o">/</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="o">/</span><span class="mf">7.0</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span> <span class="n">or</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">administrator</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Application</span> <span class="n">Support</span><span class="o">/</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="o">/</span><span class="mf">7.0</span><span class="o">/</span><span class="n">Library</span><span class="o">/?</span>
+
+<span class="nl">info:</span> <span class="n">ENOENT</span><span class="o">,</span> <span class="n">stat</span> <span class="err">'</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">administrator</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Application</span> <span class="n">Support</span><span class="o">/</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="o">/</span><span class="mf">7.0</span><span class="o">/</span><span class="n">Library</span><span class="err">'</span>
+<span class="nl">info:</span> <span class="n">Using</span> <span class="n">local</span> <span class="n">zip</span> <span class="n">or</span> <span class="n">ipa</span> <span class="n">from</span> <span class="nl">desiredCaps:</span> <span class="o">./</span><span class="n">build</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">/</span><span class="n">SafariLauncherSim</span><span class="o">.</span><span class="na">zip</span>
+<span class="nl">info:</span> <span class="n">Copying</span> <span class="n">local</span> <span class="n">zip</span> <span class="n">to</span> <span class="n">tmp</span> <span class="n">dir</span>
+
+<span class="nl">info:</span> <span class="o">./</span><span class="n">build</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">/</span><span class="n">SafariLauncherSim</span><span class="o">.</span><span class="na">zip</span> <span class="n">copied</span> <span class="n">to</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">b8</span><span class="o">/</span><span class="mi">1</span><span class="n">vfhv4bx50g84c0brnnqtj9w0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="mi">1131122</span><span class="o">-</span><span class="mi">1506</span><span class="o">-</span><span class="mi">19</span><span class="n">wavvt</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">app</span><span class="o">.</span><span class="na">zip</span>
+
+<span class="nl">info:</span> <span class="n">Unzipping</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">b8</span><span class="o">/</span><span class="mi">1</span><span class="n">vfhv4bx50g84c0brnnqtj9w0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="mi">1131122</span><span class="o">-</span><span class="mi">1506</span><span class="o">-</span><span class="mi">19</span><span class="n">wavvt</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">app</span><span class="o">.</span><span class="na">zip</span>
+<span class="nl">info:</span> <span class="n">Testing</span> <span class="n">zip</span> <span class="nl">archive:</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">b8</span><span class="o">/</span><span class="mi">1</span><span class="n">vfhv4bx50g84c0brnnqtj9w0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="mi">1131122</span><span class="o">-</span><span class="mi">1506</span><span class="o">-</span><span class="mi">19</span><span class="n">wavvt</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">app</span><span class="o">.</span><span class="na">zip</span>
+
+<span class="nl">info:</span> <span class="n">Zip</span> <span class="n">archive</span> <span class="n">tested</span> <span class="n">clean</span>
+
+<span class="nl">info:</span> <span class="n">Unzip</span> <span class="n">successful</span>
+
+<span class="nl">info:</span> <span class="n">Using</span> <span class="n">locally</span> <span class="n">extracted</span> <span class="nl">app:</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">b8</span><span class="o">/</span><span class="mi">1</span><span class="n">vfhv4bx50g84c0brnnqtj9w0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="mi">1131122</span><span class="o">-</span><span class="mi">1506</span><span class="o">-</span><span class="mi">19</span><span class="n">wavvt</span><span class="o">/</span><span class="n">submodules</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">Release</span><span class="o">-</span><span class="n">iphonesimulator</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">.</span><span class="na">app</span>
+<span class="nl">info:</span> <span class="n">Creating</span> <span class="k">new</span> <span class="n">appium</span> <span class="n">session</span> <span class="mi">25762106</span><span class="o">-</span><span class="mi">558</span><span class="n">d</span><span class="o">-</span><span class="mi">467</span><span class="n">e</span><span class="o">-</span><span class="mi">8652</span><span class="o">-</span><span class="n">efdecd8a2f4b</span>
+
+<span class="nl">info:</span> <span class="n">Removing</span> <span class="n">any</span> <span class="n">remaining</span> <span class="n">instruments</span> <span class="n">sockets</span>
+<span class="nl">info:</span> <span class="n">Cleaned</span> <span class="n">up</span> <span class="n">instruments</span> <span class="n">socket</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">instruments_sock</span>
+
+<span class="nl">warn:</span> <span class="n">Could</span> <span class="n">not</span> <span class="n">parse</span> <span class="n">plist</span> <span class="n">file</span> <span class="n">at</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">b8</span><span class="o">/</span><span class="mi">1</span><span class="n">vfhv4bx50g84c0brnnqtj9w0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="mi">1131122</span><span class="o">-</span><span class="mi">1506</span><span class="o">-</span><span class="mi">19</span><span class="n">wavvt</span><span class="o">/</span><span class="n">submodules</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">Release</span><span class="o">-</span><span class="n">iphonesimulator</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">.</span><span class="na">app</span><span class="o">/</span><span class="n">en</span><span class="o">.</span><span class="na">lproj</span><span class="o">/</span><span class="n">Localizable</span><span class="o">.</span><span class="na">strings</span>
+
+<span class="nl">debug:</span> <span class="n">Launching</span> <span class="nl">device:</span> <span class="n">iPhone</span> <span class="n">Retina</span> <span class="o">(</span><span class="mi">4</span><span class="o">-</span><span class="n">inch</span><span class="o">)</span>
+
+<span class="nl">info:</span> <span class="n">Killing</span> <span class="n">the</span> <span class="n">simulator</span> <span class="n">process</span>
+
+<span class="nl">info:</span> <span class="n">Parsed</span> <span class="n">app</span> <span class="n">Info</span><span class="o">.</span><span class="na">plist</span>
+<span class="nl">info:</span> <span class="n">Wrote</span> <span class="k">new</span> <span class="n">app</span> <span class="n">Info</span><span class="o">.</span><span class="na">plist</span> <span class="n">with</span> <span class="n">device</span> <span class="n">type</span>
+<span class="nl">info:</span> <span class="n">Starting</span> <span class="n">iOS</span> <span class="mi">7</span><span class="o">.*</span> <span class="n">simulator</span> <span class="n">log</span> <span class="n">capture</span>
+
+<span class="nl">debug:</span> <span class="n">No</span> <span class="n">device</span> <span class="n">id</span> <span class="n">or</span> <span class="n">app</span><span class="o">,</span> <span class="n">not</span> <span class="n">installing</span> <span class="n">to</span> <span class="n">real</span> <span class="n">device</span><span class="o">.</span>
+
+<span class="nl">info:</span> <span class="n">Instruments</span> <span class="n">is</span> <span class="nl">at:</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Xcode</span><span class="o">.</span><span class="na">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Developer</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">instruments</span>
+
+<span class="nl">debug:</span> <span class="n">Creating</span> <span class="n">instruments</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INSTSERVER</span><span class="o">]</span> <span class="n">Instruments</span> <span class="n">socket</span> <span class="n">server</span> <span class="n">started</span> <span class="n">at</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">instruments_sock</span>
+<span class="nl">info:</span> <span class="n">Spawning</span> <span class="n">instruments</span> <span class="n">with</span> <span class="nl">command:</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Xcode</span><span class="o">.</span><span class="na">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Developer</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">instruments</span> <span class="o">-</span><span class="n">t</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Xcode</span><span class="o">.</span><span class="na">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Instruments</span><span class="o">.</span><span class="na">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">PlugIns</span><span class="o">/</span><span class="n">AutomationInstrument</span><span class="o">.</span><span class="na">bundle</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">Automation</span><span class="o">.</span><span class="na">tracetemplate</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">b8</span><span class="o">/</span><span class="mi">1</span><span class="n">vfhv4bx50g84c0brnnqtj9w0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="mi">1131122</span><span class="o">-</span><span class="mi">1506</span><span class="o">-</span><span class="mi">19</span><span class="n">wavvt</span><span class="o">/</span><span class="n">submodules</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">Release</span><span class="o">-</span><span class="n">iphonesimulator</span><span class="o">/</span><span class="n">SafariLauncher</span><span class="o">.</span><span class="na">app</span> <span class="o">-</span><span class="n">e</span> <span class="n">UIASCRIPT</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Appium</span><span class="o">.</span><span class="na">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">ios</span><span class="o">/</span><span class="n">uiauto</span><span class="o">/</span><span class="n">bootstrap</span><span class="o">.</span><span class="na">js</span> <span class="o">-</span><span class="n">e</span> <span class="n">UIARESULTSPATH</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">instruments</span><span class="o">/</span>
+<span class="nl">info:</span> <span class="n">And</span> <span class="n">extra</span> <span class="n">without</span><span class="o">-</span><span class="n">delay</span> <span class="nl">env:</span> <span class="o">{</span><span class="s">"DYLD_INSERT_LIBRARIES"</span><span class="o">:</span><span class="s">"/Applications/Appium.app/Contents/Resources/node_modules/appium/build/iwd/InstrumentsShim.dylib"</span><span class="o">,</span><span class="s">"LIB_PATH"</span><span class="o">:</span><span class="s">"/Applications/Appium.app/Contents/Resources/node_modules/appium/build/iwd"</span><span class="o">}</span>
+<span class="nl">info:</span> <span class="n">And</span> <span class="n">launch</span> <span class="nl">timeout:</span> <span class="mi">90000</span><span class="n">ms</span>
+
+<span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">status</span>
+
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">success:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">0</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"build"</span><span class="o">:{</span><span class="s">"version"</span><span class="o">:</span><span class="s">"0.12.3"</span><span class="o">,</span><span class="s">"revision"</span><span class="o">:</span><span class="s">"c8abd030c0cedcc387532f2aa986fd956e46eb4f"</span><span class="o">}},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="s">"25762106-558d-467e-8652-efdecd8a2f4b"</span><span class="o">}</span>
+
+<span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{}</span>
+
+<span class="n">GET</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">status</span> <span class="mi">200</span> <span class="mi">4</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">199</span><span class="n">b</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INST</span> <span class="n">STDERR</span><span class="o">]</span> <span class="mi">2013</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">22</span> <span class="mi">08</span><span class="o">:</span><span class="mi">31</span><span class="o">:</span><span class="mf">04.631</span> <span class="n">ScriptAgent</span><span class="o">[</span><span class="mi">1591</span><span class="o">:</span><span class="mi">3007</span><span class="o">]</span> <span class="nl">CLTilesManagerClient:</span> <span class="n">initialize</span><span class="o">,</span> <span class="n">sSharedTilesManagerClient</span>
+
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INST</span> <span class="n">STDERR</span><span class="o">]</span> <span class="mi">2013</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">22</span> <span class="mi">08</span><span class="o">:</span><span class="mi">31</span><span class="o">:</span><span class="mf">04.632</span> <span class="n">ScriptAgent</span><span class="o">[</span><span class="mi">1591</span><span class="o">:</span><span class="mi">3007</span><span class="o">]</span> <span class="nl">CLTilesManagerClient:</span> <span class="n">init</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INST</span> <span class="n">STDERR</span><span class="o">]</span> <span class="mi">2013</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">22</span> <span class="mi">08</span><span class="o">:</span><span class="mi">31</span><span class="o">:</span><span class="mf">04.633</span> <span class="n">ScriptAgent</span><span class="o">[</span><span class="mi">1591</span><span class="o">:</span><span class="mi">3007</span><span class="o">]</span> <span class="nl">CLTilesManagerClient:</span> <span class="n">reconnecting</span><span class="o">,</span> <span class="mh">0xa176510</span>
+
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INSTSERVER</span><span class="o">]</span> <span class="n">Instruments</span> <span class="n">is</span> <span class="n">ready</span> <span class="n">to</span> <span class="n">receive</span> <span class="n">commands</span>
+
+<span class="nl">info:</span> <span class="n">Instruments</span> <span class="n">launched</span><span class="o">.</span> <span class="n">Starting</span> <span class="n">poll</span> <span class="n">loop</span> <span class="k">for</span> <span class="k">new</span> <span class="n">commands</span><span class="o">.</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INSTSERVER</span><span class="o">]</span> <span class="n">Socket</span> <span class="n">data</span> <span class="n">received</span> <span class="o">(</span><span class="mi">15</span> <span class="kt">byte</span><span class="n">s</span><span class="o">)</span>
+<span class="nl">info:</span> <span class="o">[</span><span class="n">INSTSERVER</span><span class="o">]</span> <span class="n">Socket</span> <span class="n">data</span> <span class="n">being</span> <span class="n">routed</span> <span class="k">for</span> <span class="err">'</span><span class="n">cmd</span><span class="err">'</span> <span class="n">event</span>
+
+<span class="nl">info:</span> <span class="n">Navigating</span> <span class="n">to</span> <span class="n">most</span> <span class="n">recently</span> <span class="n">opened</span> <span class="n">webview</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Debugger</span> <span class="n">socket</span> <span class="n">connected</span> <span class="n">to</span> <span class="o">::</span><span class="mi">1</span><span class="o">:</span><span class="mi">27753</span>
+
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="nl">_rpc_reportIdentifier:</span> <span class="n">message</span> <span class="n">to</span> <span class="n">remote</span> <span class="n">debugger</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="n">connection</span> <span class="n">key</span>
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Selecting</span> <span class="n">app</span>
+<span class="nl">info:</span> <span class="n">Picking</span> <span class="n">webview</span> <span class="mi">1</span>
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Selecting</span> <span class="n">page</span> <span class="mi">1</span> <span class="n">and</span> <span class="n">forwarding</span> <span class="n">socket</span> <span class="n">setup</span>
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Set</span> <span class="n">sender</span> <span class="n">key</span>
+
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__argument:</span> <span class="o">{</span> <span class="nl">WIRConnectionIdentifierKey:</span> <span class="err">'</span><span class="n">d06114b4</span><span class="o">-</span><span class="n">f048</span><span class="o">-</span><span class="mi">4</span><span class="n">d4f</span><span class="o">-</span><span class="n">b7a1</span><span class="o">-</span><span class="n">a743c38f5184</span><span class="err">'</span> <span class="o">},</span>
+  <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_reportIdentifier:</span><span class="err">'</span> <span class="o">}</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_reportSetup:</span><span class="err">'</span><span class="o">,</span>
+  <span class="nl">__argument:</span> 
+   <span class="o">{</span> <span class="nl">WIRSimulatorNameKey:</span> <span class="err">'</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRSimulatorProductVersionKey:</span> <span class="err">'</span><span class="mf">7.0</span><span class="o">.</span><span class="mi">3</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRSimulatorBuildKey:</span> <span class="err">'</span><span class="mi">11</span><span class="n">B508</span><span class="err">'</span> <span class="o">}</span> <span class="o">}</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sim</span> <span class="nl">name:</span> <span class="n">iPhone</span> <span class="n">Simulator</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sim</span> <span class="nl">build:</span> <span class="mi">11</span><span class="n">B508</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_reportConnectedApplicationList:</span><span class="err">'</span><span class="o">,</span>
+  <span class="nl">__argument:</span> 
+   <span class="o">{</span> <span class="nl">WIRApplicationDictionaryKey:</span> 
+      <span class="o">{</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">apple</span><span class="o">.</span><span class="na">mobilesafari</span><span class="err">'</span><span class="o">:</span> 
+         <span class="o">{</span> <span class="nl">WIRApplicationIdentifierKey:</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">apple</span><span class="o">.</span><span class="na">mobilesafari</span><span class="err">'</span><span class="o">,</span>
+           <span class="nl">WIRApplicationNameKey:</span> <span class="err">'</span><span class="n">Safari</span><span class="err">'</span><span class="o">,</span>
+           <span class="nl">WIRIsApplicationProxyKey:</span> <span class="kc">false</span> <span class="o">}</span> <span class="o">}</span> <span class="o">}</span> <span class="o">}</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="nl">_rpc_forwardGetListing:</span> <span class="n">message</span> <span class="n">to</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__argument:</span> 
+   <span class="o">{</span> <span class="nl">WIRConnectionIdentifierKey:</span> <span class="err">'</span><span class="n">d06114b4</span><span class="o">-</span><span class="n">f048</span><span class="o">-</span><span class="mi">4</span><span class="n">d4f</span><span class="o">-</span><span class="n">b7a1</span><span class="o">-</span><span class="n">a743c38f5184</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRApplicationIdentifierKey:</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">apple</span><span class="o">.</span><span class="na">mobilesafari</span><span class="err">'</span> <span class="o">},</span>
+  <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_forwardGetListing:</span><span class="err">'</span> <span class="o">}</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_applicationSentListing:</span><span class="err">'</span><span class="o">,</span>
+  <span class="nl">__argument:</span> 
+   <span class="o">{</span> <span class="nl">WIRApplicationIdentifierKey:</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">apple</span><span class="o">.</span><span class="na">mobilesafari</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRListingKey:</span> 
+      <span class="o">{</span> <span class="sc">'1'</span><span class="o">:</span> 
+         <span class="o">{</span> <span class="nl">WIRPageIdentifierKey:</span> <span class="mi">1</span><span class="o">,</span>
+           <span class="nl">WIRTitleKey:</span> <span class="err">'</span><span class="n">Apple</span><span class="err">'</span><span class="o">,</span>
+           <span class="nl">WIRURLKey:</span> <span class="err">'</span><span class="nl">http:</span><span class="c1">//www.apple.com/' } } } }</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="nl">_rpc_forwardSocketSetup:</span> <span class="n">message</span> <span class="n">to</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__argument:</span> 
+   <span class="o">{</span> <span class="nl">WIRApplicationIdentifierKey:</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">apple</span><span class="o">.</span><span class="na">mobilesafari</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRConnectionIdentifierKey:</span> <span class="err">'</span><span class="n">d06114b4</span><span class="o">-</span><span class="n">f048</span><span class="o">-</span><span class="mi">4</span><span class="n">d4f</span><span class="o">-</span><span class="n">b7a1</span><span class="o">-</span><span class="n">a743c38f5184</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRSenderKey:</span> <span class="err">'</span><span class="n">bc8a3a50</span><span class="o">-</span><span class="n">d0e6</span><span class="o">-</span><span class="mi">4</span><span class="n">c68</span><span class="o">-</span><span class="n">bbdc</span><span class="o">-</span><span class="n">cbede9cd210e</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRPageIdentifierKey:</span> <span class="mi">1</span> <span class="o">},</span>
+  <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_forwardSocketSetup:</span><span class="err">'</span> <span class="o">}</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="nl">_rpc_forwardSocketData:</span> <span class="n">message</span> <span class="n">to</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">applicationSentData</span> <span class="n">response</span><span class="o">&gt;</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Checking</span> <span class="n">document</span> <span class="n">readyState</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="nl">_rpc_forwardSocketData:</span> <span class="n">message</span> <span class="n">to</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">applicationSentData</span> <span class="n">response</span><span class="o">&gt;</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">readyState</span> <span class="n">was</span> <span class="n">complete</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Enabled</span> <span class="n">activity</span> <span class="n">on</span> <span class="n">page</span>
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="n">javascript</span> <span class="n">command</span>
+<span class="nl">info:</span> <span class="n">Overriding</span> <span class="n">session</span> <span class="n">id</span> <span class="n">with</span> <span class="o">[</span><span class="n">object</span> <span class="n">Object</span><span class="o">]</span>
+<span class="nl">info:</span> <span class="n">Device</span> <span class="n">launched</span><span class="o">!</span> <span class="n">Ready</span> <span class="k">for</span> <span class="n">commands</span> <span class="o">(</span><span class="n">will</span> <span class="n">time</span> <span class="n">out</span> <span class="n">in</span> <span class="mi">60</span><span class="n">secs</span><span class="o">)</span>
+<span class="nl">info:</span> <span class="n">Appium</span> <span class="n">session</span> <span class="n">started</span> <span class="n">with</span> <span class="n">sessionId</span> <span class="o">[</span><span class="n">object</span> <span class="n">Object</span><span class="o">]</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span> <span class="mi">303</span> <span class="mi">15334</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">9</span><span class="n">b</span>
+
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+
+<span class="nl">info:</span> <span class="n">Remote</span> <span class="n">debugger</span> <span class="n">notified</span> <span class="n">us</span> <span class="n">of</span> <span class="n">a</span> <span class="k">new</span> <span class="n">page</span> <span class="n">listing</span>
+
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">{</span> <span class="nl">__selector:</span> <span class="err">'</span><span class="nl">_rpc_applicationSentListing:</span><span class="err">'</span><span class="o">,</span>
+  <span class="nl">__argument:</span> 
+   <span class="o">{</span> <span class="nl">WIRApplicationIdentifierKey:</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">apple</span><span class="o">.</span><span class="na">mobilesafari</span><span class="err">'</span><span class="o">,</span>
+     <span class="nl">WIRListingKey:</span> 
+      <span class="o">{</span> <span class="sc">'1'</span><span class="o">:</span> 
+         <span class="o">{</span> <span class="nl">WIRConnectionIdentifierKey:</span> <span class="err">'</span><span class="n">d06114b4</span><span class="o">-</span><span class="n">f048</span><span class="o">-</span><span class="mi">4</span><span class="n">d4f</span><span class="o">-</span><span class="n">b7a1</span><span class="o">-</span><span class="n">a743c38f5184</span><span class="err">'</span><span class="o">,</span>
+           <span class="nl">WIRURLKey:</span> <span class="err">'</span><span class="nl">http:</span><span class="c1">//www.apple.com/',</span>
+           <span class="nl">WIRTitleKey:</span> <span class="err">'</span><span class="n">Apple</span><span class="err">'</span><span class="o">,</span>
+           <span class="nl">WIRPageIdentifierKey:</span> <span class="mi">1</span> <span class="o">}</span> <span class="o">}</span> <span class="o">}</span> <span class="o">}</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Page</span> <span class="n">loaded</span><span class="o">,</span> <span class="n">verifying</span> <span class="n">through</span> <span class="n">readyState</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Checking</span> <span class="n">document</span> <span class="n">readyState</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="nl">_rpc_forwardSocketData:</span> <span class="n">message</span> <span class="n">to</span> <span class="n">remote</span> <span class="n">debugger</span>
+
+<span class="nl">info:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Sending</span> <span class="n">javascript</span> <span class="n">command</span>
+<span class="nl">info:</span> <span class="n">New</span> <span class="n">page</span> <span class="n">listing</span> <span class="n">is</span> <span class="n">same</span> <span class="n">as</span> <span class="n">old</span><span class="o">,</span> <span class="n">doing</span> <span class="n">nothing</span>
+
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Receiving</span> <span class="n">data</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">debugger</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">applicationSentData</span> <span class="n">response</span><span class="o">&gt;</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">readyState</span> <span class="n">was</span> <span class="n">complete</span>
+<span class="nl">debug:</span> <span class="o">[</span><span class="n">REMOTE</span><span class="o">]</span> <span class="n">Page</span> <span class="n">is</span> <span class="n">ready</span><span class="o">,</span> <span class="n">calling</span> <span class="n">onload</span> <span class="n">cbs</span>
+</pre>
+<p>Code:</p>
+<pre class="highlight java"> <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">callMac</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">MalformedURLException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="n">DesiredCapabilities</span> <span class="n">cap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+        <span class="n">WebDriver</span> <span class="n">wd</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"7.0"</span><span class="o">);</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"iPhone Simulator"</span><span class="o">);</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="s">"safari"</span><span class="o">);</span><span class="c1">///Users/administrator/Documents/WebViewApp.app</span>
+        <span class="n">wd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteWebDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">cap</span><span class="o">);</span>
+        <span class="n">wd</span><span class="o">.</span><span class="na">manage</span><span class="o">().</span><span class="na">timeouts</span><span class="o">().</span><span class="na">implicitlyWait</span><span class="o">(</span><span class="mi">30</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">winHandle</span> <span class="o">:</span> <span class="n">wd</span><span class="o">.</span><span class="na">getWindowHandles</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">wd</span><span class="o">.</span><span class="na">switchTo</span><span class="o">().</span><span class="na">window</span><span class="o">(</span><span class="n">winHandle</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">wd</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"http://www.baidu.com"</span><span class="o">);</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10000</span><span class="o">);</span>
+        <span class="n">wd</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">MalformedURLException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="n">callMac</span><span class="o">();</span>
+    <span class="o">}</span>
+</pre>
+<p>WebDriver exceptions:</p>
+<pre class="highlight java"><span class="nl">run:</span>
+<span class="n">Exception</span> <span class="n">in</span> <span class="n">thread</span> <span class="s">"main"</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">UnreachableBrowserException</span><span class="o">:</span> <span class="n">Could</span> <span class="n">not</span> <span class="n">start</span> <span class="n">a</span> <span class="k">new</span> <span class="n">session</span><span class="o">.</span> <span class="n">Possible</span> <span class="n">causes</span> <span class="n">are</span> <span class="n">invalid</span> <span class="n">address</span> <span class="n">of</span> <span class="n">the</span> <span class="n">remote</span> <span class="n">server</span> <span class="n">or</span> <span class="n">browser</span> <span class="n">start</span><span class="o">-</span><span class="n">up</span> <span class="n">failure</span><span class="o">.</span>
+<span class="n">Build</span> <span class="nl">info:</span> <span class="nl">version:</span> <span class="err">'</span><span class="mf">2.38</span><span class="o">.</span><span class="mi">0</span><span class="err">'</span><span class="o">,</span> <span class="nl">revision:</span> <span class="err">'</span><span class="n">bd32d4e</span><span class="err">'</span><span class="o">,</span> <span class="nl">time:</span> <span class="err">'</span><span class="mi">2013</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">05</span> <span class="mi">16</span><span class="o">:</span><span class="mi">16</span><span class="o">:</span><span class="mi">40</span><span class="err">'</span>
+<span class="n">System</span> <span class="nl">info:</span> <span class="nl">host:</span> <span class="err">'</span><span class="n">administrators</span><span class="o">-</span><span class="n">Mac</span><span class="o">-</span><span class="n">mini</span><span class="o">.</span><span class="na">local</span><span class="err">'</span><span class="o">,</span> <span class="nl">ip:</span> <span class="err">'</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.100</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">name</span><span class="o">:</span> <span class="err">'</span><span class="n">Mac</span> <span class="n">OS</span> <span class="n">X</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">arch</span><span class="o">:</span> <span class="err">'</span><span class="n">x86_64</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="err">'</span><span class="mf">10.8</span><span class="o">.</span><span class="mi">5</span><span class="err">'</span><span class="o">,</span> <span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="err">'</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">0</span><span class="n">_45</span><span class="err">'</span>
+<span class="n">Driver</span> <span class="nl">info:</span> <span class="n">driver</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="n">RemoteWebDriver</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">RemoteWebDriver</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">RemoteWebDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">548</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">RemoteWebDriver</span><span class="o">.</span><span class="na">startSession</span><span class="o">(</span><span class="n">RemoteWebDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">216</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">RemoteWebDriver</span><span class="o">.&lt;</span><span class="n">init</span><span class="o">&gt;(</span><span class="n">RemoteWebDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">111</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">RemoteWebDriver</span><span class="o">.&lt;</span><span class="n">init</span><span class="o">&gt;(</span><span class="n">RemoteWebDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">129</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">apptest</span><span class="o">.</span><span class="na">iMAC</span><span class="o">.</span><span class="na">callMac</span><span class="o">(</span><span class="n">iMAC</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">28</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">apptest</span><span class="o">.</span><span class="na">iMAC</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="n">iMAC</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">39</span><span class="o">)</span>
+<span class="n">Caused</span> <span class="nl">by:</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">ClientProtocolException</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">AbstractHttpClient</span><span class="o">.</span><span class="na">doExecute</span><span class="o">(</span><span class="n">AbstractHttpClient</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">867</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">CloseableHttpClient</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">CloseableHttpClient</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">72</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">CloseableHttpClient</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">CloseableHttpClient</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">57</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">HttpCommandExecutor</span><span class="o">.</span><span class="na">fallBackExecute</span><span class="o">(</span><span class="n">HttpCommandExecutor</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">319</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">HttpCommandExecutor</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">HttpCommandExecutor</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">298</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">RemoteWebDriver</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">RemoteWebDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">527</span><span class="o">)</span>
+    <span class="o">...</span> <span class="mi">5</span> <span class="n">more</span>
+<span class="n">Caused</span> <span class="nl">by:</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">ProtocolException</span><span class="o">:</span> <span class="n">Invalid</span> <span class="n">redirect</span> <span class="nl">URI:</span> <span class="nl">http:</span><span class="c1">//127.0.0.1:4723/wd/hub/session/[object Object]</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">createLocationURI</span><span class="o">(</span><span class="n">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">197</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">getLocationURI</span><span class="o">(</span><span class="n">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">145</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">getRedirect</span><span class="o">(</span><span class="n">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">217</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">DefaultRequestDirector</span><span class="o">.</span><span class="na">handleResponse</span><span class="o">(</span><span class="n">DefaultRequestDirector</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">1065</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">DefaultRequestDirector</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">DefaultRequestDirector</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">514</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">AbstractHttpClient</span><span class="o">.</span><span class="na">doExecute</span><span class="o">(</span><span class="n">AbstractHttpClient</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">863</span><span class="o">)</span>
+    <span class="o">...</span> <span class="mi">10</span> <span class="n">more</span>
+<span class="n">Caused</span> <span class="nl">by:</span> <span class="n">java</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">URISyntaxException</span><span class="o">:</span> <span class="n">Illegal</span> <span class="kt">char</span><span class="n">acter</span> <span class="n">in</span> <span class="n">path</span> <span class="n">at</span> <span class="n">index</span> <span class="mi">37</span><span class="o">:</span> <span class="nl">http:</span><span class="c1">//127.0.0.1:4723/wd/hub/session/[object Object]</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">URI</span><span class="n">$Parser</span><span class="o">.</span><span class="na">fail</span><span class="o">(</span><span class="n">URI</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">2829</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">URI</span><span class="n">$Parser</span><span class="o">.</span><span class="na">checkChars</span><span class="o">(</span><span class="n">URI</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">3002</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">URI</span><span class="n">$Parser</span><span class="o">.</span><span class="na">parseHierarchical</span><span class="o">(</span><span class="n">URI</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">3086</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">URI</span><span class="n">$Parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">URI</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">3034</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">net</span><span class="o">.</span><span class="na">URI</span><span class="o">.&lt;</span><span class="n">init</span><span class="o">&gt;(</span><span class="n">URI</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">595</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">http</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">createLocationURI</span><span class="o">(</span><span class="n">DefaultRedirectStrategy</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">186</span><span class="o">)</span>
+    <span class="o">...</span> <span class="mi">15</span> <span class="n">more</span>
+<span class="n">Java</span> <span class="nl">Result:</span> <span class="mi">1</span>
+<span class="n">BUILD</span> <span class="nf">SUCCESSFUL</span> <span class="p">(</span><span class="n">total</span> <span class="nl">time:</span> <span class="mi">16</span> <span class="n">seconds</span><span class="o">)</span>
+
+</pre>
+<p>第二个问题: <br>
+我尝试配置并且启动ios_webkit_debug_proxy 的时候曝出以下错误，我试着去找解决办法，找了下面2个帮助，我看他们说的 貌似解决了。。但是我没看懂怎么解决的。。我下的也是最新branch的master。<br><a href="http://www.google.com.hk/url?sa=t&amp;rct=j&amp;q=Invalid+idevice_connection+struct%3F&amp;source=web&amp;cd=1&amp;ved=0CCwQFjAA&amp;url=%68%74%74%70%73%3a%2f%2f%67%69%74%68%75%62%2e%63%6f%6d%2f%67%6f%6f%67%6c%65%2f%69%6f%73%2d%77%65%62%6b%69%74%2d%64%65%62%75%67%2d%70%72%6f%78%79%2f%69%73%73%75%65%73%2f%33%38&amp;ei=7jW2UoPGMOO1iQeX5IDYDQ&amp;usg=AFQjCNESThDmaZ9MwPFpEU9dE3z7UQ5HMw" rel="nofollow" target="_blank">http://www.google.com.hk/url?sa=t&amp;rct=j&amp;q=Invalid+idevice_connection+struct%3F&amp;source=web&amp;cd=1&amp;ved=0CCwQFjAA&amp;url=%68%74%74%70%73%3a%2f%2f%67%69%74%68%75%62%2e%63%6f%6d%2f%67%6f%6f%67%6c%65%2f%69%6f%73%2d%77%65%62%6b%69%74%2d%64%65%62%75%67%2d%70%72%6f%78%79%2f%69%73%73%75%65%73%2f%33%38&amp;ei=7jW2UoPGMOO1iQeX5IDYDQ&amp;usg=AFQjCNESThDmaZ9MwPFpEU9dE3z7UQ5HMw</a></p>
+
+<p><a href="http://www.google.com.hk/url?sa=t&amp;rct=j&amp;q=Invalid+idevice_connection+struct%3F&amp;source=web&amp;cd=2&amp;ved=0CDQQFjAB&amp;url=%68%74%74%70%73%3a%2f%2f%67%69%74%68%75%62%2e%63%6f%6d%2f%67%6f%6f%67%6c%65%2f%69%6f%73%2d%77%65%62%6b%69%74%2d%64%65%62%75%67%2d%70%72%6f%78%79%2f%62%6c%6f%62%2f%6d%61%73%74%65%72%2f%73%72%63%2f%77%65%62%69%6e%73%70%65%63%74%6f%72%2e%63&amp;ei=7jW2UoPGMOO1iQeX5IDYDQ&amp;usg=AFQjCNEWiMG5ixSr-cbuRN_-3FkIzKDbyw" rel="nofollow" target="_blank">http://www.google.com.hk/url?sa=t&amp;rct=j&amp;q=Invalid+idevice_connection+struct%3F&amp;source=web&amp;cd=2&amp;ved=0CDQQFjAB&amp;url=%68%74%74%70%73%3a%2f%2f%67%69%74%68%75%62%2e%63%6f%6d%2f%67%6f%6f%67%6c%65%2f%69%6f%73%2d%77%65%62%6b%69%74%2d%64%65%62%75%67%2d%70%72%6f%78%79%2f%62%6c%6f%62%2f%6d%61%73%74%65%72%2f%73%72%63%2f%77%65%62%69%6e%73%70%65%63%74%6f%72%2e%63&amp;ei=7jW2UoPGMOO1iQeX5IDYDQ&amp;usg=AFQjCNEWiMG5ixSr-cbuRN_-3FkIzKDbyw</a></p>
+
+<p>error:</p>
+<pre class="highlight java"><span class="n">administrators</span><span class="o">-</span><span class="n">Mac</span><span class="o">-</span><span class="nl">mini:</span><span class="o">~</span> <span class="n">administrator</span><span class="err">$</span> <span class="n">ios_webkit_debug_proxy</span>
+<span class="n">Invalid</span> <span class="n">idevice_connection</span> <span class="n">struct</span><span class="o">?:</span> <span class="n">Undefined</span> <span class="nl">error:</span> <span class="mi">0</span>
+<span class="n">Unable</span> <span class="n">to</span> <span class="n">get</span> <span class="n">connection</span> <span class="n">file</span> <span class="n">descriptor</span><span class="o">.:</span> <span class="n">Undefined</span> <span class="nl">error:</span> <span class="mi">0</span>
+<span class="n">Unable</span> <span class="n">to</span> <span class="n">attach</span> <span class="n">e999ccef170a38133665c2c1120f471ca90e06ed</span> <span class="n">inspector</span><span class="err">```</span></pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply2">2楼</a> · <abbr class="timeago" title="2013-12-22T09:19:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1451" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/313/replies/1451/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../rockchensir" class="at_user" title="@rockchensir"><i>@</i>rockchensir</a> 我用 SafariLauncher 也遇到了这个问题。</p>
+
+<p>第二个问题：<br>
+···bash<br>
+ios_webkit_debug_proxy -c 45f082689dbaebb0ffa3620b3ae22ad9faff9a30:27753 -d<br>
+···<br>
+用你自己的uuid 代替 45f082689dbaebb0ffa3620b3ae22ad9faff9a30，先连接上你的苹果设备。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../rockchensir"><img alt="280" class="uface" src="../user/large_avatar/280.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="huahua" href="../rockchensir">rockchensir</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply3">3楼</a> · <abbr class="timeago" title="2013-12-22T09:53:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1452" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="280" href="http://testerhome.com/topics/313/replies/1452/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="rockchensir" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="313#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 第二个问题  我尝试过使用你说的这种方式，也是一样的错误。。</p>
+
+<p>另外我还有个疑问，如果我想在android中测试native的程序，比如mms,phone等，那我的app应该设置为什么？<br>
+我当前的设置是<br>
+"app","mms"</p>
+
+<p>如果不指定app-activity或者pachage的话 ，appium会让你指定，可是我不知道怎么获取app的activity?</p>
+
+<p>MainActivity  incorrent.</p>
+<pre class="highlight java">        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"4.4.2"</span><span class="o">);</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"MAC"</span><span class="o">);</span><span class="c1">//iPhone Simulator  iPad Device  Selendroid</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span><span class="s">"Android"</span><span class="o">);</span>
+        <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="s">"mms"</span><span class="o">);</span><span class="c1">//app.getAbsolutePath()    chromium ContactManager /Users/administrator/Documents/ContactManager.apk</span>
+        <span class="c1">//cap.setCapability("launch", "true");</span>
+       <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-activity"</span><span class="o">,</span> <span class="s">"MainActivity"</span><span class="o">);</span><span class="c1">//MainActivity   .ContactManager</span>
+       <span class="n">cap</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-package"</span><span class="o">,</span> <span class="s">"com.android.mms"</span><span class="o">);</span><span class="c1">//com.example.android.contactmanager</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../rockchensir"><img alt="280" class="uface" src="../user/large_avatar/280.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="huahua" href="../rockchensir">rockchensir</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply4">4楼</a> · <abbr class="timeago" title="2013-12-22T09:57:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1453" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="280" href="http://testerhome.com/topics/313/replies/1453/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="rockchensir" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="313#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 另外 是不是app-activity和app-package只能向开发获取呀？没有工具可以得到吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply5">5楼</a> · <abbr class="timeago" title="2013-12-22T10:18:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1454" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/313/replies/1454/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="313#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../rockchensir" class="at_user" title="@rockchensir"><i>@</i>rockchensir</a> 我们之前翻译了文档, 你可以先看看翻译的中文文档.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply6">6楼</a> · <abbr class="timeago" title="2013-12-22T11:03:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1455" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/313/replies/1455/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="313#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../rockchensir" class="at_user" title="@rockchensir"><i>@</i>rockchensir</a> 可以看看 <a href="https://github.com/appium/appium/tree/master/docs/cn" rel="nofollow" target="_blank">https://github.com/appium/appium/tree/master/docs/cn</a> </p>
+
+<p>app-activity和app-package只能向开发获取，对的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../rockchensir"><img alt="280" class="uface" src="../user/large_avatar/280.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="huahua" href="../rockchensir">rockchensir</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply7">7楼</a> · <abbr class="timeago" title="2013-12-22T13:09:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1456" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="280" href="http://testerhome.com/topics/313/replies/1456/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="rockchensir" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="313#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+<a href="313#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> </p>
+
+<p>好的  非常感谢2位</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../fastpoint"><img alt="Bbb27d00618d05ebb2e9fd8d8b0ebdbc" class="uface" src="../avatar/bbb27d00618d05ebb2e9fd8d8b0ebdbc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="fastpoint-冬瓜" href="../fastpoint">fastpoint</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply8">8楼</a> · <abbr class="timeago" title="2014-01-15T21:37:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2183" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="369" href="http://testerhome.com/topics/313/replies/2183/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="fastpoint" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>WIRPageIdentifierKey: 1,<br>
+WIRTitleKey: 'Apple',</p>
+<h4>WIRURLKey: '<a href="http://www.apple.com/" rel="nofollow" target="_blank">http://www.apple.com/</a>' </h4>
+<p>说的很清楚了，需要apple的safair开发者证书，因为苹果对iphone、imac和safair设定了三种开发证书，除了前面两个是个人每年99，safair的开发者证书是免费的，各位要做这个测试去apple网站申请一下吧。另外如果是在windows上安装safair证书和mac上是不一样的，前者要增加p12，不过全部都是2024的，很安全。android上因为google开源的关系，能获得rom权限，所以在android上就不需要这些麻烦的东西了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../fastpoint"><img alt="Bbb27d00618d05ebb2e9fd8d8b0ebdbc" class="uface" src="../avatar/bbb27d00618d05ebb2e9fd8d8b0ebdbc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="fastpoint-冬瓜" href="../fastpoint">fastpoint</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply9">9楼</a> · <abbr class="timeago" title="2014-01-15T21:37:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2184" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="369" href="http://testerhome.com/topics/313/replies/2184/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="fastpoint" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>2048的ssl，写成2024了，汗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../ifelix"><img alt="97afd5a63c0a8ec388de16f9e9fca50f" class="uface" src="../avatar/97afd5a63c0a8ec388de16f9e9fca50f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="阿飞" href="../ifelix">ifelix</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply10">10楼</a> · <abbr class="timeago" title="2014-02-20T14:54:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2653" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="425" href="http://testerhome.com/topics/313/replies/2653/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="ifelix" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="313#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> WebViewApp在真机和模拟器中的设置都一样吗？</p>
+
+<p>desiredCapabilities.setCapability("device", "iPhone Simulator");<br>
+desiredCapabilities.setCapability("app", "<a href="http://appium.s3.amazonaws.com/WebViewApp6.0.app.zip" rel="nofollow" target="_blank">http://appium.s3.amazonaws.com/WebViewApp6.0.app.zip</a>");  </p>
+
+<p>WebViewApp不是事先装好在真机中的吗？是不是启动Appium的时候也要设置UDID。。。<br>
+小白刚开始整ios，例子没跑起来。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="313#reply11">11楼</a> · <abbr class="timeago" title="2014-04-18T19:29:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4034" data-state="" data-type="Reply" href="313#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/313/replies/4034/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="vigossjjj" href="313#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>safari的alert怎么破？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="313#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

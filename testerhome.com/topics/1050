@@ -1,0 +1,876 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 分享一个获取控件 id 较简单的方法 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">分享一个获取控件 id 较简单的方法</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="剪烛" href="../shixue33">shixue33</a>
+     · 
+    于<abbr class="timeago" title="2014-06-23T20:58:19+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="75281920" href="../75281920">75281920</a> 于<abbr class="timeago" title="2014-09-19T00:18:33+08:00"></abbr>回复
+     · 
+    1296次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>不说其他，直接上代码：<br>
+可以直接放在测试工程里用，记得改下包名。<br>
+5s刷新一次，需要自行在logcat窗口中设置筛选条件tag=getCurrentInfo 然后就~自行发挥吧</p>
+<pre class="highlight java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GetInfoTest</span> <span class="kd">extends</span> <span class="n">ActivityInstrumentationTestCase2</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span> <span class="o">=</span> <span class="s">"xxxxx.xxxxxxxx.xxxxxxxxxx.xxxxxxxxxx"</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Class</span> <span class="n">launcherActivityClass</span><span class="o">;</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">launcherActivityClass</span> <span class="o">=</span> <span class="n">Class</span>
+                    <span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="n">GetInfoTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">launcherActivityClass</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="n">Solo</span> <span class="n">solo</span><span class="o">;</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">solo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solo</span><span class="o">(</span><span class="n">getInstrumentation</span><span class="o">(),</span> <span class="n">getActivity</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">testGetInfo</span><span class="o">(){</span>
+        <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">){</span>
+            <span class="n">solo</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">5000</span><span class="o">);</span>
+            <span class="n">getCurrentInfo</span><span class="o">();</span>
+        <span class="o">}</span>   
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">getCurrentInfo</span><span class="o">(){</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"current activity is "</span>
+                <span class="o">+</span> <span class="n">solo</span><span class="o">.</span><span class="na">getCurrentActivity</span><span class="o">().</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSimpleName</span><span class="o">());</span>
+
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">View</span><span class="o">&gt;</span> <span class="n">av</span> <span class="o">=</span> <span class="n">solo</span><span class="o">.</span><span class="na">getCurrentViews</span><span class="o">();</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"begin get view info"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">View</span> <span class="n">view</span> <span class="o">:</span> <span class="n">av</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"* * * * * * *"</span><span class="o">);</span>
+            <span class="kt">int</span><span class="o">[]</span> <span class="n">location</span> <span class="o">=</span> <span class="o">{</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">};</span>
+            <span class="n">view</span><span class="o">.</span><span class="na">getLocationInWindow</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"location:"</span> <span class="o">+</span> <span class="n">location</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">+</span> <span class="s">","</span>
+                    <span class="o">+</span> <span class="n">location</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"name:"</span> <span class="o">+</span> <span class="n">view</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+            <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">view</span> <span class="k">instanceof</span> <span class="n">TextView</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"text:"</span> <span class="o">+</span> <span class="o">((</span><span class="n">TextView</span><span class="o">)</span> <span class="n">view</span><span class="o">).</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">view</span> <span class="k">instanceof</span> <span class="n">ViewGroup</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"this view is a viewgroup"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">view</span><span class="o">.</span><span class="na">getResources</span><span class="o">()</span>
+                    <span class="o">&amp;&amp;</span> <span class="kc">null</span> <span class="o">!=</span> <span class="n">view</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getResourceEntryName</span><span class="o">(</span><span class="n">id</span><span class="o">))</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"id:"</span><span class="o">+</span><span class="n">view</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getResourceEntryName</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
+                        <span class="o">+</span> <span class="s">",resourse:"</span> <span class="o">+</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">id</span><span class="o">));</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"clickable:"</span><span class="o">+</span><span class="n">view</span><span class="o">.</span><span class="na">isClickable</span><span class="o">());</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"Enable:"</span><span class="o">+</span><span class="n">view</span><span class="o">.</span><span class="na">isEnabled</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">WebElement</span><span class="o">&gt;</span> <span class="n">WebElementsList</span> <span class="o">=</span> <span class="n">solo</span><span class="o">.</span><span class="na">getCurrentWebElements</span><span class="o">();</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"begin get webelements"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">WebElement</span> <span class="n">we</span> <span class="o">:</span> <span class="n">WebElementsList</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"classname is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getClassName</span><span class="o">());</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"id is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"x is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getLocationX</span><span class="o">());</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"y is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getLocationY</span><span class="o">());</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"name is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"tag name is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getTagName</span><span class="o">());</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">"getCurrentInfo"</span><span class="o">,</span> <span class="s">"text is "</span> <span class="o">+</span> <span class="n">we</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='分享一个获取控件 id 较简单的方法 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1050#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1050#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1050#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1050#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1050#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>24</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply1">1楼</a> · <abbr class="timeago" title="2014-06-24T09:15:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6033" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6033/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>妹纸很高产啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply2">2楼</a> · <abbr class="timeago" title="2014-06-24T11:27:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6046" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6046/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> 都是用了好久好久的一个工具，只是拿出来了。可能对于手上设备不方便root，或者不好打开hierarchyviewer的同学提供一个可能的方法</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply3">3楼</a> · <abbr class="timeago" title="2014-06-24T13:56:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6059" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6059/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>建议更近一步封装  变为傻瓜化</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply4">4楼</a> · <abbr class="timeago" title="2014-06-24T14:09:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6062" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6062/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> 卡斯有啥思路？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply5">5楼</a> · <abbr class="timeago" title="2014-06-24T16:02:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6071" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6071/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>封装为jar包或者 做成ui模式  方便人使用</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply6">6楼</a> · <abbr class="timeago" title="2014-06-24T22:51:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6091" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1050/replies/6091/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="seveniruby" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个思路很赞。目前都是以外部分析为主，从app内部入手会是个捷径。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply7">7楼</a> · <abbr class="timeago" title="2014-06-26T14:17:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6180" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6180/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> 想想觉得好复杂</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply8">8楼</a> · <abbr class="timeago" title="2014-06-26T15:00:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6184" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6184/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>呵呵 其实并不复杂   这个是傻瓜化过程 给人更方便而已，唯一的坏处就是使用的人不知道原理</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply9">9楼</a> · <abbr class="timeago" title="2014-06-26T15:18:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6187" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6187/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a>  orz 技术有限。比如说UI的模式，怎么搞呢？我如果用adb直接筛选信息，然后这些信息咋展示成ui？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply10">10楼</a> · <abbr class="timeago" title="2014-06-26T15:20:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6188" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6188/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>用几个控件  text  label  外加几个button  排列组合一下就好了  点击button  出现界面  可以把所有的控件放到一个view里面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply11">11楼</a> · <abbr class="timeago" title="2014-06-26T15:28:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6190" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6190/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> java做界面么？awt？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply12">12楼</a> · <abbr class="timeago" title="2014-06-26T16:07:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6196" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6196/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>android不是提供了界面么</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply13">13楼</a> · <abbr class="timeago" title="2014-06-26T16:10:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6197" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6197/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> = =显示在android机器里？ORZ我以为显示在PC，我觉得显示在PC要方便些啊。毕竟工作都在PC，而且显示在Android里边又不能拷贝啥的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply14">14楼</a> · <abbr class="timeago" title="2014-06-26T16:50:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6198" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/1050/replies/6198/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="kasi" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>pc的话  可以考虑用c#  或者python    java的界面有点丑</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply15">15楼</a> · <abbr class="timeago" title="2014-06-26T17:04:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6199" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6199/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> 好吧，我有理由去学python了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply16">16楼</a> · <abbr class="timeago" title="2014-06-26T17:24:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6200" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/1050/replies/6200/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="mingway_hu" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 可以考虑用pyqt4~我还能帮你找到个技术宅~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply17">17楼</a> · <abbr class="timeago" title="2014-06-27T10:24:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6219" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6219/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 0.0 这样好么?我才会python的最最最最基本的语法……</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply18">18楼</a> · <abbr class="timeago" title="2014-06-27T10:45:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6222" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/1050/replies/6222/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="mingway_hu" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a>  那大哥（单身）没事自己常拿pyqt写小工具玩~需要的话可以把他联系方式给你~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply19">19楼</a> · <abbr class="timeago" title="2014-07-10T23:05:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6598" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6598/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 啊啊啊啊啊啊啊，求联系方式！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply20">20楼</a> · <abbr class="timeago" title="2014-07-11T09:36:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6605" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/1050/replies/6605/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="mingway_hu" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 孙博(87991915)~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply21">21楼</a> · <abbr class="timeago" title="2014-07-11T11:15:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6607" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1050/replies/6607/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="lihuazhang" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问ui出来么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply22">22楼</a> · <abbr class="timeago" title="2014-07-11T12:39:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6609" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6609/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> = =!没有，还在调界面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply23">23楼</a> · <abbr class="timeago" title="2014-07-23T21:11:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6842" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1050/replies/6842/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="shixue33" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1050#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> <a href="1167" rel="nofollow" target="_blank">http://testerhome.com/topics/1167</a><br>
+已完成一个半成品~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../75281920"><img alt="428" class="uface" src="../user/large_avatar/428.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="雾山" href="../75281920">75281920</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1050#reply24">24楼</a> · <abbr class="timeago" title="2014-09-19T00:18:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8726" data-state="" data-type="Reply" href="1050#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="428" href="http://testerhome.com/topics/1050/replies/8726/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="75281920" href="1050#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mark一下，</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @chuyaoyao 希望父母身体健康，攒钱涨工资把父母接到身边照顾
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1898" title="在运行测试时遇到 Test run failed: Instrumentation run failed due to &#39;Process crashed.&#39;，有人遇到过吗，求解答">在运行测试时遇到 Test run failed: I...</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+    <li><a href="1826" title=" 史上最简单 Robotium 跨进程操作实践——基于 ADB 框架"> 史上最简单 Robotium 跨进程操作实践——基于...</a></li>
+    <li><a href="1786" title="robotium 在同一个布局里面，第一个控件可以访问，第二个空间却不能访问">robotium 在同一个布局里面，第一个控件可以访问...</a></li>
+    <li><a href="1783" title="怎么触发多个层级嵌套下的最底层控件(id 一样时)，且没有源码">怎么触发多个层级嵌套下的最底层控件(id 一样时)，且...</a></li>
+    <li><a href="1746" title="ROBOTIUM 实现简单的图像识别。~">ROBOTIUM 实现简单的图像识别。~</a></li>
+    <li><a href="1745" title="请问如何访问 listviewinscrollview 这个控件">请问如何访问 listviewinscrollview...</a></li>
+    <li><a href="1722" title="有没有大神在 ROBOTIUM 上做过图片相似度对比的内容？请教一下啊？">有没有大神在 ROBOTIUM 上做过图片相似度对比的...</a></li>
+    <li><a href="1715" title="使用 robotium 执行测试用例时提示 &#39;java.lang.ClassNotFoundException&#39;">使用 robotium 执行测试用例时提示 &#39;java...</a></li>
+    <li><a href="1714" title="求教，ROBOTIUM 下的 GETWEBELEMENTS 方法的使用~多谢！">求教，ROBOTIUM 下的 GETWEBELEMEN...</a></li>
+    <li><a href="1705" title="robotium 怎么获取多层布局嵌套下的控件呢？">robotium 怎么获取多层布局嵌套下的控件呢？</a></li>
+    <li><a href="1701" title="Robotium 专题（五）：Robotium 升级到 5.1 后的一些改进">Robotium 专题（五）：Robotium 升级到...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1050#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | RPF: Google's Record Playback Framework &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" />
+  </div>
+  <h1 class="entry-title">RPF: Google&#39;s Record Playback Framework</h1>
+  <div class="info leader">
+    <a class="node" href="node2">自动化测试工具</a>
+     · 
+    匿名
+     · 
+    于<abbr class="timeago" title="2013-04-11T16:35:03+08:00"></abbr>发布
+     · 
+    195次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><a href="http://feedproxy.google.com/r/blogspot/RLXA/3/0IyDVwm9R0c/rpf-googles-record-playback-framework.html" rel="nofollow" target="_blank">http://feedproxy.google.com/r/blogspot/RLXA/3/0IyDVwm9R0c/rpf-googles-record-playback-framework.html</a>~</p>
+
+<p>By Jason Arbon</p>
+
+<p>At GTAC, folks asked how well the Record&#47;Playback (RPF) works in the Browser Integrated Test Environment (BITE). We were originally skeptical ourselves, but figured somebody should try. Here is some anecdotal data and some background on how we started measuring the quality of RPF.<br />
+The idea is to just let users use the application in the browser, record their actions, and save them as a javascript to play back as a regression test or repro later. Like most test tools, especially code generating ones, it works most of the time but its not perfect. Po Hu had an early version working, and decided to test this out on a real world product. Po, the developer of RPF, worked with the chrome web store team to see how an early version would work for them. Why chrome web store? It is a website with lots of data-driven UX, authentication, file upload, and it was changing all the time and breaking existing Selenium scripts: a pretty hard web testing problem, only targeted the chrome browser, and most importantly they were sitting 20 feet from us. </p>
+
+<p>Before sharing with the chrome web store test developer Wensi Liu, we invested a bit of time in doing something we thought was clever: fuzzy matching and inline updating of the test scripts. Selenium rocks, but after an initial regression suite is created, many teams end up spending a lot of time simply maintaining their Selenium tests as the products constantly change. Rather than simply fail like the existing Selenium automation would do when a certain element isn’t found, and require some manual DOM inspection, updating the Java code and re-deploying, re-running, re-reviewing the test code what if the test script just kept running and updates to the code could be as simple as point and click? We would keep track of all the attributes in the element recorded, and when executing we would calculate the percent match between the recorded attributes and values and those found while running. If the match isn’t exact, but within tolerances (say only its parent node or class attribute had changed), we would log a warning and keep executing the test case. If the next test steps appeared to be working as well, the tests would keep executing during test passes only log warnings, or if in debug mode, they would pause and allow for a quick update of the matching rule with point and click via the BITE UI. We figured this might reduce the number of false-positive test failures and make updating them much quicker.</p>
+
+<p>We were wrong, but in a good way!</p>
+
+<p>We talked to the tester after a few days of leaving him alone with RPF. He’d already re-created most of his Selenium suite of tests in RPF, and the tests were already breaking because of product changes (its a tough life for a tester at google to keep up with the developers rate of change). He seemed happy, so we asked him how this new fuzzy matching fanciness was working, or not. Wensi was like “oh yeah, that? Don’t know. Didn’t really use it...”. We started to think how our update UX could have been confusing or not discoverable, or broken. Instead, Wensi said that when a test broke, it was just far easier to re-record the script. He had to re-test the product anyway, so why not turn recording on when he manually verified things were still working, remove the old test and save this newly recorded script for replay later? </p>
+
+<p>During that first week of trying out RPF, Wensi found:<br />
+77% of the features in Webstore were testable by RPF<br />
+Generating regression test scripts via this early version of RPF was about 8X faster than building them via Selenium&#47;WebDriver<br />
+The RPF scripts caught 6 functional regressions and many more intermittent server failures.<br />
+Common setup routines like login should be saved as modules for reuse (a crude version of this was working soon after)<br />
+RPF worked on Chrome OS, where Selenium by definition could never run as it required client-side binaries. RPF worked because it was a pure cloud solution, running entirely within the browser, communicating with a backend on the web.<br />
+Bugs filed via bite, provided a simple link, which would install BITE on the developers machine and re-execute the repros on their side. No need for manually crafted repro steps. This was cool.<br />
+Wensi wished RPF was cross browser. It only worked in Chrome, but people did occasionally visit the site with a non-Chrome browser.<br />
+So, we knew we were onto something interesting and continued development. In the near term though, chrome web store testing went back to using Selenium because that final 23% of features required some local Java code to handle file upload and secure checkout scenarios. In hindsight, a little testability work on the server could have solved this with some AJAX calls from the client.</p>
+
+<p>We performed a check of how RPF faired on some of the top sites of the web. This is shared on the BITE project wiki. This is now a little bit out of date, with lots more fixes, but it gives you a feel for what doesn’t work. Consider it Alpha quality at this point. It works for most scenarios, but there are still some serious corner cases. </p>
+
+<p>Joe Muharsky drove a lot of the UX (user experience) design for BITE to turn our original and clunky developer and functional-centric UX into something intuitive. Joe’s key focus was to keep the UX out of the way until it is needed, and make things as self-discoverable and findable as possible. We’ve haven&#39;t done formal usability studies yet, but have done several experiments with external crowd testers using these tools, with minimal instructions, as well as internal dogfooders filing bugs against Google Maps with little confusion. Some of the fancier parts of RPF have some hidden easter eggs of awkwardness, but the basic record and playback scenarios seem to be obvious to folks.</p>
+
+<p>RPF has graduated from the experimental centralized test team to be a formal part of the Chrome team, and used regularly for regression test passes. The team also has an eye on enabling non-coding crowd sourced testers generate regression scripts via BITE&#47;RPF.</p>
+
+<p>Please join us in maintaining BITE&#47;RPF, and be nice to Po Hu and Joel Hynoski who are driving this work forward within Google. </p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='RPF: Google&#39;s Record Playback Framework via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="129#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="129#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="129#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="129#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="129#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @luis: 希望项目自动化测试有个好的开始，14年我能hold住场子。。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1892" title="JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法)">JUnit4---实践：运行指定类的某些测试方法(可用...</a></li>
+    <li><a href="1887" title="uiautomatorviewer 新增功能 compressed 之 Device 端细节">uiautomatorviewer 新增功能 comp...</a></li>
+    <li><a href="1873" title="UiAutomator 报告如何转换成 xml 格式">UiAutomator 报告如何转换成 xml 格式</a></li>
+    <li><a href="1871" title="了解 uiautomatorviewer 新增的 dump --compressed 功能">了解 uiautomatorviewer 新增的 du...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="129#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

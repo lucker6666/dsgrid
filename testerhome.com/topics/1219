@@ -1,0 +1,1357 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android SDK 源码阅读之 ADB(AndroidDebugBridge)源码共赏析 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android SDK 源码阅读之 ADB(AndroidDebugBridge)源码共赏析</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+     · 
+    于<abbr class="timeago" title="2014-08-04T18:41:15+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="qddegtya" href="../qddegtya">qddegtya</a> 于<abbr class="timeago" title="2014-08-04T21:08:37+08:00"></abbr>回复
+     · 
+    692次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>晕.....很多人把这个当成ADB Server端的源码了。</p>
+<pre class="highlight java"><span class="cm">/**
+ * Copyright (C) 2007 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */</span>
+
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">ddmlib</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.android.ddmlib.Log.LogLevel</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.Thread.State</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.InetAddress</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.InetSocketAddress</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.UnknownHostException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.security.InvalidParameterException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.regex.Matcher</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.regex.Pattern</span><span class="o">;</span>
+
+<span class="cm">/***
+ * A connection to the host-side android debug bridge (adb)
+ * &lt;p/&gt;This is the central point to communicate with any devices, emulators, or the applications
+ * running on them.
+ * &lt;p/&gt;&lt;b&gt;{@link #init(boolean)} must be called before anything is done.&lt;/b&gt;
+ */</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">AndroidDebugBridge</span> <span class="o">{</span>
+
+    <span class="cm">/**
+     * Minimum and maximum version of adb supported. This correspond to
+     * ADB_SERVER_VERSION found in //device/tools/adb/adb.h
+     */</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">ADB_VERSION_MICRO_MIN</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">ADB_VERSION_MICRO_MAX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">Pattern</span> <span class="n">sAdbVersion</span> <span class="o">=</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span>
+            <span class="s">"^.*(\\d+)\\.(\\d+)\\.(\\d+)$"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">ADB</span> <span class="o">=</span> <span class="s">"adb"</span><span class="o">;</span> <span class="c1">//$NON-NLS-1$</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">DDMS</span> <span class="o">=</span> <span class="s">"ddms"</span><span class="o">;</span> <span class="c1">//$NON-NLS-1$</span>
+
+    <span class="c1">// Where to find the ADB bridge.</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">ADB_HOST</span> <span class="o">=</span> <span class="s">"127.0.0.1"</span><span class="o">;</span> <span class="c1">//$NON-NLS-1$</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">ADB_PORT</span> <span class="o">=</span> <span class="mi">5037</span><span class="o">;</span>
+
+    <span class="kd">static</span> <span class="n">InetAddress</span> <span class="n">sHostAddr</span><span class="o">;</span>
+    <span class="kd">static</span> <span class="n">InetSocketAddress</span> <span class="n">sSocketAddr</span><span class="o">;</span>
+
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="c1">// built-in local address/port for ADB.</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">sHostAddr</span> <span class="o">=</span> <span class="n">InetAddress</span><span class="o">.</span><span class="na">getByName</span><span class="o">(</span><span class="n">ADB_HOST</span><span class="o">);</span>
+            <span class="n">sSocketAddr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InetSocketAddress</span><span class="o">(</span><span class="n">sHostAddr</span><span class="o">,</span> <span class="n">ADB_PORT</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnknownHostException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">AndroidDebugBridge</span> <span class="n">sThis</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">sClientSupport</span><span class="o">;</span>
+
+    <span class="cm">/*** Full path to adb. */</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mAdbOsLocation</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">mVersionCheck</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">mStarted</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">DeviceMonitor</span> <span class="n">mDeviceMonitor</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IDebugBridgeChangeListener</span><span class="o">&gt;</span> <span class="n">sBridgeListeners</span> <span class="o">=</span>
+        <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IDebugBridgeChangeListener</span><span class="o">&gt;();</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IDeviceChangeListener</span><span class="o">&gt;</span> <span class="n">sDeviceListeners</span> <span class="o">=</span>
+        <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IDeviceChangeListener</span><span class="o">&gt;();</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IClientChangeListener</span><span class="o">&gt;</span> <span class="n">sClientListeners</span> <span class="o">=</span>
+        <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IClientChangeListener</span><span class="o">&gt;();</span>
+
+    <span class="c1">// lock object for synchronization</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Object</span> <span class="n">sLock</span> <span class="o">=</span> <span class="n">sBridgeListeners</span><span class="o">;</span>
+
+    <span class="cm">/***
+     * Classes which implement this interface provide a method that deals
+     * with {@link AndroidDebugBridge} changes.
+     */</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="n">erface</span> <span class="n">IDebugBridgeChangeListener</span> <span class="o">{</span>
+        <span class="cm">/***
+         * Sent when a new {@link AndroidDebugBridge} is connected.
+         * &lt;p/&gt;
+         * This is sent from a non UI thread.
+         * @param bridge the new {@link AndroidDebugBridge} object.
+         */</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">bridgeChanged</span><span class="o">(</span><span class="n">AndroidDebugBridge</span> <span class="n">bridge</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Classes which implement this interface provide methods that deal
+     * with {@link IDevice} addition, deletion, and changes.
+     */</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="n">erface</span> <span class="n">IDeviceChangeListener</span> <span class="o">{</span>
+        <span class="cm">/***
+         * Sent when the a device is connected to the {@link AndroidDebugBridge}.
+         * &lt;p/&gt;
+         * This is sent from a non UI thread.
+         * @param device the new device.
+         */</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceConnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">);</span>
+
+        <span class="cm">/***
+         * Sent when the a device is connected to the {@link AndroidDebugBridge}.
+         * &lt;p/&gt;
+         * This is sent from a non UI thread.
+         * @param device the new device.
+         */</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceDisconnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">);</span>
+
+        <span class="cm">/***
+         * Sent when a device data changed, or when clients are started/terminated on the device.
+         * &lt;p/&gt;
+         * This is sent from a non UI thread.
+         * @param device the device that was updated.
+         * @param changeMask the mask describing what changed. It can contain any of the following
+         * values: {@link IDevice#CHANGE_BUILD_INFO}, {@link IDevice#CHANGE_STATE},
+         * {@link IDevice#CHANGE_CLIENT_LIST}
+         */</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">deviceChanged</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">,</span> <span class="kt">int</span> <span class="n">changeMask</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Classes which implement this interface provide methods that deal
+     * with {@link Client}  changes.
+     */</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="n">erface</span> <span class="n">IClientChangeListener</span> <span class="o">{</span>
+        <span class="cm">/***
+         * Sent when an existing client information changed.
+         * &lt;p/&gt;
+         * This is sent from a non UI thread.
+         * @param client the updated client.
+         * @param changeMask the bit mask describing the changed properties. It can contain
+         * any of the following values: {@link Client#CHANGE_INFO},
+         * {@link Client#CHANGE_DEBUGGER_STATUS}, {@link Client#CHANGE_THREAD_MODE},
+         * {@link Client#CHANGE_THREAD_DATA}, {@link Client#CHANGE_HEAP_MODE},
+         * {@link Client#CHANGE_HEAP_DATA}, {@link Client#CHANGE_NATIVE_HEAP_DATA}
+         */</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="n">clientChanged</span><span class="o">(</span><span class="n">Client</span> <span class="n">client</span><span class="o">,</span> <span class="kt">int</span> <span class="n">changeMask</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Initializes the &lt;code&gt;ddm&lt;/code&gt; library.
+     * &lt;p/&gt;This must be called once &lt;b&gt;before&lt;/b&gt; any call to
+     * {@link #createBridge(String, boolean)}.
+     * &lt;p&gt;The library can be initialized in 2 ways:
+     * &lt;ul&gt;
+     * &lt;li&gt;Mode 1: &lt;var&gt;clientSupport&lt;/var&gt; == &lt;code&gt;true&lt;/code&gt;.&lt;br&gt;The library monitors the
+     * devices and the applications running on them. It will connect to each application, as a
+     * debugger of sort, to be able to interact with them through JDWP packets.&lt;/li&gt;
+     * &lt;li&gt;Mode 2: &lt;var&gt;clientSupport&lt;/var&gt; == &lt;code&gt;false&lt;/code&gt;.&lt;br&gt;The library only monitors
+     * devices. The applications are left untouched, letting other tools built on
+     * &lt;code&gt;ddmlib&lt;/code&gt; to connect a debugger to them.&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;p/&gt;&lt;b&gt;Only one tool can run in mode 1 at the same time.&lt;/b&gt;
+     * &lt;p/&gt;Note that mode 1 does not prevent debugging of applications running on devices. Mode 1
+     * lets debuggers connect to &lt;code&gt;ddmlib&lt;/code&gt; which acts as a proxy between the debuggers and
+     * the applications to debug. See {@link Client#getDebuggerListenPort()}.
+     * &lt;p/&gt;The preferences of &lt;code&gt;ddmlib&lt;/code&gt; should also be initialized with whatever default
+     * values were changed from the default values.
+     * &lt;p/&gt;When the application quits, {@link #terminate()} should be called.
+     * @param clientSupport Indicates whether the library should enable the monitoring and
+     * interaction with applications running on the devices.
+     * @see AndroidDebugBridge#createBridge(String, boolean)
+     * @see DdmPreferences
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">init</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">clientSupport</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">sClientSupport</span> <span class="o">=</span> <span class="n">clientSupport</span><span class="o">;</span>
+
+        <span class="n">MonitorThread</span> <span class="n">monitorThread</span> <span class="o">=</span> <span class="n">MonitorThread</span><span class="o">.</span><span class="na">createInstance</span><span class="o">();</span>
+        <span class="n">monitorThread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="n">HandleHello</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+        <span class="n">HandleAppName</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+        <span class="n">HandleTest</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+        <span class="n">HandleThread</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+        <span class="n">HandleHeap</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+        <span class="n">HandleWait</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+        <span class="n">HandleProfiling</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">monitorThread</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Terminates the ddm library. This must be called upon application termination.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">terminate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// kill the monitoring services</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">sThis</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">sThis</span><span class="o">.</span><span class="na">mDeviceMonitor</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sThis</span><span class="o">.</span><span class="na">mDeviceMonitor</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+            <span class="n">sThis</span><span class="o">.</span><span class="na">mDeviceMonitor</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">MonitorThread</span> <span class="n">monitorThread</span> <span class="o">=</span> <span class="n">MonitorThread</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">monitorThread</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">monitorThread</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns whether the ddmlib is setup to support monitoring and interacting with
+     * {@link Client}s running on the {@link IDevice}s.
+     */</span>
+    <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">getClientSupport</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sClientSupport</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Creates a {@link AndroidDebugBridge} that is not linked to any particular executable.
+     * &lt;p/&gt;This bridge will expect adb to be running. It will not be able to start/stop/restart
+     * adb.
+     * &lt;p/&gt;If a bridge has already been started, it is directly returned with no changes (similar
+     * to calling {@link #getBridge()}).
+     * @return a connected bridge.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">AndroidDebugBridge</span> <span class="n">createBridge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sThis</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">sThis</span><span class="o">;</span>
+            <span class="o">}</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">sThis</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AndroidDebugBridge</span><span class="o">();</span>
+                <span class="n">sThis</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InvalidParameterException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sThis</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="o">}</span>
+
+            <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+            <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+            <span class="c1">// the main list.</span>
+            <span class="c1">// This mostly happens when the application quits.</span>
+            <span class="n">IDebugBridgeChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                    <span class="k">new</span> <span class="n">IDebugBridgeChangeListener</span><span class="o">[</span><span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+
+            <span class="c1">// notify the listeners of the change</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">IDebugBridgeChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+                <span class="c1">// thread</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">listener</span><span class="o">.</span><span class="na">bridgeChanged</span><span class="o">(</span><span class="n">sThis</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">sThis</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+    <span class="cm">/***
+     * Creates a new debug bridge from the location of the command line tool.
+     * &lt;p/&gt;
+     * Any existing server will be disconnected, unless the location is the same and
+     * &lt;code&gt;forceNewBridge&lt;/code&gt; is set to false.
+     * @param osLocation the location of the command line tool 'adb'
+     * @param forceNewBridge force creation of a new bridge even if one with the same location
+     * already exists.
+     * @return a connected bridge.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">AndroidDebugBridge</span> <span class="n">createBridge</span><span class="o">(</span><span class="n">String</span> <span class="n">osLocation</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">forceNewBridge</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sThis</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">sThis</span><span class="o">.</span><span class="na">mAdbOsLocation</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">sThis</span><span class="o">.</span><span class="na">mAdbOsLocation</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">osLocation</span><span class="o">)</span> <span class="o">&amp;&amp;</span>
+                        <span class="n">forceNewBridge</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">sThis</span><span class="o">;</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="c1">// stop the current server</span>
+                    <span class="n">sThis</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">sThis</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AndroidDebugBridge</span><span class="o">(</span><span class="n">osLocation</span><span class="o">);</span>
+                <span class="n">sThis</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InvalidParameterException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sThis</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="o">}</span>
+
+            <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+            <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+            <span class="c1">// the main list.</span>
+            <span class="c1">// This mostly happens when the application quits.</span>
+            <span class="n">IDebugBridgeChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                    <span class="k">new</span> <span class="n">IDebugBridgeChangeListener</span><span class="o">[</span><span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+
+            <span class="c1">// notify the listeners of the change</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">IDebugBridgeChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+                <span class="c1">// thread</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">listener</span><span class="o">.</span><span class="na">bridgeChanged</span><span class="o">(</span><span class="n">sThis</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">sThis</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns the current debug bridge. Can be &lt;code&gt;null&lt;/code&gt; if none were created.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">AndroidDebugBridge</span> <span class="n">getBridge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sThis</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Disconnects the current debug bridge, and destroy the object.
+     * &lt;p/&gt;This also stops the current adb host server.
+     * &lt;p/&gt;
+     * A new object will have to be created with {@link #createBridge(String, boolean)}.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">disconnectBridge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sThis</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sThis</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+                <span class="n">sThis</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+                <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+                <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+                <span class="c1">// the main list.</span>
+                <span class="c1">// This mostly happens when the application quits.</span>
+                <span class="n">IDebugBridgeChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                        <span class="k">new</span> <span class="n">IDebugBridgeChangeListener</span><span class="o">[</span><span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+
+                <span class="c1">// notify the listeners.</span>
+                <span class="k">for</span> <span class="o">(</span><span class="n">IDebugBridgeChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+                    <span class="c1">// thread</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">listener</span><span class="o">.</span><span class="na">bridgeChanged</span><span class="o">(</span><span class="n">sThis</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Adds the listener to the collection of listeners who will be notified when a new
+     * {@link AndroidDebugBridge} is connected, by sending it one of the messages defined
+     * in the {@link IDebugBridgeChangeListener} interface.
+     * @param listener The listener which should be notified.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">addDebugBridgeChangeListener</span><span class="o">(</span><span class="n">IDebugBridgeChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">listener</span><span class="o">)</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">sThis</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+                    <span class="c1">// thread</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">listener</span><span class="o">.</span><span class="na">bridgeChanged</span><span class="o">(</span><span class="n">sThis</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Removes the listener from the collection of listeners who will be notified when a new
+     * {@link AndroidDebugBridge} is started.
+     * @param listener The listener which should no longer be notified.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">removeDebugBridgeChangeListener</span><span class="o">(</span><span class="n">IDebugBridgeChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sBridgeListeners</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Adds the listener to the collection of listeners who will be notified when a {@link IDevice}
+     * is connected, disconnected, or when its properties or its {@link Client} list changed,
+     * by sending it one of the messages defined in the {@link IDeviceChangeListener} interface.
+     * @param listener The listener which should be notified.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">addDeviceChangeListener</span><span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">listener</span><span class="o">)</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Removes the listener from the collection of listeners who will be notified when a
+     * {@link IDevice} is connected, disconnected, or when its properties or its {@link Client}
+     * list changed.
+     * @param listener The listener which should no longer be notified.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">removeDeviceChangeListener</span><span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Adds the listener to the collection of listeners who will be notified when a {@link Client}
+     * property changed, by sending it one of the messages defined in the
+     * {@link IClientChangeListener} interface.
+     * @param listener The listener which should be notified.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">addClientChangeListener</span><span class="o">(</span><span class="n">IClientChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sClientListeners</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">listener</span><span class="o">)</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sClientListeners</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Removes the listener from the collection of listeners who will be notified when a
+     * {@link Client} property changed.
+     * @param listener The listener which should no longer be notified.
+     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">removeClientChangeListener</span><span class="o">(</span><span class="n">IClientChangeListener</span> <span class="n">listener</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">sClientListeners</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+    <span class="cm">/***
+     * Returns the devices.
+     * @see #hasInitialDeviceList()
+     */</span>
+    <span class="kd">public</span> <span class="n">IDevice</span><span class="o">[]</span> <span class="n">getDevices</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">mDeviceMonitor</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">getDevices</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="n">IDevice</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns whether the bridge has acquired the initial list from adb after being created.
+     * &lt;p/&gt;Calling {@link #getDevices()} right after {@link #createBridge(String, boolean)} will
+     * generally result in an empty list. This is due to the internal asynchronous communication
+     * mechanism with &lt;code&gt;adb&lt;/code&gt; that does not guarantee that the {@link IDevice} list has been
+     * built before the call to {@link #getDevices()}.
+     * &lt;p/&gt;The recommended way to get the list of {@link IDevice} objects is to create a
+     * {@link IDeviceChangeListener} object.
+     */</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">hasInitialDeviceList</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mDeviceMonitor</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">hasInitialDeviceList</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Sets the client to accept debugger connection on the custom "Selected debug port".
+     * @param selectedClient the client. Can be null.
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setSelectedClient</span><span class="o">(</span><span class="n">Client</span> <span class="n">selectedClient</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">MonitorThread</span> <span class="n">monitorThread</span> <span class="o">=</span> <span class="n">MonitorThread</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">monitorThread</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">monitorThread</span><span class="o">.</span><span class="na">setSelectedClient</span><span class="o">(</span><span class="n">selectedClient</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns whether the {@link AndroidDebugBridge} object is still connected to the adb daemon.
+     */</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">isConnected</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">MonitorThread</span> <span class="n">monitorThread</span> <span class="o">=</span> <span class="n">MonitorThread</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mDeviceMonitor</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">monitorThread</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">isMonitoring</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">monitorThread</span><span class="o">.</span><span class="na">getState</span><span class="o">()</span> <span class="o">!=</span> <span class="n">State</span><span class="o">.</span><span class="na">TERMINATED</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns the number of times the {@link AndroidDebugBridge} object attempted to connect
+     * to the adb daemon.
+     */</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getConnectionAttemptCount</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mDeviceMonitor</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">getConnectionAttemptCount</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns the number of times the {@link AndroidDebugBridge} object attempted to restart
+     * the adb daemon.
+     */</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getRestartAttemptCount</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mDeviceMonitor</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">getRestartAttemptCount</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Creates a new bridge.
+     * @param osLocation the location of the command line tool
+     * @throws InvalidParameterException
+     */</span>
+    <span class="kd">private</span> <span class="n">AndroidDebugBridge</span><span class="o">(</span><span class="n">String</span> <span class="n">osLocation</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InvalidParameterException</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">osLocation</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">osLocation</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">InvalidParameterException</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">mAdbOsLocation</span> <span class="o">=</span> <span class="n">osLocation</span><span class="o">;</span>
+
+        <span class="n">checkAdbVersion</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Creates a new bridge not linked to any particular adb executable.
+     */</span>
+    <span class="kd">private</span> <span class="n">AndroidDebugBridge</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Queries adb for its version number and checks it against {@link #MIN_VERSION_NUMBER} and
+     * {@link #MAX_VERSION_NUMBER}
+     */</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="n">checkAdbVersion</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// default is bad check</span>
+        <span class="n">mVersionCheck</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">mAdbOsLocation</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span><span class="o">[]</span> <span class="n">command</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>
+            <span class="n">command</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">mAdbOsLocation</span><span class="o">;</span>
+            <span class="n">command</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="s">"version"</span><span class="o">;</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"Checking '%1$s version'"</span><span class="o">,</span> <span class="n">mAdbOsLocation</span><span class="o">));</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="n">Process</span> <span class="n">process</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">errorOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">stdOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">grabProcessOutput</span><span class="o">(</span><span class="n">process</span><span class="o">,</span> <span class="n">errorOutput</span><span class="o">,</span> <span class="n">stdOutput</span><span class="o">,</span>
+                    <span class="kc">true</span> <span class="cm">/** waitForReaders */</span><span class="o">);</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">StringBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">(</span><span class="s">"'adb version' failed!"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+                <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">error</span> <span class="o">:</span> <span class="n">errorOutput</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="sc">'\n'</span><span class="o">);</span>
+                    <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">error</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">ERROR</span><span class="o">,</span> <span class="s">"adb"</span><span class="o">,</span> <span class="n">builder</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+            <span class="o">}</span>
+
+            <span class="c1">// check both stdout and stderr</span>
+            <span class="kt">boolean</span> <span class="n">versionFound</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">line</span> <span class="o">:</span> <span class="n">stdOutput</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">versionFound</span> <span class="o">=</span> <span class="n">scanVersionLine</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">versionFound</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">versionFound</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">line</span> <span class="o">:</span> <span class="n">errorOutput</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">versionFound</span> <span class="o">=</span> <span class="n">scanVersionLine</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">versionFound</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">break</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">if</span> <span class="o">(!</span><span class="n">versionFound</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// if we get here, we failed to parse the output.</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">ERROR</span><span class="o">,</span> <span class="n">ADB</span><span class="o">,</span>
+                        <span class="s">"Failed to parse the output of 'adb version'"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">ERROR</span><span class="o">,</span> <span class="n">ADB</span><span class="o">,</span>
+                    <span class="s">"Failed to get the adb version: "</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span> <span class="c1">//$NON-NLS-1$</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Scans a line resulting from 'adb version' for a potential version number.
+     * &lt;p/&gt;
+     * If a version number is found, it checks the version number against what is expected
+     * by this version of ddms.
+     * &lt;p/&gt;
+     * Returns true when a version number has been found so that we can stop scanning,
+     * whether the version number is in the acceptable range or not.
+     *
+     * @param line The line to scan.
+     * @return True if a version number was found (whether it is acceptable or not).
+     */</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">scanVersionLine</span><span class="o">(</span><span class="n">String</span> <span class="n">line</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">line</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">sAdbVersion</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">matches</span><span class="o">())</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">majorVersion</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">1</span><span class="o">));</span>
+                <span class="kt">int</span> <span class="n">minorVersion</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+                <span class="kt">int</span> <span class="n">microVersion</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>
+
+                <span class="c1">// check only the micro version for now.</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">microVersion</span> <span class="o">&lt;</span> <span class="n">ADB_VERSION_MICRO_MIN</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span>
+                            <span class="s">"Required minimum version of adb: %1$d.%2$d.%3$d."</span> <span class="c1">//$NON-NLS-1$</span>
+                            <span class="o">+</span> <span class="s">"Current version is %1$d.%2$d.%4$d"</span><span class="o">,</span> <span class="c1">//$NON-NLS-1$</span>
+                            <span class="n">majorVersion</span><span class="o">,</span> <span class="n">minorVersion</span><span class="o">,</span> <span class="n">ADB_VERSION_MICRO_MIN</span><span class="o">,</span>
+                            <span class="n">microVersion</span><span class="o">);</span>
+                    <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">ERROR</span><span class="o">,</span> <span class="n">ADB</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ADB_VERSION_MICRO_MAX</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span>
+                        <span class="n">microVersion</span> <span class="o">&gt;</span> <span class="n">ADB_VERSION_MICRO_MAX</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span>
+                            <span class="s">"Required maximum version of adb: %1$d.%2$d.%3$d."</span> <span class="c1">//$NON-NLS-1$</span>
+                            <span class="o">+</span> <span class="s">"Current version is %1$d.%2$d.%4$d"</span><span class="o">,</span> <span class="c1">//$NON-NLS-1$</span>
+                            <span class="n">majorVersion</span><span class="o">,</span> <span class="n">minorVersion</span><span class="o">,</span> <span class="n">ADB_VERSION_MICRO_MAX</span><span class="o">,</span>
+                            <span class="n">microVersion</span><span class="o">);</span>
+                    <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">ERROR</span><span class="o">,</span> <span class="n">ADB</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="n">mVersionCheck</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                <span class="o">}</span>
+
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Starts the debug bridge.
+     * @return true if success.
+     */</span>
+    <span class="kt">boolean</span> <span class="n">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mAdbOsLocation</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">mVersionCheck</span> <span class="o">==</span> <span class="kc">false</span> <span class="o">||</span> <span class="n">startAdb</span><span class="o">()</span> <span class="o">==</span> <span class="kc">false</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">mStarted</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+
+        <span class="c1">// now that the bridge is connected, we start the underlying services.</span>
+        <span class="n">mDeviceMonitor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DeviceMonitor</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+   <span class="cm">/***
+     * Kills the debug bridge, and the adb host server.
+     * @return true if success
+     */</span>
+    <span class="kt">boolean</span> <span class="n">stop</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// if we haven't started we return false;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mStarted</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="c1">// kill the monitoring services</span>
+        <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="n">mDeviceMonitor</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">stopAdb</span><span class="o">()</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">mStarted</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Restarts adb, but not the services around it.
+     * @return true if success.
+     */</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">restart</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mAdbOsLocation</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">ADB</span><span class="o">,</span>
+                    <span class="s">"Cannot restart adb when AndroidDebugBridge is created without the location of adb."</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">mVersionCheck</span> <span class="o">==</span> <span class="kc">false</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">logAndDisplay</span><span class="o">(</span><span class="n">LogLevel</span><span class="o">.</span><span class="na">ERROR</span><span class="o">,</span> <span class="n">ADB</span><span class="o">,</span>
+                    <span class="s">"Attempting to restart adb, but version check failed!"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">stopAdb</span><span class="o">();</span>
+
+            <span class="kt">boolean</span> <span class="n">restart</span> <span class="o">=</span> <span class="n">startAdb</span><span class="o">();</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">restart</span> <span class="o">&amp;&amp;</span> <span class="n">mDeviceMonitor</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">mDeviceMonitor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DeviceMonitor</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+                <span class="n">mDeviceMonitor</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">restart</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Notify the listener of a new {@link IDevice}.
+     * &lt;p/&gt;
+     * The notification of the listeners is done in a synchronized block. It is important to
+     * expect the listeners to potentially access various methods of {@link IDevice} as well as
+     * {@link #getDevices()} which use internal locks.
+     * &lt;p/&gt;
+     * For this reason, any call to this method from a method of {@link DeviceMonitor},
+     * {@link IDevice} which is also inside a synchronized block, should first synchronize on
+     * the {@link AndroidDebugBridge} lock. Access to this lock is done through {@link #getLock()}.
+     * @param device the new &lt;code&gt;IDevice&lt;/code&gt;.
+     * @see #getLock()
+     */</span>
+    <span class="kt">void</span> <span class="n">deviceConnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+        <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+        <span class="c1">// the main list.</span>
+        <span class="c1">// This mostly happens when the application quits.</span>
+        <span class="n">IDeviceChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                    <span class="k">new</span> <span class="n">IDeviceChangeListener</span><span class="o">[</span><span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Notify the listeners</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+            <span class="c1">// thread</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">listener</span><span class="o">.</span><span class="na">deviceConnected</span><span class="o">(</span><span class="n">device</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Notify the listener of a disconnected {@link IDevice}.
+     * &lt;p/&gt;
+     * The notification of the listeners is done in a synchronized block. It is important to
+     * expect the listeners to potentially access various methods of {@link IDevice} as well as
+     * {@link #getDevices()} which use internal locks.
+     * &lt;p/&gt;
+     * For this reason, any call to this method from a method of {@link DeviceMonitor},
+     * {@link IDevice} which is also inside a synchronized block, should first synchronize on
+     * the {@link AndroidDebugBridge} lock. Access to this lock is done through {@link #getLock()}.
+     * @param device the disconnected &lt;code&gt;IDevice&lt;/code&gt;.
+     * @see #getLock()
+     */</span>
+    <span class="kt">void</span> <span class="n">deviceDisconnected</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+        <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+        <span class="c1">// the main list.</span>
+        <span class="c1">// This mostly happens when the application quits.</span>
+        <span class="n">IDeviceChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                    <span class="k">new</span> <span class="n">IDeviceChangeListener</span><span class="o">[</span><span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Notify the listeners</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+            <span class="c1">// thread</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">listener</span><span class="o">.</span><span class="na">deviceDisconnected</span><span class="o">(</span><span class="n">device</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Notify the listener of a modified {@link IDevice}.
+     * &lt;p/&gt;
+     * The notification of the listeners is done in a synchronized block. It is important to
+     * expect the listeners to potentially access various methods of {@link IDevice} as well as
+     * {@link #getDevices()} which use internal locks.
+     * &lt;p/&gt;
+     * For this reason, any call to this method from a method of {@link DeviceMonitor},
+     * {@link IDevice} which is also inside a synchronized block, should first synchronize on
+     * the {@link AndroidDebugBridge} lock. Access to this lock is done through {@link #getLock()}.
+     * @param device the modified &lt;code&gt;IDevice&lt;/code&gt;.
+     * @see #getLock()
+     */</span>
+    <span class="kt">void</span> <span class="n">deviceChanged</span><span class="o">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">,</span> <span class="kt">int</span> <span class="n">changeMask</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+        <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+        <span class="c1">// the main list.</span>
+        <span class="c1">// This mostly happens when the application quits.</span>
+        <span class="n">IDeviceChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                    <span class="k">new</span> <span class="n">IDeviceChangeListener</span><span class="o">[</span><span class="n">sDeviceListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Notify the listeners</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">IDeviceChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+            <span class="c1">// thread</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">listener</span><span class="o">.</span><span class="na">deviceChanged</span><span class="o">(</span><span class="n">device</span><span class="o">,</span> <span class="n">changeMask</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Notify the listener of a modified {@link Client}.
+     * &lt;p/&gt;
+     * The notification of the listeners is done in a synchronized block. It is important to
+     * expect the listeners to potentially access various methods of {@link IDevice} as well as
+     * {@link #getDevices()} which use internal locks.
+     * &lt;p/&gt;
+     * For this reason, any call to this method from a method of {@link DeviceMonitor},
+     * {@link IDevice} which is also inside a synchronized block, should first synchronize on
+     * the {@link AndroidDebugBridge} lock. Access to this lock is done through {@link #getLock()}.
+     * @param device the modified &lt;code&gt;Client&lt;/code&gt;.
+     * @param changeMask the mask indicating what changed in the &lt;code&gt;Client&lt;/code&gt;
+     * @see #getLock()
+     */</span>
+    <span class="kt">void</span> <span class="n">clientChanged</span><span class="o">(</span><span class="n">Client</span> <span class="n">client</span><span class="o">,</span> <span class="kt">int</span> <span class="n">changeMask</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// because the listeners could remove themselves from the list while processing</span>
+        <span class="c1">// their event callback, we make a copy of the list and iterate on it instead of</span>
+        <span class="c1">// the main list.</span>
+        <span class="c1">// This mostly happens when the application quits.</span>
+        <span class="n">IClientChangeListener</span><span class="o">[]</span> <span class="n">listenersCopy</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sLock</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">listenersCopy</span> <span class="o">=</span> <span class="n">sClientListeners</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span>
+                    <span class="k">new</span> <span class="n">IClientChangeListener</span><span class="o">[</span><span class="n">sClientListeners</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+
+        <span class="o">}</span>
+
+        <span class="c1">// Notify the listeners</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">IClientChangeListener</span> <span class="n">listener</span> <span class="o">:</span> <span class="n">listenersCopy</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// we attempt to catch any exception so that a bad listener doesn't kill our</span>
+            <span class="c1">// thread</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">listener</span><span class="o">.</span><span class="na">clientChanged</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="n">changeMask</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns the {@link DeviceMonitor} object.
+     */</span>
+    <span class="n">DeviceMonitor</span> <span class="n">getDeviceMonitor</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">mDeviceMonitor</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Starts the adb host side server.
+     * @return true if success
+     */</span>
+    <span class="kd">synchronized</span> <span class="kt">boolean</span> <span class="n">startAdb</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mAdbOsLocation</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">ADB</span><span class="o">,</span>
+                <span class="s">"Cannot start adb when AndroidDebugBridge is created without the location of adb."</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">Process</span> <span class="n">proc</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span><span class="o">[]</span> <span class="n">command</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>
+            <span class="n">command</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">mAdbOsLocation</span><span class="o">;</span>
+            <span class="n">command</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="s">"start-server"</span><span class="o">;</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span>
+                    <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"Launching '%1$s %2$s' to ensure ADB is running."</span><span class="o">,</span> <span class="c1">//$NON-NLS-1$</span>
+                    <span class="n">mAdbOsLocation</span><span class="o">,</span> <span class="n">command</span><span class="o">[</span><span class="mi">1</span><span class="o">]));</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">errorOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">stdOutput</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">grabProcessOutput</span><span class="o">(</span><span class="n">proc</span><span class="o">,</span> <span class="n">errorOutput</span><span class="o">,</span> <span class="n">stdOutput</span><span class="o">,</span>
+                    <span class="kc">false</span> <span class="cm">/** waitForReaders */</span><span class="o">);</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="s">"Unable to run 'adb': "</span> <span class="o">+</span> <span class="n">ioe</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="c1">// we'll return false;</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="s">"Unable to run 'adb': "</span> <span class="o">+</span> <span class="n">ie</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="c1">// we'll return false;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">w</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span>
+                    <span class="s">"'adb start-server' failed -- run manually if necessary"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="s">"'adb start-server' succeeded"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Stops the adb host side server.
+     * @return true if success
+     */</span>
+    <span class="kd">private</span> <span class="kd">synchronized</span> <span class="kt">boolean</span> <span class="n">stopAdb</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mAdbOsLocation</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">ADB</span><span class="o">,</span>
+                <span class="s">"Cannot stop adb when AndroidDebugBridge is created without the location of adb."</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">Process</span> <span class="n">proc</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span><span class="o">[]</span> <span class="n">command</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>
+            <span class="n">command</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">mAdbOsLocation</span><span class="o">;</span>
+            <span class="n">command</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="s">"kill-server"</span><span class="o">;</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">command</span><span class="o">);</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="na">waitFor</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// we'll return false;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// we'll return false;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">w</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span>
+                    <span class="s">"'adb kill-server' failed -- run manually if necessary"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">DDMS</span><span class="o">,</span> <span class="s">"'adb kill-server' succeeded"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Get the stderr/stdout outputs of a process and return when the process is done.
+     * Both &lt;b&gt;must&lt;/b&gt; be read or the process will block on windows.
+     * @param process The process to get the ouput from
+     * @param errorOutput The array to store the stderr output. cannot be null.
+     * @param stdOutput The array to store the stdout output. cannot be null.
+     * @param displayStdOut If true this will display stdout as well
+     * @param waitforReaders if true, this will wait for the reader threads.
+     * @return the process return code.
+     * @throws InterruptedException
+     */</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">grabProcessOutput</span><span class="o">(</span><span class="kd">final</span> <span class="n">Process</span> <span class="n">process</span><span class="o">,</span> <span class="kd">final</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">errorOutput</span><span class="o">,</span>
+            <span class="kd">final</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">stdOutput</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">waitforReaders</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="k">assert</span> <span class="n">errorOutput</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">assert</span> <span class="n">stdOutput</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="c1">// read the lines as they come. if null is returned, it's</span>
+        <span class="c1">// because the process finished</span>
+        <span class="n">Thread</span> <span class="n">t1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="s">""</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="c1">// create a buffer to read the stderr output</span>
+                <span class="n">InputStreamReader</span> <span class="n">is</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">process</span><span class="o">.</span><span class="na">getErrorStream</span><span class="o">());</span>
+                <span class="n">BufferedReader</span> <span class="n">errReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">is</span><span class="o">);</span>
+
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">String</span> <span class="n">line</span> <span class="o">=</span> <span class="n">errReader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="n">line</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">ADB</span><span class="o">,</span> <span class="n">line</span><span class="o">);</span>
+                            <span class="n">errorOutput</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+                        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                            <span class="k">break</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// do nothing.</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+
+        <span class="n">Thread</span> <span class="n">t2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="s">""</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//$NON-NLS-1$</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="n">InputStreamReader</span> <span class="n">is</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">process</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+                <span class="n">BufferedReader</span> <span class="n">outReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="n">is</span><span class="o">);</span>
+
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">String</span> <span class="n">line</span> <span class="o">=</span> <span class="n">outReader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="n">line</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">ADB</span><span class="o">,</span> <span class="n">line</span><span class="o">);</span>
+                            <span class="n">stdOutput</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+                        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                            <span class="k">break</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// do nothing.</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+
+        <span class="n">t1</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+        <span class="n">t2</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="c1">// it looks like on windows process#waitFor() can return</span>
+        <span class="c1">// before the thread have filled the arrays, so we wait for both threads and the</span>
+        <span class="c1">// process itself.</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">waitforReaders</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">t1</span><span class="o">.</span><span class="na">join</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">t2</span><span class="o">.</span><span class="na">join</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="c1">// get the return code from the process</span>
+        <span class="k">return</span> <span class="n">process</span><span class="o">.</span><span class="na">waitFor</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/***
+     * Returns the singleton lock used by this class to protect any access to the listener.
+     * &lt;p/&gt;
+     * This includes adding/removing listeners, but also notifying listeners of new bridges,
+     * devices, and clients.
+     */</span>
+    <span class="kd">static</span> <span class="n">Object</span> <span class="n">getLock</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">sLock</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android SDK 源码阅读之 ADB(AndroidDebugBridge)源码共赏析 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1219#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1219#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1219#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1219#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1219#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>3</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1219#reply1">1楼</a> · <abbr class="timeago" title="2014-08-04T18:41:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7294" data-state="" data-type="Reply" href="1219#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1219/replies/7294/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="1219#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>答应大家的源码~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1219#reply2">2楼</a> · <abbr class="timeago" title="2014-08-04T19:07:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="7297" data-state="" data-type="Reply" href="1219#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1219/replies/7297/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="1219#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这是adb么。。 adb 不是应该在 <a href="http://androidxref.com/4.4.3_r1.1/xref/system/core/adb/" rel="nofollow" target="_blank">http://androidxref.com/4.4.3_r1.1/xref/system/core/adb/</a> 这里的么。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1219#reply3">3楼</a> · <abbr class="timeago" title="2014-08-04T21:08:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7313" data-state="" data-type="Reply" href="1219#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1219/replies/7313/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="1219#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1219#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 这个是SDK里的~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @meiyu 有希望，有爱的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1219#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

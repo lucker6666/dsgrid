@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 需求与Bug 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 需求与Bug 节点最新发帖.</description>
+    <item>
+      <title>站内搜索功能已添加</title>
+      <description>&lt;p&gt;采用了 elasticsearch + mmseg，css 挫了一点。小A说他来弄CSS。这我一般不信的。&lt;br&gt;
+&amp;lt;hh&amp;gt;&amp;lt;hh&amp;gt;&lt;br&gt;
+&amp;lt;object&amp;gt;&lt;br&gt;
+目前可能是查询策略或者分词问题，搜索结果会带进许多噪音，请原谅。有高手的话，可以帮忙看下。&lt;/p&gt;
+
+&lt;p&gt;Search 的代码如下：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="c1"&gt;# coding: utf-8&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SearchController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="ss"&gt;query: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;multi_match: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="ss"&gt;query: &lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:q&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="ss"&gt;fields: &lt;/span&gt;&lt;span class="sx"&gt;%w(title body)&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="ss"&gt;fuzziness: &lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="ss"&gt;highlight: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;fields: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="ss"&gt;title: &lt;/span&gt;&lt;span class="p"&gt;{},&lt;/span&gt;
+                &lt;span class="ss"&gt;body: &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;paginate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;page: &lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;per_page: &lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;records&lt;/span&gt;
+    &lt;span class="vi"&gt;@count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;total_entries&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;mmseg 配置用的就是官方的：&lt;/p&gt;
+&lt;pre class="highlight yaml"&gt;
+&lt;span class="s"&gt;index&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="s"&gt;analysis&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="s"&gt;tokenizer&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="s"&gt;mmseg_maxword&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+          &lt;span class="s"&gt;type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;mmseg&lt;/span&gt;
+          &lt;span class="s"&gt;seg_type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="s"&gt;max_word"&lt;/span&gt;
+      &lt;span class="s"&gt;mmseg_complex&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+          &lt;span class="s"&gt;type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;mmseg&lt;/span&gt;
+          &lt;span class="s"&gt;seg_type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="s"&gt;complex"&lt;/span&gt;
+      &lt;span class="s"&gt;mmseg_simple&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+          &lt;span class="s"&gt;type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;mmseg&lt;/span&gt;
+          &lt;span class="s"&gt;seg_type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="s"&gt;simple"&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Tue, 25 Nov 2014 23:46:19 +0800</pubDate>
+      <link>http://testerhome.com/topics/1618</link>
+      <guid>http://testerhome.com/topics/1618</guid>
+    </item>
+    <item>
+      <title>Testerhome 易拉宝方案</title>
+      <description>&lt;p&gt;易拉宝或称海报架、展示架，是树立式宣传海报，常见于人流多的街头通道，协助个体户式的路演推销活动，或是临时摊位。&lt;br&gt;
+易拉宝的构造是一个座地的卷轴，由地面向上是一支申缩柱，柱顶有一个扣，使用时由卷轴拉出一幅直立式的海报，吸引途人的注意。&lt;br&gt;
+易拉宝适用于会议、展览、销售宣传等场合，是使用频率最高，也最常见的便携展具之一。&lt;/p&gt;
+
+&lt;p&gt;我们现在获得了2个方案&lt;br&gt;
+a.&lt;br&gt;
+&lt;img src="/photo/2014/d58bad472610296f787eaf1dbb2749b1.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;b. &lt;br&gt;
+&lt;img src="/photo/2014/03082fafb82e107e363ff1711bc73a07.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>oscarxie</author>
+      <pubDate>Thu, 11 Sep 2014 16:45:45 +0800</pubDate>
+      <link>http://testerhome.com/topics/1381</link>
+      <guid>http://testerhome.com/topics/1381</guid>
+    </item>
+    <item>
+      <title>用户名或密码错误 与 密码错误 的区别</title>
+      <description>&lt;p&gt;首先说下槽点，测试时间那么&lt;code&gt;紧&lt;/code&gt;，还经常因为产品设计问题弄的更紧张。&lt;br&gt;
+  &lt;strong&gt;槽点：产品你能不能不坑我！&lt;/strong&gt;&lt;br&gt;
+事情很简单，我司有个登录系统，有这么2道常见判断条件：1、用户名不存在，提示“不存在此用户”；2、用户名正确，密码错误时，提醒“用户名或密码错误”。&lt;/p&gt;
+
+&lt;p&gt;之前我一直在纠结，已经有判断1了，判断2为啥不直接提醒“您的密码错误，请重新输入”。关于这个问题，我也在群里问了，&lt;a href="/mingway" class="at_user" title="@mingway"&gt;&lt;i&gt;@&lt;/i&gt;mingway&lt;/a&gt; 跟我说，有这么个原因:&lt;code&gt;从账号安全角度讲，我知道不太清楚你的账号和密码，一直在蒙着填，通过提示，蒙对了账号，那就只剩下猜密码了，密码再猜到，就登上去了~&lt;br&gt;
+提示账号或密码错误，实际上是在扔烟雾弹。&lt;/code&gt;&lt;br&gt;
+说的有道理，但是后来有人提醒我了，还有另外一个原因，有可能遇到下面这样情况，&lt;br&gt;
+·&lt;code&gt;用户的登录名是liujingjie，密码是123123，但是输入的时候输入的是liujingjiee，密码输123123，正确的，但是用户名在不知情的情况小艾多输一个e(很多时间有可能不是在尾部)&lt;/code&gt;&lt;br&gt;
+假如只提醒密码错误，用户可能一遍遍重复输入密码，此时都提醒“密码错误”就不好了。所以有必要提醒“用户名或密码错误”。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;我是  JakeWendao.&lt;/strong&gt;&lt;/p&gt;</description>
+      <author>jakewendao</author>
+      <pubDate>Thu, 07 Aug 2014 15:46:57 +0800</pubDate>
+      <link>http://testerhome.com/topics/1239</link>
+      <guid>http://testerhome.com/topics/1239</guid>
+    </item>
+    <item>
+      <title>本站的搜索功能不给力的解决方法</title>
+      <description>&lt;p&gt;打开 &lt;a href="https://duckduckgo.com/" rel="nofollow" target="_blank"&gt;https://duckduckgo.com/&lt;/a&gt;&lt;br&gt;
+输入： 你要搜索的 site:testerhome.com&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/15643fea3ec07442b9dddb886d5e82ab.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;看上去比百度好很多。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Wed, 06 Aug 2014 09:55:32 +0800</pubDate>
+      <link>http://testerhome.com/topics/1227</link>
+      <guid>http://testerhome.com/topics/1227</guid>
+    </item>
+    <item>
+      <title>征求 wiki 撰写和维护者</title>
+      <description>&lt;p&gt;由于 wiki 是有权限的，所以不是每个人都有权限使用。我们现在征求下 wiki 撰写和维护者。如果有意或者有志向做这一块的。&lt;br&gt;
+请在后面跟帖，留下你的论坛 id。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Wed, 16 Jul 2014 15:51:47 +0800</pubDate>
+      <link>http://testerhome.com/topics/1145</link>
+      <guid>http://testerhome.com/topics/1145</guid>
+    </item>
+    <item>
+      <title>论坛须知</title>
+      <description>&lt;p&gt;八月前， TesterHome 上线。一转眼，2014 年都过去了一半。 TesterHome 在大家的帮助下稳步成长。连 500 人的官方群也被撑爆了。当人数越来越多的时候，论坛也容易趋于混乱，所以我们必须想办法制定一些制度和一些需求，这不是约束，而是一种规范。&lt;/p&gt;
+&lt;h4&gt;论坛须知&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;注册会员请添加头像（直接在个人信息处改，一天的缓存时间），完善自己信息，我们承诺不收集个人信息。&lt;/li&gt;
+&lt;li&gt;加论坛官方群 315508626，请先提供会员 ID，否则不予添加。&lt;/li&gt;
+&lt;li&gt;新人第一天无法发帖，请知悉，请先熟悉论坛规则。&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;发帖规范&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;本论坛使用 Markdown 格式，发帖前请熟悉 markdown 语法，学点东西总归没错。&lt;/li&gt;
+&lt;li&gt;本论坛支持 &lt;code&gt;图片&lt;/code&gt; 上传， 但对于代码和日志还是请粘贴文本。&lt;/li&gt;
+&lt;li&gt;发帖问题如需帮助，按“M”键查看更多 帮助。&lt;/li&gt;
+&lt;li&gt;明确主题，不同问题请发在不同的节点，新人问题请发新手区。&lt;/li&gt;
+&lt;li&gt;对于技术话题，欢迎华山论剑，不欢迎死缠烂打和人生攻击。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;杜绝伸手党&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;杜绝标题党&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;提问的艺术
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://testerhome.com/topics/587" rel="nofollow" target="_blank"&gt;http://testerhome.com/topics/587&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;TesterHome 作为一个测试人聚集地，请大家把发帖提问当做是在 &lt;code&gt;key bug&lt;/code&gt;，环境，版本，出错信息，截图等等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;任何时候，请不要发有违背国家法律，涉及政治事件的帖子。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;精华帖&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;原创
+
+&lt;ol&gt;
+&lt;li&gt;原创资料&lt;/li&gt;
+&lt;li&gt;外文资料的翻译&lt;/li&gt;
+&lt;li&gt;转帖重要的行业资讯但是有较多个人原创评论的文章&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;testerhome上发布
+
+&lt;ol&gt;
+&lt;li&gt;必须是发布在testerhome，而不是以附件或者外链简单转发&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;我们qq群的精华聊天记录
+
+&lt;ol&gt;
+&lt;li&gt;这个也很精彩， 也希望能有同学定期上传上来。里面也有不少信息量。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;删帖原则&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;任何有违以上原则的帖子，一律删除。&lt;/li&gt;
+&lt;li&gt;不服来辩。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;暂时想到这些，有需要添加的，请大家跟帖！&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Fri, 06 Jun 2014 09:45:26 +0800</pubDate>
+      <link>http://testerhome.com/topics/982</link>
+      <guid>http://testerhome.com/topics/982</guid>
+    </item>
+    <item>
+      <title>UCloud 正式成为 TesterHome 的赞助商</title>
+      <description>&lt;p&gt;致 TesterHome 所有的 Tester 们，&lt;/p&gt;
+
+&lt;p&gt;今天，我们正式把 TesterHome 迁移到了 Ucloud 赞助的服务器上，大家可以看到我们将底下的 logo 和&lt;a href="https://mos.meituan.com/"&gt;美团网&lt;/a&gt;换成了 &lt;a href="http://www.ucloud.cn/"&gt;Ucloud&lt;/a&gt; 的logo。再接下去的半年，我们将享受到 Ucloud 优质的性能和服务。&lt;/p&gt;
+
+&lt;p&gt;TesterHome 经历了 Linode， 美团云，到现在的 Ucloud。不得不说，每家都是非常优秀的 IaaS 服务商。论坛成立之初，我们其实在阿里云和 Linode 之间犹豫不决。考虑阿里云的原因，主要是因为便宜和它在国内，国内用户的访问速度应该会不错。但是我们最终选择了 Linode，其根本原因就是阿里云实在太慢，TesterHome 采用的是 RubyChina 的这套代码，在低配的阿里云上完全跑不起来，而配置好一点的阿里云可不是那么便宜的。当时我一咬牙就买了一年的 Linode 的东京机房的最低配置。 TesterHome 在上面跑了差不多 2 个月左右，速度一直很流畅。可惜由于天朝管制和考虑到百度收录问题，我们决定找家国内的服务器。那时候我们就在想，能像 RubyChina 那样找家主机赞助商就好了，毕竟主机的开销也是不菲的。&lt;/p&gt;
+
+&lt;p&gt;差不多三个月前吧，我在微博里看到了美团云，于是我就私信了美团云。然后美团云的同学联系了我，非常 nice 的询问了我们 TesterHome 的规划和野心，然后为我们申请了 3 个月的主机试用。相信大家在这三个月内，对论坛速度的提升有所体会。在这三个月内，美团云没有出过任何故障，其实是有一次事故的，但是没为我们添堵，事后还补偿了代金券。这点阿里云应该学学，每次出点问题，就是打电话口头说声对不起。&lt;/p&gt;
+
+&lt;p&gt;三个月转眼结束，论坛无论人数和流量也稳步上升，遗憾的是，毕竟移动测试是一个新兴的测试领域，另外软件测试本身在 IT 界的话语权也不重，TesterHome 未能给美团云带来很好的广告效应，我们没有得到美团云之后的赞助。当时我非常焦急，TesterHome 的同学应该都知道，我在群里，微博上，微信里都在发帖寻找能帮助我们的人。这个时候，我遇到了 Ucloud。&lt;/p&gt;
+
+&lt;p&gt;其实，知道 Ucloud 在我混 RubyChina 的时候就知道了。我印象最深的就是有一次，我像 RubyChina 的 吕国宁同学反应了 TeaHour 问题，Ucloud 的CTO （记不得是 CTO还是首席运营了）亲自加我询问了情况并参与了调试。这是一个多么接地气的公司。&lt;/p&gt;
+
+&lt;p&gt;我在微博上@了Ucloud，立马得到了 Ucloud 的李斌（&lt;a href="/esplendo" class="at_user" title="@esplendo"&gt;&lt;i&gt;@&lt;/i&gt;esplendo&lt;/a&gt;） 的私信，表示可以提供赞助。通过和他的沟通得知，Ucloud 对于所有做技术的社区都有扶持的计划。我立即就推荐了 DiggerPlus。（ &lt;a href="/qddegtya" class="at_user" title="@qddegtya"&gt;&lt;i&gt;@&lt;/i&gt;qddegtya&lt;/a&gt; 感谢我吧。）&lt;/p&gt;
+
+&lt;p&gt;Ucloud 给了我们半年的赞助。目前我们的配置如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/d92c0c218c75905c4fe5927b0f0ad149.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;对于我们目前的访问流量，这个配置是足够的， UCloud 也承诺，如果之后流量上来，会帮我们调整。&lt;/p&gt;
+
+&lt;p&gt;同时，和 RubyChina 一样，我们还在 DNSPOD 上还配置了双线，来智能切换联通和电信线路。目前我就测试了电信的，还未测试联通的。有联通的同学，可以试试看 ping 下我们论坛，然后把 IP 贴上来。&lt;/p&gt;
+
+&lt;p&gt;服务器的迁移很快，目前都正常运行了。非常感谢 Ucloud 给了我们赞助，希望半年后，还得继续得到 Ucloud 的赞助。同时，也希望所有喜欢 TesterHome 和所有在 TesterHome 里得到帮助的人，一起来帮助我们，利用你的人脉，你的圈子，把 TesterHome 带起来。我们的成长离不开你们。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Sat, 05 Apr 2014 03:23:52 +0800</pubDate>
+      <link>http://testerhome.com/topics/659</link>
+      <guid>http://testerhome.com/topics/659</guid>
+    </item>
+    <item>
+      <title>今晚 11 点，TesterHome 服务暂停！</title>
+      <description>&lt;p&gt;服务器要迁移！望知悉。恢复时间未知！&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Fri, 04 Apr 2014 14:42:53 +0800</pubDate>
+      <link>http://testerhome.com/topics/654</link>
+      <guid>http://testerhome.com/topics/654</guid>
+    </item>
+    <item>
+      <title>TesterHome 寻求服务器赞助！</title>
+      <description>&lt;p&gt;三个月前， TesterHome 得到了美团云的赞助，美团云在这三月内一直表现的非常稳定。如今离开美团云还有7天到期，和美团云的同学沟通之后，后续不再有赞助。&lt;/p&gt;
+
+&lt;p&gt;TesterHome 发展至今已经有半年之久，期间得到了很多人的帮助，也得到了很多人的青睐。但是 TesterHome 一直没有自己的盈利模式。我们在目前，也没有任何关于盈利的打算。（或许后期要开始考虑了，服务器费用对于我们来说也是一笔不大不小的开销。）&lt;/p&gt;
+
+&lt;p&gt;TesterHome 里肯定有很多在各大云主机工作的同学吧，如果你看到这个帖子，能否去帮我们申请下赞助，如果没有赞助，比较大的优惠也很好。&lt;/p&gt;
+
+&lt;p&gt;如果有想提供赞助的也非常欢迎，可以点击 &lt;a href="https://me.alipay.com/testerhome" rel="nofollow" target="_blank"&gt;https://me.alipay.com/testerhome&lt;/a&gt;。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Mon, 31 Mar 2014 16:18:12 +0800</pubDate>
+      <link>http://testerhome.com/topics/626</link>
+      <guid>http://testerhome.com/topics/626</guid>
+    </item>
+    <item>
+      <title>今天发现了一个大 bug，心情激动，晚上来更新。</title>
+      <description>&lt;p&gt;激动。。。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;
+由于公司的原因，只说大概缘由。
+
+我们的系统有2个积分系统，就相当于京东的京券和东券吧。也就是A积分和B积分虽然价值相等，但是A积分是实实在在的钱啊，甚至可以提现。我们有个机制可以激活用户的B积分，也就是这个B积分是可以从别的合作机构转化来的，但是也只能转化为B积分，使用时有明显的限制。
+前一段时间，不知是哪个程序员（其实也知道是哪个）写了一段程序，假如用户注册时没有积分账户，会自动的给他创建2个积分账户A和B，这儿没问题，但是程序中写了个“return acount”，把A账户给return出去了，导致了用户在别的地方转化为我们的积分时，原本固定的要转化为B积分类型，现在第一次时会转化为A积分。（第二次和以后还是会转化为B积分）
+
+what a big bug 。。。。。。
+
+你们说呢。&lt;/pre&gt;</description>
+      <author>jakewendao</author>
+      <pubDate>Tue, 11 Mar 2014 14:42:28 +0800</pubDate>
+      <link>http://testerhome.com/topics/571</link>
+      <guid>http://testerhome.com/topics/571</guid>
+    </item>
+    <item>
+      <title>晒出你的星语心愿</title>
+      <description>&lt;p&gt;论坛右侧的小贴士显示的文字部分, 会随着每个用户的浏览而变化.&lt;br&gt;
+我想把这个部分变成许愿墙.这也体现了我们的Show的精神. &lt;/p&gt;
+
+&lt;p&gt;大家如果有什么想表达的话语, 可以回帖, 我们给大家添加上去&lt;br&gt;
+然后这些话语就会随机Show给每个登陆的人. 每天登陆我们论坛的人已经有五百左右了哦..&lt;/p&gt;
+
+&lt;p&gt;大家可以在下方回帖附上自己想表达的话, 比如&lt;br&gt;
+我想找个好工作&lt;br&gt;
+我希望今年的工资涨到x万&lt;br&gt;
+我希望有人在某月某日送我蛋糕祝福我&lt;/p&gt;
+
+&lt;p&gt;我会在这些话的前面, 加上您的论坛id, 小贴士就会显示&lt;br&gt;
+xxx: 我想有人陪我出去旅行&lt;br&gt;
+yyy: 感谢帮助我的某君,你是我心中的帅哥&lt;/p&gt;
+
+&lt;p&gt;怎么样, 喜欢这个创意吗 那就赶紧回帖吧.&lt;br&gt;&lt;img src="/photo/2014/f61fc39e5ea8b0747889d934ea3d1bbc.jpg" alt=""&gt;&lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Thu, 27 Feb 2014 22:47:34 +0800</pubDate>
+      <link>http://testerhome.com/topics/533</link>
+      <guid>http://testerhome.com/topics/533</guid>
+    </item>
+    <item>
+      <title>总觉得论坛的导航模块让人找不到自己要去的地方。</title>
+      <description>&lt;p&gt;为什么不把下面第一张图的导航栏放在第二张图右侧&lt;br&gt;&lt;img src="/photo/2014/4bf5766225ac27a57c7caca0dfe85f56.png" alt=""&gt;&lt;br&gt;&lt;img src="/photo/2014/dcd90e71549d68e1c89057eaec0b9fc9.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>jakewendao</author>
+      <pubDate>Thu, 27 Feb 2014 21:26:50 +0800</pubDate>
+      <link>http://testerhome.com/topics/532</link>
+      <guid>http://testerhome.com/topics/532</guid>
+    </item>
+    <item>
+      <title>rubychina 的 android 客户端发布</title>
+      <description>&lt;p&gt;貌似是正式版,  我们也可以借用代码搞个客户端了&lt;br&gt;&lt;a href="http://ruby-china.org/topics/17076" rel="nofollow" target="_blank"&gt;http://ruby-china.org/topics/17076&lt;/a&gt;&lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Tue, 25 Feb 2014 20:09:27 +0800</pubDate>
+      <link>http://testerhome.com/topics/521</link>
+      <guid>http://testerhome.com/topics/521</guid>
+    </item>
+    <item>
+      <title>关于社区两侧空白边栏的利用问题</title>
+      <description>&lt;p&gt;两侧空白区域是否已有用途规划？&lt;br&gt;
+如果木有，建议吧 “讨论节点分类导航” 放在其中一侧（醒目位置突出显示），这样可以突出社区对移动端测试类型的覆盖度全面，进而吸引用户增加点击量和回头率。&lt;/p&gt;</description>
+      <author>mingway_hu</author>
+      <pubDate>Tue, 25 Feb 2014 10:39:28 +0800</pubDate>
+      <link>http://testerhome.com/topics/517</link>
+      <guid>http://testerhome.com/topics/517</guid>
+    </item>
+    <item>
+      <title>刚刚修复了一个回帖没有提醒的 bug</title>
+      <description>&lt;p&gt;我重新开启了回帖提醒功能. 以前累积的回帖消息可能会一起发出来.&lt;br&gt;
+大家等着挨消息轰炸吧...&lt;/p&gt;
+
+&lt;p&gt;受不了的话 可以点击任务栏的消息提醒设置为一小时内免打扰, 对此造成的困扰表示抱歉&lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Tue, 25 Feb 2014 00:12:24 +0800</pubDate>
+      <link>http://testerhome.com/topics/516</link>
+      <guid>http://testerhome.com/topics/516</guid>
+    </item>
+    <item>
+      <title>迁移完毕</title>
+      <description>&lt;p&gt;服务器将于今晚11点关闭，迁移到美团云，12点重新开放。感谢美团云提供的优惠。希望大家多多关注美团云。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Fri, 10 Jan 2014 21:33:43 +0800</pubDate>
+      <link>http://testerhome.com/topics/394</link>
+      <guid>http://testerhome.com/topics/394</guid>
+    </item>
+    <item>
+      <title>qq 邮箱订阅有问题</title>
+      <description>&lt;p&gt;提示&lt;br&gt;
+抱歉，栏目订阅过于频繁，请稍候再试&lt;/p&gt;
+
+&lt;p&gt;估计是qq邮箱订阅没人维护了. 改天换其他的邮箱订阅.&lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Mon, 06 Jan 2014 15:32:34 +0800</pubDate>
+      <link>http://testerhome.com/topics/365</link>
+      <guid>http://testerhome.com/topics/365</guid>
+    </item>
+    <item>
+      <title>感谢美团云提供 3 个月免费试用期</title>
+      <description>&lt;p&gt;美团云答应给我们免费3个月的试用期, 让我们把服务器迁移到国内.&lt;br&gt;
+这样我们的流量也就更高了. 目前百度不能很好的检索我们的文章, 不利于扩大知名度和影响力.&lt;br&gt;
+恒温注册个美团云的帐号吧, 然后把帐号告诉美团的接口人, 他们会为我们开通对应的服务的.&lt;/p&gt;
+
+&lt;p&gt;我们肯定是要迁移到国内发展了. 原有的服务可以留作咱们的会员保密服务.&lt;br&gt;
+三个月后我们再争取更好的支持. 或者靠自己盈利来支撑论坛的发展.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="/lihuazhang" class="at_user" title="@lihuazhang"&gt;&lt;i&gt;@&lt;/i&gt;lihuazhang&lt;/a&gt;  &lt;a href="/monkey" class="at_user" title="@monkey"&gt;&lt;i&gt;@&lt;/i&gt;monkey&lt;/a&gt;&lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Mon, 06 Jan 2014 12:28:05 +0800</pubDate>
+      <link>http://testerhome.com/topics/362</link>
+      <guid>http://testerhome.com/topics/362</guid>
+    </item>
+    <item>
+      <title>伤不起的阿里云服务</title>
+      <description>&lt;p&gt;博客迁移到阿里云后 数据库经常挂掉 估计是因为内存不够挂掉的 也不知道他们服务器怎么配置的 难道是内存申请过多的进程会被强制杀掉  我一直觉得自己是错怪了阿里云 结果最近又挂了  怒了  果断切换&lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Sat, 04 Jan 2014 00:09:06 +0800</pubDate>
+      <link>http://testerhome.com/topics/355</link>
+      <guid>http://testerhome.com/topics/355</guid>
+    </item>
+    <item>
+      <title>分离移动测试为独立模块，增加 Appium 为独立节点</title>
+      <description>&lt;p&gt;分离移动测试为独立模块，增加 Appium 为独立节点。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Tue, 31 Dec 2013 11:33:23 +0800</pubDate>
+      <link>http://testerhome.com/topics/345</link>
+      <guid>http://testerhome.com/topics/345</guid>
+    </item>
+  </channel>
+</rss>

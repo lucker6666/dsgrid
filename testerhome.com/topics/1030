@@ -1,0 +1,713 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 关于如何获取 apk 包名即 appPackage 和 appActivity &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../eric"><img alt="451" class="uface" src="../user/large_avatar/451.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">关于如何获取 apk 包名即 appPackage 和 appActivity</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../eric">eric</a>
+     · 
+    于<abbr class="timeago" title="2014-06-19T15:39:26+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xie_0723" href="../xie_0723">xie_0723</a> 于<abbr class="timeago" title="2014-12-30T19:22:37+08:00"></abbr>回复
+     · 
+    1277次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>方法1：（效率最高的）<br>
+问开发人员</p>
+
+<p>方法2：<br>
+a、启动待测apk<br>
+b、开启日志输出：adb logcat&gt;D:/log.txt <br>
+c、关闭日志输出：ctrl+c<br>
+d、查看日志<br>
+找寻：Displayed com.mm.android.hsy/.ui.LoginActivity: +3s859ms<br>
+appPackage = com.mm.android.hsy<br>
+appActivity = .ui.LoginActivity</p>
+
+<p>欢迎补充其他方法</p>
+<pre class="highlight shell">➜  ContactManager git:<span class="o">(</span>master<span class="o">)</span> ✗ aapt dump badging ContactManager.apk
+package: <span class="nv">name</span><span class="o">=</span><span class="s1">'com.example.android.contactmanager'</span> <span class="nv">versionCode</span><span class="o">=</span><span class="s1">'1'</span> <span class="nv">versionName</span><span class="o">=</span><span class="s1">'1.0'</span>
+sdkVersion:<span class="s1">'5'</span>
+targetSdkVersion:<span class="s1">'5'</span>
+uses-permission:<span class="s1">'android.permission.GET_ACCOUNTS'</span>
+uses-permission:<span class="s1">'android.permission.READ_CONTACTS'</span>
+uses-permission:<span class="s1">'android.permission.WRITE_CONTACTS'</span>
+application-label:<span class="s1">'Contact Manager'</span>
+application-icon-120:<span class="s1">'res/drawable-ldpi/icon.png'</span>
+application-icon-160:<span class="s1">'res/drawable-mdpi/icon.png'</span>
+application-icon-240:<span class="s1">'res/drawable-hdpi/icon.png'</span>
+application: <span class="nv">label</span><span class="o">=</span><span class="s1">'Contact Manager'</span> <span class="nv">icon</span><span class="o">=</span><span class="s1">'res/drawable-mdpi/icon.png'</span>
+application-debuggable
+launchable-activity: <span class="nv">name</span><span class="o">=</span><span class="s1">'com.example.android.contactmanager.ContactManager'</span>  <span class="nv">label</span><span class="o">=</span><span class="s1">'Contact Manager'</span> <span class="nv">icon</span><span class="o">=</span><span class="s1">''</span>
+uses-permission:<span class="s1">'android.permission.READ_CALL_LOG'</span>
+uses-implied-permission:<span class="s1">'android.permission.READ_CALL_LOG'</span>,<span class="s1">'targetSdkVersion &lt; 16 and requested READ_CONTACTS'</span>
+uses-permission:<span class="s1">'android.permission.WRITE_CALL_LOG'</span>
+uses-implied-permission:<span class="s1">'android.permission.WRITE_CALL_LOG'</span>,<span class="s1">'targetSdkVersion &lt; 16 and requested WRITE_CONTACTS'</span>
+uses-feature:<span class="s1">'android.hardware.touchscreen'</span>
+uses-implied-feature:<span class="s1">'android.hardware.touchscreen'</span>,<span class="s1">'assumed you require a touch screen unless explicitly made optional'</span>
+main
+other-activities
+supports-screens: <span class="s1">'small'</span> <span class="s1">'normal'</span> <span class="s1">'large'</span>
+supports-any-density: <span class="s1">'true'</span>
+locales: <span class="s1">'--_--'</span>
+densities: <span class="s1">'120'</span> <span class="s1">'160'</span> <span class="s1">'240'</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='关于如何获取 apk 包名即 appPackage 和 appActivity via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1030#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1030#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1030#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1030#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1030#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>18</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../xingzunxi"><img alt="339" class="uface" src="../user/large_avatar/339.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xingzunxi" href="../xingzunxi">xingzunxi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply1">1楼</a> · <abbr class="timeago" title="2014-06-19T15:45:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5900" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="339" href="http://testerhome.com/topics/1030/replies/5900/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="xingzunxi" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>apt dump badging +客户端包所在路径+客户端包名称，使用这个更快。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lvhong00001"><img alt="B5151a15e7da787fd174b8a7038c57d1" class="uface" src="../avatar/b5151a15e7da787fd174b8a7038c57d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lvhong" href="../lvhong00001">lvhong00001</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply2">2楼</a> · <abbr class="timeago" title="2014-06-19T15:47:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5901" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="674" href="http://testerhome.com/topics/1030/replies/5901/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lvhong00001" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>直接用工具反编译包，什么都知道了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../newfounder"><img alt="928" class="uface" src="../user/large_avatar/928.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="空白" href="../newfounder">newfounder</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply3">3楼</a> · <abbr class="timeago" title="2014-06-19T15:49:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5902" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="928" href="http://testerhome.com/topics/1030/replies/5902/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="newfounder" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我一直用的方法是：<br>
+adb shell<br>
+logcat | grep cmp=</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply4">4楼</a> · <abbr class="timeago" title="2014-06-19T16:41:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5906" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/1030/replies/5906/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="mingway_hu" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>hierarchy view</p>
+
+<p>packagename、activity、控件属性一齐都搞了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../cjtcwyk"><img alt="306" class="uface" src="../user/large_avatar/306.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../cjtcwyk">cjtcwyk</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply5">5楼</a> · <abbr class="timeago" title="2014-06-19T18:10:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5909" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="306" href="http://testerhome.com/topics/1030/replies/5909/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="cjtcwyk" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>顶一楼，aapt dump屌炸天，不解释</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../niweyzhuce"><img alt="691" class="uface" src="../user/large_avatar/691.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="neil" href="../niweyzhuce">niweyzhuce</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply6">6楼</a> · <abbr class="timeago" title="2014-06-19T18:10:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5910" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="691" href="http://testerhome.com/topics/1030/replies/5910/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="niweyzhuce" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1030#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../newfounder" class="at_user" title="@newfounder"><i>@</i>newfounder</a>  这个不错，以前一直用一楼的方法。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply7">7楼</a> · <abbr class="timeago" title="2014-06-19T18:56:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5912" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1030/replies/5912/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="lihuazhang" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不是说不需要这两个参数了么…</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../xingzunxi"><img alt="339" class="uface" src="../user/large_avatar/339.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xingzunxi" href="../xingzunxi">xingzunxi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply8">8楼</a> · <abbr class="timeago" title="2014-06-20T11:21:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5920" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="339" href="http://testerhome.com/topics/1030/replies/5920/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="xingzunxi" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>还可以使用python，写一个自动化程序，直接分析包，很多数据都可以出来，还可以学习一下后边的原理，例如：apktool等。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply9">9楼</a> · <abbr class="timeago" title="2014-06-20T21:49:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5939" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/1030/replies/5939/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="532589730" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>aapt dump</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../oatsuper"><img alt="Ad290f7d65aa17a062cef6c5768d9a40" class="uface" src="../avatar/ad290f7d65aa17a062cef6c5768d9a40.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../oatsuper">oatsuper</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply10">10楼</a> · <abbr class="timeago" title="2014-06-21T21:34:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5950" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1114" href="http://testerhome.com/topics/1030/replies/5950/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="oatsuper" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>pm list packages -f <br>
+或者设备的文件系统data分区下/data/system/packagelist.txt 类似文件所有的应用包名都有的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply11">11楼</a> · <abbr class="timeago" title="2014-06-21T23:05:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5953" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1030/replies/5953/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="anikikun" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>直接用packageinfo里的信息写一个类似应用管理的android应用，把这应用装手机里，就可以看到手机里所有APP的包名和入口activity名了。<br>
+我就这么干的，一劳永逸，不但方便了自己，也方便了同事们入门。</p>
+
+<p>可借鉴：<a href="http://blog.csdn.net/yudajun/article/details/7855270" rel="nofollow" target="_blank">http://blog.csdn.net/yudajun/article/details/7855270</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply12">12楼</a> · <abbr class="timeago" title="2014-06-23T11:06:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="5970" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/1030/replies/5970/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="532589730" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>aapt工具android sdk的tools文件夹下，自带的工具。<br>
+把[Android_sdkPath]/sdk/tools添加到环境变量中，整个shell或批处理。</p>
+<pre class="highlight shell"><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> +x
+
+<span class="nv">binary_name</span><span class="o">=</span><span class="nv">$1</span>
+
+<span class="nv">pkg</span><span class="o">=</span><span class="k">$(</span>aapt dump badging <span class="k">${</span><span class="nv">binary_name</span><span class="k">}</span>|awk -F<span class="s2">" "</span> <span class="s1">'/package/ {print $2}'</span>|awk -F<span class="s2">"'"</span> <span class="s1">'/name=/ {print $2}'</span><span class="k">)</span>
+<span class="nv">act</span><span class="o">=</span><span class="k">$(</span>aapt dump badging <span class="k">${</span><span class="nv">binary_name</span><span class="k">}</span>|awk -F<span class="s2">" "</span> <span class="s1">'/launchable-activity/ {print $2}'</span>|awk -F<span class="s2">"'"</span> <span class="s1">'/name=/ {print $2}'</span><span class="k">)</span>
+
+<span class="nb">echo</span> <span class="k">${</span><span class="nv">pkg</span><span class="k">}</span>
+<span class="nb">echo</span> <span class="k">${</span><span class="nv">act</span><span class="k">}</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../duanxu3"><img alt="1059" class="uface" src="../user/large_avatar/1059.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="冰镇" href="../duanxu3">duanxu3</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply13">13楼</a> · <abbr class="timeago" title="2014-06-24T14:04:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6061" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1059" href="http://testerhome.com/topics/1030/replies/6061/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="duanxu3" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>顶一楼 和楼上！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../superzhuo"><img alt="937" class="uface" src="../user/large_avatar/937.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../superzhuo">superzhuo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply14">14楼</a> · <abbr class="timeago" title="2014-06-24T14:21:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6064" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="937" href="http://testerhome.com/topics/1030/replies/6064/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="superzhuo" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>用的10楼的pm.....</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../hunterno4"><img alt="364" class="uface" src="../user/large_avatar/364.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../hunterno4">hunterno4</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply15">15楼</a> · <abbr class="timeago" title="2014-07-09T20:51:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6577" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="364" href="http://testerhome.com/topics/1030/replies/6577/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="hunterno4" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>看到了，就说两句，获取apk中Activity名的最有效方法是用apktool反编译apk，直接得到反编译后的AndroidManifest.xml，跟看源码一样了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../zhangzhe0707"><img alt="477" class="uface" src="../user/large_avatar/477.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Z" href="../zhangzhe0707">zhangzhe0707</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply16">16楼</a> · <abbr class="timeago" title="2014-07-24T17:18:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6884" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="477" href="http://testerhome.com/topics/1030/replies/6884/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="zhangzhe0707" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>喜欢 用aapt dump</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../xiaoxiaoimg"><img alt="2115" class="uface" src="../user/large_avatar/2115.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小张" href="../xiaoxiaoimg">xiaoxiaoimg</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply17">17楼</a> · <abbr class="timeago" title="2014-12-24T13:28:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10818" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2115" href="http://testerhome.com/topics/1030/replies/10818/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="xiaoxiaoimg" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><img src="../photo/2014/42bddf091aa6a73012fdc5b1caee458f.png" alt=""></p>
+
+<p>直接把apk后缀改为zip格式，打开压缩包后再打开AndroidManifest.xml文件。找到manifest和activity地方，就是包名跟activity名。 不知道这样行不行？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../xie_0723"><img alt="1439" class="uface" src="../user/large_avatar/1439.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xie0723" href="../xie_0723">xie_0723</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1030#reply18">18楼</a> · <abbr class="timeago" title="2014-12-30T19:22:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10960" data-state="" data-type="Reply" href="1030#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1439" href="http://testerhome.com/topics/1030/replies/10960/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="xie_0723" href="1030#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1030#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../xiaoxiaoimg" class="at_user" title="@xiaoxiaoimg"><i>@</i>xiaoxiaoimg</a>  尝试了这个方法，可以。！！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1030#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【翻译原创】（二）MonkeyTalk 语言参考说明 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../weamylady"><img alt="1134" class="uface" src="../user/large_avatar/1134.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【翻译原创】（二）MonkeyTalk 语言参考说明</h1>
+  <div class="info leader">
+    <a class="node" href="node43">MonkeyTalk</a>
+     · 
+    <a data-author="true" data-name="water" href="../weamylady">weamylady</a>
+     · 
+    于<abbr class="timeago" title="2014-12-23T17:17:39+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="squallff" href="../squallff">squallff</a> 于<abbr class="timeago" title="2015-01-12T16:47:11+08:00"></abbr>回复
+     · 
+    340次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>注： MonkeyTalk脚本语言是简单而强大的，此说明书中详细说明了很多用法，由于内容比较多，未翻译完的地方会后续有时间补充。</p>
+
+<p>概论：<br>
+MonkeyTalk是由用户层面的一系列简单命令组成的多功能测试语言。它足够简单地给测试人员使用，并且几乎不需要开发功底来进行分析，同时也可以给那些需要进一步编程的人员无缝地使用Java Script来编写。脚本可以由简单到由txt文档直接编写，或者由MonkeyTalk IDE等录制工具直接生成。<br>
+MonkeyTalk语言是与平台无关的，并且提供了标准的API，可以由任何一种编程语言来实现。MonkeyTalk 1.0中包含捆绑了Java Script语言。</p>
+
+<p>命令语法：<br>
+它语法设计的出发点是让非开发人员也能轻易地看懂。它可读性高，可以使用简单的txt文本编辑器甚至表格来简单明了地阅读。另外，MonkeyTalk设计成可以用扁平表格编辑器例如MonkeyTalk IDE来进行阅读和编辑。<br>
+MonkeyTalk是一行作为一个一个命令的开始和结束，每一行遵从如下语法：<br>
+组件类型 MonkeyID 动作 各种参数... 修改器...<br>
+（ComponentType MonkeyId Action Args… Modifiers…）<br>
+总体说来，组件类型、MonkeyId、动作、参数、修改器合在一起构成命令的各个部分，组件类型所包含的动作就是这条命令的名字。<br>
+下面是各部分的说明:<br>
+1, 组件类型（必填）：动作执行所在的组件的类型。例如按钮(Button)或文本框(TextArea)。组件类型是大小写不敏感的。组件类型可以扩展其他的组件类型，正如下面所说，还可以继承任何已定义的方法及其参数。组件类型是代表了UI组件的逻辑名字（例如叫Button而不叫UIButton），但也可以是特定平台的别名。所有的UI组件都继承自View类型的组件，所以当你指定View作为组件类型时就像使用通配符匹配所有类型的组件，例如：</p>
+<pre class="highlight shell"><span class="c"># 点击带有"OK"标签的任何组件</span>
+View OK Tap 
+</pre>
+
+<p>2，MonkeyId（必填）：一个用来区分同一页面上同时显示的相同组件类型的不同组件标示。MonkeyId可以使用星号（*）表示识别到的第一个匹配类型的组件。<br>
+MonkeyId也可以规定用从1开始(不是从0开始)的引索以 #N 的格式来表示。这种情况下，MonkeyId标志了显示页面中的第N个匹配类型的组件。组件引索的顺序是按照坐标(x, y)从上到下、从左到右的进行排序的。<br>
+3，动作（必填）：就是要执行的动作。例如包括 Tap, Select, 和EnterText等。动作(Action)是大小写不敏感的。<br>
+4，参数（按组件类型和动作需要填写）：是一个或多个由空格隔开的列表。参数默认是从整条命令的第四列(第四部分)开始的。尽管它是以String类型表现，解读的时候是由命令的需要来进行解读的。如果某个参数是必须的但是没有填写（少写了最后一个参数），它就会使用默认值。参数可以使用星号（*）来强制使用它默认值。<br>
+5，修改器（选填）：以空格隔开的、以%name=value格式表示的参数列表，%前缀用来标示它是一个修改器。有三个系统定义的修改器：<br>
+    %timeout - 等待多少毫秒超时，超时之前重复尝试执行命令<br>
+    %thinktime - 尝试执行第一次命令时的等待时间（毫秒）<br>
+    %retrydelay - 再次多次尝试执行命令之间的间隔时间（毫秒）。（注：如果执行不成功就会继续尝试直到超时，例如页面还没刷新找不到组件）</p>
+
+<p>命令举例：<br>
+所有的列都是以空格隔开的。带空格的值一定要用引号引起来。表示引号本身需要在双引号内用反斜杠转义，来表示引号本身。<br>
+点击OK按钮：</p>
+<pre class="highlight shell">Button OK Tap
+</pre>
+
+<p>点击页面上的第二个按钮：</p>
+<pre class="highlight shell">Button <span class="c">#2 Tap</span>
+</pre>
+
+<p>点击页面上的第一个按钮：</p>
+<pre class="highlight shell">Button <span class="k">*</span> Tap
+</pre>
+
+<p>或者Button #1 Tap<br>
+点击页面上的第一个控件：</p>
+<pre class="highlight shell"><span class="k">*</span> <span class="k">*</span> Tap
+</pre>
+
+<p>传入参数带空格：</p>
+<pre class="highlight shell">TextArea editText1 enterText “this is a <span class="nb">test</span>”
+</pre>
+
+<p>设置动作超时时间为5秒</p>
+<pre class="highlight shell">TextArea editText1 enterText “this is a <span class="nb">test</span>” %timeout<span class="o">=</span>5000
+</pre>
+
+<p>注释是以#开头</p>
+<pre class="highlight shell"><span class="c"># this is a comment</span>
+<span class="c"># another comment</span>
+Button OK Tap
+</pre>
+
+<p>换行用\n表示</p>
+<pre class="highlight shell">Input shipping EnterText “John Smith<span class="se">\n</span>123 Main St.<span class="se">\n</span>Anytown, USA 12345”
+</pre>
+
+<p>脚本：<br>
+把一条或者多条MonkeyTalk命令放到一个文件中并保存为.mt文件你就得到了一个MonkeyTalk脚本。<br>
+举个例子，一个登陆的.mt脚本可能看起来是这样的：</p>
+<pre class="highlight shell"><span class="c"># simple script to login as joe</span>
+Input username EnterText joe-at-doe.com
+Input password EnterText “i like cheese”
+Button LOGIN Tap
+</pre>
+
+<p>想在脚本中调用另一个脚本，可以使用Script命令加上.mt文件名作为MonkeyId，就像这样：Script login.mt Run</p>
+
+<p>变量：<br>
+脚本中可以包含写法为 ${name} 的变量，并且可以在一条命令的任何地方使用。也可以包含写法类似于 ${var}的内置变量。<br>
+内置变量有 %{componentType}, %{monkeyId}, %{action}以及内置参数 %{1}, %{2}等等。变量只能作为命令的某一部分，包括组件类型、MonkeyId等等。<br>
+例如，一个已命名的变量可以作为参数：</p>
+<pre class="highlight shell">Input username EnterText <span class="k">${</span><span class="nv">usr</span><span class="k">}</span>
+</pre>
+
+<p>或者参数和MonkeyId：</p>
+<pre class="highlight shell">Input <span class="k">${</span><span class="nv">foo</span><span class="k">}</span> EnterText <span class="k">${</span><span class="nv">bar</span><span class="k">}</span>
+</pre>
+
+<p>又或者整条命令都用参数：</p>
+<pre class="highlight shell"><span class="k">${</span><span class="nv">foo</span><span class="k">}</span> <span class="k">${</span><span class="nv">bar</span><span class="k">}</span> <span class="k">${</span><span class="nv">baz</span><span class="k">}</span>
+</pre>
+
+<p>变量可以内嵌到某些字符串里面，但是不能内嵌到另一个变量名中，例如：</p>
+<pre class="highlight shell">Input username EnterText <span class="k">${</span><span class="nv">usr</span><span class="k">}</span>@example.com
+</pre>
+
+<p>但是下面这样的命令是不合法的：</p>
+<pre class="highlight shell">Input username EnterText <span class="k">${</span><span class="nv">foo</span><span class="k">${</span><span class="nv">bar</span><span class="k">}}</span>
+</pre>
+
+<p>参数化脚本：<br>
+使用Vars.Define命令可以在脚本中命名变量并设置它们的默认值。让我们参数化我们的Login.mt脚本如下：</p>
+<pre class="highlight shell">Vars <span class="k">*</span> Define <span class="nv">usr</span><span class="o">=</span><span class="s2">"default-at-example.com"</span> <span class="nb">pwd
+</span>Input username EnterText <span class="k">${</span><span class="nv">usr</span><span class="k">}</span>
+Input password EnterText <span class="k">${</span><span class="nv">pwd</span><span class="k">}</span>
+Button LOGIN Tap
+</pre>
+
+<p>我们设置了两个变量 ${usr} 和${pwd}，并设置${usr}的默认值为default-at-example.com。${pwd}变量的默认值没有指定，所以默认值会是&lt;pwd&gt;（以尖括号括起来的变量名）。<br>
+我们可以用如下方式调用我们的参数化脚本：</p>
+<pre class="highlight shell">Script login.mt Run joe-at-doe.com <span class="s2">"i like cheese"</span>
+</pre>
+
+<p>或者让脚本参数使用默认值：</p>
+<pre class="highlight shell">Script login.mt Run
+</pre>
+
+<p>或者使用一个星号来使用${usr}的默认值：</p>
+<pre class="highlight shell">Script login.mt Run <span class="k">*</span> password1
+</pre>
+
+<p>请注意变量只能在定义它们的脚本中使用，所以${usr} 和 ${pwd}只在login.mt中有定义。当然除非你使用变量来调用一个子脚本。</p>
+
+<p>数据驱动脚本：<br>
+参数化脚本只是一个开始，MonkeyTalk支持全数据驱动的脚本，仅仅只要使用RunWith代替Run命令，并且设定一个数据文件作为第一个参数。<br>
+用我们的参数化脚本login.mt举例，我们首先编写一个数据文件credentials.csv，用csv格式保存如下：</p>
+<pre class="highlight shell">joe-at-doe.com, <span class="s2">"i like cheese"</span>
+alpha-at-beta.net, password1
+charlie-at-dog.org, abc123
+</pre>
+
+<p>第一行可以指定变量名（与login.mt脚本最前面的Vars.Define中他们命名完全相同），后面各行指定变量值。MonkeyTalk需要CSV文件每一列以逗号隔开，如果带空格需要用双引号引起来。<br>
+现在，我们可以数据驱动我们的脚本：</p>
+<pre class="highlight shell">Script login.mt RunWith credentials.csv
+</pre>
+
+<p>这会根据数据文件中的每一行数据跑一边login.mt脚本。所以这个例子中login.mt会运行3此，第一次运行时参数usr = joe-at-doe.com和pwd = "i like cheese"，第二次 usr = alpha-at-beta.net 和pwd = password1，第三次usr = charlie-at-dog.org 和pwd = abc123。</p>
+
+<p>RunIf命令：<br>
+使用RunIf命令，我们可以指定一个命令通过以后才跑某一个脚本。使用这条命令的方法是在一个带有Verify的命令执行通过以后跑指定一个脚本，使用命令如下：</p>
+<pre class="highlight shell">Script YourScript.mt RunIf <span class="o">[</span>Verify Command]
+</pre>
+
+<p>这意思是你在参数部分把脚本中的其他命令整个放在了里面。一个脚本例子如下：</p>
+<pre class="highlight shell">Input username enterText Fred
+Input password enterText SecurePassword
+Button LOGIN tap 
+script logout.mt RunIf Label <span class="k">*</span> Verify <span class="s2">"Welcome, Fred!"</span>
+</pre>
+
+<p>自定义命令：<br>
+MonkeyTalk语言可以通过自定义部件类型(component type)和动作(Action)来进行拓展。任何以两个部分组成，格式为&lt;componentType&gt;.&lt;action&gt;.mt 命名的脚本自动可以作为自定义命令。例如，如果我们创建了一个名为 user.login.mt 的脚本，我们就可以增加一个user的部件类型，它拥有login的动作。<br>
+我们用以下的样式来调用新的自定义命令：</p>
+<pre class="highlight shell">User <span class="k">*</span> Login
+</pre>
+
+<p>并且我们可以传递MonkeyId以及参数：</p>
+<pre class="highlight shell">User joe Login joespassword
+</pre>
+
+<p>在你自定义的命令中，可以使用%{monkeyId}的格式来使用传进来的monkeyId。下面是一个可以实现上面命令的user.login.mt脚本的例子：</p>
+<pre class="highlight shell">Vars <span class="k">*</span> Define <span class="nb">pwd</span><span class="o">=</span><span class="s2">"password"</span>
+Input username enterText %<span class="o">{</span>monkeyId<span class="o">}</span>
+Input password enterText <span class="k">${</span><span class="nv">pwd</span><span class="k">}</span>
+Button LOGIN tap
+</pre>
+
+<p>测试和验证：<br>
+一个测试(Test)就是使用Test部件来代替Script部件进行调用一个脚本。测试结果会写到一个标准的文件中，以JUnit-compatible xml文件格式保存。<br>
+每条命令的执行成功与否在于验证用户指定的界面部件(元素)是否存在。另外，你也可以在脚本中使用Verify动作来验证部件中的值是否与预期一致。首先，我们再次重写login.mt，加入一些Verify动作，像这样：</p>
+<pre class="highlight shell">Vars <span class="k">*</span> Define <span class="nv">usr</span><span class="o">=</span><span class="s2">"default-at-example.com"</span> <span class="nb">pwd</span><span class="o">=</span>name
+Input username EnterText <span class="k">${</span><span class="nv">usr</span><span class="k">}</span>
+Input password EnterText <span class="k">${</span><span class="nv">pwd</span><span class="k">}</span>
+Button LOGIN Tap
+Label welcome Verify <span class="s2">"Welcome, </span><span class="k">${</span><span class="nv">name</span><span class="k">}</span><span class="s2">!"</span>
+Button LOGOUT Verify
+</pre>
+
+<p>现在，我们可以以如下方式测试(Test)的方式来运行login.mt，值得注意的是，我们增加了${name}这个变量，因此我们需要加入第三个参数进行调用：</p>
+<pre class="highlight shell">Test login.mt Run joe-at-doe.com <span class="s2">"i like cheese"</span> <span class="s2">"Joe Doe"</span>
+</pre>
+
+<p>并且我们也可以使用数据驱动的方式来测试我们的脚本（注意增加第三列的数据到credentials.csv）</p>
+<pre class="highlight shell">Test login.mt RunWith credentials.csv
+</pre>
+
+<p>验证(Verify)：<br>
+Verify动作存在于所有的部件中（除了Script 和 Device），用以验证实际的值是否是我们想要的值。在它的基本格式中，Verify接受三个可选参数：expectedValue, propPath, 以及failMessage。<br>
+如果没有传递任何参数，Verify只验证部件是否存在：</p>
+<pre class="highlight shell">Button LOGIN Verify
+</pre>
+
+<p>当只有一个expectedValue参数时，Verify会检查部件中的值，这些值只会是部件逻辑上的值（Button的值是它的label，Input的值是它的text，CheckBox 的值是"On"或者"Off"，等等）：</p>
+<pre class="highlight shell">Button LOGIN Verify LOGIN
+</pre>
+
+<p>用expectedValue以及 propPath作为参数时，Verify会检查制定的部件属性。一些propPaths 例如value或item是逻辑上MonkeyTalk指定的属性路径，它们是跨平台的（它们不以点作为开头）。部件指定的属性值是平台相关的（它们以点作为开头）。<br>
+验证一个iOS按钮的Font名字：</p>
+<pre class="highlight shell">Button LOGIN Verify Helvetica .font.fontName
+</pre>
+
+<p>验证Android上RatingBar总的星星数量：</p>
+<pre class="highlight shell">RatingBar reviewRating Verify 5 .numStars
+</pre>
+
+<p>最后一个参数时验证失败时给出的信息failMessage ：</p>
+<pre class="highlight shell">Input username Verify joe-at-doe.com value <span class="s2">"bad username!!!"</span>
+</pre>
+
+<p>可以在用户手册上查看更详细内容：<br>
+<a href="http://www.cloudmonkeymobile.com/monkeytalk-documentation/monkeytalk-user-guide/verifying-expected-values/using-verification-commands" rel="nofollow" target="_blank">http://www.cloudmonkeymobile.com/monkeytalk-documentation/monkeytalk-user-guide/verifying-expected-values/using-verification-commands</a></p>
+
+<p>测试套件(Suite)<br>
+一个测试套件(Suite)就是若干脚本的Test放在一起执行的集合。当一个Test失败时，它不会立刻停止，而是跑下一个Test。当所有的Test执行完毕时，会生成一个xUnit-compatible的报告(<a href="http://reflex.gforge.inria.fr/xunit.html#xunitReport" rel="nofollow" target="_blank">http://reflex.gforge.inria.fr/xunit.html#xunitReport</a>)， 报告会统计所有所跑Test的Pass数、Fail数、Error数。<br>
+Suite必须以.mts文件后缀结尾，与脚本区别开来。<br>
+Suite使用Test命令调用脚本，以"Test"作为部件类型，脚本名称作为monkeyId，Run或者Runwith作为动作(action)。一个Test命令（在Suite中使用）与Script命令（在Scripte中使用）类似；它只是增加了一些额外的管理功能。例如一个简单的Suite如下：</p>
+<pre class="highlight shell"><span class="c"># login and log out</span>
+Test login.mt Run joe@doe.com JoEsPaSsWoRd
+Test logout.mt
+</pre>
+
+<p>只有在Suite中可以使用Test命令，相反只有脚本中可以使用Scipt命令。一般来说，如果你想要跑一个脚本，就在Suite中调用Tests，在脚本中调用Script。<br>
+有时候一组Test会共享一些依赖及清理工作，在每个Test前后进行维护时非常无聊并且容易出错的。Suite允许你使用"Setup"以及"Teardown"部件类型来进行设置初始化及清理工作（分别在每一条Test前后执行），用法与Test命令非常类似。在Suite中，任何这样定义的Setup脚本都会在没一个Test前进行调用，如果初始化成功，Test就会运行，然后Teardown就会运行（无论Test成功与否）。<br>
+Suite里面可以调用其他的Suite，使用Suite部件类型。<br>
+Suite中只能包含Test, Setup, Teardown, 和Suite，以及注释。<br>
+举个例子，一个myapp.mts测试套件可能长这样：</p>
+<pre class="highlight shell"><span class="c"># setup runs before every test</span>
+Setup login.mt Run joe@doe.com JoEsPaSsWoRd
+
+<span class="c"># teardown runs after every test</span>
+TearDown logout.mt Run
+
+<span class="c"># the tests...</span>
+Test add_contact.mt RunWith contacts.csv
+Test remove_contact.mt RunWith contacts.csv
+</pre>
+
+<p>例子中我们就使用Setup 和TearDown来指定每条Test执行前后需要调用的脚本。</p>
+
+<p>命令执行选项：<br>
+除非特殊指定，否则MonkeyTalk在超时时间之前会不停地尝试去执行命令。超时时间的值有一个为2秒的全局默认值，也可以在每一条语句后面使用超时的编辑器(Modifier)来自定义。<br>
+例如：</p>
+<pre class="highlight shell">Button OK Tap %timeout<span class="o">=</span>5000 %thinktime<span class="o">=</span>2000 %retrydelay<span class="o">=</span>123
+</pre>
+
+<p>上述命令会在尝试点击OK按钮之前等待2秒钟，然后每隔123毫秒会尝试一次执行命令，直到5秒的超时时间到。(命令最多会执行7秒钟)。</p>
+
+<p>注：后面的一些内容为介绍Java Script语法、Java API、命令大全的内容，太多就不翻译了。有兴趣的童鞋可以访问连接查看：<br>
+<a href="http://www.cloudmonkeymobile.com/monkeytalk-documentation/monkeytalk-language-reference/scripting-javascript" rel="nofollow" target="_blank">http://www.cloudmonkeymobile.com/monkeytalk-documentation/monkeytalk-language-reference/scripting-javascript</a></p>
+
+<p>到这里语法说明终于告一段落。由于最近比较懒，更新也是断断续续的，语法说明篇幅大概在4000字左右，请期待下一篇- 3-</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【翻译原创】（二）MonkeyTalk 语言参考说明 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1723#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1723#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1723#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1723#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1723#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>10</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../squallff"><img alt="Bbc01098f5266d088f1ee1239ce467df" class="uface" src="../avatar/bbc01098f5266d088f1ee1239ce467df.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="leonhart" href="../squallff">squallff</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply1">1楼</a> · <abbr class="timeago" title="2014-12-25T14:34:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10851" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2180" href="http://testerhome.com/topics/1723/replies/10851/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="squallff" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Monkeytalk语法简明，初学者用起来比较方便，IDE做的比较烂，经常崩溃。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../weamylady"><img alt="1134" class="uface" src="../user/large_avatar/1134.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="water" href="../weamylady">weamylady</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply2">2楼</a> · <abbr class="timeago" title="2014-12-25T14:57:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10853" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1134" href="http://testerhome.com/topics/1723/replies/10853/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="weamylady" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../squallff" class="at_user" title="@squallff"><i>@</i>squallff</a> 我用的时候目前没有崩溃过，你试试别用Pro版本？ 可以脱离IDE写脚本，用Excel写都可以 - -！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../pajack"><img alt="1035" class="uface" src="../user/large_avatar/1035.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Pajack" href="../pajack">pajack</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply3">3楼</a> · <abbr class="timeago" title="2014-12-25T23:56:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10867" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1035" href="http://testerhome.com/topics/1723/replies/10867/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="pajack" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>第二篇了，加油！~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../weamylady"><img alt="1134" class="uface" src="../user/large_avatar/1134.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="water" href="../weamylady">weamylady</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply4">4楼</a> · <abbr class="timeago" title="2014-12-26T08:33:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10870" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1134" href="http://testerhome.com/topics/1723/replies/10870/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="weamylady" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../pajack" class="at_user" title="@pajack"><i>@</i>pajack</a> 你的单元测试学的咋样？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../pajack"><img alt="1035" class="uface" src="../user/large_avatar/1035.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Pajack" href="../pajack">pajack</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply5">5楼</a> · <abbr class="timeago" title="2014-12-26T23:31:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10901" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1035" href="http://testerhome.com/topics/1723/replies/10901/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="pajack" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../weamylady" class="at_user" title="@weamylady"><i>@</i>weamylady</a>  没进展，先学习下Android 代码~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../squallff"><img alt="Bbc01098f5266d088f1ee1239ce467df" class="uface" src="../avatar/bbc01098f5266d088f1ee1239ce467df.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="leonhart" href="../squallff">squallff</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply6">6楼</a> · <abbr class="timeago" title="2014-12-31T10:27:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10972" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2180" href="http://testerhome.com/topics/1723/replies/10972/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="squallff" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../weamylady" class="at_user" title="@weamylady"><i>@</i>weamylady</a> 我用的不是pro的，就是普通版。复杂的逻辑用mt语言写不了，只能用js写。扩展性不强。后来我们用MT提供的jar包做了个框架，写起来就顺手多了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../weamylady"><img alt="1134" class="uface" src="../user/large_avatar/1134.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="water" href="../weamylady">weamylady</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply7">7楼</a> · <abbr class="timeago" title="2014-12-31T10:35:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10973" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1134" href="http://testerhome.com/topics/1723/replies/10973/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="weamylady" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../squallff" class="at_user" title="@squallff"><i>@</i>squallff</a> 那是技术测试人员的思维惯性，一条一条单独的案例为何需要这么复杂的逻辑语言呢？一个案例整个流程下来应该是单线的，Pass就是Pass，Fail就是Fail。当然我同意Java API来编写顺手一点，自由性和逻辑性强很多，MonkeyTalk语言的简单的好处就是容易给编程功底弱的测试人员使用，容易推广，毕竟要你写所有案例的脚本太累了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../weamylady"><img alt="1134" class="uface" src="../user/large_avatar/1134.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="water" href="../weamylady">weamylady</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply8">8楼</a> · <abbr class="timeago" title="2014-12-31T10:35:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10974" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1134" href="http://testerhome.com/topics/1723/replies/10974/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="weamylady" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../squallff" class="at_user" title="@squallff"><i>@</i>squallff</a> 普通版本容易崩溃就用Pro Beta版本试试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply9">9楼</a> · <abbr class="timeago" title="2015-01-07T09:35:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11226" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1723/replies/11226/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="xiaomayi0323" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../squallff" class="at_user" title="@squallff"><i>@</i>squallff</a> 我用的也没崩溃过</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../squallff"><img alt="Bbc01098f5266d088f1ee1239ce467df" class="uface" src="../avatar/bbc01098f5266d088f1ee1239ce467df.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="leonhart" href="../squallff">squallff</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1723#reply10">10楼</a> · <abbr class="timeago" title="2015-01-12T16:47:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11515" data-state="" data-type="Reply" href="1723#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2180" href="http://testerhome.com/topics/1723/replies/11515/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="squallff" href="1723#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1723#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../weamylady" class="at_user" title="@weamylady"><i>@</i>weamylady</a> 可能大家都是在windows系统上用的吧，我是OSX系统</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1894" title="学习 MonkeyTalk 以及实践">学习 MonkeyTalk 以及实践</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1723#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | iOS 应用的 crash日志的分析基础（转） &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">iOS 应用的 crash日志的分析基础（转）</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-03-17T23:40:27+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="c1ydeee" href="../c1ydeee">c1ydeee</a> 于<abbr class="timeago" title="2014-08-24T22:29:07+08:00"></abbr>回复
+     · 
+    1568次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>如何获得crash日志</p>
+
+<p>​如何解析crash日志</p>
+
+<p>​如何分析crash日志</p>
+
+<p>1. iOS策略相关<br>
+     2. 常见错误标识<br>
+     3. 代码bug</p>
+
+<p>​</p>
+
+<p>​<br>
+一、如何获得crash日志</p>
+
+<p>​当一个iOS应用程序崩溃时，系统会创建一份crash日志保存在设备上。这份crash日志记录着应用程序崩溃时的信息，通常包含着每个执行线程的栈调用信息（低内存闪退日志例外），对于开发人员定位问题很有帮助。</p>
+
+<p>如果设备就在身边，可以连接设备，打开Xcode - Window - Organizer，在左侧面板中选择Device Logs（可以选择具体设备的Device Logs或者Library下所有设备的Device Logs），然后根据时间排序查看设备上的crash日志。这是开发、测试阶段最经常采用的方式。</p>
+
+<p>​如果应用程序已经提交到App Store发布，用户已经安装使用了，那么开发者可以通过iTunes Connect（Manage Your Applications - View Details - Crash Reports）获取用户的crash日志。不过这并不是100%有效的，而且大多数开发者并不依赖于此，因为这需要用户设备同意上传相关信息，详情可参见iOS: Providing Apple with diagnostics and usage information摘要。</p>
+
+<p>​考虑到并不是所有iPhone用户都允许自动发送诊断报告（crash日志），而且对于部分提交到Apple得crash日志，开发者还需要手动去拉取，然后找到对应的符号文件进行解析——这是一件很繁琐的事情。所以实际项目开发中，通常接入现有的crash收集工具（参考1，参考2），或者自己编写一个进行自动化收集、解析和统计汇总。</p>
+
+<p>​</p>
+
+<p>二、如何解析crash日志</p>
+
+<p>​当获得一份crash日志时，我们需要将初始展示的十六进制地址等原始信息映射为源代码级别的方法名称和代码行数，使其对开发人员可读。这个过程称为符号化解析。要成功地符号化解析一份crash日志，我们需要有对应的应用程序二进制文件以及符号（.dSYM）文件。</p>
+
+<p>如果处于开发调试阶段，通常Xcode都能匹配到crash日志对应的二进制文件和符号文件，所以能够帮我们自动解析。</p>
+
+<p>如果处于测试阶段，测试人员已经安装了不同的版本（比如alpha、beta版本），那么需要保存好对应版本的二进制文件和符号文件，以便在应用程序崩溃时对crash日志进行解析。对于这种场景下产生的crash日志，只需要将.crash文件、.app文件和.dSYM文件三者放在同一个目录下，然后将.crash文件拖放到Xcode - Window - Organizer中左侧面板Library下的Device Logs中，即可进行解析。</p>
+
+<p>如果要提交发布，那么我们通常会先执行Clean，再Build，最后通过Product - Archive来打包。这样，Xcode会将二进制文件和符号文件归档在一起，可以通过Organizer中的Archives进行浏览。</p>
+
+<p>这里是一份关于如何解析crash日志的讨论：<a href="http://stackoverflow.com/questions/1460892/symbolicating-iphone-app-crash-reports" rel="nofollow" target="_blank">http://stackoverflow.com/questions/1460892/symbolicating-iphone-app-crash-reports</a> 。</p>
+
+<p>三、如何分析crash日志</p>
+
+<p>​在分析一份crash日志之前，如果开发人员对于常见的错误类型有所了解，那定是极好的。</p>
+
+<p>crash日志的产生来源于两种问题：违反iOS策略被干掉，以及自身的代码bug。</p>
+
+<ol>
+<li>iOS策略</li>
+</ol><p>​1.1 低内存闪退</p>
+
+<p>​前面提到大多数crash日志都包含着执行线程的栈调用信息，但是低内存闪退日志除外，这里就先看看低内存闪退日志是什么样的。</p>
+
+<p>​我们使用Xcode 5和iOS 7的设备模拟一次低内存闪退，然后通过Organizer查看产生的crash日志，可以发现Process和Type都为Unknown：</p>
+
+<p><img src="../photo/2014/e26a80d9d7193757d949f7308279e26a.png" alt=""></p>
+
+<p>而具体的日志内容如下：</p>
+
+<p><img src="../photo/2014/b102eaf8a742242318ace88adc4b1ae9.png" alt=""></p>
+
+<p>第一部分是崩溃信息，包括识别标识、软硬件信息和时间信息等。</p>
+
+<p>​第二部分是内存页分配信息，以及当前占用内存最多的进程，上图中为crashTypeDemo。</p>
+
+<p>​第三部分是具体的进程列表，描述着每个进程使用内存的情况以及当前状态。在较早的版本中可以在某些进程后面看到“jettisoned”字样，表明这些进程使用过多内存被终止了，而现在我们看到的是“vm-pageshortage”字样。</p>
+
+<p>​当iOS检测到内存过低时，它（的VM系统）会发出低内存警告通知，尝试回收一些内存；如果情况没有得到足够的改善，iOS会终止后台应用以回收更多内存；最后，如果内存还是不足，那么正在运行的应用可能会被终止掉。</p>
+
+<p>​所以，我们的应用应该合理地响应系统抛出来的低内存警告通知，对一些缓存数据和可重新创建的对象进行释放，同时要避免出现内存泄露等问题。</p>
+
+<p>​低内存闪退是由iOS策略决定终止应用程序运行的，同样基于iOS策略的还有Watchdog超时和用户强制退出。</p>
+
+<p>​1.2 Watchdog超时</p>
+
+<p>​Apple的iOS Developer Library网站上，QA1693文档中描述了Watchdog机制，包括生效场景和表现。如果我们的应用程序对一些特定的UI事件（比如启动、挂起、恢复、结束）响应不及时，Watchdog会把我们的应用程序干掉，并生成一份响应的crash报告。</p>
+
+<p>​这份crash报告的有趣之处在于异常代码：“0x8badf00d”，即“ate bad food”。<br>
+如果说特定的UI事件比较抽象，那么用代码来直接描述的话，对应的就是（创建一个工程时Xcode自动生成的）UIApplicationDelegate的几个方法：</p>
+
+<p><img src="../photo/2014/fef2ecb70ee34417f2bd66dfb7b83417.png" alt=""></p>
+
+<p>所以当遇到Watchdog日志时，可以检查下上图几个方法是否有比较重的阻塞UI的动作。</p>
+
+<p>QA1693举的例子是在主线程进行同步网络请求。如果我们是在公司的Wifi环境下使用则一切顺利，但当应用程序发布出去面向很大范围的用户，在各种网络环境下运行，则不可避免地会出现一片Watchdog超时报告。<br>
+另一种可能出现问题的场景就是数据量比较大的情况下进行的数据库版本迁移（同样是在主线程上），这也是促使我写这篇总结的一个直接因素。</p>
+
+<p>1.3 用户强制退出</p>
+
+<p>一看到“用户强制退出”，首先可能想到的双击Home键，然后关闭应用程序。不过这种场景是不会产生crash日志的，因为双击Home键后，所有的应用程序都处于后台状态，而iOS随时都有可能关闭后台进程，所以这种场景没有crash日志。另一种场景是用户同时按住电源键和Home键，让iPhone重启。这种场景会产生日志（仅验证过一次），但并不针对特定应用程序。</p>
+
+<p>这里指的“用户强制退出”场景，是稍微比较复杂点的操作：先按住电源键，直到出现“滑动关机”的界面时，再按住Home键，这时候当前应用程序会被终止掉，并且产生一份相应事件的crash日志。</p>
+
+<p><img src="../photo/2014/1a8898797ff3b3d4731793480a90a3cc.png" alt=""></p>
+
+<p>通常，用户应该是遇到应用程序卡死，并且影响到了iOS响应，才会进行这样的操作——不过感觉这操作好高级，所以这样的crash日志应该比较少见。</p>
+
+<ol>
+<li>常见错误标识</li>
+</ol><p>2.1 Exception codes</p>
+
+<p>​上面“用户强制退出”的crash日志中的Exception Codes是“0xdeadfa11”，再上面“Watchdog超时”的crash日志中的Exception Codes是“0x8badf00d”，这些都是特有的Exception codes。<br>
+根据官方文档描述，至少有以下几种特定异常代码：</p>
+
+<p>​0x8badf00d错误码：Watchdog超时，意为“ate bad food”。</p>
+
+<p>​0xdeadfa11错误码：用户强制退出，意为“dead fall”。</p>
+
+<p>​0xbaaaaaad错误码：用户按住Home键和音量键，获取当前内存状态，不代表崩溃。</p>
+
+<p><img src="../photo/2014/aaed5787baa22887ac646679235fffde.png" alt=""></p>
+
+<p>0xbad22222错误码：VoIP应用（因为太频繁？）被iOS干掉。</p>
+
+<p>​0xc00010ff错误码：因为太烫了被干掉，意为“cool off”。</p>
+
+<p>​0xdead10cc错误码：因为在后台时仍然占据系统资源（比如通讯录）被干掉，意为“dead lock”。</p>
+
+<p>​2.2 Exception types</p>
+
+<p>​查看我们的crash分析报告邮件，会发现最经常遇到的错误类型是SEGV（Segmentation Violation，段违例），表明内存操作不当，比如访问一个没有权限的内存地址。<br>
+当我们收到SIGSEGV信号时，可以往以下几个方面考虑：</p>
+
+<p>​访问无效内存地址，比如访问Zombie对象；</p>
+
+<p>​尝试往只读区域写数据；</p>
+
+<p>​解引用空指针；</p>
+
+<p>​使用未初始化的指针；</p>
+
+<p>​栈溢出；</p>
+
+<p>​</p>
+
+<p>​此外，还有其它常见信号：</p>
+
+<p>​SIGABRT：收到Abort信号，可能自身调用abort()或者收到外部发送过来的信号；</p>
+
+<p>​SIGBUS：总线错误。与SIGSEGV不同的是，SIGSEGV访问的是无效地址（比如虚存映射不到物理内存），而SIGBUS访问的是有效地址，但总线访问异常（比如地址对齐问题）；</p>
+
+<p>​SIGILL：尝试执行非法的指令，可能不被识别或者没有权限；</p>
+
+<p>​SIGFPE：Floating Point Error，数学计算相关问题（可能不限于浮点计算），比如除零操作；</p>
+
+<p>​SIGPIPE：管道另一端没有进程接手数据；</p>
+
+<p>​3. 代码bug</p>
+
+<p>​此外，比较常见的崩溃基本都源于代码bug，比如数组越界、插空、多线程安全性、访问野指针、发送未实现的selector等。如果引入Core Data，则又有另外一些常见问题，不过这是另一个话题了。</p>
+
+<p>​遇到这些bug时，都有比较清楚的错误原因说明，比如“index 0 beyond bounds for empty array”等。需要稍微注意点的是多线程问题，当一时找不到解决思路时，不妨往多线程方面考虑下。</p>
+
+<p>​</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='iOS 应用的 crash日志的分析基础（转） via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="582#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>14</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply1">1楼</a> · <abbr class="timeago" title="2014-03-18T00:50:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3194" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/582/replies/3194/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="mingway_hu" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>为了iOS App的测试，我决定去买一个mac mini~~#</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply2">2楼</a> · <abbr class="timeago" title="2014-03-18T09:29:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3195" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/582/replies/3195/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="qddegtya" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 哈哈，ming兄下血本了啊！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply3">3楼</a> · <abbr class="timeago" title="2014-03-18T10:03:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3196" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/582/replies/3196/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 出血了！！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply4">4楼</a> · <abbr class="timeago" title="2014-03-18T10:06:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="3197" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/582/replies/3197/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="mingway_hu" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a><br><br>
+<a href="582#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> <br>
+我出闪退时问开发她们抓闪退log，她们反问我闪退log怎么抓。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply5">5楼</a> · <abbr class="timeago" title="2014-03-18T10:11:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3198" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/582/replies/3198/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="qddegtya" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 这不是好事儿么，ming兄可以光明正大调戏妹子了~（噗...正儿八经的)</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply6">6楼</a> · <abbr class="timeago" title="2014-03-18T10:33:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="3199" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/582/replies/3199/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> e ..我也想有这种妹子。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply7">7楼</a> · <abbr class="timeago" title="2014-03-18T10:35:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3200" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/582/replies/3200/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="qddegtya" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 你不怕我告诉嫂子么.......</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply8">8楼</a> · <abbr class="timeago" title="2014-03-18T10:37:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3201" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/582/replies/3201/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="monkey" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 老油条了。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply9">9楼</a> · <abbr class="timeago" title="2014-03-18T10:43:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3202" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/582/replies/3202/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="qddegtya" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> <img src="../assets/emojis/plus1.png" class="emoji" title=":+1:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply10">10楼</a> · <abbr class="timeago" title="2014-03-18T10:44:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3203" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/582/replies/3203/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="monkey" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 这都赞。。我去。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply11">11楼</a> · <abbr class="timeago" title="2014-03-18T10:48:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3204" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/582/replies/3204/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="qddegtya" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 哈哈，我说我在测试Emoji cheat sheet，你信么。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply12">12楼</a> · <abbr class="timeago" title="2014-03-18T11:00:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3205" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/582/replies/3205/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="monkey" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 我说我在测试一个界面能够显示的list长度，恩</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply13">13楼</a> · <abbr class="timeago" title="2014-03-18T12:36:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3207" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/582/replies/3207/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="mingway_hu" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="582#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a>  态度如此恶劣开发，只能拿各种严重bug去调教~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../c1ydeee"><img alt="1455" class="uface" src="../user/large_avatar/1455.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="围墙内面包" href="../c1ydeee">c1ydeee</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="582#reply14">14楼</a> · <abbr class="timeago" title="2014-08-24T22:29:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7890" data-state="" data-type="Reply" href="582#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1455" href="http://testerhome.com/topics/582/replies/7890/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="c1ydeee" href="582#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢分享，学习了~</p>
+
+<p>PS. Exception Codes 好有爱！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @z7039585: 想换个好工作 找个妹纸~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="582#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

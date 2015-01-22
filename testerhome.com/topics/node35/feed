@@ -1,0 +1,2395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 Calabash 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 Calabash 节点最新发帖.</description>
+    <item>
+      <title>Calabash+Gearman 实现多手机同步测试机制</title>
+      <description>&lt;p&gt;&lt;strong&gt;摘要：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Calabash-android是支持android的UI自动化测试框架，但不支持多手机同步测试。本文介绍如何利用任务分发系统Gearman的消息同步机制，配合Calabash实现多手机同步测试机制。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;背景介绍&lt;/h4&gt;
+&lt;p&gt;Calabash-android是支持android的UI自动化测试框架。&lt;br&gt;
+&lt;a href="http://www.oschina.net/p/calabash-android" rel="nofollow" target="_blank"&gt;http://www.oschina.net/p/calabash-android&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Gearman是一个分发任务的程序框架，可以用在各种场合，与Hadoop相比，Gearman更偏向于任务分发功能。它的 任务分布非常 简单，简单得可以只需要用脚本即可完成。&lt;br&gt;
+&lt;a href="http://www.oschina.net/p/gearman" rel="nofollow" target="_blank"&gt;http://www.oschina.net/p/gearman&lt;/a&gt;&lt;br&gt;
+&lt;img src="http://www.oschina.net/uploads/img/201002/05001154_UcCt.png" alt="gearman"&gt;&lt;/p&gt;
+&lt;h4&gt;Ubuntu上安装Gearman&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    $ sudo apt-get install gearman-job-server
+    $ gearmand -V
+
+    gearmand 1.0.6 - https://bugs.launchpad.net/gearmand 
+
+    $ sudo apt-get install gearman-tools
+    $ gearman -H
+&lt;/pre&gt;
+&lt;h4&gt;启动gearman job server，作为后台服务运行:&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    $ sudo gearmand -d
+&lt;/pre&gt;
+&lt;h4&gt;多手机同步测试举例&lt;/h4&gt;
+&lt;p&gt;假设要测试微信的发送消息功能，calabash的测试用例可以按如下方式撰写：&lt;/p&gt;
+&lt;h4&gt;AA-send-message-to-BB--role-AA.feature：&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    Feature: 微信测试发送消息给好友-角色A
+
+      Scenario: 微信测试发送消息给好友
+        ...打开微信软件，作为帐号A登录，进入与好友B的聊天窗口
+        When I send weixin message "A说，你好！"   # 微信聊天窗口中发送消息
+        And  I send sync message "A说，你好！" to role "BB"
+        Then I see "A说，你好！"  #我能看到自己说的话
+
+        When I wait sync message $AA_sync_1 as role "AA"
+        Then I see $AA_sync_1 #我能看到对方说的话
+        ...
+&lt;/pre&gt;
+&lt;h4&gt;AA-send-message-to-BB--role-BB.feature：&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    Feature: 微信测试发送消息给好友-角色B
+
+      Scenario: 微信测试发送消息给好友
+        ...打开微信软件，作为帐号B登录，进入与好友A的聊天窗口
+        When I wait sync message $BB_sync_1 as role "BB"
+        Then I see $BB_sync_1  #我能看到对方说的话
+
+        When I send weixin message "B说，你好！"   # 微信聊天窗口中发送消息
+        And  I send sync message "B说，你好！" to role "AA"
+        Then I see "B说，你好！"  #我能看到自己说的话
+        ...
+&lt;/pre&gt;
+&lt;h4&gt;命令行终端1中运行AA-send-message-to-BB--role-AA.feature&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    $ export ADB_DEVICE_ARG=HTC-G9
+    $ export GEARMAN_JOB_SERVER=localhost
+
+    $ calabash-android run weixin.apk -r features/ features/AA-send-message-to-BB--role-AA.feature
+&lt;/pre&gt;
+&lt;h4&gt;命令行终端2中运行AA-send-message-to-BB--role-BB.feature&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    $ export ADB_DEVICE_ARG=HWAWEI-P7
+    $ export GEARMAN_JOB_SERVER=localhost
+
+    $ calabash-android run weixin.apk -r features/ features/AA-send-message-to-BB--role-BB.feature
+&lt;/pre&gt;
+&lt;h4&gt;calabash中封装gearman命令实现同步机制&lt;/h4&gt;&lt;h4&gt;sync_step.rb:&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    # encoding: utf-8
+    require 'calabash-android/calabash_steps'
+
+    When /^I wait sync message \$([^\$]*) as role "([^\"]*)"$/ do |msg_ev, role|
+      gearman_job_server=ENV["GEARMAN_JOB_SERVER"]
+      fail "环境变量::GEARMAN_JOB_SERVER::未定义！ 设置方法: export GEARMAN_JOB_SERVER=localhost" if ( gearman_job_server == nil)
+      uuid=`uuidgen`.strip  
+      cmd="gearman -h #{gearman_job_server} -t 30000 -w -c 1 -f receiver_#{role} -- tee /tmp/#{role}-#{uuid}; cat /tmp/#{role}-#{uuid}"
+      puts "角色#{role}准备执行命令：#{cmd}"
+
+      message=`#{cmd}`.strip
+      fail "未收到同步消息" if ( message == "" )
+      ENV[msg_ev]=message
+      puts "角色#{role}接收到同步消息: #{ENV[msg_ev]}"
+    end
+
+    When /^I send sync message "([^\"]*)" to role "([^\"]*)"$/ do |msg, role|
+      gearman_job_server=ENV["GEARMAN_JOB_SERVER"]
+      fail "环境变量::GEARMAN_JOB_SERVER::未定义！ 设置方法: export GEARMAN_JOB_SERVER=localhost" if ( gearman_job_server == nil)
+      fail "sync message 为空" if ( msg == "" )
+      cmd="echo '#{msg}' | gearman -h #{gearman_job_server} -t 30000 -f receiver_#{role}"
+      puts "角色#{role}准备执行命令：#{cmd}"
+
+      response=`#{cmd}`.strip
+      fail "发送同步消息失败" if ( response != msg )
+      puts "发送同步消息给角色#{role}: #{msg}"
+    end
+
+    When /^I send sync message \$([^\$]*) to role "([^\"]*)"$/ do |msg_ev, role|
+      gearman_job_server=ENV["GEARMAN_JOB_SERVER"]
+      fail "环境变量::GEARMAN_JOB_SERVER::未定义！ 设置方法: export GEARMAN_JOB_SERVER=localhost" if ( gearman_job_server == nil)
+      msg=ENV[msg_ev]
+      response=`echo "${msg}" | gearman -h #{gearman_job_server} -f receiver_#{role}`
+      fail "发送同步消息失败" if ( response != msg )
+      puts "发送同步消息给角色#{role}: #{msg}"
+    end
+&lt;/pre&gt;
+&lt;h4&gt;calabash_steps.rb：&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    # encoding: utf-8
+    require 'calabash-android/calabash_steps'
+
+    Then /^I see \$([^\$]*)$/ do |text_ev|
+      text = ENV[text_ev]
+      steps %{
+       Then I see "#{text}"
+      }
+    end    
+&lt;/pre&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Fri, 09 Jan 2015 21:24:57 +0800</pubDate>
+      <link>http://testerhome.com/topics/1817</link>
+      <guid>http://testerhome.com/topics/1817</guid>
+    </item>
+    <item>
+      <title>求助：calabash-android 如何 touch fragment 中 textView</title>
+      <description>&lt;p&gt;calabash-android 通过console 控制台 可以query("* marked:'充值'") 控件信息，但通过touch 无法对控件进行触发操作。&lt;/p&gt;
+
+&lt;p&gt;请问是否需要切入焦点啥的？或者其它操作进行点击触发，请各位大侠赐教。&lt;br&gt;
+&lt;img src="/photo/2015/88026b85139d86255416ec88fff4bd05.jpg" alt=""&gt;&lt;br&gt;
+&lt;img src="/photo/2015/da8339e9ad290712c5c85f1902286c22.jpg" alt=""&gt;&lt;/p&gt;</description>
+      <author>wmliu</author>
+      <pubDate>Thu, 08 Jan 2015 16:21:48 +0800</pubDate>
+      <link>http://testerhome.com/topics/1803</link>
+      <guid>http://testerhome.com/topics/1803</guid>
+    </item>
+    <item>
+      <title>使用 Gearman+Calabash 并行测试手机 APP</title>
+      <description>&lt;p&gt;&lt;strong&gt;摘要&lt;/strong&gt;：使用任务分发系统Gearman分布式执行Calabash的自动化测试用例，可以达到并行测试手机APP的目的。&lt;/p&gt;
+&lt;h4&gt;背景介绍&lt;/h4&gt;&lt;h4&gt;Gearman&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Gearman是一个分发任务的程序框架，可以用在各种场合，与Hadoop相比，Gearman更偏向于任务分发功能。它的 任务分布非常简单，简单得可以只需要用脚本即可完成。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src="http://www.oschina.net/uploads/img/201002/05001154_UcCt.png" alt="下载ruby"&gt;&lt;/p&gt;
+&lt;h4&gt;Calabash&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Calabash-android是支持android的UI自动化测试框架，PC端使用了cucumber框架，通过http和json与模拟器和真机上安装的测试apk通信，测试apk调用robotium的方法来进行UI自动化测试，支持webview操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;calabash脚本以 &lt;a href="http://my.oschina.net/fitnessefan/blog/308893" target="_blank"&gt;使用calabash测试开源中国Android客户端&lt;/a&gt; 为例。&lt;/p&gt;
+&lt;h4&gt;Gearman安装和执行测试&lt;/h4&gt;&lt;h4&gt;Ubuntu上安装Gearman&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;$ sudo apt-get install gearman-job-server
+$ gearmand -V
+
+gearmand 1.0.6 - https://bugs.launchpad.net/gearmand 
+
+$ sudo apt-get install gearman-tools
+$ gearman -H
+&lt;/pre&gt;
+&lt;h4&gt;运行Gearman并发执行Calabash测试用例&lt;/h4&gt;
+&lt;p&gt;启动gearman job server，作为后台服务运行:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;$ gearmand -d
+&lt;/pre&gt;
+
+&lt;p&gt;启动两个worker，每个woker代表一个手机测试设备(tester)，woker始终不退出，且没有任何打印:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;$ gearman -w -f tester -- ./test-case.sh NEXUS-7 testdata-aa.bashrc
+$ gearman -w -f tester -- ./test-case.sh HUAHEI-8860 testdata-bb.bashrc
+&lt;/pre&gt;
+
+&lt;p&gt;分发测试用例到各个worker，收集到所有测试打印后，即完成测试：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;./run-suite.sh @BVT
+&lt;/pre&gt;
+
+&lt;p&gt;实时查看测试结果，任何一个worker测试完一个用例，测试结果会立即打印出来：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;tail -f /tmp/test-result
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;并发测试的效果：&lt;/strong&gt;&lt;br&gt;
+理论上如果顺序执行测试所有用例要10个小时，那么只要准备10个手机，每个手机对应启动一个worker:tester，测试时间将缩短到最少1个小时。&lt;/p&gt;
+
+&lt;p&gt;下面的脚本是在同一台Ubuntu电脑上，利用多个USB口连接多个手机来并发测试，&lt;br&gt;
+如果要在多台电脑上执行并发测试，那要考虑这多台电脑如何获取同一份apk和calabash脚本，可以考虑从一个公共的url去wget。&lt;/p&gt;
+&lt;h4&gt;Gearman测试脚本&lt;/h4&gt;&lt;h4&gt;test-case.sh&lt;/h4&gt;
+&lt;p&gt;从stdin接收到的calabash测试脚本文件路径，调用calabash-android完成测试，再作为client调用printer&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; x&lt;span class="nv"&gt;$2&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; x &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"usage: &lt;/span&gt;&lt;span class="nv"&gt;$0&lt;/span&gt;&lt;span class="s2"&gt; device-id testdata-xx.bashrc"&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"      device-id get from: adb devices"&lt;/span&gt;
+  &lt;span class="nb"&gt;exit &lt;/span&gt;1
+&lt;span class="k"&gt;fi
+&lt;/span&gt;&lt;span class="nb"&gt;read &lt;/span&gt;line
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$0&lt;/span&gt; &lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="nv"&gt;$2&lt;/span&gt;
+&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;uuidgen&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nv"&gt;d1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;date +%T&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nv"&gt;suite_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/git/oschina/android-app/calabash
+&lt;span class="nv"&gt;apk_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/git/oschina/android-app/bin/oschina-android-app.apk
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"test result in /tmp/&lt;/span&gt;&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$d1&lt;/span&gt; at &lt;span class="sb"&gt;`&lt;/span&gt;hostname&lt;span class="sb"&gt;`&lt;/span&gt;:&lt;span class="nv"&gt;$1&lt;/span&gt; &amp;gt;&amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+mkdir -p &lt;span class="nv"&gt;$HOME&lt;/span&gt;/&lt;span class="nv"&gt;$1&lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$HOME&lt;/span&gt;/&lt;span class="nv"&gt;$1&lt;/span&gt;
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;ADB_DEVICE_ARG&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;
+. &lt;span class="nv"&gt;$src&lt;/span&gt;/&lt;span class="nv"&gt;$2&lt;/span&gt;
+calabash-android run &lt;span class="nv"&gt;$apk_path&lt;/span&gt; -r &lt;span class="nv"&gt;$suite_path&lt;/span&gt;/features/ &lt;span class="nv"&gt;$line&lt;/span&gt; 2&amp;gt;&amp;amp;1 | tee -a /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;span class="nv"&gt;d2&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;date +%T&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$d2&lt;/span&gt; at &lt;span class="sb"&gt;`&lt;/span&gt;hostname&lt;span class="sb"&gt;`&lt;/span&gt;:&lt;span class="nv"&gt;$1&lt;/span&gt; &amp;gt;&amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;span class="nv"&gt;failed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;grep &lt;span class="s2"&gt;"Failing Scenarios"&lt;/span&gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; | wc -l&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$failed&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; 0 &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"===PASS=== : &lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &amp;gt;&amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;else
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"===FAIL=== : &lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &amp;gt;&amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;fi
+&lt;/span&gt;gearman -f printer &amp;lt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+rm -f /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;print-result.sh &lt;/h4&gt;
+&lt;p&gt;从stdin接收测试结果，并添加到文件/tmp/test-result&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="k"&gt;while &lt;/span&gt;&lt;span class="nb"&gt;read &lt;/span&gt;line 
+&lt;span class="k"&gt;do
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &amp;gt;&amp;gt; /tmp/test-result
+&lt;span class="k"&gt;done
+&lt;/span&gt;&lt;span class="nv"&gt;case_count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;cat /tmp/case_count&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nv"&gt;finished&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;egrep &lt;span class="s2"&gt;"===(PASS|FAIL)==="&lt;/span&gt; /tmp/test-result | wc -l&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; -n &lt;span class="s2"&gt;"Progress:"&lt;/span&gt; &lt;span class="nv"&gt;$finished&lt;/span&gt; &lt;span class="s2"&gt;"/ &lt;/span&gt;&lt;span class="nv"&gt;$case_count&lt;/span&gt;&lt;span class="s2"&gt;  ["&lt;/span&gt; &amp;gt;&amp;gt; /tmp/test-result
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nv"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0; i&amp;lt;&lt;span class="nv"&gt;$finished&lt;/span&gt;; i++ &lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;do
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; -n &lt;span class="s2"&gt;"&amp;gt;"&lt;/span&gt; &amp;gt;&amp;gt; /tmp/test-result
+&lt;span class="k"&gt;done
+&lt;/span&gt;&lt;span class="nb"&gt;let &lt;/span&gt;&lt;span class="nv"&gt;unfinished&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$case_count&lt;/span&gt;-&lt;span class="nv"&gt;$finished&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nv"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0; i&amp;lt;&lt;span class="nv"&gt;$unfinished&lt;/span&gt;; i++ &lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;do
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; -n &lt;span class="s2"&gt;"."&lt;/span&gt; &amp;gt;&amp;gt; /tmp/test-result
+&lt;span class="k"&gt;done
+&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; -en &lt;span class="s2"&gt;"]&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &amp;gt;&amp;gt; /tmp/test-result
+&lt;/pre&gt;
+&lt;h4&gt;run-suite.sh &lt;/h4&gt;
+&lt;p&gt;作为client，后台一次分发所有calabash脚本到tester，并启动woker: printer，直到收到所有测试结果打印才退出&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; x&lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; x &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"usage:"&lt;/span&gt; &lt;span class="nv"&gt;$0&lt;/span&gt; &lt;span class="s2"&gt;"@BVT|@nightly|all|failed"&lt;/span&gt;
+  &lt;span class="nb"&gt;exit &lt;/span&gt;1
+&lt;span class="k"&gt;fi
+
+&lt;/span&gt;&lt;span class="nv"&gt;suite_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/git/oschina/android-app/calabash
+&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;uuidgen&lt;span class="sb"&gt;`&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"all"&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  &lt;/span&gt;find &lt;span class="nv"&gt;$suite_path&lt;/span&gt; -name &lt;span class="s2"&gt;"*.feature"&lt;/span&gt; &amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"failed"&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f /tmp/failed &lt;span class="o"&gt;]&lt;/span&gt;
+  &lt;span class="k"&gt;then
+    &lt;/span&gt;cat /tmp/failed &amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;else
+    &lt;/span&gt;touch /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;fi
+elif&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; @&lt;span class="k"&gt;*&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  &lt;/span&gt;grep &lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="nv"&gt;$suite_path&lt;/span&gt; -rl | grep &lt;span class="s2"&gt;".feature$"&lt;/span&gt; &amp;gt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;fi
+
+&lt;/span&gt;&lt;span class="nv"&gt;case_count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;cat /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; | wc -l&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$case_count&lt;/span&gt; &amp;gt; /tmp/case_count
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$case_count&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; 0 &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"NO case to run, exit."&lt;/span&gt; | tee /tmp/test-result
+  rm -f /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+  &lt;span class="nb"&gt;exit &lt;/span&gt;1
+&lt;span class="k"&gt;fi
+
+&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"total &lt;/span&gt;&lt;span class="nv"&gt;$case_count&lt;/span&gt;&lt;span class="s2"&gt; cases."&lt;/span&gt; | tee /tmp/test-result
+
+&lt;span class="nv"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0
+&lt;span class="k"&gt;while &lt;/span&gt;&lt;span class="nb"&gt;read &lt;/span&gt;line 
+&lt;span class="k"&gt;do
+  &lt;/span&gt;&lt;span class="nb"&gt;let &lt;/span&gt;i+&lt;span class="o"&gt;=&lt;/span&gt;1
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"send No.&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt; case --- &lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$line&lt;/span&gt; | gearman -b -f runcase
+&lt;span class="k"&gt;done&lt;/span&gt; &amp;lt; /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+rm -f /tmp/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;uuid&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;
+
+gearman -w -c &lt;span class="nv"&gt;$case_count&lt;/span&gt; -f printer -- ./print-result.sh &lt;span class="nv"&gt;$case_count&lt;/span&gt;
+cat /tmp/test-result
+grep &lt;span class="s2"&gt;"===FAIL==="&lt;/span&gt; /tmp/test-result | awk &lt;span class="s1"&gt;'{print $3}'&lt;/span&gt; &amp;gt; /tmp/failed
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt; &amp;gt; /tmp/summary
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"=================test result summary================"&lt;/span&gt; 2&amp;gt;&amp;amp;1 | tee -a /tmp/summary
+grep &lt;span class="s2"&gt;"===PASS==="&lt;/span&gt; /tmp/test-result 2&amp;gt;&amp;amp;1 | tee -a /tmp/summary
+grep &lt;span class="s2"&gt;"===FAIL==="&lt;/span&gt; /tmp/test-result 2&amp;gt;&amp;amp;1 | tee -a /tmp/summary
+&lt;span class="nv"&gt;fails&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;grep &lt;span class="s2"&gt;"===FAIL==="&lt;/span&gt; /tmp/test-result | wc -l&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$fails&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; 0 &lt;span class="o"&gt;]&lt;/span&gt; 
+&lt;span class="k"&gt;then
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; -e &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="se"&gt;\0&lt;/span&gt;&lt;span class="s2"&gt;33[32;1;7mPASS&lt;/span&gt;&lt;span class="se"&gt;\0&lt;/span&gt;&lt;span class="s2"&gt;33[0m :"&lt;/span&gt; &lt;span class="sb"&gt;`&lt;/span&gt;grep &lt;span class="s2"&gt;"===PASS==="&lt;/span&gt; /tmp/test-result | wc -l&lt;span class="sb"&gt;`&lt;/span&gt; 2&amp;gt;&amp;amp;1 | tee -a /tmp/summary
+&lt;span class="k"&gt;else
+  &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; -e &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="se"&gt;\0&lt;/span&gt;&lt;span class="s2"&gt;33[31;1;7mFAIL&lt;/span&gt;&lt;span class="se"&gt;\0&lt;/span&gt;&lt;span class="s2"&gt;33[0m :"&lt;/span&gt; &lt;span class="sb"&gt;`&lt;/span&gt;grep &lt;span class="s2"&gt;"===FAIL==="&lt;/span&gt; /tmp/test-result | wc -l&lt;span class="sb"&gt;`&lt;/span&gt; 2&amp;gt;&amp;amp;1 | tee -a /tmp/summary
+&lt;span class="k"&gt;fi
+&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"TOTAL: &lt;/span&gt;&lt;span class="nv"&gt;$case_count&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; 2&amp;gt;&amp;amp;1 | tee -a /tmp/summary
+cat /tmp/summary &amp;gt;&amp;gt; /tmp/test-result
+&lt;/pre&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Wed, 19 Nov 2014 21:54:41 +0800</pubDate>
+      <link>http://testerhome.com/topics/1600</link>
+      <guid>http://testerhome.com/topics/1600</guid>
+    </item>
+    <item>
+      <title>Ubuntu 14.04 64 位安装 calabash-android 问题汇总</title>
+      <description>&lt;h4&gt;初装Ubuntu 14.04 64位后，安装calabash-android步骤：&lt;/h4&gt;&lt;h4&gt;安装jdk+ant&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;sudo apt-get update&lt;/li&gt;
+&lt;li&gt;sudo apt-get install openjdk-7-jre-headless&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;sudo apt-get install openjdk-7-jdk&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;sudo apt-get install ant&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;sudo apt-get install make&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;安装openjdk-7-jdk之前，运行ant失败：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;Unable to locate tools.jar. Expected to find it in /usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;安装make之前，运行&lt;code&gt;sudo gem install calabash-android -V&lt;/code&gt;失败：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;ERROR:  Error installing calabash-android:
+    ERROR: Failed to build gem native extension.
+
+        /usr/bin/ruby1.9.1 extconf.rb
+checking for main() in -lc... yes
+creating Makefile
+
+make
+sh: 1: make: not found
+&lt;/pre&gt;
+&lt;h4&gt;安装Android SDK&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;sudo apt-get install lib32z1 lib32ncurses5 lib32stdc++6&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;下载adt-bundle并解压&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href="http://www.androiddevtools.cn/" rel="nofollow" target="_blank"&gt;http://www.androiddevtools.cn/&lt;/a&gt; 下载Linux 64位adt-bundle-linux-x86_64-20140702.zip，并解压到home目录，&lt;br&gt;&lt;br&gt;
+~/.bashrc中设置：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;export ANDROID_HOME=$HOME/adt-bundle-linux-x86_64-20140702/sdk
+export PATH=$ANDROID_HOME/platform-tools:$PATH
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;安装 lib32z1 lib32ncurses5 lib32stdc++6 之前,  打开ADT报找不到文件错误：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;Cannot run program "/home/test/adt-bundle-linux-x86_64-20140702/sdk/platform-tools/adb": error=2, No such file or directory' while attempting to get adb version from '/home/test/adt-bundle-linux-x86_64-20140702/sdk/platform-tools/adb'    
+
+~/adt-bundle-linux-x86_64-20140702/sdk/tools$ ./adb
+bash: ./adb: No such file or directory
+
+~/adt-bundle-linux-x86_64-20140702/sdk/platform-tools$ ls adb -l
+-rwxrwxrwx 1 magima magima 1355536  6月 21 18:09 adb
+&lt;/pre&gt;
+&lt;h4&gt;安装ruby+ruby1.9.1-dev+calabash-android&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;sudo apt-get install ruby&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;sudo apt-get install ruby1.9.1-dev&lt;/li&gt;
+&lt;li&gt;安装 calabash-android&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;设置淘宝源后再安装：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;sudo gem sources --remove http://rubygems.org/  
+sudo gem sources -a http://ruby.taobao.org/  
+sudo gem install calabash-android -V    
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;安装ruby1.9.1-dev之前，试图安装calabash-android，将报错：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;/usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': cannot load such file -- mkmf (LoadError)
+&lt;/pre&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Sat, 08 Nov 2014 19:51:27 +0800</pubDate>
+      <link>http://testerhome.com/topics/1568</link>
+      <guid>http://testerhome.com/topics/1568</guid>
+    </item>
+    <item>
+      <title>calabash iOS 新建项目流程</title>
+      <description>&lt;p&gt;#安装cucumber gem #&lt;br&gt;
+  ruby的环境安装我就不多说了。&lt;br&gt;
+  &lt;code&gt;$ gem install calabash-cucumber&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;#安装cucumber gem #&lt;br&gt;
+  创建features文件夹&lt;br&gt;
+  &lt;code&gt;$ calabash-ios gen       #After you run this command, press return when prompted&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;这个命令会创建features文件夹，并且包括其中初始化需要的feature文件以及rb文件&lt;/p&gt;
+
+&lt;p&gt;#设置我们的xcode#&lt;br&gt;
+  我们右键targets中的我们的project名字，选择duplicate，并对project copy做重命名。&lt;br&gt;
+&lt;img src="/photo/2014/382c97bfe93983022002fdb760eecb46.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;接着我们需要到schemes中同样的修改我们的project copy，修改成和之前一样的名字。&lt;br&gt;
+&lt;img src="/photo/2014/959a97b1d735bf9d5a559fdb84286353.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/bc0ade5d8da4fbdd0653e2b16c8ca4d1.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;最后我们还需要到build settings中搜索product name进行最后的修改。&lt;br&gt;
+&lt;img src="/photo/2014/0152b2f51ccedc9ed61fbf362238619c.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;下载最新的calabash-ios 的framework可以从这个地址下载：&lt;code&gt;https://github.com/calabash/calabash-ios/downloads.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;解压之后我们需要将calabash.framework拖入project的framework中。&lt;br&gt;
+&lt;img src="/photo/2014/d76f7220459d0ffc5672aade784cc813.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;做如下图的设置：&lt;br&gt;
+&lt;img src="/photo/2014/afc157ba4cd14ce1f4137545dd0f3fd4.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;接着需要添加CFNetwork.framework到Link Binary with libraries中用做通信使用&lt;br&gt;
+&lt;img src="/photo/2014/da4365403d643a067ad7868a3fecf5ac.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;在other linker Flags中添加&lt;code&gt;-force_load "$(SRCROOT)/calabash.framework/calabash" -lstdc++&lt;/code&gt;&lt;br&gt;
+&lt;img src="/photo/2014/f07d81d2f5f3c8a297d10018771ea755.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;#测试我们的设置#&lt;br&gt;
+  我们在xcode中schemes中选择我们重命名的那个，并且选择一个simulator进行启动，在console中我们可以到如下显示，说明calabash的server正确启动了。&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;2014-10-27 16:27:14.699 LPSimpleExample copy[15381:1906813] Creating the server: &amp;lt;LPHTTPServer: 0x7dc1e570&amp;gt;
+2014-10-27 16:27:14.700 LPSimpleExample copy[15381:1906813] Calabash iOS server version: CALABASH VERSION: 0.11.1
+2014-10-27 16:27:14.700 LPSimpleExample copy[15381:1906813] simroot: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk
+2014-10-27 16:27:14.720 LPSimpleExample copy[15381:1906813] Started LPHTTP server on port 37265
+2014-10-27 16:27:15.225 LPSimpleExample copy[15381:1906960] Bonjour Service Published: domain&lt;span class="o"&gt;(&lt;/span&gt;local.&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;_http._tcp.&lt;span class="o"&gt;)&lt;/span&gt; name&lt;span class="o"&gt;(&lt;/span&gt;Calabash Server&lt;span class="o"&gt;)&lt;/span&gt;
+2014-10-27 16:27:15.743 LPSimpleExample copy[15381:1906813] BECOMEACTIVE
+&lt;/pre&gt;
+
+&lt;p&gt;我们在终端中输入&lt;code&gt;DEBUG=1 calabash-ios console&lt;/code&gt;&lt;br&gt;
+  可看到&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;Running irb...
+irb&lt;span class="o"&gt;(&lt;/span&gt;main&lt;span class="o"&gt;)&lt;/span&gt;:001:0&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;接着输入&lt;code&gt;start_test_server_in_background(:timeout =&amp;gt; 30)&lt;/code&gt;&lt;br&gt;
+  这样我们就可以看到calabash运行我们case时候更多的信息。&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;INFO: Using uia strategy: &lt;span class="s1"&gt;'preferences'&lt;/span&gt;
+Sending &lt;span class="s1"&gt;'QUIT'&lt;/span&gt; to instruments process &lt;span class="s1"&gt;'15764'&lt;/span&gt;
+Waiting &lt;span class="k"&gt;for &lt;/span&gt;instruments &lt;span class="s1"&gt;'15764'&lt;/span&gt; to terminate
+Preparation took 4.017057 seconds
+&lt;span class="o"&gt;{&lt;/span&gt;
+                        :app &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/Users/monkey/Library/Developer/Xcode/DerivedData/LPSimpleExample-ccfpmaczuxtcjmdyueuguluqrakb/Build/Products/Debug-iphonesimulator/LPSimpleExample copy.app"&lt;/span&gt;,
+                       :args &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="o"&gt;[]&lt;/span&gt;,
+    :bundle_dir_or_bundle_id &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/Users/monkey/Library/Developer/Xcode/DerivedData/LPSimpleExample-ccfpmaczuxtcjmdyueuguluqrakb/Build/Products/Debug-iphonesimulator/LPSimpleExample copy.app"&lt;/span&gt;,
+                  :bundle_id &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"com.lesspainful.example.LPSimpleExample-copy"&lt;/span&gt;,
+                     :device &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"iphone"&lt;/span&gt;,
+              :device_target &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"simulator"&lt;/span&gt;,
+              :launch_method &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; :instruments,
+             :launch_retries &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; 5,
+                   :log_file &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/run_loop.out"&lt;/span&gt;,
+                  :no_launch &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="nb"&gt;false&lt;/span&gt;,
+                    :no_stop &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="nb"&gt;false&lt;/span&gt;,
+                      :reset &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="nb"&gt;false&lt;/span&gt;,
+                :results_dir &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h"&lt;/span&gt;,
+          :results_dir_trace &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/trace"&lt;/span&gt;,
+                     :script &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/_run_loop.js"&lt;/span&gt;,
+                :sdk_version &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; nil,
+                    :timeout &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; 30,
+                       :udid &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"iPhone 5 (8.1 Simulator)"&lt;/span&gt;,
+               :uia_strategy &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; :preferences,
+                      :xcode &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"6.1"&lt;/span&gt;,
+                 :xcode_path &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="s2"&gt;"/Applications/Xcode.app/Contents/Developer"&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="c"&gt;### Starting on simulator App: /Users/monkey/Library/Developer/Xcode/DerivedData/LPSimpleExample-ccfpmaczuxtcjmdyueuguluqrakb/Build/Products/Debug-iphonesimulator/LPSimpleExample copy.app ###&lt;/span&gt;
+2014-10-27 23:09:28 +0800 xcrun instruments -w &lt;span class="s2"&gt;"iPhone 5 (8.1 Simulator)"&lt;/span&gt; -D &lt;span class="s2"&gt;"/var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/trace"&lt;/span&gt; -t &lt;span class="s2"&gt;"Automation"&lt;/span&gt; &lt;span class="s2"&gt;"/Users/monkey/Library/Developer/Xcode/DerivedData/LPSimpleExample-ccfpmaczuxtcjmdyueuguluqrakb/Build/Products/Debug-iphonesimulator/LPSimpleExample copy.app"&lt;/span&gt; -e UIARESULTSPATH /var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h -e UIASCRIPT /var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/_run_loop.js  &amp;amp;&amp;gt; /var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/run_loop.out
+Launching took 8.816992 seconds
+
+WARN: The server version is not compatible with gem version.
+Please update your server.
+https://github.com/calabash/calabash-ios/wiki/B1-Updating-your-Calabash-iOS-version
+       gem version: &lt;span class="s1"&gt;'0.11.3'&lt;/span&gt;
+min server version: &lt;span class="s1"&gt;'0.11.3'&lt;/span&gt;
+    server version: &lt;span class="s1"&gt;'0.11.1'&lt;/span&gt;
+Calabash::Cucumber::Launcher: Launch Method instruments
+Log file: /var/folders/mq/d33fw7d57k55zlz60f327f480000gn/T/run_loop20141027-16480-8rup2h/run_loop.out
+&lt;/pre&gt;
+
+&lt;p&gt;单纯的从日志中我们可以更深入的看到calabash iOS中更详细的设置和时间消耗等信息&lt;/p&gt;</description>
+      <author>monkey</author>
+      <pubDate>Mon, 27 Oct 2014 23:25:36 +0800</pubDate>
+      <link>http://testerhome.com/topics/1528</link>
+      <guid>http://testerhome.com/topics/1528</guid>
+    </item>
+    <item>
+      <title>Calabash for Mac 在搭环境的小细节...</title>
+      <description>&lt;p&gt;配Android SDK时，环境变量时必须得设置名称为ANDROID_HOME，Calabash才会认你。&lt;/p&gt;
+
+&lt;p&gt;所以应该这样：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;ANDROID_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/adt-bundle-mac-x86_64-20140702/sdk
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$PATH&lt;/span&gt;:&lt;span class="nv"&gt;$ANDROID_HOME&lt;/span&gt;:&lt;span class="nv"&gt;$ANDROID_HOME&lt;/span&gt;/tools:&lt;span class="nv"&gt;$ANDROID_HOME&lt;/span&gt;/platform-tools
+&lt;/pre&gt;
+
+&lt;p&gt;虽然文档写得很清楚要建ANDROID_HOME，但平时太过理所当然了，还是容易出这样的问题，必须严谨啊。&lt;/p&gt;
+
+&lt;p&gt;Yosemite把Java干掉了，Oracle下载速度太感人...site了一下网盘：&lt;br&gt;
+&lt;a href="http://pan.baidu.com/s/1pJshHQN" rel="nofollow" target="_blank"&gt;http://pan.baidu.com/s/1pJshHQN&lt;/a&gt;&lt;/p&gt;</description>
+      <author>anikikun</author>
+      <pubDate>Sun, 26 Oct 2014 01:17:18 +0800</pubDate>
+      <link>http://testerhome.com/topics/1522</link>
+      <guid>http://testerhome.com/topics/1522</guid>
+    </item>
+    <item>
+      <title>Calabash 模拟多手机同步测试</title>
+      <description>&lt;p&gt;Calabash不支持多手机同步测试，所以不能测试如微信，qq之类两个手机互发消息的场景。&lt;br&gt;&lt;br&gt;
+但是利用cucumber调用符合http协议的restful api，就能达到模拟多手机同步测试的目的。&lt;/p&gt;
+&lt;h4&gt;示意图&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;看看如下示意图，应该就明白了&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;测试网络图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/1025/193841_8UE7_1990460.png" alt="测试网络图"&gt;&lt;/p&gt;
+
+&lt;p&gt;测试顺序图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/1025/193730_DJJg_1990460.png" alt="测试顺序图"&gt;&lt;/p&gt;
+&lt;h4&gt;模拟测试方式&lt;/h4&gt;
+&lt;p&gt;如果双方是对等的，如微信聊天，那么手机上只登录其中一个账号就能测试所有场景。&lt;/p&gt;
+
+&lt;p&gt;如果双方是不对等的，如一个买家，一个是商家，&lt;br&gt;
+那么，可以先手机上登录买方账号，卖方账号用调用服务器的restful api的方式来模拟；&lt;br&gt;
+第二步，反过来手机上登录商家账号，买方账号用调用服务器的restful api的方式了模拟。&lt;/p&gt;
+&lt;h4&gt;cucumber调用restful api的技术&lt;/h4&gt;
+&lt;p&gt;说明一下，calabash是完全兼容cucumber的，所以能直接调用cucumber的自定义步骤。&lt;/p&gt;
+
+&lt;p&gt;httparty——ruby http client库，调用符合http协议的restful api&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;require 'httparty'    
+
+login_url = "http://api.xx.com/login"
+headers = { 'Content-Type' =&amp;gt; 'application/json' }
+body = { username: 'jerry', password: 'tom' }.to_json
+options = { body: body, headers: headers }
+response = HTTParty.post(login_url,options)
+&lt;/pre&gt;
+
+&lt;p&gt;json——ruby json库，解析restful api返回的响应内容，如果是json格式的话&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;json_obj=JSON.parse(response.body)
+&lt;/pre&gt;
+
+&lt;p&gt;wrong——ruby assert库&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;require 'wrong'    
+include Wrong
+assert { response.code==200 }
+assert { json_obj["username"]=="jerry" }
+&lt;/pre&gt;
+
+&lt;p&gt;先介绍到这里了，具体用法和示例可以求助百度大大。&lt;/p&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Sat, 25 Oct 2014 19:12:41 +0800</pubDate>
+      <link>http://testerhome.com/topics/1520</link>
+      <guid>http://testerhome.com/topics/1520</guid>
+    </item>
+    <item>
+      <title>如何解决 Calabash-ios "Connection refused "？</title>
+      <description>&lt;p&gt;在跑ios的模拟器上跑case的时候，发生如下错误：&lt;br&gt;
+&lt;img src="/photo/2014/e27c0c2f72bfd5bae75f05201ae466d9.jpg" alt=""&gt;&lt;br&gt;
+网上找了一圈，也没有找到合适的解决方法。&lt;br&gt;
+请问有没有人遇到类似的情况，如何解决的？&lt;/p&gt;</description>
+      <author>beerbox</author>
+      <pubDate>Mon, 15 Sep 2014 13:40:42 +0800</pubDate>
+      <link>http://testerhome.com/topics/1396</link>
+      <guid>http://testerhome.com/topics/1396</guid>
+    </item>
+    <item>
+      <title>Calabash-ios framework 的安装过程</title>
+      <description>&lt;p&gt;IOS的比Android难一些，主要是需要配置framework,其他都差不多，这方面资料比较少，很多英文的有不太好啃，用这个工具的也比较少，可能android上用的相对多一点，因为公司项目不太适合Appium,自己琢磨着用Calabash，分享下过程吧。&lt;br&gt;
+先参考这篇文章&lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-ios" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-ios&lt;/a&gt;&lt;br&gt;
+主要是按照这个的步骤一步一步来的，如果你对Xcode熟悉，这些都不在话下，如果不熟，请教下开发，文档的xcode版本过低，很多页面跟实际还是有些不同。&lt;br&gt;
+&lt;a href="http://www.moncefbelyamani.com/ios-automated-testing-with-calabash-cucumber-ruby/" rel="nofollow" target="_blank"&gt;http://www.moncefbelyamani.com/ios-automated-testing-with-calabash-cucumber-ruby/&lt;/a&gt;&lt;br&gt;
+1. 装Ruby的环境和跑用例我就不讲了。&lt;br&gt;
+大概：&lt;br&gt;
+cd path-to-my-ios-project&lt;br&gt;
+gem install calabash-cucumber&lt;br&gt;
+calabash-ios setup&lt;br&gt;
+calabash-ios gen&lt;br&gt;
+cucumber&lt;/p&gt;
+
+&lt;p&gt;例子很简单，但是你要做自己的项目，就需要定位元素吧。&lt;br&gt;
+如果你按照Android的方法，&lt;br&gt;
+calabash-ios console&lt;br&gt;
+start_test_server_in_background&lt;br&gt;
+出错信息会告诉你环境不行，framework没装之类的错误。&lt;/p&gt;
+
+&lt;p&gt;怎么办，看哥哥细细道来：&lt;br&gt;
+步骤1：&lt;br&gt;
+Install the calabash-cucumber gem&lt;br&gt;
+$ gem install calabash-cucumber&lt;br&gt;
+步骤2：&lt;br&gt;
+在targets下把项目Duplicate一个，主要用来测试&lt;br&gt;
+under TARGETS, and select Duplicate. Or, simply click on newsyc and press ⌘D. If you get a Duplicate iPhone Target prompt, click on the Duplicate Only button.&lt;br&gt;
+然后改名，如：newsyc-calabash&lt;br&gt;
+1,需要在targets里面改名&lt;br&gt;
+2,需要在Manage Schemes里面改名&lt;br&gt;
+3,需要在Build Settings里面改名&lt;/p&gt;
+
+&lt;p&gt;步骤2：&lt;br&gt;
+1. 下载一个calabash.framework， 按照这个文档，源文件已经被删除。&lt;br&gt;
+幸好还有git的文档，&lt;br&gt;
+用这个命令下载：&lt;br&gt;
+calabash-ios download&lt;br&gt;
+然后把这个文件拖到xcode项目里面。&lt;br&gt;
+2. 加CFNetwork.framework&lt;br&gt;
+在复制的那个项目中，click on Build Phases, expand Link Binary with Libraries, click on +, click on CFNetwork.framework, and click on Add&lt;br&gt;
+3. 配置Other Linker Flags&lt;br&gt;
+选中你复制的项目，Click on Build Settings, click on All (if it’s not already selected), then search for other linker, click on the Other Linker Flags row, then click once under Yes to enable edit mode, &lt;br&gt;
+and copy and paste the following: -force_load "$(SRCROOT)/calabash.framework/calabash" -lstdc++. Click anywhere outside of the text field to save your changes. &lt;br&gt;
+You should end up with something like this (note that what appears after -force_load will be different for you since that is the path to your project on your computer).&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;开测
+在测得过程中，打开console output&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;首先看下元素能否定位了：&lt;br&gt;
+&lt;img src="/photo/2014/77df31f435896216ffb0a519517edfb5.jpg" alt=""&gt;&lt;br&gt;
+再写case啥的已经不在话下了。&lt;br&gt;
+OK,搞定，先回家，明天可以大搞了。&lt;/p&gt;</description>
+      <author>beerbox</author>
+      <pubDate>Thu, 11 Sep 2014 19:53:31 +0800</pubDate>
+      <link>http://testerhome.com/topics/1384</link>
+      <guid>http://testerhome.com/topics/1384</guid>
+    </item>
+    <item>
+      <title>使用 calabash 测试开源中国 Android 客户端</title>
+      <description>&lt;p&gt;Calabash-android是支持android的UI自动化测试框架，前面已经介绍过《&lt;a href="http://my.oschina.net/fitnessefan/blog/305350" target="_blank"&gt;中文Win7下成功安装calabash-android步骤&lt;/a&gt;》，这篇博文尝试测试一个真实应用：开源中国客户端。目的是和大家一起学习calabash测试工具。&lt;/p&gt;
+&lt;h4&gt;测试环境与源码准备&lt;/h4&gt;&lt;h4&gt;先介绍一下oschina.net&lt;/h4&gt;
+&lt;p&gt;&amp;lt;www.oschina.net&amp;gt; &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/205552_gNW5_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;oschina除了有网站，还有三大平台手机客户端：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.oschina.net/app" rel="nofollow" target="_blank"&gt;http://www.oschina.net/app&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/205812_xiA1_1990460.png" alt="客户端下载"&gt;&lt;/p&gt;
+
+&lt;p&gt;客户端已经开源！&lt;/p&gt;
+
+&lt;p&gt;那么开源可以用来做什么呢？&lt;/p&gt;
+
+&lt;p&gt;我正在学用calabash-android，得找到一个合适的待测app，平时手机上开源中国这个app用的蛮顺手了，所以就选它了，在此特别向开源中国的开发工程师致谢！&lt;/p&gt;
+&lt;h4&gt;环境准备：ADT+calabash-android&lt;/h4&gt;
+&lt;p&gt;可以参考：&lt;br&gt;&lt;br&gt;
+&lt;a href="http://my.oschina.net/fitnessefan/blog/305350" target="_blank"&gt;中文Win7下成功安装calabash-android步骤&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;下载oschina/android-app源代码&lt;/h4&gt;
+&lt;p&gt;首先到 &lt;a href="http://git.oschina.net/oschina/android-app" rel="nofollow" target="_blank"&gt;http://git.oschina.net/oschina/android-app&lt;/a&gt; ，  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/210554_zPkP_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;以下两种下载源代码方式的方式都可以：  &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;可以直接点击”下载zip“&lt;/li&gt;
+&lt;li&gt;复制git仓库url: &lt;a href="https://git.oschina.net/oschina/android-app.gitEclipse/ADT%E4%B8%AD%E6%89%93%E5%BC%80Windows" rel="nofollow" target="_blank"&gt;https://git.oschina.net/oschina/android-app.gitEclipse/ADT中打开Windows&lt;/a&gt;，然后在 &amp;gt; Open Perspective &amp;gt; Other... &amp;gt; Get Resporsitory Exploring，clone源代码&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;导入到ADT中后，源代码如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/211723_WQFQ_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;h4&gt;在adt-bundle-20140702中编译运行oschina/android-app的几个问题&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;问题1：&lt;/strong&gt; adt-bundle-20140702的API版本是20，所以要修改project.properties：&lt;br&gt;
+&lt;code&gt;target=android-15&lt;/code&gt; 改成 &lt;code&gt;target=android-20&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;问题2：&lt;/strong&gt; 源代码是使用了已作废的class: android.webkit.CacheManager&lt;br&gt;
+oschina-android-app/src/net/oschina/app/AppContext.java中使用了android.webkit.CacheManager&lt;br&gt;
+所以要把相关代码禁掉：&lt;/p&gt;
+
+&lt;p&gt;61行：   &lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    //import android.webkit.CacheManager;
+&lt;/pre&gt;
+
+&lt;p&gt;1503到1509行：  &lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    //      File file = CacheManager.getCacheFileBaseDir();  
+    //      if (file != null &amp;amp;&amp;amp; file.exists() &amp;amp;&amp;amp; file.isDirectory()) {  
+    //          for (File item : file.listFiles()) {  
+    //              item.delete();  
+    //          }  
+    //          file.delete();  
+    //      }         
+&lt;/pre&gt;
+
+&lt;p&gt;问题3：Run As Android Application报错：Installation error: INSTALL_FAILED_VERSION_DOWNGRADE&lt;br&gt;
+原因是：手机已经装了一个开源中国的１.7.7.0版本，而ADT要下载的是1.7.6.9版本，Android系统不允许安装一个比已安装版本更旧的版本，所以从手机上卸载已有的１.7.7.0版本就可以了。&lt;/p&gt;
+&lt;h4&gt;ADT编译并上传oschina/android-app到手机&lt;/h4&gt;
+&lt;p&gt;Run As Android Application &amp;gt; 选择连接到电脑Usb的手机 &amp;gt; OK&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0901/214305_k5WO_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;#calabash测试步骤&lt;/p&gt;
+&lt;h4&gt;先确认oschina/android-app声明了访问网络的权限&lt;/h4&gt;
+&lt;p&gt;oschina/android-app项目的AndroidManifest.xml中应该如下行：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    &amp;lt;uses-permission android:name="android.permission.INTERNET" /&amp;gt;
+&lt;/pre&gt;
+&lt;h4&gt;在oschina/android-app根目录中创建calabash目录&lt;/h4&gt;
+&lt;p&gt;在命令行下进入oschina/android-app的源代码根目录：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina&amp;gt;cd android-app
+
+    D:\git\oschina\android-app&amp;gt;dir
+     Volume Serial Number is 9823-AB19
+
+     Directory of D:\git\oschina\android-app
+
+    2014/09/01  20:26    &amp;lt;DIR&amp;gt;          .
+    2014/09/01  20:26    &amp;lt;DIR&amp;gt;          ..
+    2014/09/01  20:21               783 .classpath
+    2014/09/01  20:21    &amp;lt;DIR&amp;gt;          .git
+    2014/09/01  20:21                64 .gitignore
+    2014/09/01  20:21               822 .project
+    2014/09/01  20:21    &amp;lt;DIR&amp;gt;          .settings
+    2014/09/01  20:21            10,829 AndroidManifest.xml
+    2014/09/01  20:21    &amp;lt;DIR&amp;gt;          assets
+    2014/09/01  20:42    &amp;lt;DIR&amp;gt;          bin
+    2014/09/01  20:26    &amp;lt;DIR&amp;gt;          gen
+    2014/09/01  20:21    &amp;lt;DIR&amp;gt;          libs
+    2014/09/01  20:21            18,092 LICENSE.txt
+    2014/09/01  20:21             1,424 proguard.cfg
+    2014/09/01  20:41               563 project.properties
+    2014/09/01  20:21             4,183 README.md
+    2014/09/01  20:21    &amp;lt;DIR&amp;gt;          res
+    2014/09/01  20:21    &amp;lt;DIR&amp;gt;          src
+                   8 File(s)         36,760 bytes
+                  10 Dir(s)  133,131,993,088 bytes free
+
+    D:\git\oschina\android-app&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;创建calabash目录：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app&amp;gt;mkdir calabash
+&lt;/pre&gt;
+
+&lt;p&gt;创建cucumber skeleton：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app&amp;gt;cd calabash
+
+    D:\git\oschina\android-app\calabash&amp;gt;calabash-android gen
+
+    ----------Question----------
+    I'm about to create a subdirectory called features.
+    features will contain all your calabash tests.
+    Please hit return to confirm that's what you want.
+    ---------------------------
+
+
+    ----------Info----------
+    features subdirectory created.
+    ---------------------------
+
+    D:\git\oschina\android-app\calabash&amp;gt;dir
+     Volume Serial Number is 9823-AB19
+
+     Directory of D:\git\oschina\android-app\calabash
+
+    2014/09/01  21:54    &amp;lt;DIR&amp;gt;          .
+    2014/09/01  21:54    &amp;lt;DIR&amp;gt;          ..
+    2014/09/01  21:54    &amp;lt;DIR&amp;gt;          features
+                   0 File(s)              0 bytes
+                   3 Dir(s)  133,131,988,992 bytes free
+
+    D:\git\oschina\android-app\calabash&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;编辑 D:\git\oschina\android-app\calabash\features\my_first.feature：&lt;br&gt;
+初始内容：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: Login feature
+
+      Scenario: As a valid user I can log into my app
+        When I press "Login"
+        Then I see "Welcome to coolest app ever"
+&lt;/pre&gt;
+
+&lt;p&gt;第一行Feature: XX，第二行 Scenario: YY是给人读的，所以随便填写什么中文英文内容都可以&lt;br&gt;
+关键内容是第三行When I press ..和第四行Then I see ..,    这是给Cucumber软件识别的。&lt;br&gt;
+When后面跟动作语句，Then后面跟内容检查语句&lt;/p&gt;
+
+&lt;p&gt;先尝试如下改动：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I see "软件版本更新"
+&lt;/pre&gt;
+
+&lt;p&gt;用 &lt;code&gt;%windir%\system32\cmd.exe /k chcp65001&amp;amp;&amp;amp;ansicon&lt;/code&gt; 启动ansicon，&lt;br&gt;&lt;br&gt;
+运行calabash-andriod run&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android run D:\git\oschina\android-app\bin\oschina-android-app.apk
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/221601_dpHf_1990460.png" alt="在此输入图片描述"&gt;&lt;br&gt;
+测试失败，原因是Then的默认等待时间只有2秒，开源中国app的启动时间比较长。&lt;br&gt;
+ansicon中未能显示中文："软件版本更新"，这个后面补充中有描述。&lt;/p&gt;
+
+&lt;p&gt;按照 &lt;a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md&lt;/a&gt;的指导，可以指定等待几秒：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I wait for 10 seconds
+        Then I see "软件版本更新"
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/222124_xHgk_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;手机上看到的开源中国启动后画面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0901/222455_AU4S_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;按钮“立即更新”为什么是红色的？以后再解决。&lt;/p&gt;
+
+&lt;p&gt;到此步为止，calabash测试开源中国Android客户端的环境已经建立完毕，接下去同学们就可以欢快的尝试canned_steps.md里的各个预定义步骤了。&lt;/p&gt;
+
+&lt;p&gt;我也会继续完成这个测试用例，大家一起共同进步！&lt;/p&gt;
+&lt;h4&gt;补充解决问题：calabash测试输出中不能显示中文&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;解决方法：&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+ansicon启动时，不要用&lt;code&gt;chcp 65001&lt;/code&gt;设置为UTF-8编码，&lt;br&gt;
+用 &lt;code&gt;%windir%\system32\cmd.exe /k ansicon&lt;/code&gt; 启动ansicon，然后运行calabash:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/213538_G0CP_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;h4&gt;试用calabash预定义指令&lt;/h4&gt;&lt;h4&gt;试用 press, don't see, screenshot&lt;/h4&gt;
+&lt;p&gt;运行前，先把D:\git\oschina\android-app\calabash下的screenshot_*.png都删了，避免搞不清楚旧图和新图。  &lt;/p&gt;
+
+&lt;p&gt;不解释，看脚本和截图：  &lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I wait for 5 seconds
+        Then I take a screenshot
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/220315_n0R6_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/220330_wsC4_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;calabash脚本生成的手机截图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/220352_5fY3_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/220402_5iYe_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;h4&gt;到系统设置中启用左右滑动，为了后面测试手势指令&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I wait for 5 seconds
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I see "最新资讯"
+        Then I take a screenshot
+        Then I press the menu key
+        Then I see "系统设置"
+        Then I take a screenshot
+        When I press "系统设置"
+        Then I see "已关闭左右滑动"
+        Then I take a screenshot
+        When I press "已关闭左右滑动"
+        Then I see "已启用左右滑动"
+        Then I take a screenshot
+        Then I go back
+        Then I see "最新资讯"
+        Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/225019_k283_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/225031_BbC2_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/225040_kigD_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;h4&gt;手势：swipe right = 翻看右边的内容&lt;/h4&gt;
+&lt;p&gt;这个right比较难理解，是不是解释为“翻看右边的内容”比较容易记住。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 启动开源中国
+          ...
+          Then I swipe right
+          Then I see "问答"
+          Then I don't see "最新资讯"
+          Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0904/200440_FIlI_1990460.png" alt="在此输入图片描述"&gt;    &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0904/200248_9lY2_1990460.gif" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;h4&gt;scroll up 运行失败&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;          Then I scroll up
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0904/201223_2wOs_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;找不到android.widget.ScrollView元素，看样子oschina的可滚动区域不是用标准控件实现的。&lt;/p&gt;
+&lt;h4&gt;通过id找到控件并做相应操作&lt;/h4&gt;
+&lt;p&gt;接下去我要搜索包含"calabash"的博客，&lt;/p&gt;
+
+&lt;p&gt;首先要点击首页右上角的放大镜图标：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/135717_vTd6_1990460.png" alt="放大镜图标"&gt;&lt;/p&gt;
+
+&lt;p&gt;这个图标上没有text可以识别，所以必须到首页布局文件mail.xml中找到搜索图标的id，&lt;/p&gt;
+
+&lt;p&gt;ADT中打开文件：D:\git\oschina\android-app\res\layout\main.xml&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/140345_WMd2_1990460.png" alt="main.xml"&gt;&lt;/p&gt;
+
+&lt;p&gt;点击搜索图标，右上角的Outline指示搜索图标在main_header.xml中定义。&lt;/p&gt;
+
+&lt;p&gt;双击 include-main_header，ADT打开main_header.xml：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/140405_IJbp_1990460.png" alt="search-id"&gt;&lt;/p&gt;
+
+&lt;p&gt;点击搜索图标，右边的Outline和Properties区都指示搜索图标的id是main_head_search，控件类型是：ImageButton&lt;/p&gt;
+
+&lt;p&gt;接下去在calabash中可以用id点击搜索图标了：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;      Feature: 搜索包含calabash的博客
+
+        Scenario: 启动应用后，能搜到包含calabash的博客
+          Then I wait for 5 seconds
+          Then I see "软件版本更新"
+          Then I see "以后再说"
+          Then I take a screenshot
+          When I press "以后再说"
+          Then I don't see "以后再说"
+          Then I see "最新资讯"
+          Then I take a screenshot
+          When I press view with id "main_head_search"
+          Then I see "软件"
+          Then I see "问答"
+          Then I see "博客"
+          Then I see "新闻"
+          Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/144432_A6Mz_1990460.png" alt="with-id"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/144452_ONYH_1990460.png" alt="搜索输入框"&gt;&lt;/p&gt;
+
+&lt;p&gt;我尝试了把&lt;code&gt;I press view with id "main_head_search"&lt;/code&gt; 改成 &lt;code&gt;I press "main_head_search"&lt;/code&gt;，也能找到该搜索图标。&lt;br&gt;&lt;br&gt;
+说明：&lt;code&gt;I press "text/id"&lt;/code&gt; 是万能语法，同时支持文本和id定位控件。那我就不用再记住复杂语句&lt;code&gt;I press view with id "main_head_search"&lt;/code&gt;了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/145125_mSXt_1990460.png" alt="no-with-id"&gt;&lt;/p&gt;
+&lt;h4&gt;输入文本并按回车键搜索&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;      Feature: 搜索包含calabash的博客
+          ...
+          When I enter "calabash测试" into input field number 1
+          Then I take a screenshot
+          When I press the enter button
+          Then I see "已加载全部"
+          Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/153048_KjjQ_1990460.png" alt="calabash-index-enter"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/152100_Lymj_1990460.png" alt="输入calabash测试"&gt;    &lt;/p&gt;
+
+&lt;p&gt;这里的&lt;code&gt;enter button&lt;/code&gt; 就是软键盘上的"搜索"键。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/153155_JFYw_1990460.png" alt="搜索calabash结果"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt; 用index查找控件，是从1开始的，而不是像C/Java数组的元素下标那样从0开始。&lt;/p&gt;
+&lt;h4&gt;为了验证index从1开始，下面再尝试登录&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;      Feature: 登录开源中国
+
+        Scenario: 启动应用后，输入账号和密码能登录开源中国
+          Then I wait for 5 seconds
+          Then I see "软件版本更新"
+          Then I see "以后再说"
+          Then I take a screenshot
+          When I press "以后再说"
+          Then I don't see "以后再说"
+          Then I see "最新资讯"
+          Then I take a screenshot
+          Then I press the menu key
+          Then I see "用户登录"
+          Then I take a screenshot
+          When I press "用户登录"
+          Then I see "记住我的登录信息"
+          Then I take a screenshot
+          When I enter "username" into input field number 1
+          And I enter "123456" into input field number 2
+          And I press button number 2 
+          Then I see "登录失败用户名或口令错"
+          Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/160900_vgtB_1990460.png" alt="calabash-login"&gt;      &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/160952_RkvF_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0908/161016_mTIg_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;说明：&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+1. 登录窗口中，有两个输入框："账号"和"密码"，index分别是1和2&lt;br&gt;&lt;br&gt;
+2. 登录窗口中，有两个button："记住我的登录信息"和"登录"，index分别是1和2，checkbox也是button，奇怪吧？&lt;br&gt;&lt;br&gt;
+3. 尝试&lt;code&gt;I press "登录"&lt;/code&gt;定位登录按钮失败  &lt;/p&gt;
+&lt;h4&gt;calabash测试集管理&lt;/h4&gt;&lt;h4&gt;一个Feature下包含多个Scenario&lt;/h4&gt;
+&lt;p&gt;把 &lt;code&gt;D:\git\oschina\android-app\calabash\features\first.feature&lt;/code&gt;  改名为 startup.feature，内容如下：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 启动开源中国
+
+      Scenario: 首次启动应用后，启用左右滑动
+        When I wait up to 5 seconds to see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I see "最新资讯"
+        Then I take a screenshot
+        Then I press the menu key
+        Then I see "系统设置"
+        Then I take a screenshot
+        When I press "系统设置"
+        Then I see "已关闭左右滑动"
+        And  I see "启动检查更新"
+        Then I take a screenshot
+        When I press "已关闭左右滑动"
+        Then I see "已启用左右滑动"
+        When I press "启动检查更新"
+        Then I take a screenshot
+
+      Scenario: 第二次启动应用后，往右滑动到"问答"
+        When I wait up to 5 seconds to see "最新资讯"
+        When I swipe right
+        Then I see "问答"
+        Then I take a screenshot      
+&lt;/pre&gt;
+
+&lt;p&gt;本Feature有两个Scenario：  &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;第一个在系统设置中启用左右滑动，关闭启动时检查更新&lt;/li&gt;
+&lt;li&gt;第二个往右滑动到“问答”页&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;需要说明的是：&lt;/strong&gt;  &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每个Feature在运行前都会退出app，卸载app，重装app，启动app&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;每个Scenario在运行前都会退出app，启动app&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;I see "启动检查更新"&lt;/code&gt; 只有在1280x720分辨率的手机上才能看到；854x480的手机上看不到，会运行错误。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;一次运行多个Feature文件&lt;/h4&gt;
+&lt;p&gt;按照 &lt;a href="http://www.cnblogs.com/puresoul/archive/2011/12/28/2305160.html" rel="nofollow" target="_blank"&gt;http://www.cnblogs.com/puresoul/archive/2011/12/28/2305160.html&lt;/a&gt; 的《Cucumber入门之Gherkin》介绍，  &lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;一旦我们写好了一个feature文件，我们就可以使用 cucumber命令来运行它。如果cucumber命令后不跟任何东西的话，那么它会执行所有的.feature文件。如果我们只想运行某一个.feature文件,我们可以使用命令cucumber features\feature_name&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;我现在在目录&lt;code&gt;D:\git\oschina\android-app\calabash\features&lt;/code&gt;下有两个feature文件：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;dir features\*.feature
+     驱动器 D 中的卷是 工作
+     卷的序列号是 9823-AB19
+
+     D:\git\oschina\android-app\calabash\features 的目录
+
+    2014/09/14  21:17               775 login.feature
+    2014/09/15  21:20               932 startup.feature
+                   2 个文件          1,707 字节
+                   0 个目录 131,744,169,984 可用字节
+&lt;/pre&gt;
+
+&lt;p&gt;login.feature 和 startup.feature，feature的执行顺序无关紧要，因为每个feature运行时都要重新安装一遍app。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android run ..\bin\oschina-android-app.apk
+&lt;/pre&gt;
+
+&lt;p&gt;将执行这两个feature文件。&lt;/p&gt;
+
+&lt;p&gt;如果只想执行 &lt;code&gt;startup.feature&lt;/code&gt; 文件，要在calabash-android命令后面添加&lt;code&gt;features\startup.feature&lt;/code&gt; ：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android run ..\bin\oschina-android-app.apk features\startup.feature
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;中文Win7环境特别说明：&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+如果feature文件名是中文的，比如：启动.feature，那么在cmd 中 &lt;code&gt;chcp 65001&lt;/code&gt; 后，运行命令：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android run ..\bin\oschina-android-app.apk features\启动.feature
+&lt;/pre&gt;
+
+&lt;p&gt;将报错：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    invalid byte sequence in UTF-8 (ArgumentError)
+&lt;/pre&gt;
+
+&lt;p&gt;中文Win7下中文编码统计：  &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;文件名：GBK&lt;/li&gt;
+&lt;li&gt;feature文件内容：UTF-8&lt;/li&gt;
+&lt;li&gt;cmd：首次测试app或换手机后，UTF-8，feature中的中文显示为空白&lt;/li&gt;
+&lt;li&gt;cmd：第二次测试app，GBK，feature中的中文能正确显示&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ubuntu环境下，feature文件名包含中文没有任何问题。&lt;/p&gt;
+
+&lt;p&gt;我们看一下calabash-android的命令参数格式：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android
+      Usage: calabash-android &amp;lt;command-name&amp;gt; [parameters] [options]
+      &amp;lt;command-name&amp;gt; can be one of
+        help
+          prints more detailed help information.
+        gen
+          generate a features folder structure.
+        setup
+          sets up a non-default keystore to use with this test project.
+        resign &amp;lt;apk&amp;gt;
+          resigns the app with the currently configured keystore.
+        build &amp;lt;apk&amp;gt;
+          builds the test server that will be used when testing the app.
+        run &amp;lt;apk&amp;gt;
+          runs Cucumber in the current folder with the enviroment needed.
+        version
+          prints the gem version
+
+      &amp;lt;options&amp;gt; can be
+        -v, --verbose
+          Turns on verbose logging
+&lt;/pre&gt;
+
+&lt;p&gt;我猜想其中的&lt;code&gt;[parameters]&lt;/code&gt;就是指cucumber参数&lt;/p&gt;
+&lt;h4&gt;扩展calabash预定义指令&lt;/h4&gt;&lt;h4&gt;从环境变量读取测试数据&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;有一个现实的需求：&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+如果有一个oschina测试帐号要在多个Feature中使用，&lt;br&gt;&lt;br&gt;
+或者我的calabash测试脚本共享给其他人后，他的oschina测试帐号要换成自己的。&lt;br&gt;&lt;br&gt;
+如果直接修改Feature文件中的账号和密码，可能要修改多个地方。&lt;br&gt;&lt;br&gt;
+所以，设想是否能扩展calabash预定义指令：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I enter "([^\"]*)" into input field number (\d+)$/ do |text, index|
+&lt;/pre&gt;
+
+&lt;p&gt;扩展为支持从环境变量读取输入文本：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+&lt;/pre&gt;
+
+&lt;p&gt;从文件 &lt;code&gt;D:\ruby-1.9.3-p545-i386-mingw32\lib\ruby\gems\1.9.1\gems\calabash-android-0.5.1\lib\calabash-android\steps\enter_text_steps.rb&lt;/code&gt; 中拷贝：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I enter "([^\"]*)" into input field number (\d+)$/ do |text, index|
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;到 &lt;code&gt;D:\git\oschina\android-app\calabash\features\step_definitions\calabash_steps.rb&lt;/code&gt; 中，改动后，如下：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    require 'calabash-android/calabash_steps'
+
+    Then /^I enter %([^%]*)% into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+
+    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;这里环境变量支持两种格式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;code&gt;%text_ev%&lt;/code&gt; Windows cmd的格式&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;$text_ev&lt;/code&gt; Linux Bash的格式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;然后运行calabash前，设置环境变量：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;set td_username_1=username1
+    D:\git\oschina\android-app\calabash&amp;gt;set td_password_1=123456
+&lt;/pre&gt;
+
+&lt;p&gt;上述两条命令也可以放到 testdata.bat 文件中，然后执行testdata.bat：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    set td_username_1=username1
+    set td_password_1=123456
+&lt;/pre&gt;
+
+&lt;p&gt;修改 login.feature ：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 登录开源中国
+
+      Scenario: 启动应用后，输入错误的账号和密码不能登录
+        Then I wait for 5 seconds
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I see "最新资讯"
+        Then I take a screenshot
+        Then I press the menu key
+        Then I see "用户登录"
+        Then I take a screenshot
+        When I press "用户登录"
+        Then I see "记住我的登录信息"
+        Then I take a screenshot
+        When I enter %td_username_1% into input field number 1
+        And I enter $td_password_1 into input field number 2
+        And I press button number 2 
+        Then I see "登录失败用户名或口令错"
+        Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;运行calabash：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android run ..\bin\oschina-android-app.apk features\login.feature
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0915/214716_t6wH_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;为了支持跨平台测试数据维护，可以把环境变量设置放入ruby脚本 testdata.rb 中：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    ENV["td_username_1"]="username1"
+    ENV["td_password_1"]="123456"
+&lt;/pre&gt;
+
+&lt;p&gt;在irb中运行calabash：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;irb
+    irb(main):001:0&amp;gt; require './testdata.rb'
+    =&amp;gt; true
+    irb(main):002:0&amp;gt; ENV["td_username_1"]
+    =&amp;gt; "username1"
+    irb(main):003:0&amp;gt;exec('calabash-android run ..\bin\oschina-android-app.apk features\login.feature')
+&lt;/pre&gt;
+
+&lt;p&gt;Ruby设置和读取环境变量真是太方便了，执行系统命令也很方便，不需要到处import库，值得深入掌握。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Linux补充：&lt;/strong&gt;  &lt;/p&gt;
+
+&lt;p&gt;Linux下可以把测试数据写入testdata.bashrc 中：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    export td_username_1="username1"
+    export td_password_1="123456"
+&lt;/pre&gt;
+
+&lt;p&gt;enter_text_steps.rb 文件位置：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    /var/lib/gems/1.9.1/gems/calabash-android-0.5.2/lib/calabash-android/steps/enter_text_steps.rb
+&lt;/pre&gt;
+&lt;h4&gt;使用cucumber steps封装calabash预定义指令&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;等价于：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      steps %{
+       Then I enter "#{text}" into input field number #{index}
+      }
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;说明：&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;steps&lt;/strong&gt;是cucumber的ruby api，用于封装其他cucumber指令。&lt;br&gt;
+&lt;strong&gt;%{}&lt;/strong&gt;是ruby中表示多行字符串的格式。一对大括号之间的所有换行符和空格符都会原原本本的输出。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    %{
+      第一行
+      第二行
+    }
+&lt;/pre&gt;
+
+&lt;p&gt;等价于： &lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    "\n  第一行\n  第二行\n  "
+&lt;/pre&gt;
+&lt;h4&gt;定义指令I ignore upgrade prompt 忽略升级提示&lt;/h4&gt;
+&lt;p&gt;每次运行feature的第一个scenario时，总要忽略升级提示，第二个scenario时，又不要忽略升级提示，&lt;br&gt;
+所以我准备定义一个指令，判断如果出现升级提示，则点击忽略按钮。&lt;br&gt;
+忽略提示的步骤如下：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;        Then I see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+&lt;/pre&gt;
+
+&lt;p&gt;简单封装如下：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I ignore upgrade prompt$/ do
+      puts "如果出现升级提示，则点击忽略按钮"
+      steps %{
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        When I press "以后再说"
+        Then I don't see "以后再说"
+      }
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;上面假定一定出现升级提示，&lt;br&gt;
+下面，进一步判断升级提示出现后，再点击忽略按钮：&lt;br&gt;
+根据 calabash Ruby API &lt;a href="https://github.com/calabash/calabash-android/blob/master/documentation/ruby_api.md" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/blob/master/documentation/ruby_api.md&lt;/a&gt;&lt;br&gt;
+使用 element_exists(uiquery)判断"以后再说"是否出现&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I ignore upgrade prompt$/ do
+      if element_exists("* {text CONTAINS[c] '以后再说'}")
+        puts "看到了升级提示，取消升级完成启动"
+        steps %{
+          When I press "以后再说"
+          Then I don't see "以后再说"
+        }
+      else
+        puts "未看到升级提示，正常启动"
+      end
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;uiquery语法是直接从 &lt;a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb&lt;/a&gt; 里的 Then /^I touch the "([^\"]*)" text$/ do |text| 里拷贝的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;login.feature 应用新定义的指令：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Feature: 登录开源中国
+
+      Scenario: 启动应用后，输入错误的账号和密码不能登录
+        When I wait for 5 seconds
+        And I ignore upgrade prompt
+        Then I see "最新资讯"
+        Then I take a screenshot
+
+        When I press the menu key
+        Then I see "用户登录"
+        Then I take a screenshot
+
+        When I press "用户登录"
+        Then I see "记住我的登录信息"
+        Then I take a screenshot
+        When I enter %td_username_1% into input field number 1
+        And I enter $td_password_1 into input field number 2
+        And I press button number 2 
+        Then I see "登录失败用户名或口令错"
+        Then I take a screenshot
+&lt;/pre&gt;
+
+&lt;p&gt;具体执行结果就不贴啦，相信大家都会执行测试了。&lt;/p&gt;
+&lt;h4&gt;ruby控制台下使用query查询app当前页面的控件&lt;/h4&gt;
+&lt;p&gt;参考文档：&lt;br&gt;&lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-android/wiki/05-Query-Syntax" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/wiki/05-Query-Syntax&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;a href="http://blog.lesspainful.com/2012/12/18/Android-Query/" rel="nofollow" target="_blank"&gt;http://blog.lesspainful.com/2012/12/18/Android-Query/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;按照上述文档很容易查询控件的id, 比如启动开源中国后的首页，查询结果：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:\git\oschina\android-app\calabash&amp;gt;calabash-android console ..\bin\oschina-android-app.apk
+    irb(main):001:0&amp;gt; reinstall_apps
+    5168 KB/s (2498389 bytes in 0.472s)
+    3800 KB/s (544875 bytes in 0.140s)
+    nil
+    irb(main):002:0&amp;gt; start_test_server_in_background
+    nil
+&lt;/pre&gt;
+
+&lt;p&gt;启动后首页弹出升级提示对话框：  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/220352_5fY3_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    irb(main):003:0&amp;gt; query('button')
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0916/203432_gSJj_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;看出问题没有，中文编码问题又来捣乱了：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;"text" =&amp;gt; "\u7ACB\u5373\u66F4\u65B0",&lt;/code&gt; 的中文是"**立即更新**"，这里只能看的是4个中文字&lt;br&gt;
+&lt;code&gt;"text" =&amp;gt; "\u4EE5\u540E\u518D\u8BF4",&lt;/code&gt; 的中文是"**以后再说**"&lt;/p&gt;
+
+&lt;p&gt;又要说人家Ubuntu了，Ubuntu下query结果的中文能直接显示。&lt;/p&gt;
+
+&lt;p&gt;在console下还可以点击按钮，&lt;br&gt;&lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb&lt;/a&gt; 中定义了按button编号点击的指令 ：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then /^I press button number (\d+)$/ do |index|
+      tap_when_element_exists("android.widget.Button index:#{index.to_i-1}")
+    end
+&lt;/pre&gt;
+
+&lt;p&gt;要选择按钮"以后再说"，把 &lt;code&gt;#{index.to_i-1}&lt;/code&gt; 代成1， 在console下输入：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    tap_when_element_exists("android.widget.Button index:1")
+&lt;/pre&gt;
+
+&lt;p&gt;然后按钮"以后再说"被点击，升级提示对话框消失了：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0903/220402_5iYe_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;所以，可以放心的在feature文件中加入指令：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    Then I press button number 2
+&lt;/pre&gt;
+
+&lt;p&gt;下面还希望找到右上角搜索图标的id，在console下输入：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    query("*")
+&lt;/pre&gt;
+
+&lt;p&gt;总共列出了111个控件，编号从0到110，其中第7个是：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    irb(main):008:0&amp;gt; query("*")
+    [
+        ...
+        [  7] {
+                            "id" =&amp;gt; "main_head_search",
+                       "enabled" =&amp;gt; true,
+            "contentDescription" =&amp;gt; nil,
+                         "class" =&amp;gt; "android.widget.ImageButton",
+                          "rect" =&amp;gt; {
+                "center_y" =&amp;gt; 90,
+                "center_x" =&amp;gt; 676,
+                  "height" =&amp;gt; 80,
+                       "y" =&amp;gt; 50,
+                   "width" =&amp;gt; 80,
+                       "x" =&amp;gt; 636
+            },
+        ...
+    ]
+&lt;/pre&gt;
+
+&lt;p&gt;根据其坐标(x,y) = (636,50)，可以确定就是右上角的搜索按钮，按钮的id是main_head_search。&lt;/p&gt;
+
+&lt;p&gt;还可以查询本页面的button：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;     query("imagebutton")
+&lt;/pre&gt;
+
+&lt;p&gt;只有1个查询结果，就是搜索按钮：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    irb(main):008:0&amp;gt; query("imagebutton")
+    [
+        [0] {
+                            "id" =&amp;gt; "main_head_search",
+                       "enabled" =&amp;gt; true,
+            "contentDescription" =&amp;gt; nil,
+                         "class" =&amp;gt; "android.widget.ImageButton",
+                          "rect" =&amp;gt; {
+                "center_y" =&amp;gt; 90,
+                "center_x" =&amp;gt; 676,
+                  "height" =&amp;gt; 80,
+                       "y" =&amp;gt; 50,
+                   "width" =&amp;gt; 80,
+                       "x" =&amp;gt; 636
+            },
+                           "tag" =&amp;gt; nil,
+                   "description" =&amp;gt; "android.widget.ImageButton{42a889a0 VFED..C. ..
+    ...... 636,0-716,80 #7f0b00a3 app:id/main_head_search}"
+        }
+    ]
+&lt;/pre&gt;
+
+&lt;p&gt;接下来可以用两者方式点击搜索按钮，&lt;br&gt;&lt;br&gt;
+第一种，对应指令是 &lt;code&gt;Then I press image button number 1&lt;/code&gt;：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    tap_when_element_exists("android.widget.ImageButton index:0")
+&lt;/pre&gt;
+
+&lt;p&gt;第二种，对应指令是 &lt;code&gt;Then I press "main_head_search"&lt;/code&gt;：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    tap_when_element_exists("* marked:'main_head_search'")
+&lt;/pre&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Mon, 01 Sep 2014 22:37:47 +0800</pubDate>
+      <link>http://testerhome.com/topics/1347</link>
+      <guid>http://testerhome.com/topics/1347</guid>
+    </item>
+    <item>
+      <title>calabash-android 测试问题收集</title>
+      <description>&lt;h4&gt;各个OS下calabash-andriod运行环境需要安装的工具清单&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;英文和中文Win7（5个工具）:&lt;/strong&gt;  &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;ruby1.9.3&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;JDK 7u65&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;Android SDK&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;Ant-1.9.4&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;calabash-android&lt;br&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;32位Ubuntu 14.04（2个工具）:&lt;/strong&gt;  &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;ruby1.9.3  ——现成的&lt;/li&gt;
+&lt;li&gt;JDK 7u65  ——现成的, OpenJDK 1.7.0_65&lt;/li&gt;
+&lt;li&gt;Android SDK Linux 32位&lt;/li&gt;
+&lt;li&gt;Ant-1.9.4  —— 现成的&lt;/li&gt;
+&lt;li&gt;calabash-android&lt;br&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;64位Ubuntu 14.04（3个工具）:&lt;/strong&gt;  &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;ruby1.9.3  ——现成的&lt;/li&gt;
+&lt;li&gt;JDK 7u65  ——现成的, OpenJDK 1.7.0_65&lt;/li&gt;
+&lt;li&gt;Android SDK  Linux 64位 &lt;/li&gt;
+&lt;li&gt;lib32z1 lib32ncurses5 lib32stdc++6 ——下面额外说明！&lt;/li&gt;
+&lt;li&gt;Ant-1.9.4  —— 现成的&lt;/li&gt;
+&lt;li&gt;calabash-android&lt;br&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;说明：  &lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sudo apt-get install lib32z1 lib32ncurses5 lib32stdc++6&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Google提供的Android SDK  Linux 64位居然是在32位环境下编译的，依赖32位库libz,libsdc++，而64位Ubuntu又把这些库去掉了，所以需要手工安装。&lt;/p&gt;
+
+&lt;p&gt;如果上天能够给我一个再来一次的机会，我会对那个女孩子说三个字：**Ubuntu**。如果非要在这份爱上加上一个期限，我希望是……**32位**……&lt;/p&gt;
+&lt;h4&gt;中文Win7下的GBK问题&lt;/h4&gt;
+&lt;p&gt;第一次在某手机上用calabash-android run测试某app，calabash要创建test server，打印如下提示：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;No test server found for this combination of app and calabash version. Recreating test server.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;随后，在中文Win7环境下，会报错：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    D:/ruby-1.9.3-p545-i386-mingw32/lib/ruby/gems/1.9.1/gems/calabash-android-0.5.1/lib/calabash-android/helpers.rb:105:in `scan': invalid byte sequence in GBK (ArgumentError)
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;解决方法：&lt;/strong&gt;&lt;br&gt;
+设置cmd的编码为UTF-8&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;chcp 65001&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;再次运行calabash-android run，不再报GBK错误，能正确运行，但是运行结果中"登录"等中文打印为空白。&lt;/p&gt;
+
+&lt;p&gt;需要再次设置cmd的编码为GBK:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;chcp 936&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;并运行calabash-android run，既不报GBK错误，也能正确运行，且运行结果中"登录"等中文能正确打印。&lt;/p&gt;
+
+&lt;p&gt;接下去，每次更换手机或者更换app(修改代码引起重编或者换一个app)都要重复上面的chcp 65001+chcp 936的步骤。&lt;/p&gt;
+
+&lt;p&gt;没办法，如果忍无可忍，建议更换Ubuntu 14.04 32位。&lt;/p&gt;
+&lt;h4&gt;Manifest.xml中未设置网络权限：android.permission.INTERNET&lt;/h4&gt;
+&lt;p&gt;在 &lt;a href="http://my.oschina.net/fitnessefan/blog/305350" rel="nofollow" target="_blank"&gt;http://my.oschina.net/fitnessefan/blog/305350&lt;/a&gt; 中的示例待测应用AndroidDemoProject的Manifest.xml设置了一个唯一的权限：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;uses-permission android:name="android.permission.INTERNET" /&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;试着把这一行去掉，然后在Eclipse中Run AndroidDemoProject，一切正常。&lt;br&gt;&lt;br&gt;
+但是用calabash-android运行，看到错误:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0827/203902_Gqpd_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    d:\calabash-android-demoapp-master\calabash&amp;gt;calabash-android run ../bin/AndroidD
+    emoProject.apk
+    Feature: Demo feature
+
+      Scenario: I can start my app                               # features\my_first
+    .feature:3
+    1930 KB/s (544883 bytes in 0.275s)
+    1673 KB/s (37700 bytes in 0.022s)
+    Starting: Intent { act=android.intent.action.MAIN cmp=sh.calaba.demoproject.test
+    /sh.calaba.instrumentationbackend.WakeUp }
+      App did not start (RuntimeError)
+      D:/ruby-1.9.3-p545-i386-mingw32/lib/ruby/gems/1.9.1/gems/calabash-android-0.5.
+    1/lib/calabash-android/operations.rb:532:in `block in start_test_server_in_backg
+    round'
+      D:/ruby-1.9.3-p545-i386-mingw32/lib/ruby/gems/1.9.1/gems/retriable-1.3.3.1/lib
+    /retriable/retriable.rb:31:in `perform'
+      D:/ruby-1.9.3-p545-i386-mingw32/lib/ruby/gems/1.9.1/gems/retriable-1.3.3.1/lib
+    /retriable/retriable.rb:53:in `retriable'
+      D:/ruby-1.9.3-p545-i386-mingw32/lib/ruby/gems/1.9.1/gems/calabash-android-0.5.
+    1/lib/calabash-android/operations.rb:531:in `start_test_server_in_background'
+      D:/ruby-1.9.3-p545-i386-mingw32/lib/ruby/gems/1.9.1/gems/calabash-android-0.5.
+    1/lib/calabash-android/operations.rb:110:in `start_test_server_in_background'
+      d:/calabash-android-demoapp-master/calabash/features/support/app_life_cycle_ho
+    oks.rb:15:in `Before'
+        * I wait for "Hello World, AndroidDemoProject" to appear # calabash-android-
+    0.5.1/lib/calabash-android/steps/progress_steps.rb:22
+
+    Failing Scenarios:
+    cucumber features\my_first.feature:3 # Scenario: I can start my app
+
+    1 scenario (1 failed)
+    1 step (1 skipped)
+    0m17.625s
+&lt;/pre&gt;
+
+&lt;p&gt;到ADT的LogCat中查看：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0827/204600_130v_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到权限不够的提示。我猜是安装在手机的test-server要通过socket发送待测Apk的状态回电脑，但是没有访问socket权限，崩了。&lt;/p&gt;
+&lt;h4&gt;使用发布签名生成的apk，无法用calabash-android测试&lt;/h4&gt;
+&lt;p&gt;在ADT中Export Andriod Application &amp;gt; Create new keystore，生成AndroidDemoProject-release.apk后，&lt;br&gt;&lt;br&gt;
+使用calabash-android测试该apk，报如下信息：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;    d:\calabash-android-demoapp-master\calabash&amp;gt;calabash-android run ../bin/AndroidD
+    emoProject-release.apk
+    No test server found for this combination of app and calabash version. Recreatin
+    g test server.
+    d:/calabash-android-demoapp-master/bin/AndroidDemoProject-release.apk is not sig
+    ned with any of the available keystores.
+    Tried the following keystores:
+    C:/Users/asus/.android/debug.keystore
+
+    You can resign the app with C:/Users/asus/.android/debug.keystore by running:
+        calabash-android resign d:/calabash-android-demoapp-master/bin/AndroidDemoPr
+    oject-release.apk
+
+    Notice that resigning an app might break some functionality.
+    Getting a copy of the certificate used when the app was build will in general be
+     more reliable.
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;结论是：只有debug签名的apk才能用calabash-android测试&lt;/strong&gt;&lt;br&gt;
+你可以：&lt;br&gt;
+1、拿到源代码，在Eclipse中运行一次，就自动编译出来了。&lt;br&gt;
+2、或者拿到别人已经编译好的debug签名的apk。&lt;/p&gt;
+&lt;h4&gt;calabash运行时每次重新安装app&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;每次calabash运行时，会先从手机上卸载该apk，然后重新安装，随后启动&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;每次calabash运行一个featue文件时，会先从手机上卸载该apk，然后重新安装，随后启动&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每次calabash运行一个featue文件中的Scenario时，会先从手机上退出该apk，然后启动&lt;/p&gt;
+
+&lt;p&gt;所以，每个featue文件的第一个Scenario，需要做初装apk后的操作，比如：&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;取消新版本升级  &lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;登录&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;设置使用习惯等等&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;featue文件的第二个Scenario开始，就可以测试第二次打开以后的功能了。&lt;/p&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Wed, 27 Aug 2014 21:27:36 +0800</pubDate>
+      <link>http://testerhome.com/topics/1323</link>
+      <guid>http://testerhome.com/topics/1323</guid>
+    </item>
+    <item>
+      <title>中文 Win7 下成功安装 calabash-android 步骤</title>
+      <description>&lt;p&gt;Calabash-android是支持android的UI自动化测试框架，网上看见很多同学说，安装calabash比较费劲，特别是Windows下安装，也没有一个详细的安装手册可供参考。正好，今天在Windows 7 上安装calabash-android成功，忍不住要分享一下。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;我为什么要特别在标题中指出中文Win7？&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+因为我第一次在英文Win7下没碰到任何问题，第二次在中文Win7下安装碰到两个大问题，但都被我求助百度解决了。&lt;br&gt;&lt;br&gt;
+第一个问题：中文Win7下不认识手机设备，第一台英文Win7下已经有人安装了豌豆荚。&lt;br&gt;&lt;br&gt;
+第二个问题：中文Win7下运行calabash-android，报GBK错误。  &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;calabash简介：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Calabash-android是支持android的UI自动化测试框架，PC端使用了cucumber框架，通过http和json与模拟器和真机上安装的测试apk通信，测试apk调用robotium的方法来进行UI自动化测试，支持webview操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;安装ruby1.9.3&lt;/h4&gt;
+&lt;p&gt;calabash-android 的git网址： &lt;a href="https://github.com/calabash/calabash-android" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;进入Installation:  &lt;a href="https://github.com/calabash/calabash-android/blob/master/documentation/installation.md" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/blob/master/documentation/installation.md&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;因为要在Windows下安装，所以按照指示进入： &lt;a href="http://rubyinstaller.org/" rel="nofollow" target="_blank"&gt;http://rubyinstaller.org/&lt;/a&gt;&lt;br&gt;
+点击红色的Download图标，进入： &lt;a href="http://rubyinstaller.org/downloads/" rel="nofollow" target="_blank"&gt;http://rubyinstaller.org/downloads/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0820/214555_1Ck1_1990460.png" alt="下载ruby"&gt;&lt;/p&gt;
+
+&lt;p&gt;Ruby2.0据说不兼容旧版本，所以下载稳定版Ruby 1.9.3-p545.7z  解压到D:\下&lt;/p&gt;
+
+&lt;p&gt;把ruby的执行目录D:\ruby-1.9.3-p545-i386-mingw32\bin，加入到环境变量Path&lt;/p&gt;
+
+&lt;p&gt;运行命令ruby -v，看到如下结果，表示ruby安装成功&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;C:\Users\asus&amp;gt;ruby -v
+ruby 1.9.3p545 (2014-02-24) [i386-mingw32]
+&lt;/pre&gt;
+&lt;h4&gt;安装JDK 7u65&lt;/h4&gt;
+&lt;p&gt;安装JDK网上有很多教程，以下简略介绍。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" rel="nofollow" target="_blank"&gt;http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;jdk-7u65-windows-x64.exe&lt;/p&gt;
+
+&lt;p&gt;安装，并设置环境变量：&lt;/p&gt;
+
+&lt;p&gt;JAVA_HOME=C:\Program Files\Java\jdk1.7.0_65&lt;br&gt;
+    Path添加内容：  ";%JAVA_HOME%\bin;%JAVA_HOME%..\jre\bin"&lt;/p&gt;
+
+&lt;p&gt;启动命令行工具cmd.exe，输入:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;C:\Users\asus&amp;gt;javac -version
+javac 1.7.0_65
+&lt;/pre&gt;
+
+&lt;p&gt;看到上述结果，说明jdk已正确安装。&lt;/p&gt;
+&lt;h4&gt;安装Android SDK&lt;/h4&gt;
+&lt;p&gt;到 &lt;a href="http://developer.android.com/sdk/index.html" rel="nofollow" target="_blank"&gt;http://developer.android.com/sdk/index.html&lt;/a&gt; 下载适用于Windows的SDK&lt;/p&gt;
+
+&lt;p&gt;google的网站，国内正常访问不了了。&lt;/p&gt;
+
+&lt;p&gt;幸好有个中国好码农整理了一个最新版Android SDK下载网站：&lt;br&gt;&lt;br&gt;
+&lt;a href="http://www.androiddevtools.cn/" rel="nofollow" target="_blank"&gt;http://www.androiddevtools.cn/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;我现在的是 ADT Bundle &amp;gt; 23.0.2 &amp;gt; Windows &amp;gt; 64位&lt;/p&gt;
+
+&lt;p&gt;因为我的Windows7已经安装了64位的JDK，所以必须安装64位的Android SDK(主要是64位的Eclipse)&lt;/p&gt;
+
+&lt;p&gt;在目录D:\adt-bundle-windows-x86_64-20140702\eclipse下双击文件eclipse.exe&lt;br&gt;&lt;br&gt;
+看到Android Develop Kit启动页：&lt;br&gt;&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0820/224548_0N9x_1990460.png" alt="adt启动页"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0821/213353_gYq9_1990460.png" alt="设置workspace"&gt;&lt;/p&gt;
+
+&lt;p&gt;设置环境变量：&lt;br&gt;
+    ANDROID_HOME=D:\adt-bundle-windows-x86_64-20140702\sdk&lt;/p&gt;
+&lt;h4&gt;安装Ant-1.9.4&lt;/h4&gt;
+&lt;p&gt;网址：&lt;a href="http://ant.apache.org/bindownload.cgi" rel="nofollow" target="_blank"&gt;http://ant.apache.org/bindownload.cgi&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;下载 apache-ant-1.9.4-bin.zip&lt;/p&gt;
+
+&lt;p&gt;解压到D:\下，&lt;/p&gt;
+
+&lt;p&gt;设置环境变量：&lt;/p&gt;
+
+&lt;p&gt;ANT_HOME=D:\apache-ant-1.9.4&lt;br&gt;
+    Path添加内容：  ";%ANT_HOME%\bin"&lt;/p&gt;
+
+&lt;p&gt;启动命令行工具cmd.exe，输入:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;C:\Users\asus&amp;gt;ant
+Buildfile: build.xml does not exist!
+Build failed
+&lt;/pre&gt;
+
+&lt;p&gt;看到上述结果，说明ant已正确安装。&lt;/p&gt;
+&lt;h4&gt;gem命令安装calabash-android&lt;/h4&gt;
+&lt;p&gt;设置gem的仓库为taobao  &lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;C:\Users\asus&amp;gt;gem sources -l
+*** CURRENT SOURCES ***
+
+http://rubygems.org/
+
+C:\Users\asus&amp;gt;gem sources --remove http://rubygems.org/
+source https://rubygems.org/ not present in cache
+
+C:\Users\asus&amp;gt;gem sources -a http://ruby.taobao.org/
+http://ruby.taobao.org/ added to sources
+
+C:\Users\asus&amp;gt;gem sources -l
+*** CURRENT SOURCES ***
+
+http://ruby.taobao.org/
+&lt;/pre&gt;
+
+&lt;p&gt;用gem命令安装calabash-android&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;C:\Users\asus&amp;gt;gem install calabash-android
+...
+Installing RDoc documentation for escape-0.0.4...
+Installing RDoc documentation for calabash-android-0.5.1...
+
+C:\Users\asus&amp;gt;calabash-android version
+0.5.1
+&lt;/pre&gt;
+&lt;h4&gt;下载calabash-android-demoapp&lt;/h4&gt;
+&lt;p&gt;&lt;a href="https://github.com/calabash/calabash-android-demoapp" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android-demoapp&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+点击 Download ZIP下载calabash-android-demoapp-master.zip，并解压到D:\&lt;/p&gt;
+&lt;h4&gt;ADT中导入并运行calabash-android-demoapp&lt;/h4&gt;
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0820/225946_cgC8_1990460.png" alt="导入demoapp"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0820/230118_iGCh_1990460.png" alt="导入android code"&gt;&lt;br&gt;
+选择： D:\calabash-android-demoapp-master&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0820/230325_aj3y_1990460.png" alt="导入完成"&gt;&lt;/p&gt;
+&lt;h4&gt;安装手机驱动&lt;/h4&gt;
+&lt;p&gt;把手机通过USB线接到电脑上，手机上确保打开“USB调试” &lt;br&gt;
+如果电脑屏幕右下角提示，设备驱动已正确安装，请看下一步。 &lt;/p&gt;
+
+&lt;p&gt;如果电脑屏幕右下角提示，设备驱动安装失败：&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0821/212825_U2TK_1990460.png" alt="手机不认识"&gt; &lt;/p&gt;
+
+&lt;p&gt;需要到网站 &lt;a href="http://www.drivergenius.com/" rel="nofollow" target="_blank"&gt;http://www.drivergenius.com/&lt;/a&gt; 下载并安装驱动精灵标准版，只要打开驱动精灵，就会引导你安装手机驱动。&lt;br&gt;&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0821/213106_Xdpm_1990460.png" alt="安装驱动"&gt;&lt;/p&gt;
+
+&lt;p&gt;驱动安装成功后：&lt;br&gt;&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0821/213132_ir94_1990460.png" alt="手机认识"&gt;&lt;/p&gt;
+
+&lt;p&gt;接下去在ADT中运行Run &amp;gt; Run As &amp;gt; Android Application：&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0821/213317_i1zM_1990460.png" alt="选择目标手机"&gt;&lt;/p&gt;
+
+&lt;p&gt;点击"OK"按钮，ADT就会上传AndroidDemoProject.apk到手机，并启动应用，看到“Hello World, AndroidDemoProject!”&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0821/215652_H0Gd_1990460.png" alt="apk截图"&gt;&lt;/p&gt;
+&lt;h4&gt;使用calabash-android运行AndroidDemoProject.apk&lt;/h4&gt;
+&lt;p&gt;打开cmd，进入D:\calabash-android-demoapp-master\calabash目录，运行：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;calabash-android run D:\calabash-android-demoapp-master\bin\AndroidDemoProject.apk
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0821/213858_mfkb_1990460.png" alt="运行失败"&gt;&lt;/p&gt;
+
+&lt;p&gt;主要错误信息：helpers.rb:105:in `scan': invalid byte sequence in GBK &lt;/p&gt;
+
+&lt;p&gt;可是我在英文Windows上运行正确啊，一定是英文系统和中文系统的缺省编码问题：&lt;br&gt;&lt;br&gt;
+cmd &amp;gt; 属性 &amp;gt; 选项 &amp;gt; 当前代码页：936 简体中文 GBK&lt;br&gt;
+&lt;img src="http://static.oschina.net/uploads/space/2014/0821/214058_VHFi_1990460.png" alt="gbk"&gt;&lt;/p&gt;
+
+&lt;p&gt;照着 &lt;a href="http://blog.sina.com.cn/s/blog_628e2ab30101ajcg.html" rel="nofollow" target="_blank"&gt;http://blog.sina.com.cn/s/blog_628e2ab30101ajcg.html&lt;/a&gt; 的解决方案，把cmd的中文编码设置成UTF-8&lt;/p&gt;
+
+&lt;p&gt;cmd中输入：&lt;code&gt;chcp 65001&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0822/204531_RgIZ_1990460.png" alt="after 65001"&gt;&lt;/p&gt;
+
+&lt;p&gt;cmd &amp;gt; 属性 &amp;gt; 选项 &amp;gt; 当前代码页：65001 UTF-8&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0821/214622_xn9U_1990460.png" alt="UTF-8"&gt;&lt;/p&gt;
+
+&lt;p&gt;再次运行calabash-android：  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0821/214818_gpuU_1990460.png" alt="运行正确"&gt;&lt;/p&gt;
+&lt;h4&gt;calabash-android打印彩色结果&lt;/h4&gt;
+&lt;p&gt;上面的测试结果提醒：WARNING: You must use ANSICON 1.31 or higher&lt;/p&gt;
+
+&lt;p&gt;从 &lt;a href="https://github.com/adoxa/ansicon/" rel="nofollow" target="_blank"&gt;https://github.com/adoxa/ansicon/&lt;/a&gt; 下载ansicon并启动，&lt;br&gt;
+同样要输入 &lt;code&gt;chcp 65001&lt;/code&gt;&lt;br&gt;
+再次运行calabash-android：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0821/215107_YpmQ_1990460.png" alt="彩色测试结果"&gt;&lt;/p&gt;
+
+&lt;p&gt;大功告成！&lt;/p&gt;
+&lt;h4&gt;建立ansicon快捷链接&lt;/h4&gt;
+&lt;p&gt;接下去好人做到底，在桌面上建一个cmd快捷链接，点击后直接进入UTF-8编码的ansicon控制台&lt;/p&gt;
+
+&lt;p&gt;确保ansicon.exe放置在Path能找到的目录下，比如，我放在ruby的bin目录下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0822/202807_Ja6D_1990460.png" alt="ansicon位置"&gt;&lt;/p&gt;
+
+&lt;p&gt;桌面上建一个cmd快捷链接：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0822/203332_3dkj_1990460.png" alt="ansicon图标"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0822/203009_7bIS_1990460.png" alt="ansicon快捷"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注意，快捷链接的目标：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;%windir%\system32\cmd.exe /k chcp 65001&amp;amp;&amp;amp;ansicon&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;打开该快捷链接后：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0822/203421_Mujh_1990460.png" alt="ansicon启动后"&gt;&lt;/p&gt;
+&lt;h4&gt;calabash-android输出html报告文件&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;calabash-android run ../bin/AndroidDemoProject.apk  --format html --out=report.html&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0823/110434_DjU5_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://static.oschina.net/uploads/space/2014/0823/110716_EfZM_1990460.png" alt="在此输入图片描述"&gt;&lt;/p&gt;
+&lt;h4&gt;关于GBK编码问题的后续补充&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;我回去看了英文Win7和的cmd.exe的编码，也是GBK，但是没有出现过“invalid byte sequence in GBK ”的问题&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;我在中文Win7上用chcp 65001设置成UTF-8，并测试成功后，再尝试直接cmd.exe/ansicon.exe/powershell.exe保持GBK编码的情况下，直接运行calabash，再也没有报过“invalid byte sequence in GBK ”的问题，难道第一次正确运行后，自动修改了什么配置吗？&lt;/li&gt;
+&lt;li&gt;在中文Win7上用chcp 65001设置成UTF-8后，如果calabash的脚本中包含中文，运行calabash时不能打印出中文内容。&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;在中文Win7的GBK编码的命令行下，如果calabash的脚本中包含中文，运行calabash时能打印出中文内容。&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;在英文Win7的GBK编码的命令行下，如果calabash的脚本中包含中文，运行calabash时能打印出中文内容。&lt;br&gt;
+&lt;/li&gt;
+&lt;li&gt;在Ubuntu Linux的控制台下，如果calabash的脚本中包含中文，运行calabash时能打印出中文内容。&lt;br&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;算了，不去找原因了，记住就是了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;所以，建立calabash测试环境的容易程度：&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+Linux &amp;gt; 英文Windows &amp;gt; 中文Windows&lt;/p&gt;</description>
+      <author>htmlbiji</author>
+      <pubDate>Thu, 21 Aug 2014 22:04:58 +0800</pubDate>
+      <link>http://testerhome.com/topics/1296</link>
+      <guid>http://testerhome.com/topics/1296</guid>
+    </item>
+    <item>
+      <title>Calabash 的那些坑</title>
+      <description>&lt;h4&gt;引子&lt;/h4&gt;
+&lt;p&gt;所谓坑，就是正常走路也会掉井里，碰到坑可以绕道走，名曰workaround。&lt;/p&gt;
+&lt;h4&gt;例子&lt;/h4&gt;
+&lt;p&gt;举例来说，keyboard_enter_text 用来模拟键盘输入，大部分时候没问题，有时候会输入错误字符, 如果安装了calabash-ios 0.9.169或更新版本，也许就没问题了，如果在0.9.168以下，解决方法是&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"textField marked:'some mark'"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;setText&lt;/span&gt;&lt;span class="ss"&gt;:'some text'&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;/pre&gt;
+
+&lt;p&gt;这个问题看起来已经在最新版本中解决：&lt;a href="https://github.com/calabash/calabash-ios/issues/400" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-ios/issues/400&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;再举一个例子，在calabash-ios 0.9.168下面，RESET_BETWEEN_SCENARIOS=1 这个设置在我这里不起作用.  这个问题的后果可大可小，对我的测试脚本来说是一个blocker, 不解决的话整个测试没法往下走, 原因是reset_app_jail方法有问题 &lt;br&gt;
+&lt;strong&gt;(reset_app_jail方法即将被reset_app_sandbox取代)&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;reset_app_jail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sdk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;app_path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;basename&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app_path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;bundle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sb"&gt;`find "&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="no"&gt;ENV&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HOME'&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;/Library/Application Support/iPhone Simulator/&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;sdk&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;/Applications/" -type d -depth 2 -name &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt; | head -n 1`&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;bundle&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;empty?&lt;/span&gt; &lt;span class="c1"&gt;# Assuming we're already clean&lt;/span&gt;
+
+  &lt;span class="n"&gt;sandbox&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bundle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Library'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'Documents'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'tmp'&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+    &lt;span class="no"&gt;FileUtils&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;rm_rf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sandbox&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;问题在于测试app对应的本地Simulator目录，只有最新版本的SDK对应目录会被reset，意味着如果指定了DEVICE_TARGET没有对应最新的SDK版本, reset_app_jail方法不会起作用。&lt;/p&gt;
+
+&lt;p&gt;接下来，要看reset_app_jail如果工作，是否能清理干净，Calabash仅仅“保守”删除了'Library', 'Documents', 'tmp'这三个文件夹，如果你的app在本地保存的数据不在这三个文件夹之内就不会被删除，所以如果你有更多的清理需求，需要自定义reset_app_jail方法，手动删除。&lt;/p&gt;
+
+&lt;p&gt;这个问题上个星期被解决，更多详细内容，请参考 &lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-ios/issues/376" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-ios/issues/376&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-ios/pull/440" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-ios/pull/440&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;结尾&lt;/h4&gt;
+&lt;p&gt;碰到坑虽然不是好事，却是学习Calabash的好机会，掉进去的坑多了，对Calabash也就有了更多了解。&lt;br&gt;
+最后，使用Calabash需要时不时看看下面两个列表，时不时看看Calabash“天气预报”&lt;br&gt;
+Calabash-ios：&lt;a href="https://github.com/calabash/calabash-ios/issues" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-ios/issues&lt;/a&gt;&lt;br&gt;
+Calabash-android：&lt;a href="https://github.com/calabash/calabash-android/issues" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/issues&lt;/a&gt;&lt;/p&gt;</description>
+      <author>astro2linus</author>
+      <pubDate>Sat, 26 Jul 2014 11:51:19 +0800</pubDate>
+      <link>http://testerhome.com/topics/1180</link>
+      <guid>http://testerhome.com/topics/1180</guid>
+    </item>
+    <item>
+      <title>Calabash 学习经验小结</title>
+      <description>&lt;h4&gt;引子&lt;/h4&gt;
+&lt;p&gt;介绍一下自己几个月以来学习Calabash的经验，从一个对Calabash完全不了解的新手开始，到用calabash写过一个iPad项目，一个Android平板项目，外加一个iPhone项目的自动化测试，双手已经沾上一些Calabash的味道。好比一个小兵，端起枪上过战场，打过两场小规模战斗，长了点见识之后仍然是一个小兵，从一个完全的新手，变成一个尝过一点Calabash味道的新手。废话少说，下面介绍一下自己学习Calabash的经验:&lt;/p&gt;
+&lt;h4&gt;安装&lt;/h4&gt;
+&lt;p&gt;最开始的时候，安装一个稳定的版本组合很重要。&lt;/p&gt;
+
+&lt;p&gt;具体的安装步骤，请参考官方文档。这里只是提醒一下，对于Calabash来说，不同的版本组合会碰到不同问题，至少我自己一开始碰到不少问题，经过测试的版本组合才能推荐给其他人，才能升级CI环境。&lt;/p&gt;
+
+&lt;p&gt;对于一个新手来讲，选择错误的版本组合，意味着你碰到奇怪错误的机会增加。而刚开始就不能顺利上手，而是去研究Calabash，OS，iOS，SDK, 模拟器等各种版本兼容性问题是一件非常恼人的事情。虽然排错是很好的学习方式，但一开始就碰到兼容性问题可能会降低你的学习热情，以为Calabash只是一个不成熟的玩具，其实不然。&lt;/p&gt;
+&lt;h4&gt;入门&lt;/h4&gt;
+&lt;p&gt;如果你刚接触Calabash, 要看的东西并不多，下面这两个地方仔细看一遍就足够了。&lt;br&gt;
+iOS:&lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-ios/wiki/_pages" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-ios/wiki/_pages&lt;/a&gt;&lt;br&gt;
+Android:&lt;br&gt;
+&lt;a href="https://github.com/calabash/calabash-android" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android&lt;/a&gt;&lt;br&gt;
+其中的两个章节：03.5 Calabash iOS Ruby API 和 05 Query syntax, 在开始写脚本的时候会不断回头参考。&lt;/p&gt;
+&lt;h4&gt;上手&lt;/h4&gt;
+&lt;p&gt;下面假设你的环境没问题了，接下来该找个iOS或Android的具体项目开始写测试，光看懂Github上那个简单的demo，理解大致的原理远远不够, 真正动手写Calabash脚本的时候，你会碰到很多问题。具体来说，刚一开始你最常碰到的问题是：&lt;br&gt;
+1. 如何定位元素&lt;br&gt;
+2. 为什么运行结果有时候不稳定&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于第一个问题&lt;/strong&gt;，如果你的app比较简单，元素的id, name属性齐全，可能问题不大。如果能看懂并修改源代码，或者让开发人员帮你补上帮助识别元素的属性最好。如果这个方法行不通，很多时候识别一个元素有很多种写法，99%的可能你能找到替代的写法。这个时候是你熟悉Calabash console, 熟悉Query syntax的最好时机。启动Calabash console, 定位你想要的元素，尝试使用各种Query syntax定位元素。&lt;/p&gt;
+
+&lt;p&gt;相对于Web浏览器上的开发工具，Calabash识别元素的方法还比较“原始”，需要用start_test_server_in_background打开console, 然后利用query去搜索想要的元素，比在Web浏览器上定位一个元素麻烦很多。calabash-ios提供了一个flash方法，用来确定元素找得是否准确，但calabash-android没有提供对等的方法，所以不能用元素高亮来定位。&lt;/p&gt;
+
+&lt;p&gt;值得一提的是，在我测试的Android应用上面，通常id, name这样的属性不唯一，利用id或name去query, 往往会返回一组id相同的元素，其中大部分的x,y坐标不在可见范围内，这种情况需要利用坐标继续过滤返回结果。一个比较好的方法是自己写一个类去继承Calabash::ABase，然后自定义一个query(uiquery, *args)方法，过滤掉x,y坐标不在可见范围的元素。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于第二个问题&lt;/strong&gt;，用Calabash写UI自动化集成测试和回归测试，如果运行结果不稳定的话价值就不大了。这个时候是练习使用trait, await, wait_for, element_exists等方法，熟悉Calabash API的最好时机。&lt;br&gt;
+写Calabash测试，或者写其他任何UI测试的时候，直觉上想消灭所有sleep语句。但完全消灭sleep并不简单，尤其对于calabash-android来说, 目前没有wait_for_none_animating方法, 需要自己寻找等待策略，但这个时候也是积累经验的最好时机，多尝试一些wait_for 和 element_exists方法，让你的测试脚本变得更稳定。&lt;/p&gt;
+&lt;h4&gt;书写易于维护的测试&lt;/h4&gt;
+&lt;p&gt;如果进行到此一切顺利，你已经对元素定位，提高脚本的稳定性有了一些经验，接下来你可以写很多代码开始做项目了。&lt;/p&gt;
+
+&lt;p&gt;当你的代码量不断增加，你会开始考虑如何组织你的测试代码，如何写易于维护的代码这个大问题。Page Object Model是一个不错的选择，也是Calabash官方推荐的方式。关于Page Object Model，网上已经有很多讨论，以后有时间的时候可以另开一贴讨论。&lt;/p&gt;
+
+&lt;p&gt;除了POM以外，有些其他话题可以先讨论一下：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;避免嵌套使用macro语法&lt;/strong&gt;&lt;br&gt;
+完全不使用macro难免会写很多重复的steps, 但macro嵌套使用会大大增加维护成本，代码也将变得不易读。建议：可以使用macro, 但一定避免嵌套使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;避免过于琐碎的cucumber story&lt;/strong&gt;&lt;br&gt;
+比如一个Successful login scenario可以像下面这样写:&lt;/p&gt;
+&lt;pre class="highlight gherkin"&gt;&lt;span class="nf"&gt;Given&lt;/span&gt; I am on login screen
+&lt;span class="nf"&gt;And&lt;/span&gt; I input my username
+&lt;span class="nf"&gt;And&lt;/span&gt; I input my password
+&lt;span class="nf"&gt;And&lt;/span&gt; I click on &lt;span class="s"&gt;"Login"&lt;/span&gt; button
+&lt;span class="nf"&gt;Then&lt;/span&gt; I should login successfully. 
+&lt;/pre&gt;
+
+&lt;p&gt;单独写这样一个login scenario没关系，但是几乎每个scenario都需要login, 因此需要再写一个简短版本的login语句。&lt;br&gt;
+上面只是一个简单的例子, Cucumber可以有两种书写风格 &lt;strong&gt;imperative&lt;/strong&gt; 和 &lt;strong&gt;declarative&lt;/strong&gt;，前一种书写过多细节，后一种隐藏细节，两种风格任意一种走向极致都不好，但书写过于具体的步骤肯定不推荐，可以阅读《The Cucumber Book》中的第六章 “When Cucumbers Go Bad” 避免写出琐碎且不易为维护的story。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;跨平台测试的代码如何组织&lt;/strong&gt;&lt;br&gt;
+通常一个移动app会有iOS和Android两个版本，功能界面和用户体验在两个平台上大致相同，因此测试的features和scenarios会有大部分重叠。不仅如此，写测试脚本通常要为两个平台写很多辅助代码， 比如调用backend service, 访问数据库，以及一些自定义辅助方法很可能在两个平台共享。从代码重用的角度，有理由把iOS和Android的测试代码放在一起，比如官方提供个一个组织跨平台代码的例子：&lt;a href="https://github.com/calabash/x-platform-example" rel="nofollow" target="_blank"&gt;https://github.com/calabash/x-platform-example&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;然而，把Android和iOS的测试代码放在一起也有一些很明显的缺点:&lt;br&gt;
+1. 不方便搜索，即使是自己写的代码，当file和folder的数量不断增加，调试代码的时候经常需用editor进行全目录搜索。将iOS和Android代码放在同一目录下，使每次搜索返回两个结果：一个在ios目录里面，另一个在android目录里面，不小心容易点错，而去编辑另一个平台的代码。&lt;br&gt;
+2.  对于两个平台共用部分的代码，每做一次修改，需要考虑两个平台上的结果，需要在两个平台分别验证结果。&lt;br&gt;
+3. 不方便运行单个测试从而不方便调试。尽管Cucumber提供了profile机制，可以为iOS或Android加载不同的目录，但每运行一个测试都需要指定profile, 是不必要的负担。&lt;br&gt;
+4. 两个平台的产品也会有差异，有些test case不会完全相同，在同一个feature里面可能会分别打上 &lt;a href="/ios" class="at_user" title="@ios"&gt;&lt;i&gt;@&lt;/i&gt;ios&lt;/a&gt;, &lt;a href="/android" class="at_user" title="@android"&gt;&lt;i&gt;@&lt;/i&gt;android&lt;/a&gt;, 或&lt;a href="/common" class="at_user" title="@common"&gt;&lt;i&gt;@&lt;/i&gt;common&lt;/a&gt;这样的tags, 当scenarios的数量开始增加，利用tag机制区分同一个目录，甚至是同一个文件下两个平台的代码，不是一个好方法，间隔时间稍微久一点就容易混淆，因此这样的tagging方式不建议使用。&lt;/p&gt;
+
+&lt;p&gt;总之，要不要放在一起要看测试代码的规模，两个平台上实现的异同，共用代码的数量，多少人共同开发维护脚本来决定。个人建议：对于比较简单的项目，可以把两个平台的测试代码放在一起，否则还是分开更好。&lt;/p&gt;
+&lt;h4&gt;结尾&lt;/h4&gt;
+&lt;p&gt;最后，用一个采用PMO style写Calabash测试可能遇到的一个小错误作为结尾：&lt;br&gt;
+下面这段代码来自网上（&lt;a href="http://rubygemtsl.com/tag/calabash-android/" rel="nofollow" target="_blank"&gt;http://rubygemtsl.com/tag/calabash-android/&lt;/a&gt;）&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;WordPressApp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;DroidPress&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;welcome_screen&lt;/span&gt;
+  &lt;span class="vi"&gt;@welcome_screen&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;WelcomeScreen&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;login_screen&lt;/span&gt;
+  &lt;span class="vi"&gt;@login_screen&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;LoginScreen&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;home_screen&lt;/span&gt;
+  &lt;span class="vi"&gt;@home_screen&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;HomeScreen&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;welcome_screen方法第一次被调用的时候从page方法返回一个object, 之后的调用直接返回&lt;a href="/welcome_screen" class="at_user" title="@welcome_screen"&gt;&lt;i&gt;@&lt;/i&gt;welcome_screen&lt;/a&gt;，经常写ruby代码的同学会习惯这样写，但是上面这段代码当welcome_screen更新后结果就不一定准确了，因此要写成下面这种“低效”的方式，每次使用welcome_screen都要从page()那里再次获取&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;WordPressApp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;DroidPress&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;welcome_screen&lt;/span&gt;
+  &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;WelcomeScreen&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;await&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;实际上，对于通过UI进行测试的代码，慢的地方一般不在ruby写法是否高效，即使每次都从page()方法获取object和直接返回&lt;a href="/welcome_screen" class="at_user" title="@welcome_screen"&gt;&lt;i&gt;@&lt;/i&gt;welcome_screen&lt;/a&gt;完全感觉不到区别。&lt;/p&gt;
+
+&lt;p&gt;没想到会写这么多, 抛砖引玉，欢迎各位指教。&lt;/p&gt;</description>
+      <author>astro2linus</author>
+      <pubDate>Thu, 24 Jul 2014 23:02:32 +0800</pubDate>
+      <link>http://testerhome.com/topics/1173</link>
+      <guid>http://testerhome.com/topics/1173</guid>
+    </item>
+    <item>
+      <title>用原生 Cucumber 跑 Calabash-Android 测试</title>
+      <description>&lt;p&gt;继续分享一些小经验，抛砖引玉。&lt;br&gt;
+用 calabash-android run &amp;lt;apk&amp;gt; 运行Android测试，命令行太长，在env.rb设置两个环境变量，可以用简单的命令跑测试，比如cucumber -t &lt;a href="/tags" class="at_user" title="@tags"&gt;&lt;i&gt;@&lt;/i&gt;tags&lt;/a&gt;, cucumber -n 'name' TEST_APP_PATH默认取test_servers目录下最新的文件）&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ENV['APP_PATH'] = YOUR_APP_PATH&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ENV['TEST_APP_PATH'] = Dir.glob("#{your_project_root_folder}/test_servers/*.apk").max_by {|f| File.mtime(f)}&lt;/code&gt;&lt;/p&gt;</description>
+      <author>astro2linus</author>
+      <pubDate>Wed, 23 Jul 2014 16:59:46 +0800</pubDate>
+      <link>http://testerhome.com/topics/1165</link>
+      <guid>http://testerhome.com/topics/1165</guid>
+    </item>
+    <item>
+      <title>Calabash 使用经验 - 安装稳定版本</title>
+      <description>&lt;p&gt;貌似这里Calabash的使用者比较少，分享一些个人使用经验，抛砖引玉。&lt;br&gt;
+刚开始使用Calabash的时候碰到过各种问题：无法启动模拟器，由于模拟器不稳定，运行时抛出各种异常, 无法启动console等各种问题。特别是OSX，XCode, Calabash升级到最新版本的时候，碰到很多新问题，解决的办法除了利用Google，Mail Group 和 Stackoverflow以外，还尝试了不同的安装版本。下面是我当前(23 July 2014)正在使用的版本，经过实际项目的验证相对比较稳定. &lt;/p&gt;
+
+&lt;p&gt;iOS:&lt;br&gt;
+OSX 10.9.2&lt;br&gt;
+XCode 5.1.1&lt;br&gt;
+Recommended iOS Simulator ( 7.0 for iPad, 7.1 for iPhone)&lt;br&gt;
+calabash-cucumber (0.9.168)&lt;br&gt;
+可以通过设置DEVICE_TARGET环境变量指定Simulator的版本 e.g. ENV['DEVICE_TARGET']='iPad Retina - Simulator - iOS 7.0'&lt;/p&gt;
+
+&lt;p&gt;Android：&lt;br&gt;
+Recommended emulator: Genymotion - Google Nexux 10 - 4.4.2 - API 19&lt;br&gt;
+calabash-android (0.4.20) &lt;/p&gt;</description>
+      <author>astro2linus</author>
+      <pubDate>Wed, 23 Jul 2014 16:19:38 +0800</pubDate>
+      <link>http://testerhome.com/topics/1164</link>
+      <guid>http://testerhome.com/topics/1164</guid>
+    </item>
+    <item>
+      <title>Calabash 使用以及修改</title>
+      <description>&lt;p&gt;接下来我大量在项目中投入calabash的使用。今天稍微小小尝试了下。&lt;/p&gt;
+
+&lt;p&gt;这里不得不说，mac上ruby2.0真的是大坑，各种报错，最终还是换了1.9.2的版本，顺利安装了&lt;br&gt;
+  同样的windows的同学真的也要注意，2.0各种不能安装，然后也要注意GBK字符串的问题，坑太多了。&lt;/p&gt;
+
+&lt;p&gt;安装完毕之后，执行&lt;code&gt;calabash-android gen&lt;/code&gt;就能够看到生成如下目录&lt;br&gt;&lt;img src="/photo/2014/be42d2e932da606efaf9ae1cd4fc288a.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;然后呢，我们放一个要测试的apk到features同一级的目录下，运行&lt;code&gt;calabash-android run &amp;lt;apk&amp;gt;&lt;/code&gt;即可运行features的脚本my_first.feature。&lt;br&gt;
+  我在这里做了一个试验，就是我们自己apk的一个登录，my_first.feature脚本如下：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Feature&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="no"&gt;Login&lt;/span&gt; &lt;span class="n"&gt;feature&lt;/span&gt;
+
+  &lt;span class="no"&gt;Scenario&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="no"&gt;As&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;valid&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;my&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;
+    &lt;span class="n"&gt;check_element_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"支付宝商户版"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;press&lt;/span&gt; &lt;span class="s2"&gt;"我是店长"&lt;/span&gt;
+    &lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;see&lt;/span&gt; &lt;span class="s2"&gt;"支付宝账户登录"&lt;/span&gt;
+    &lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;enter&lt;/span&gt; &lt;span class="s2"&gt;"xuanyuanyang@alitest.com"&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;enter&lt;/span&gt; &lt;span class="s2"&gt;"111111"&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+    &lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;press&lt;/span&gt; &lt;span class="s2"&gt;"登录"&lt;/span&gt;
+    &lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;press&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt; &lt;span class="s2"&gt;"guide"&lt;/span&gt;
+    &lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;see&lt;/span&gt; &lt;span class="s2"&gt;"支付宝收银"&lt;/span&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果如下显示：&lt;br&gt;&lt;img src="/photo/2014/37021047b927f12f9c99439fab4d1569.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;其实这些都不是关键，关键是我们接下来可以来分析一下内部实现。其实大部分人还会看到features目录下有一个calabash_steps.rb文件。这里接下来慢慢来讲。&lt;/p&gt;
+
+&lt;p&gt;首先我们来看下calabash默认的steps到底是定义在哪里的。默认定义在源码中&lt;code&gt;/Users/monkey/Documents/open_source/calabash-android/ruby-gem/lib/calabash-android/steps&lt;/code&gt;目录下。这个下面写的非常清楚，将各个需要在features中用到的step都封装了起来。&lt;br&gt;&lt;img src="/photo/2014/f4bdac690364cd536e121363a80764fb.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;那么对应这些step中关键字的实现又在哪里呢？我们继续往下看。&lt;/p&gt;
+
+&lt;p&gt;实现都在源码中的这个目录中&lt;code&gt;/Users/monkey/Documents/open_source/calabash-android/ruby-gem/test-server/instrumentation-backend/src/sh/calaba/instrumentationbackend/actions&lt;/code&gt;，但是这里要注意的是，你千万不要幻想将其中的robotium的jar包换成最新的，否则你要修改的地方太多了。&lt;br&gt;&lt;img src="/photo/2014/bf86bd527508cd4ad970501c078c1b12.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;那么接着我们可以来尝试着自己增加一些step的实现，首先我们先导入calabash instrumentationbackend。如下显示，我们主要关心的是actions相关的package。&lt;br&gt;&lt;img src="/photo/2014/8ae40b4dd2e4bc7ef9684d31913e5101.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;在View的包中我增加了一个类AssertViewTextById。为了方便测试，hardcode了一段逻辑在其中，如下代码&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="n"&gt;package&lt;/span&gt; &lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;calaba&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;instrumentationbackend&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;actions&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;view&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="no"&gt;View&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;widget&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="no"&gt;EditText&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;calaba&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;instrumentationbackend&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="no"&gt;InstrumentationBackend&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;calaba&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;instrumentationbackend&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="no"&gt;Result&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;calaba&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;instrumentationbackend&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="no"&gt;TestHelpers&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;calaba&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;instrumentationbackend&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;actions&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="no"&gt;Action&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kp"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AssertViewTextById&lt;/span&gt; &lt;span class="n"&gt;implements&lt;/span&gt; &lt;span class="no"&gt;Action&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="vi"&gt;@Override&lt;/span&gt;
+    &lt;span class="kp"&gt;public&lt;/span&gt; &lt;span class="no"&gt;Result&lt;/span&gt; &lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;String&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;final&lt;/span&gt; &lt;span class="no"&gt;View&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;TestHelpers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;getViewById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;final&lt;/span&gt; &lt;span class="no"&gt;View&lt;/span&gt; &lt;span class="n"&gt;view2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;InstrumentationBackend&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;solo&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;getView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;equals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view2&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="no"&gt;Result&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;successResult&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kp"&gt;new&lt;/span&gt; &lt;span class="no"&gt;Result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;" was not found"&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="vi"&gt;@Override&lt;/span&gt;
+    &lt;span class="kp"&gt;public&lt;/span&gt; &lt;span class="no"&gt;String&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;"assert_text_by_id"&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;注意，高潮来了。这里的key()里面的返回就是steps中需要对应的关键字，接着重要的一步就是，我们需要在&lt;code&gt;assert_steps.rb&lt;/code&gt;中增加如下step&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^I check viewtext with id "([^\"]*)" = "([^\"]*)"$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;view_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;performAction&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'assert_text_by_id'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;view_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;那么接下来我们需要重新编译，到ruby-gem目录中，然后输入rake build，会将你新增的类放到calabash环境中去。&lt;/p&gt;
+
+&lt;p&gt;然后我们来尝试下新的这个“动作”，features如下编写：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;
+  &lt;span class="no"&gt;Scenario&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;first&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; &lt;span class="k"&gt;case&lt;/span&gt;
+  &lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;press&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+  &lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;press&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+  &lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;press&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+  &lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;check&lt;/span&gt; &lt;span class="n"&gt;viewtext&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt; &lt;span class="s2"&gt;"amountInput"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"amountInput"&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;执行之后如下显示：&lt;br&gt;&lt;img src="/photo/2014/fdc6a4ab3cbb7674bb5da400b875e2ae.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;说明这个step整个calabash已经认识了，故添加成功！！！&lt;/p&gt;
+
+&lt;p&gt;最后说下report，相对来讲，重要的信息一应俱全，真的很棒！！同时还兼容ios哟！！！&lt;br&gt;&lt;img src="/photo/2014/38f3f5fe21e2fe1f683e8b09beeebfd0.png" alt=""&gt;&lt;br&gt;&lt;img src="/photo/2014/e8f94b5022c8d966753c88d489ac9e9a.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>monkey</author>
+      <pubDate>Thu, 29 May 2014 23:54:59 +0800</pubDate>
+      <link>http://testerhome.com/topics/953</link>
+      <guid>http://testerhome.com/topics/953</guid>
+    </item>
+    <item>
+      <title>Calabash 原理介绍</title>
+      <description>&lt;p&gt;calabash iOS 由两部分构成： &lt;br&gt;
+用ruby设计的脚本 ，本地端库，下图的左半部分&lt;br&gt;
+用Objective-C写的服务框架calabash.framework. ，下图的右半部分&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://testerhome.com/photo/2014/de8da151e51c2be4ac87b82a618a70c1.png" alt="Alt text here"&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Ruby部分&lt;/strong&gt;：&lt;br&gt;
+Calabash的脚本是使用cucumber来进行组织，特定就是用自然语言来描述逻辑，具体执行部分才是用ruby编程语言。&lt;br&gt;
+Features部分就是用自然语言来写的。&lt;br&gt;
+例如：&lt;/p&gt;
+&lt;pre class="highlight gherkin"&gt;&lt;span class="kd"&gt;Feature&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; test startview
+  &lt;span class="kn"&gt;Scenario&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; open startview
+    &lt;span class="nf"&gt;Given&lt;/span&gt; App is launched
+    &lt;span class="nf"&gt;When&lt;/span&gt; press &lt;span class="s"&gt;"start"&lt;/span&gt; button
+    &lt;span class="nf"&gt;Then&lt;/span&gt; check startview is opened
+    &lt;span class="nf"&gt;And&lt;/span&gt; check otherview is dismissed
+&lt;/pre&gt;
+&lt;p&gt;也可以写成：&lt;/p&gt;
+&lt;pre class="highlight gherkin"&gt;
+&lt;span class="kd"&gt;Feature&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; 测试开始界面
+  &lt;span class="kn"&gt;Scenario&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; 打开开始界面
+    &lt;span class="nf"&gt;Given&lt;/span&gt; 程序被开启
+    &lt;span class="nf"&gt;When&lt;/span&gt; 点击"开始"按钮
+    &lt;span class="nf"&gt;Then&lt;/span&gt; 检查开始界面被显示
+    &lt;span class="nf"&gt;And&lt;/span&gt; 检查其他界面被取消
+&lt;/pre&gt;
+&lt;p&gt;甚至使用使用多语言支持后，Given，When这种也可以用中文代替。&lt;/p&gt;
+
+&lt;p&gt;step definition部分必须用ruby语言来具体定义&lt;br&gt;
+例如：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;
+&lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sr"&gt;/^点击"([^\"]*)" 按钮$/&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+    &lt;span class="n"&gt;touch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"view marked:'&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;'"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;ruby 客户端库部分：&lt;br&gt;
+解析脚本，并根据脚本的相应功能向app中的server发出get或post&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;calabash.framework 部分：&lt;/strong&gt;&lt;br&gt;
+这部分还正在深入研究中。&lt;br&gt;
+执行操作部分：&lt;br&gt;
+calabash模拟用户操作的方式实质是调用了UIAutomation.framework的私用方法，执行点击长按拖动等操作&lt;/p&gt;
+
+&lt;p&gt;获取控件属性部分：&lt;br&gt;
+获得当前屏幕的window，然后再遍历这个window下的所有subview，获得每个view的accessibilityLabel，坐标长宽高等属性&lt;/p&gt;</description>
+      <author>noshuai</author>
+      <pubDate>Sun, 20 Apr 2014 23:37:44 +0800</pubDate>
+      <link>http://testerhome.com/topics/724</link>
+      <guid>http://testerhome.com/topics/724</guid>
+    </item>
+    <item>
+      <title>calabash ios 安装</title>
+      <description>&lt;p&gt;&lt;strong&gt;前提：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;mac 设备，安装xcode，ruby&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;步骤：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;安装gem包&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;命令行输入：&lt;code&gt;gem install calabash-cucumber&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;如果有权限问题的话可以使用 &lt;code&gt;sudo gem install calabash-cucumber&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;进入被测项目的路径下，即包含 .xcodeproj 文件的目录中&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在被测工程中安装 calabash&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;命令行输入：&lt;code&gt;calabash-ios setup&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;自动创建一个简单的测试用例（可选）&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;命令行输入：&lt;code&gt;calabash-ios gen&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;该命令自动建立一个 feature 文件夹，里面有条测试用例，可以检验配置是否成功，如果有已经写好的脚本了可以跳过该步骤，直接将已有的 feature 目录放过来&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在 xcode 打开被测项目，检查 scheme，发现多了一个后缀带有 &lt;code&gt;-cal&lt;/code&gt; 的，这个就是加入 &lt;code&gt;calabash.framework&lt;/code&gt; 的可以运行自动化化脚本的程序了&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;运行这个程序，检查程序是否配置成功&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;运行后检查 console 输出，如果配置成功后会有以下输出： &lt;code&gt;HTTPServer: Started HTTP server on port 37265&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;关闭这个程序，回到命令行&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;输入 cucumber，运行自动化脚本&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Q&amp;amp;A：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;mac会自带ruby，如果安装gem出现下载缓慢或失败，请更换为淘宝源&lt;/li&gt;
+&lt;/ol&gt;&lt;pre class="highlight plaintext"&gt;gem sources --remove http://rubygems.org/ 
+gem sources -a http://ruby.taobao.org/ 
+gem sources -l 
+*** CURRENT SOURCES ***  
+http://ruby.taobao.org 
+# 请确保只有 ruby.taobao.org 
+&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;如果被测项目是个workspace包含多个project，那么请寻找运行哪个project的scheme可以运行起来你期望被测试的app，就进入到那个对应目录下&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;setup时可能出现失败，一般是由于xcode或者instruments在已经运行（后台退出，kill 进程），或者已经有-cal的文件存在（进入xcode删除对应-cal），或者没有找到scheme（进入xcode，运行一次程序，或者将其scheme设置为shared）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;没听说过第四步出错…… 因为只是生成一个demo，后续级别用不上这个命令&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果没有发现有这个输出，那就悲剧了，只能手动去生成，步骤如下&lt;br&gt;
+a. duplicate 被测程序的target，重命名加入-cal的后缀&lt;br&gt;
+b. 下载framework 命令行:calabash-ios download&lt;br&gt;
+c. 将该calabash.framework加入被测-cal这个target中&lt;br&gt;
+d.加入xcode自带的CFNetwork.framework到-cal target中&lt;br&gt;
+e. 在-caltarget中，打开build setting-》找到Other linker flags，加入-force_load "$(SRCROOT)/calabash.framework/calabash" -lstdc++&lt;br&gt;
+f. 运行-cal 这个target确保 会有以下输出： HTTPServer: Started HTTP server on port 37265&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果以上都没有问题的话， 第七步应该会很顺利的运行脚本&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;</description>
+      <author>noshuai</author>
+      <pubDate>Sat, 12 Apr 2014 14:12:22 +0800</pubDate>
+      <link>http://testerhome.com/topics/692</link>
+      <guid>http://testerhome.com/topics/692</guid>
+    </item>
+    <item>
+      <title>Calabash Android 简介</title>
+      <description>&lt;h4&gt;什么是 Calabash？&lt;/h4&gt;
+&lt;p&gt;Calabash 是一个自动化测试框架，它可以测试 Android 和 iOS 原生应用和混合应用。&lt;/p&gt;
+
+&lt;p&gt;它有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;calabash-android&lt;/li&gt;
+&lt;li&gt;calabash-ios&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;主页： &lt;a href="http://calabash.sh" rel="nofollow" target="_blank"&gt;http://calabash.sh&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;Calabash-android介绍&lt;/h4&gt;
+&lt;p&gt;Calabash-android 是支持 android 的 UI 自动化测试框架，PC 端使用了 cucumber 框架，通过 http 和 json 与模拟器和真机上安装的测试 apk 通信，测试 apk 调用  &lt;a href="https://code.google.com/p/robotium/"&gt;Robotium&lt;/a&gt;  的方法来进行 UI 自动化测试，支持 webview 操作。&lt;/p&gt;
+&lt;h4&gt;Calabash-android 架构图&lt;/h4&gt;
+&lt;p&gt;&lt;img src="/photo/2014/ecb26c170838deda3dd5193fe5c8e737.png" alt=""&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Features —— 这里的 feature 就是 cucumber 的 feature，用来描述 &lt;code&gt;user stories&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;Step Definitions —— Calabash Android 事先已经定义了一些通用的  &lt;a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md"&gt;step&lt;/a&gt;。你可以根据自己的需求，定义更加复杂的步骤。&lt;/li&gt;
+&lt;li&gt;Your app —— 测试之前，你不必对你的应用修改。（这里其实是有问题，后面我们会说到。）&lt;/li&gt;
+&lt;li&gt;Instrumentation Test Server —— 这是一个应用，在运行测试的时候会被安装到设备中去。 这个应用是基于  Android SDK 里的 &lt;a href="http://blog.csdn.net/haha_mingg/article/details/6347629"&gt;ActivityInstrumentationTestCase2&lt;/a&gt;。它是 Calabash Android 框架的一部分。Robotium 就集成在这个应用里。&lt;/li&gt;
+&lt;/ul&gt;&lt;h4&gt;Calabash-android 环境搭建&lt;/h4&gt;&lt;h4&gt;ruby 环境&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://rvm.io/"&gt;rvm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/sstephenson/rbenv"&gt;rbenv&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="http://rubyinstaller.org/"&gt;RubyInstaller.org&lt;/a&gt; for windows&lt;/li&gt;
+&lt;/ul&gt;&lt;h4&gt;Android 开发环境&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;JAVA&lt;/li&gt;
+&lt;li&gt;Android SDK&lt;/li&gt;
+&lt;li&gt;Ant&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;指定 JAVA 环境变量， Android SDK 环境变量（ANDROID_HOME）， Ant 加入到 PATH 中去。&lt;/p&gt;
+&lt;h4&gt;安装 Calabash-android&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;gem install calabash-android
+sudo gem install calabash-android # 如果权限不够用这个。
+&lt;/pre&gt;
+&lt;p&gt;如有疑问，请参考： &lt;a href="https://github.com/calabash/calabash-android/blob/master/documentation/installation.md" rel="nofollow" target="_blank"&gt;https://github.com/calabash/calabash-android/blob/master/documentation/installation.md&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;创建 calabash-android 的骨架&lt;/h4&gt;&lt;pre class="highlight plaintext"&gt;calabash-android gen
+&lt;/pre&gt;
+&lt;p&gt;会生成如下的目录结构：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;➜  calabash  tree
+.
+features
+|_support
+| |_app_installation_hooks.rb
+| |_app_life_cycle_hooks.rb
+| |_env.rb
+|_step_definitions
+| |_calabash_steps.rb
+|_my_first.feature
+
+&lt;/pre&gt;&lt;h4&gt;写测试用例&lt;/h4&gt;
+&lt;p&gt;像一般的 cucumber 测试一样，我们只要在 feature 文件里添加测试用例即可。比如我们测试 ContactManager.apk （android sdk sample 里面的， Appium 也用这个 apk）。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/82848ab35b17968a093ce801d0b49a7c.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/aa78cf92cc5ee4152ec2d41bd228239d.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;我们想实现，&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;打开这个应用&lt;/li&gt;
+&lt;li&gt;点击 Add Contact 按钮&lt;/li&gt;
+&lt;li&gt;添加 Contact Name 为 hello&lt;/li&gt;
+&lt;li&gt;添加 Contact Phone 为 13817861875&lt;/li&gt;
+&lt;li&gt;添加 Contact Email 为 hengwen@hotmail.com&lt;/li&gt;
+&lt;li&gt;保存&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;所以我们的 feature 应该是这样的：&lt;/p&gt;
+&lt;pre class="highlight gherkin"&gt;&lt;span class="kd"&gt;Feature&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; Login feature
+
+  &lt;span class="kn"&gt;Scenario&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; As a valid user I can log into my app
+    &lt;span class="nf"&gt;When&lt;/span&gt; I press &lt;span class="s"&gt;"Add Contact"&lt;/span&gt;
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I see &lt;span class="s"&gt;"Target Account"&lt;/span&gt;
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I enter &lt;span class="s"&gt;"hello"&lt;/span&gt; into input field number 1
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I enter &lt;span class="s"&gt;"13817861875"&lt;/span&gt; into input field number 2
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I enter &lt;span class="s"&gt;"hengwen@hotmail.com"&lt;/span&gt; into input field number 3
+    &lt;span class="nf"&gt;When&lt;/span&gt; I press &lt;span class="s"&gt;"Save"&lt;/span&gt;
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I wait for 1 second
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I toggle checkbox number 1
+    &lt;span class="nf"&gt;Then&lt;/span&gt; I see &lt;span class="s"&gt;"hello"&lt;/span&gt;
+
+&lt;/pre&gt;
+&lt;p&gt;这里 input field number 就针对了 ContactAdder Activity 中输入框。我现在这样写其实不太友好，比较好的方式是进行再次封装，对 DSL 撰写者透明。比如：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;When I enter "hello" as "Contact Name"
+&lt;/pre&gt;
+&lt;p&gt;step_definition&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;
+&lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sr"&gt;/^I enter "([^\"]*)" as "([^\"]*)"$/&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+    &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;
+    &lt;span class="k"&gt;when&lt;/span&gt; &lt;span class="s2"&gt;"Contact Name"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="n"&gt;steps&lt;/span&gt; &lt;span class="sx"&gt;%{
+        Then I enter #{text} into input field number #{index}
+    }&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这样 feature 可读性会强一点。&lt;/p&gt;
+&lt;h4&gt;运行 feature&lt;/h4&gt;
+&lt;p&gt;在运行之前，我们对 apk 还是得处理下，否则会遇到一些问题。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;App did not start (RuntimeError)&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;因为calabash-android的client和test server需要通信，所以要在 AndroidManifest.xml 中添加权限：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;uses-permission android:name="android.permission.INTERNET" /&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ContacterManager 代码本身的问题&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;由于 ContacerManager 运行时候，需要你一定要有一个账户，如果没有账户 Save 的时候会出错。为了便于运行，我们要修改下。&lt;/p&gt;
+
+&lt;p&gt;源代码地址在 &lt;code&gt;$ANDROID_HOME/samples/android-19/legacy/ContactManager&lt;/code&gt;，大家自己去找。&lt;/p&gt;
+
+&lt;p&gt;需要修改 &lt;code&gt;com.example.android.contactmanager.ContactAdder&lt;/code&gt; 类里面的 &lt;code&gt;createContactEntry&lt;/code&gt; 方法，我们需要对 mSelectedAccount 进行判断， 修改地方如下：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;   &lt;span class="c1"&gt;// Prepare contact creation request&lt;/span&gt;
+        &lt;span class="c1"&gt;//&lt;/span&gt;
+        &lt;span class="c1"&gt;// Note: We use RawContacts because this data must be associated with a particular account.&lt;/span&gt;
+        &lt;span class="c1"&gt;//       The system will aggregate this with any other data for this contact and create a&lt;/span&gt;
+        &lt;span class="c1"&gt;//       coresponding entry in the ContactsContract.Contacts provider for us.&lt;/span&gt;
+        &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ContentProviderOperation&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;ops&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ContentProviderOperation&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mSelectedAccount&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;ops&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContentProviderOperation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInsert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContactsContract&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RawContacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CONTENT_URI&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;withValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContactsContract&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RawContacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ACCOUNT_TYPE&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mSelectedAccount&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getType&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt;
+                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;withValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContactsContract&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RawContacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ACCOUNT_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mSelectedAccount&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getName&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt;
+                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;ops&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContentProviderOperation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInsert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContactsContract&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RawContacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CONTENT_URI&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;withValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContactsContract&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RawContacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ACCOUNT_TYPE&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;withValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ContactsContract&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;RawContacts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ACCOUNT_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="o"&gt;....&lt;/span&gt;
+
+
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mSelectedAccount&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Ask the Contact provider to create a new contact&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TAG&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"Selected account: "&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;mSelectedAccount&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getName&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;" ("&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                &lt;span class="n"&gt;mSelectedAccount&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getType&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;")"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TAG&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"No selected account"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;        
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+&lt;p&gt;代码修改好之后，导出 apk 文件。&lt;/p&gt;
+
+&lt;p&gt;运行很简单：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;calabash-android run &amp;lt;apk&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;如果遇到签名问题，请用： &lt;code&gt;calabash-android resign apk&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;可以看看我运行的情况：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;➜  calabash  calabash-android run ContactManager.apk
+Feature: Login feature
+
+  Scenario: As a valid user I can log into my app                &lt;span class="c"&gt;# features/my_first.feature:3&lt;/span&gt;
+3135 KB/s &lt;span class="o"&gt;(&lt;/span&gt;556639 bytes &lt;span class="k"&gt;in &lt;/span&gt;0.173s&lt;span class="o"&gt;)&lt;/span&gt;
+3315 KB/s &lt;span class="o"&gt;(&lt;/span&gt;26234 bytes &lt;span class="k"&gt;in &lt;/span&gt;0.007s&lt;span class="o"&gt;)&lt;/span&gt;
+    When I press &lt;span class="s2"&gt;"Add Contact"&lt;/span&gt;                                   &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/press_button_steps.rb:17&lt;/span&gt;
+    Then I see &lt;span class="s2"&gt;"Target Account"&lt;/span&gt;                                  &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/assert_steps.rb:5&lt;/span&gt;
+    Then I enter &lt;span class="s2"&gt;"hello"&lt;/span&gt; into input field number 1               &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/enter_text_steps.rb:5&lt;/span&gt;
+    Then I enter &lt;span class="s2"&gt;"13817861875"&lt;/span&gt; into input field number 2         &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/enter_text_steps.rb:5&lt;/span&gt;
+    Then I enter &lt;span class="s2"&gt;"hengwen@hotmail.com"&lt;/span&gt; into input field number 3 &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/enter_text_steps.rb:5&lt;/span&gt;
+    When I press &lt;span class="s2"&gt;"Save"&lt;/span&gt;                                          &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/press_button_steps.rb:17&lt;/span&gt;
+    Then I &lt;span class="nb"&gt;wait &lt;/span&gt;&lt;span class="k"&gt;for &lt;/span&gt;1 second                                     &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/progress_steps.rb:18&lt;/span&gt;
+    Then I toggle checkbox number 1                              &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/check_box_steps.rb:1&lt;/span&gt;
+    Then I see &lt;span class="s2"&gt;"hello"&lt;/span&gt;                                           &lt;span class="c"&gt;# calabash-android-0.4.21/lib/calabash-android/steps/assert_steps.rb:5&lt;/span&gt;
+
+1 scenario &lt;span class="o"&gt;(&lt;/span&gt;1 passed&lt;span class="o"&gt;)&lt;/span&gt;
+9 steps &lt;span class="o"&gt;(&lt;/span&gt;9 passed&lt;span class="o"&gt;)&lt;/span&gt;
+0m28.304s
+
+&lt;/pre&gt;
+&lt;p&gt;All pass！ &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/1ecec94a042486468f0bbefb18010ee3.gif" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;大家看到 gif 是 failed，是因为在模拟器上运行的。而上面全部通过的是我在海信手机上运行的。环境不一样，略有差异。&lt;/p&gt;
+&lt;h4&gt;总结&lt;/h4&gt;
+&lt;p&gt;本文是对 calabash-android 的一个简单介绍，做的是抛砖引玉的活。移动测试框架并非 Appium 一家，TesterHome 希望其他框架的话题也能热火起来。watch and learn！&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Sat, 22 Mar 2014 23:07:19 +0800</pubDate>
+      <link>http://testerhome.com/topics/606</link>
+      <guid>http://testerhome.com/topics/606</guid>
+    </item>
+  </channel>
+</rss>

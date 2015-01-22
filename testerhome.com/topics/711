@@ -1,0 +1,1284 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium grid ----appium 的并行化测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium grid ----appium 的并行化测试</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../lucktail">lucktail</a>
+     · 
+    于<abbr class="timeago" title="2014-04-16T14:36:27+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="hzy" href="../hzy">hzy</a> 于<abbr class="timeago" title="2014-12-26T17:20:04+08:00"></abbr>回复
+     · 
+    1808次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>知道selenium grid2  可以提供并行化。<br>
+可是怎么把它应用到Appium上啊，研究了一个礼拜一筹莫展。<br>
+希望大家能给点儿思路，谢谢～<br>
+并行化做的好痛苦啊！！</p>
+
+<p>－－－－－－－－－－目前的一些进展，初步实现并行化－－－－－－－－－<br>
+－－－希望对大家有所帮助－－－<br>
+步骤：<br>
+1.下载          selenium-server-standalone-2.41.0.jar<br>
+    地址：<a href="http://selenium-release.storage.googleapis.com/index.html?path=2.41/" rel="nofollow" target="_blank">http://selenium-release.storage.googleapis.com/index.html?path=2.41/</a><br>
+2.启动配置nodeconfig.json<br>
+3.启动命令行启动hub（已经安装了java jdk）java -jar selenium-server-standalone-2.41.0.jar -role hub<br>
+4.启动appium server<br>
+5.能在 <a href="http://localhost:4444/grid/consolehub%E4%B8%8A%E6%B3%A8%E5%86%8C%E7%9A%84node" rel="nofollow" target="_blank">http://localhost:4444/grid/consolehub上注册的node</a>中找到<br>
+6.执行测试脚本。</p>
+
+<p>detail：<br>
+1.如何配置nodeconfig.json<br>
+   感谢 <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 在3楼提供重要思路－－－修改nodeconfig文件。<br>
+   感谢 <a href="../arnox" class="at_user" title="@arnox"><i>@</i>arnox</a> 在9楼提到 <br>
+              ｛<br>
+                Grid node config file:<br><a href="https://github.com/appium/appium/blob/master/docs/en/grid.md" rel="nofollow" target="_blank">https://github.com/appium/appium/blob/master/docs/en/grid.md</a> <br>
+                ｝<br>
+   ps：官方的文档grid.md中"host": &lt;host_name_appium_server_or_ip-address_appium_server&gt;,没有加上双引号的，估计是它的疏漏。应改为"host": "&lt;host_name_appium_server_or_ip-address_appium_server&gt;"</p>
+
+<p>感谢 <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 在19楼的nodeconfig.json源码</p>
+
+<p>2.测试脚本修改<br>
+        self.driver = webdriver.Remote(<br>
+                                                          command_executor='http://＊.＊.＊.＊:4723/wd/hub',<br>
+                                                          desired_capabilities={<br>
+                                                          'browserName': '',<br>
+                                                          'device': 'iPhone Simulator',<br>
+                                                          'platform': 'Mac',<br>
+                                                          'version': '7.1',<br>
+                                                          'app': app_remote<br>
+                                                          })<br>
+      ps：command_executor 中 ＊.＊.＊.＊写的是要执行此测试用例的node(appium server)的ip地址.</p>
+
+<p>存在的问题：<br>
+1.hub端不知道如何获取node的测试信息<br>
+2.如果执行的测试用例触发app漏洞，如何定位app出错位置  愁人啊！<br>
+   希望大家给点思路。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium grid ----appium 的并行化测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="711#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="711#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="711#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="711#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="711#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>42</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply1">1楼</a> · <abbr class="timeago" title="2014-04-16T14:38:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3931" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3931/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>需要对Appium的源码进行更改吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply2">2楼</a> · <abbr class="timeago" title="2014-04-16T14:41:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3932" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3932/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><img src="../photo/2014/a7dfe46048a8664c642183c44e22d199.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply3">3楼</a> · <abbr class="timeago" title="2014-04-16T15:10:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3934" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/3934/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>nodeconfig参数可以做到. 不过比较坑的是, 因为appium会固定占用2个端口, 所以几个pc理论上只能用来同时控制一个手机.<br>
+所以为了避免冲突, 你需要调整对应的端口数字, 4723和4724. 这两个端口在参数里面貌似不能完全修改, 所以还需要修改代码<br>
+当然不知道新版本怎么样了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply4">4楼</a> · <abbr class="timeago" title="2014-04-16T15:30:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3935" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3935/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 虽然不是很懂，不过先谢谢。。……^_^<br>
+      我想法是一个Server（hub）  然后 有多个Client，每个Client控制一个手机或者模拟器。n个client分别执行不同的测试用例......以达到并行测试的目的。<br>
+      所以不是很明白“几个pc理论上只能用来同时控制一个手机”是什么意思？<br>
+      我是用appium.dmg安装的，不是通过命令行，这样还可以修改nodeconfig参数 或者修改代码吗？（是不是最好修改了代码后通过命令行安装？）<br>
+      并行化这个问题纠结了好久，实在是不知道从何下手，谢谢了～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply5">5楼</a> · <abbr class="timeago" title="2014-04-16T15:36:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3936" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3936/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><img src="../photo/2014/5865294f39b1ac1b46456258b80eeb6a.png" alt=""><br>
+是这个文件吗？可是找不到它啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply6">6楼</a> · <abbr class="timeago" title="2014-04-16T17:50:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3940" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/3940/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> 写错了, 是理论上一个pc只能控制一个手机,  修改代码才能实现一个pc控制多个手机.<br>
+在grid模式下, 你可以认为appium server就变成了grid里面的client. 这块内容appium设计的不太好, 希望后续会有所改善.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply7">7楼</a> · <abbr class="timeago" title="2014-04-16T17:50:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3941" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/3941/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>下个月等1.0放出来, 我会做个完整的grid模型给大家做参考.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply8">8楼</a> · <abbr class="timeago" title="2014-04-16T19:31:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3944" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3944/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 嗯～  太好了！<br>
+    因为马上就是毕设的中期检查，所以想抓紧把并行化做出来。我只是想实现一台PC一部手机就好。如果appium  server是 grid里的client  ，那hub的角色由谁来充当呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../arnox"><img alt="C322baafcdb45a1d3f09efcdfa1590c3" class="uface" src="../avatar/c322baafcdb45a1d3f09efcdfa1590c3.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="arnox" href="../arnox">arnox</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply9">9楼</a> · <abbr class="timeago" title="2014-04-16T20:14:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3945" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="316" href="http://testerhome.com/topics/711/replies/3945/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="arnox" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Grid node config file:</p>
+
+<p><a href="https://github.com/appium/appium/blob/master/docs/en/grid.md" rel="nofollow" target="_blank">https://github.com/appium/appium/blob/master/docs/en/grid.md</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../arnox"><img alt="C322baafcdb45a1d3f09efcdfa1590c3" class="uface" src="../avatar/c322baafcdb45a1d3f09efcdfa1590c3.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="arnox" href="../arnox">arnox</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply10">10楼</a> · <abbr class="timeago" title="2014-04-16T20:14:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3946" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="316" href="http://testerhome.com/topics/711/replies/3946/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="arnox" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Grid Hub 你需要自己启用啊，和selenium Grid2.0 hub启用一样的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply11">11楼</a> · <abbr class="timeago" title="2014-04-16T20:46:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3947" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/3947/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../arnox" class="at_user" title="@arnox"><i>@</i>arnox</a>  是的 因为selenium和appium在协议上一致, 所以grid可以通用</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply12">12楼</a> · <abbr class="timeago" title="2014-04-16T22:55:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3949" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/711/replies/3949/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="vigossjjj" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 不用改代码 我一直用的好好的 <a href="711#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply13">13楼</a> · <abbr class="timeago" title="2014-04-16T22:55:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3950" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/3950/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 你是通过参数配置修改端口的吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply14">14楼</a> · <abbr class="timeago" title="2014-04-17T14:47:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3992" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3992/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../arnox" class="at_user" title="@arnox"><i>@</i>arnox</a> 太好了！！ 我学习一下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply15">15楼</a> · <abbr class="timeago" title="2014-04-17T14:49:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3993" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/3993/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../arnox" class="at_user" title="@arnox"><i>@</i>arnox</a> 恩恩，因为以前没有接触过selenium  所以都不知道从何下手。我去看看selenium grid2.0   thx～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply16">16楼</a> · <abbr class="timeago" title="2014-04-17T20:51:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4006" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/4006/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 你好，我尝试了一下编写nodeconfig.json文件，我已经启动了hub端口默认4444.但是启动appium server的时候报错。你的nodeconfig文件是怎么写的啊。<br><img src="../photo/2014/b4dd9caf212023544960a127ad863013.png" alt=""><br>
+报错信息为：<br><img src="../photo/2014/930eccac47f18ef24aebe5e034da2e59.png" alt=""></p>
+
+<p>好难过啊！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply17">17楼</a> · <abbr class="timeago" title="2014-04-17T22:45:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4007" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/4007/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>报错问题已解决：代码第17行 把127.0.0.1  改为“127.0.0.1”  也就是加上双引号。<br>
+ps：官方的文档grid.md中是没有加上双引号的，估计是它的疏漏。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply18">18楼</a> · <abbr class="timeago" title="2014-04-17T23:22:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4012" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/711/replies/4012/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="lihuazhang" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> 给他提 pr</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply19">19楼</a> · <abbr class="timeago" title="2014-04-18T16:23:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4024" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/711/replies/4024/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="vigossjjj" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 多手机连接肯定没问题的，用了半年了..... <img src="../photo/2014/929504f62c8a8688ab3a36170d708362.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply20">20楼</a> · <abbr class="timeago" title="2014-04-18T20:30:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4036" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/4036/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 嗯  谢了～  那个“browserName”：“IOS_TestAnget1”是什么意思啊  我的“browserName”是空着的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply21">21楼</a> · <abbr class="timeago" title="2014-04-18T21:54:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4038" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/4038/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 我是之前看appium的google groups里面提到, 说是因为端口会导致一个pc只能同时连接一个手机端. 你有没有看过, 如果是同时连接多个手机的时候, 端口是如何分配的?  adb forward的端口会根据你配置的启动端口一直+1吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply22">22楼</a> · <abbr class="timeago" title="2014-04-19T16:21:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4058" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/711/replies/4058/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="vigossjjj" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> 那个是自定义的字符串 连接多个设备执行时我为了区分多个设备 <a href="711#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  <a href="711#reply20" class="at_floor" data-floor="20">#20楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply23">23楼</a> · <abbr class="timeago" title="2014-04-19T16:24:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4059" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/711/replies/4059/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="vigossjjj" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> Android的没研究，iOS的本身一台机器也只能实例一个instrument也就是一个iphone 我是多台Mac分布执行 <a href="711#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply24">24楼</a> · <abbr class="timeago" title="2014-04-19T16:34:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4060" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/4060/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 晕  他的问题是一个电脑要连接多个手机吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../yujie"><img alt="301" class="uface" src="../user/large_avatar/301.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../yujie">yujie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply25">25楼</a> · <abbr class="timeago" title="2014-04-24T11:06:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4174" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="301" href="http://testerhome.com/topics/711/replies/4174/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="yujie" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我也在弄这块，请问楼主实现了吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply26">
+    <div class="pull-left face"><a href="../yujie"><img alt="301" class="uface" src="../user/large_avatar/301.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../yujie">yujie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply26">26楼</a> · <abbr class="timeago" title="2014-04-24T11:16:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4175" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="301" href="http://testerhome.com/topics/711/replies/4175/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="26" data-login="yujie" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a>  我也在弄这块，请问楼主实现了吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply27">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply27">27楼</a> · <abbr class="timeago" title="2014-04-24T21:24:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4192" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/711/replies/4192/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="27" data-login="vigossjjj" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 你可以试试用多个端口启动多个服务 一个手机指一个server端口</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply28">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply28">28楼</a> · <abbr class="timeago" title="2014-04-24T23:03:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4193" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/4193/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="28" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>服务器本森会开2个端口, 4723和4724, 麻烦的是4724必须和手机里面的app启动的端口保持一致, 所以估计还是需要代码. appium估计也会考虑这个问题吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply29">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply29">29楼</a> · <abbr class="timeago" title="2014-04-27T11:51:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4235" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/4235/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="29" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply26" class="at_floor" data-floor="26">#26楼</a> <a href="../yujie" class="at_user" title="@yujie"><i>@</i>yujie</a> 嗯  就是按照大家回复里的方法  修改nodeconfig文件  然后 开了一个selenium－grid的hub  基本是实现了。但还有一个问题，就是hub怎么收集node的测试结果</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply30">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply30">30楼</a> · <abbr class="timeago" title="2014-05-30T10:50:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5382" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/711/replies/5382/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="30" data-login="benlooking" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply29" class="at_floor" data-floor="29">#29楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> 请问，nodeconfig文件在哪里修改啊。/Users/me/nodeconfig没有啊。你那边实现了连接多台手机了么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply31">
+    <div class="pull-left face"><a href="../lucktail"><img alt="662" class="uface" src="../user/large_avatar/662.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lucktail">lucktail</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply31">31楼</a> · <abbr class="timeago" title="2014-05-30T11:44:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5392" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="662" href="http://testerhome.com/topics/711/replies/5392/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="31" data-login="lucktail" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply30" class="at_floor" data-floor="30">#30楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 可以自己新建一个nodeconfig.json文件。 目前一台电脑只能连接一部手机</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply32">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply32">32楼</a> · <abbr class="timeago" title="2014-05-30T13:48:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5399" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/711/replies/5399/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="32" data-login="benlooking" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply31" class="at_floor" data-floor="31">#31楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> 恩，我新建了文件，我要怎么用他呢。node . -V --nodeconfig /path/to/nodeconfig.json不行样。。只能连接一部手机么，那请问grid有什么用处呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply33">
+    <div class="pull-left face"><a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply33">33楼</a> · <abbr class="timeago" title="2014-07-17T16:07:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6695" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1103" href="http://testerhome.com/topics/711/replies/6695/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="33" data-login="cosyman" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <ol>
+<li>不知道你说的节点测试信息是什么，<a href="http://localhost:4444/grid/api/proxy?id=nodeip:nodeport" rel="nofollow" target="_blank">http://localhost:4444/grid/api/proxy?id=nodeip:nodeport</a>  可以获取这个节点的一些信息。
+2.测试请求首先发到hub，然后hub再分发到具体的node,这个过程可以从日志里找到。当然可能不一定能匹配到你运行的测试用例，不知道在Capabilities里加个唯一id可否来标记。</li>
+</ol>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply34">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply34">34楼</a> · <abbr class="timeago" title="2014-09-17T17:24:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8698" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/711/replies/8698/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="34" data-login="wangcityboy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lucktail" class="at_user" title="@lucktail"><i>@</i>lucktail</a> 请问楼主，这个问题解决了没？我也想知道。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply35">
+    <div class="pull-left face"><a href="../xiang2743"><img alt="1401" class="uface" src="../user/large_avatar/1401.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="mike" href="../xiang2743">xiang2743</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply35">35楼</a> · <abbr class="timeago" title="2014-10-27T17:13:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9454" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1401" href="http://testerhome.com/topics/711/replies/9454/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="35" data-login="xiang2743" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个问题，有人知道怎么解了吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply36">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply36">36楼</a> · <abbr class="timeago" title="2014-11-26T11:37:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10037" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/711/replies/10037/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="36" data-login="wangcityboy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 请问如何做到一个PC机对多个终端设备进行测试？代码应该如何改，nodeconfig.json文件应该怎么配置？</p>
+<pre class="highlight shell"><span class="o">{</span>
+  <span class="s2">"capabilities"</span>:
+      <span class="o">[</span>
+       <span class="o">{</span>
+          <span class="s2">"platformName"</span>:<span class="s2">"iOS"</span>,
+          <span class="s2">"platformVersion"</span>:<span class="s2">"7.1.2"</span>,
+          <span class="s2">"deviceName"</span>:<span class="s2">"iPhone4s"</span>,
+          <span class="s2">"app"</span>:<span class="s2">"com.ios.app"</span>
+        <span class="o">}</span>
+      <span class="o">]</span>,
+  <span class="s2">"configuration"</span>:
+  <span class="o">{</span>
+    <span class="s2">"cleanUpCycle"</span>:2000,
+    <span class="s2">"timeout"</span>:30000,
+    <span class="s2">"proxy"</span>:<span class="s2">"org.openqa.grid.selenium.proxy.DefaultRemoteProxy"</span>,
+    <span class="s2">"url"</span>:<span class="s2">"http://0.0.0.0:5000/wd/hub"</span>,
+    <span class="s2">"host"</span>:<span class="s2">"0.0.0.0"</span>,
+    <span class="s2">"port"</span>:5000,
+    <span class="s2">"maxSession"</span>:10,
+    <span class="s2">"register"</span>:true,
+    <span class="s2">"registerCycle"</span>:1000,
+    <span class="s2">"hubPort"</span>:4444,
+    <span class="s2">"hubHost"</span>:<span class="s2">"0.0.0.0"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply37">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply37">37楼</a> · <abbr class="timeago" title="2014-11-28T04:56:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10107" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/711/replies/10107/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="37" data-login="seveniruby" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply36" class="at_floor" data-floor="36">#36楼</a> <a href="../wangcityboy" class="at_user" title="@wangcityboy"><i>@</i>wangcityboy</a> 新版本不需要修改代码了, 通过参数可以设置不同的端口了. iOS的我不熟悉, 你问其他同学吧. 买不起iphone</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply38">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply38">38楼</a> · <abbr class="timeago" title="2014-11-28T17:01:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10138" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/711/replies/10138/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="38" data-login="wangcityboy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply37" class="at_floor" data-floor="37">#37楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 请问怎样设置参数？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply39">
+    <div class="pull-left face"><a href="../hzy"><img alt="5ac3cba62c0ab382b3a9cd883beba05e" class="uface" src="../avatar/5ac3cba62c0ab382b3a9cd883beba05e.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hzy" href="../hzy">hzy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply39">39楼</a> · <abbr class="timeago" title="2014-12-26T17:14:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10891" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2197" href="http://testerhome.com/topics/711/replies/10891/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="39" data-login="hzy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply38" class="at_floor" data-floor="38">#38楼</a> <a href="../wangcityboy" class="at_user" title="@wangcityboy"><i>@</i>wangcityboy</a> 请问你弄出来了么？我配置了两份config.json,然后启动了两个appium服务，但是还是不能并行测试啊，mac instrument只能同时操作一个设备。。和直接配置appium启动端口一样，没法实现并行测试。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply40">
+    <div class="pull-left face"><a href="../hzy"><img alt="5ac3cba62c0ab382b3a9cd883beba05e" class="uface" src="../avatar/5ac3cba62c0ab382b3a9cd883beba05e.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hzy" href="../hzy">hzy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply40">40楼</a> · <abbr class="timeago" title="2014-12-26T17:18:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10892" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2197" href="http://testerhome.com/topics/711/replies/10892/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="40" data-login="hzy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 请问分布执行怎么弄的？最近也在搞这个，发现mac只能同时操作一个设备，根本无法并行测试啊。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply41">
+    <div class="pull-left face"><a href="../hzy"><img alt="5ac3cba62c0ab382b3a9cd883beba05e" class="uface" src="../avatar/5ac3cba62c0ab382b3a9cd883beba05e.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hzy" href="../hzy">hzy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply41">41楼</a> · <abbr class="timeago" title="2014-12-26T17:18:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10893" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2197" href="http://testerhome.com/topics/711/replies/10893/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="41" data-login="hzy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply32" class="at_floor" data-floor="32">#32楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 同感，grid也无法实现ios的并行测试啊。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply42">
+    <div class="pull-left face"><a href="../hzy"><img alt="5ac3cba62c0ab382b3a9cd883beba05e" class="uface" src="../avatar/5ac3cba62c0ab382b3a9cd883beba05e.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hzy" href="../hzy">hzy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="711#reply42">42楼</a> · <abbr class="timeago" title="2014-12-26T17:20:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10894" data-state="" data-type="Reply" href="711#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2197" href="http://testerhome.com/topics/711/replies/10894/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="42" data-login="hzy" href="711#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="711#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 请问如何修改代码能实现一台mac同时连接多个设备呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="711#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

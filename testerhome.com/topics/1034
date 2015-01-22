@@ -1,0 +1,622 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | [content-description] find_element_by_accessibility_id 在 android 中的详解 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">[content-description] find_element_by_accessibility_id 在 android 中的详解</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-06-21T01:01:08+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="gaoxing200851" href="../gaoxing200851">gaoxing200851</a> 于<abbr class="timeago" title="2015-01-12T13:57:35+08:00"></abbr>回复
+     · 
+    1259次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>最近 Appium 引入了一个新的 <code>find element</code> 方法：<code>python client</code> 为例</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">find_element_by_accessibility_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="s">"""Finds an element by accessibility id.
+
+        :Args:
+         - id - a string corresponding to a recursive element search using the
+         Id/Name that the native Accessibility options utilize
+
+        :Usage:
+            driver.find_element_by_accessibility_id()
+        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ACCESSIBILITY_ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+</pre>
+<p>文档里是这样说的：</p>
+
+<blockquote>
+<p>Allows for elements to be found using the "Accessibility ID". The methods take a<br>
+string representing the accessibility id or label attached to a given element, e.g., for iOS the accessibility identifier and for Android the content-description. Adds the methods<br><code>driver.find_element_by_accessibility_id</code> and <code>find_elements_by_accessibility_id</code>.</p>
+</blockquote>
+
+<p>意思就是可以使用 "Accessibility ID" 来定位元素。对于 iOS 而言就是  accessibility identifier。<br>
+对于 Android 就是 <code>content-description</code>。</p>
+<h4>那什么是  <code>content-description</code> 呢？</h4>
+<p>官方是这样说的：</p>
+
+<blockquote>
+<p><a href="http://developer.android.com/training/accessibility/accessible-app.html" rel="nofollow" target="_blank">http://developer.android.com/training/accessibility/accessible-app.html</a><br>
+Android has several accessibility-focused features baked into the platform, which make it easy to optimize your application for those with visual or physical disabilities. However, it's not always obvious what the correct optimizations are, or the easiest way to leverage the framework toward this purpose. This lesson shows you how to implement the strategies and platform features that make for a great accessibility-enabled Android application.</p>
+</blockquote>
+
+<p>这个属性，主要是为了一些有残障的人士准备的，方便他们使用程序，所以这个警告前面会有一个[Accessbility]。</p>
+
+<p>举个例子，比如你有个 <code>ImageView</code> 放一张图片，这个图片可能包含很多物体和颜色，一些色弱或者色盲的人，他们可能会分不清这个图到底画的什么东西，所以这个时候 <code>contentDescription</code> 就会起作用。比如可能 Android 的一些程序可以用声音告诉使用者这个图片画的是什么，他们读的就是你 <code>contentDescription</code> 的内容。</p>
+
+<p>这其实和 iOS 的 <code>accessibility identifier</code> 是一样的。</p>
+
+<p>给一些需要加 contentDescription 的控件加 contentDescription 是一个良好的编程习惯，事实上 ， ADT 的 Lint 检测也会提示你：</p>
+<pre class="highlight shell"><span class="o">[</span>Accessibility] Missing contentDescription attribute on image
+</pre>
+<p>所以给你的控件加上 <code>android:contentDescription="@string/desc</code>， 这样也可以让 Appium 来定位。</p>
+<h4>如何判断是否加了 android:contentDescription？</h4>
+<ul>
+<li>第一种方法，看控件的 xml 是否加了 android:contentDescription 属性。</li>
+<li>第二种，看代码，<code>myView.setContentDescription(desc);</code>
+</li>
+<li>第三种，使用 Hierarchy Viewer</li>
+</ul><p><img src="../photo/2014/4bb80239d31cc3d0e502418a6bff1878.jpg" alt=""></p>
+
+<p>appium sample-code 里面的 android_complex.py 实际上得用 <a href="https://github.com/appium/android-apidemos" rel="nofollow" target="_blank">https://github.com/appium/android-apidemos</a> 这个project 来导出 apk 来测试。</p>
+<pre class="highlight python">    <span class="k">def</span> <span class="nf">test_find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># pause a moment, so xml generation can occur</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">els</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_xpath</span><span class="p">(</span><span class="s">'//android.widget.TextView'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">'API Demos'</span><span class="p">,</span> <span class="n">els</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">'//android.widget.TextView[contains(@text, "Animat")]'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">'Animation'</span><span class="p">,</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_accessibility_id</span><span class="p">(</span><span class="s">"App"</span><span class="p">)</span>
+        <span class="n">el</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+
+        <span class="n">els</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_android_uiautomator</span><span class="p">(</span><span class="s">'new UiSelector().clickable(true)'</span><span class="p">)</span>
+        <span class="c"># there are more, but at least 10 visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLess</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">els</span><span class="p">))</span>
+        <span class="c"># the list includes 2 before the main visible elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">'Action Bar'</span><span class="p">,</span> <span class="n">els</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="n">els</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_xpath</span><span class="p">(</span><span class="s">'//android.widget.TextView'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLess</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">els</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">'Action Bar'</span><span class="p">,</span> <span class="n">els</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre><h4>其他</h4>
+<p>试用了下 genymotion， 非常好用，用来做 Appium 实验很棒。</p>
+
+<p>使用模拟器的时候遇到了个问题：</p>
+<pre class="highlight shell">java.lang.IllegalArgumentException: eglChooseConfig failed EGL_NOT_INITIALIZED
+
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: FATAL EXCEPTION: main
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: Process: com.example.news, PID: 4458
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: java.lang.IllegalArgumentException: eglChooseConfig failed EGL_NOT_INITIALIZED
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.HardwareRenderer<span class="nv">$GlRenderer</span>.chooseEglConfig<span class="o">(</span>HardwareRenderer.java:1173<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.HardwareRenderer<span class="nv">$GlRenderer</span>.loadEglConfig<span class="o">(</span>HardwareRenderer.java:1135<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.HardwareRenderer<span class="nv">$GlRenderer</span>.initializeEgl<span class="o">(</span>HardwareRenderer.java:1117<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.HardwareRenderer<span class="nv">$GlRenderer</span>.initialize<span class="o">(</span>HardwareRenderer.java:1057<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.ViewRootImpl.performTraversals<span class="o">(</span>ViewRootImpl.java:1550<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.ViewRootImpl.doTraversal<span class="o">(</span>ViewRootImpl.java:1000<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.ViewRootImpl<span class="nv">$TraversalRunnable</span>.run<span class="o">(</span>ViewRootImpl.java:5670<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.Choreographer<span class="nv">$CallbackRecord</span>.run<span class="o">(</span>Choreographer.java:761<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.Choreographer.doCallbacks<span class="o">(</span>Choreographer.java:574<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.Choreographer.doFrame<span class="o">(</span>Choreographer.java:544<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.view.Choreographer<span class="nv">$FrameDisplayEventReceiver</span>.run<span class="o">(</span>Choreographer.java:747<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.os.Handler.handleCallback<span class="o">(</span>Handler.java:733<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.os.Handler.dispatchMessage<span class="o">(</span>Handler.java:95<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.os.Looper.loop<span class="o">(</span>Looper.java:136<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at android.app.ActivityThread.main<span class="o">(</span>ActivityThread.java:5017<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at java.lang.reflect.Method.invokeNative<span class="o">(</span>Native Method<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at java.lang.reflect.Method.invoke<span class="o">(</span>Method.java:515<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at com.android.internal.os.ZygoteInit<span class="nv">$MethodAndArgsCaller</span>.run<span class="o">(</span>ZygoteInit.java:779<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at com.android.internal.os.ZygoteInit.main<span class="o">(</span>ZygoteInit.java:595<span class="o">)</span>
+03-29 13:21:34.556: E/AndroidRuntime<span class="o">(</span>4458<span class="o">)</span>: at dalvik.system.NativeStart.main<span class="o">(</span>Native Method<span class="o">)</span>
+</pre>
+<p>Google了一下，关联到了opengl es，这个了解过，初步怀疑不是我应用的问题，最后查得居然是模拟器的问题，重启后解决问题。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='[content-description] find_element_by_accessibility_id 在 android 中的详解 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1034#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1034#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1034#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1034#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1034#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>12</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply1">1楼</a> · <abbr class="timeago" title="2014-06-21T01:03:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5940" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1034/replies/5940/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../tianwei024" class="at_user" title="@tianwei024"><i>@</i>tianwei024</a> </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../eric"><img alt="451" class="uface" src="../user/large_avatar/451.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../eric">eric</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply2">2楼</a> · <abbr class="timeago" title="2014-06-21T09:51:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5943" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="451" href="http://testerhome.com/topics/1034/replies/5943/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="eric" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其实直接用findElementById()也OK的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply3">3楼</a> · <abbr class="timeago" title="2014-06-21T15:32:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5944" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1034/replies/5944/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的很好， 非常赞。<br>
+这个id，在android上有3类。</p>
+
+<ol>
+<li>resourceId (API &gt;= 18)</li>
+<li>accessibility id (content description)</li>
+<li>strings.xml id</li>
+</ol><p>在appium1.2中会带进来全部的支持</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../cy_suncheng"><img alt="703" class="uface" src="../user/large_avatar/703.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="CY" href="../cy_suncheng">cy_suncheng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply4">4楼</a> · <abbr class="timeago" title="2014-06-23T10:15:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5963" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="703" href="http://testerhome.com/topics/1034/replies/5963/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="cy_suncheng" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>谢谢啊, 太需要了.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../tianwei024"><img alt="1058" class="uface" src="../user/large_avatar/1058.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tianwei" href="../tianwei024">tianwei024</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply5">5楼</a> · <abbr class="timeago" title="2014-06-23T11:51:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5973" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1058" href="http://testerhome.com/topics/1034/replies/5973/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="tianwei024" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习啦。谢谢！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../terryuki"><img alt="725240c3f8d9d1d34b28f7153165279c" class="uface" src="../avatar/725240c3f8d9d1d34b28f7153165279c.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Terry Zhang" href="../terryuki">terryuki</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply6">6楼</a> · <abbr class="timeago" title="2014-08-01T09:10:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7137" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="382" href="http://testerhome.com/topics/1034/replies/7137/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="terryuki" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>看看，学习下~~~~~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../kernel"><img alt="1450" class="uface" src="../user/large_avatar/1450.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qilaidi" href="../kernel">kernel</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply7">7楼</a> · <abbr class="timeago" title="2014-09-16T15:52:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8638" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1450" href="http://testerhome.com/topics/1034/replies/8638/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="kernel" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>可不可以获取content-desc里面的值 来做assertion呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply8">8楼</a> · <abbr class="timeago" title="2014-09-16T15:56:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8640" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1034/replies/8640/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="lihuazhang" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1034#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../kernel" class="at_user" title="@kernel"><i>@</i>kernel</a> 没找到方法，而且这个 content-desc 前提就是你知道了啊。 你可以换种思路，验证下这个 content-desc 的元素存在与否</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../kernel"><img alt="1450" class="uface" src="../user/large_avatar/1450.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qilaidi" href="../kernel">kernel</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply9">9楼</a> · <abbr class="timeago" title="2014-09-17T16:52:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8693" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1450" href="http://testerhome.com/topics/1034/replies/8693/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="kernel" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1034#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 是的，已经这样做了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../kernel"><img alt="1450" class="uface" src="../user/large_avatar/1450.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qilaidi" href="../kernel">kernel</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply10">10楼</a> · <abbr class="timeago" title="2014-09-17T16:52:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8694" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1450" href="http://testerhome.com/topics/1034/replies/8694/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="kernel" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1034#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 谢谢你。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../xujuan418974188"><img alt="1548" class="uface" src="../user/large_avatar/1548.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xujuan" href="../xujuan418974188">xujuan418974188</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply11">11楼</a> · <abbr class="timeago" title="2014-12-31T11:01:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10975" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1548" href="http://testerhome.com/topics/1034/replies/10975/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="xujuan418974188" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>真的是太赞了，又帮我解决了一个问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../gaoxing200851"><img alt="1631" class="uface" src="../user/large_avatar/1631.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="johnfad" href="../gaoxing200851">gaoxing200851</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1034#reply12">12楼</a> · <abbr class="timeago" title="2015-01-12T13:57:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11493" data-state="" data-type="Reply" href="1034#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1631" href="http://testerhome.com/topics/1034/replies/11493/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="gaoxing200851" href="1034#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1034#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 是不是必须4.4.2系统以上？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    帮忙推广 TesterHome 吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1034#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

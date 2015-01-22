@@ -1,0 +1,709 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | appium 使用 UIAutomator 查找提示 java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../felix"><img alt="4c165a95441b09d27e7f221115009e8b" class="uface" src="../avatar/4c165a95441b09d27e7f221115009e8b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">appium 使用 UIAutomator 查找提示 java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="学飞" href="../felix">felix</a>
+     · 
+    于<abbr class="timeago" title="2014-12-10T14:59:25+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="ww32245420" href="../ww32245420">ww32245420</a> 于<abbr class="timeago" title="2014-12-31T11:39:17+08:00"></abbr>回复
+     · 
+    378次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>求助，我在appium使用UIAutomator进行定位时提示java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator的错误，报错代码如下：</p>
+<pre class="highlight java"><span class="n">WebElement</span> <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElementByAndroidUIAutomator</span><span class="o">(</span><span class="s">"new UiSelector().clickable(true).className(\"android.widget.RelativeLayout\")"</span><span class="o">);</span>
+<span class="n">element</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>
+</pre>
+
+<p>但是直接是用UIAutomator来进行查找是可以的,如下</p>
+<pre class="highlight java"><span class="n">UiObject</span> <span class="n">dm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UiObject</span><span class="o">(</span><span class="k">new</span> <span class="n">UiSelector</span><span class="o">().</span><span class="na">clickable</span><span class="o">(</span><span class="kc">true</span><span class="o">).</span><span class="na">className</span><span class="o">(</span><span class="s">"android.widget.RelativeLayout"</span><span class="o">));</span>
+<span class="n">dm</span><span class="o">.</span><span class="na">clickAndWaitForNewWindow</span><span class="o">();</span>
+</pre>
+
+<p>附错误日志（部分）：</p>
+<pre class="highlight plaintext">&gt; info: --&gt; POST /wd/hub/session/5dbadf02-4f61-4d4e-af75-696d2453357c/element {"using":"-android uiautomator","value":"new UiSelector().clickable(true).className(\"android.widget.RelativeLayout\")"}
+&gt; info: [debug] Waiting up to 0ms for condition
+&gt; info: [debug] Pushing command to appium work queue: ["find",{"strategy":"-android uiautomator","selector":"new UiSelector().clickable(true).className(\"android.widget.RelativeLayout\")","context":"","multiple":false}]
+&gt; info: [debug] [BOOTSTRAP] [debug] Got data from client: {"cmd":"action","action":"find","params":{"strategy":"-android uiautomator","selector":"new UiSelector().clickable(true).className(\"android.widget.RelativeLayout\")","context":"","multiple":false}}
+&gt; info: [debug] [BOOTSTRAP] [debug] Got command of type ACTION
+&gt; info: [debug] [BOOTSTRAP] [debug] Got command action: find
+&gt; info: [debug] [BOOTSTRAP] [debug] Finding new UiSelector().clickable(true).className("android.widget.RelativeLayout") using ANDROID_UIAUTOMATOR with the contextId:  multiple: false
+&gt; info: [debug] [BOOTSTRAP] [debug] Parsing selector: new UiSelector().clickable(true).className("android.widget.RelativeLayout")
+&gt; info: [debug] [BOOTSTRAP] [debug] UiSelector coerce type: boolean arg: true
+&gt; info: [debug] [BOOTSTRAP] [debug] UiSelector coerce type: java.lang.Class&lt;T&gt; arg: "android.widget.RelativeLayout"
+&gt; info: [debug] [BOOTSTRAP] [debug] UiSelector coerce type: class java.lang.String arg: "android.widget.RelativeLayout"
+&gt; info: [debug] [BOOTSTRAP] [debug] Using: UiSelector[CLASS=android.widget.RelativeLayout, CLICKABLE=true]
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: current=1
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: id=UiAutomatorTestRunner
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: class=io.appium.android.bootstrap.Bootstrap
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: stream=
+&gt; info: [debug] [UIAUTOMATOR STDOUT] Error in testRunServer:
+&gt; info: [debug] [UIAUTOMATOR STDOUT] java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElement.&lt;init&gt;(AndroidElement.java:26)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElementsHash.addElement(AndroidElementsHash.java:47)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElementsHash.getElement(AndroidElementsHash.java:89)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.handler.Find.fetchElement(Find.java:150)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.handler.Find.execute(Find.java:90)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidCommandExecutor.execute(AndroidCommandExecutor.java:64)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.SocketServer.runCommand(SocketServer.java:168)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.SocketServer.handleClientData(SocketServer.java:89)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.SocketServer.listenForever(SocketServer.java:133)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.Bootstrap.testRunServer(Bootstrap.java:16)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at java.lang.reflect.Method.invokeNative(Native Method)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.uiautomator.testrunner.UiAutomatorTestRunner.start(UiAutomatorTestRunner.java:144)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.uiautomator.testrunner.UiAutomatorTestRunner.run(UiAutomatorTestRunner.java:87)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.commands.uiautomator.RunTestCommand.run(RunTestCommand.java:90)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:235)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at dalvik.system.NativeStart.main(Native Method)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: numtests=1
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: stack=java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElement.&lt;init&gt;(AndroidElement.java:26)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElementsHash.addElement(AndroidElementsHash.java:47)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElementsHash.getElement(AndroidElementsHash.java:89)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.handler.Find.fetchElement(Find.java:150)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.handler.Find.execute(Find.java:90)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidCommandExecutor.execute(AndroidCommandExecutor.java:64)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.SocketServer.runCommand(SocketServer.java:168)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.SocketServer.handleClientData(SocketServer.java:89)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.SocketServer.listenForever(SocketServer.java:133)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.Bootstrap.testRunServer(Bootstrap.java:16)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at java.lang.reflect.Method.invokeNative(Native Method)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.uiautomator.testrunner.UiAutomatorTestRunner.start(UiAutomatorTestRunner.java:144)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.uiautomator.testrunner.UiAutomatorTestRunner.run(UiAutomatorTestRunner.java:87)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.commands.uiautomator.RunTestCommand.run(RunTestCommand.java:90)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:235)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] at dalvik.system.NativeStart.main(Native Method)
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: test=testRunServer
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: -1
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: stream=
+&gt; info: [debug] [UIAUTOMATOR STDOUT] Test results for WatcherResultPrinter=.E
+&gt; info: [debug] [UIAUTOMATOR STDOUT] Time: 13.086
+&gt; info: [debug] [UIAUTOMATOR STDOUT] FAILURES!!!
+&gt; info: [debug] [UIAUTOMATOR STDOUT] Tests run: 1,  Failures: 0,  Errors: 1
+&gt; info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: -1
+&gt; info: [debug] UiAutomator exited
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='appium 使用 UIAutomator 查找提示 java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1676#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1676#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1676#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1676#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1676#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>16</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply1">1楼</a> · <abbr class="timeago" title="2014-12-10T15:53:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10471" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1676/replies/10471/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你的设备是神马版本？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../felix"><img alt="4c165a95441b09d27e7f221115009e8b" class="uface" src="../avatar/4c165a95441b09d27e7f221115009e8b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="学飞" href="../felix">felix</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply2">2楼</a> · <abbr class="timeago" title="2014-12-10T16:00:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10472" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="270" href="http://testerhome.com/topics/1676/replies/10472/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="felix" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 好吧，是4.2.2，刚试了下5.0的就可以了~~~~  为啥4.2.2的直接用UIAutomator就可以，用appium就不行了呢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply3">3楼</a> · <abbr class="timeago" title="2014-12-10T21:15:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10484" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1676/replies/10484/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../felix" class="at_user" title="@felix"><i>@</i>felix</a> 4.2.2 是api17，应该可以用。 你在看看是不是4.1.2</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../felix"><img alt="4c165a95441b09d27e7f221115009e8b" class="uface" src="../avatar/4c165a95441b09d27e7f221115009e8b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="学飞" href="../felix">felix</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply4">4楼</a> · <abbr class="timeago" title="2014-12-11T10:16:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10488" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="270" href="http://testerhome.com/topics/1676/replies/10488/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="felix" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 是17的，看了build.prop的信息，而且直接使用UIAutomator也是可以运行的</p>
+<pre class="highlight plaintext">ro.build.version.sdk=17
+ro.build.version.codename=REL
+ro.build.version.release=4.2.2
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply5">5楼</a> · <abbr class="timeago" title="2014-12-11T10:46:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10491" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1676/replies/10491/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="lihuazhang" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Android SDK Platform, API 16 or higher</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../felix"><img alt="4c165a95441b09d27e7f221115009e8b" class="uface" src="../avatar/4c165a95441b09d27e7f221115009e8b.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="学飞" href="../felix">felix</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply6">6楼</a> · <abbr class="timeago" title="2014-12-11T11:10:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10492" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="270" href="http://testerhome.com/topics/1676/replies/10492/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="felix" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 符合这个条件~~ 刚发现</p>
+<pre class="highlight java"><span class="n">driver</span><span class="o">.</span><span class="na">swipe</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span> <span class="mi">200</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">200</span><span class="o">,</span> <span class="mi">1000</span><span class="o">);</span>
+</pre>
+
+<p>这个方法在api17上运行也是有问题的 放到21上运行正常</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply7">7楼</a> · <abbr class="timeago" title="2014-12-11T13:24:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10498" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1676/replies/10498/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="lihuazhang" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../felix" class="at_user" title="@felix"><i>@</i>felix</a> 有一些特性的确不是很一致。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../ww32245420"><img alt="Ddf7d125c3e89479deff5e2ccde6dc89" class="uface" src="../avatar/ddf7d125c3e89479deff5e2ccde6dc89.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="慕容枫林" href="../ww32245420">ww32245420</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply8">8楼</a> · <abbr class="timeago" title="2014-12-19T10:58:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10702" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2144" href="http://testerhome.com/topics/1676/replies/10702/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="ww32245420" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问 楼主这个问题解决了没？</p>
+
+<p>想请教下怎么解决的，我用的是Python来写的脚本，脚本运行时报的错：<br>
+selenium.common.exceptions.WebDriverException: Message: 'UiAutomator died while responding to command, please check appium logs!' </p>
+
+<p>appium日志报错：</p>
+
+<blockquote>
+<p>info: [debug] [UIAUTOMATOR STDOUT] Error in testRunServer:<br>
+info: [debug] [UIAUTOMATOR STDOUT] java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator<br>
+info: [debug] [UIAUTOMATOR STDOUT] at io.appium.android.bootstrap.AndroidElement.&lt;init&gt;(AndroidElement.java:26)<br>
+......</p>
+</blockquote>
+
+<p>请问楼主也是遇到这种问题么？ 希望赐教一下，感激不尽</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply9">9楼</a> · <abbr class="timeago" title="2014-12-19T14:19:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10706" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1676/replies/10706/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="seveniruby" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../ww32245420" class="at_user" title="@ww32245420"><i>@</i>ww32245420</a> 对于api17这个特殊的版本, appium支持的不积极. 好像它只允许api17以上的, 如果是api17也会提示不支持. 最好使用以上的版本.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../ww32245420"><img alt="Ddf7d125c3e89479deff5e2ccde6dc89" class="uface" src="../avatar/ddf7d125c3e89479deff5e2ccde6dc89.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="慕容枫林" href="../ww32245420">ww32245420</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply10">10楼</a> · <abbr class="timeago" title="2014-12-19T17:22:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10716" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2144" href="http://testerhome.com/topics/1676/replies/10716/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="ww32245420" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> </p>
+
+<p>我如果选择其他版本 比如API18 19 就会报：<br>
+selenium.common.exceptions.WebDriverException: Message: 'UiAutomator died while responding to command, please check appium logs!' </p>
+
+<p>不知道为啥</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply11">11楼</a> · <abbr class="timeago" title="2014-12-19T17:58:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10723" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1676/replies/10723/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="seveniruby" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../ww32245420" class="at_user" title="@ww32245420"><i>@</i>ww32245420</a> uiautomator的确是启动超时了, 得排查下原因</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../abyssalknight"><img alt="1723" class="uface" src="../user/large_avatar/1723.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="abyssalknight" href="../abyssalknight">abyssalknight</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply12">12楼</a> · <abbr class="timeago" title="2014-12-22T14:51:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10749" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1723" href="http://testerhome.com/topics/1676/replies/10749/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="abyssalknight" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>lz,我也遇到了同样的问题，请问lz解决了吗？   感觉这是appium的bug啊。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../ww32245420"><img alt="Ddf7d125c3e89479deff5e2ccde6dc89" class="uface" src="../avatar/ddf7d125c3e89479deff5e2ccde6dc89.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="慕容枫林" href="../ww32245420">ww32245420</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply13">13楼</a> · <abbr class="timeago" title="2014-12-22T17:39:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10763" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2144" href="http://testerhome.com/topics/1676/replies/10763/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="ww32245420" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+但是 我单独启动的时候 还是可以正常打开uiautomator呢<br>
+不知道如何下手排查 郁闷...</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../ww32245420"><img alt="Ddf7d125c3e89479deff5e2ccde6dc89" class="uface" src="../avatar/ddf7d125c3e89479deff5e2ccde6dc89.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="慕容枫林" href="../ww32245420">ww32245420</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply14">14楼</a> · <abbr class="timeago" title="2014-12-22T18:01:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10764" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2144" href="http://testerhome.com/topics/1676/replies/10764/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="ww32245420" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../ww32245420" class="at_user" title="@ww32245420"><i>@</i>ww32245420</a> </p>
+
+<blockquote>
+<p>info: [debug] [UIAUTOMATOR STDOUT] Error in testRunServer:<br>
+info: [debug] [UIAUTOMATOR STDOUT] java.lang.NoClassDefFoundError: com.android.uiautomator.core.Configurator</p>
+</blockquote>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../qinggchu"><img alt="203" class="uface" src="../user/large_avatar/203.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qing" href="../qinggchu">qinggchu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply15">15楼</a> · <abbr class="timeago" title="2014-12-26T23:50:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10902" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="203" href="http://testerhome.com/topics/1676/replies/10902/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="qinggchu" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我今天也遇到同样的问题。查了下，android4.2.2下的uiautomator源码里面确实没有Configurator类的定义，至少要在4.3版本上才有，所以基本可以断定，要想成功运行，至少必须在4.3或以上的版本才行。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../ww32245420"><img alt="Ddf7d125c3e89479deff5e2ccde6dc89" class="uface" src="../avatar/ddf7d125c3e89479deff5e2ccde6dc89.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="慕容枫林" href="../ww32245420">ww32245420</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1676#reply16">16楼</a> · <abbr class="timeago" title="2014-12-31T11:39:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10978" data-state="" data-type="Reply" href="1676#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2144" href="http://testerhome.com/topics/1676/replies/10978/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="ww32245420" href="1676#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1676#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../qinggchu" class="at_user" title="@qinggchu"><i>@</i>qinggchu</a> </p>
+
+<p>确实，我在4.3和4.4上都成功运行了...........4.2无论哪种方式都不行 放弃了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1676#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

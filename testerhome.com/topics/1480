@@ -1,0 +1,623 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | ［新秀群作业］从修复 testerhome(rubychina)网站的一个 bug 学习 ruby&rails on ruby &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">［新秀群作业］从修复 testerhome(rubychina)网站的一个 bug 学习 ruby&amp;rails on ruby</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+     · 
+    于<abbr class="timeago" title="2014-10-15T14:11:11+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="link1220" href="../link1220">link1220</a> 于<abbr class="timeago" title="2014-10-16T08:45:50+08:00"></abbr>回复
+     · 
+    549次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>前言</h4>
+<p>对于一个差点脱离前沿技术人，想要学习ruby，就意味着要放弃熟悉的操作系统windows，熟悉的ide-eclipse，更重要的是要从java这种重量级编译型语言的编程思想强行转换为ruby这种轻量级解释执行语言编程思想。这个过程远比我想象的要难，总是抱着以前以java编程思想，通吃vb，C#的傲慢，虽然js还算可以，但js的编程思想与java也是很像的，经过这次打击让我意识到我掉队了。但仍有一部分经验可以帮助我入手新的技术，这篇文章一方面是警醒自己，另一方面也希望能将这次的学习过程分享给想要学习一门语言的同学。</p>
+<h4>正文</h4>
+<p>至于为什么选择ruby，中间的选择过程也费了一些时日，主要是在python和ruby之间比较，放弃python的重要理由是python的语法令我找不到北，还有那每个包下的_init_.py文件，请原谅我思想过于老化，无论如何都接受不了。而ruby，给我感觉就比较优雅易理解，虽然社区和资源不如python。过程曲折，就不赘述了。</p>
+<h4>看清现状</h4>
+<p>要学习一门新技术，首先要知道自己会什么，新技术涉及到了什么。</p>
+
+<p><strong>linux＆shell脚本</strong> ruby最好还是在linux下学习开发吧，我在windows下虽然也搭建成功了，但装了例如 devkit 我也是醉了。<br>
+ <strong>开发工具</strong> 工欲善事，必先利器。其实我是被eclipse惯的，实在不想像原来学习java一样，从文本编辑器开始，编译执行。。。我选择了rubymine，是jetbrain出的，基于IntelliJ IDEA。其强大自不必说了。<br>
+<img src="../photo/2014/2efccef2e33a909a97e3dcf32c53a727.png" alt=""><br>
+对我来说上面这两条满足就够了，至于编程经验什么的，我认为如果没有编程经验，反而还好一些，这样不会被以前的思想干扰。</p>
+
+<p>看清需要什么之后，就去熟悉他们吧，下载安装blablabla....</p>
+<h4>学习方法</h4>
+<p>万事具备之后，就要考虑应该怎么学习ruby，是去买本书？找网络教学视频找资料？。。。无论哪种方法，要选择合适自己的。对于有编程经验的人，我建议先去看语法，练上几个小例子，深层次的不需要太多考虑。然后就实践，无论是自己编写一个小程序还是去修改bug都可以。没有编程经验的人，这里就不好办了，按照通常的做法，需要学习面向对象编程思想、数据结构、网络通信以及其他一些必备的IT技能。当然这里不是说要按部就班的去学，如果对自己有信心可以直接从视频教程、ruby书籍开始学习。</p>
+
+<p>贴一个ruby的视频教程：<a href="http://edu.51cto.com/lesson/id-10162.html" rel="nofollow" target="_blank">http://edu.51cto.com/lesson/id-10162.html</a></p>
+
+<ol>
+<li><p>我是先去看语法：<a href="http://www.w3cschool.cc/ruby/ruby-tutorial.html" rel="nofollow" target="_blank">http://www.w3cschool.cc/ruby/ruby-tutorial.html</a><br>
+w3cschool的语法虽然有一些已经过时了，但不影响了解ruby，看的过程中就跟着例子上手实践了。花了两天时间～</p></li>
+<li><p>接下来就要选择是做一个小程序？还是找个一个现成的去修改代码修改bug。我选择了后者，原因就是因为在testerhome里玩的时候发现了一个bug。这里请没有框架使用经验的新手不要选择后者，自己先做一些像计算器之类的小程序。因为一般的现成的程序中，会使用一些框架，里面蕴含了框架的思想，如果不理解这个思想是找不到北的。</p></li>
+</ol>
+
+<p><strong>bug标题</strong>：testerhome论坛，社区帖子列表的分页数量不正确<br>
+<strong>bug描述</strong>：进入“社区”菜单，下方的分页栏，其页数是100，但点击100页后，里面没有数据。这里的分页数量不是根据实际数据生成的，是错误的。<br>
+<strong>截图</strong>:<br>
+<img src="../photo/2014/d969ce8b1cf321960dd4df1e568f866c.png" alt=""></p>
+<h4>修复bug过程</h4>
+<p>要想修复这个bug，首先要有源码，还要知道论坛的架构。混坛子里的肯定都知道了，源码在<a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>群主的github中就有，而论坛是使用的rubychina的源码，架构是rails on ruby.</p>
+
+<p>参考：<a href="http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html" rel="nofollow" target="_blank">http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html</a></p>
+
+<p>环境搭建什么的就不赘述了，就从bug分析开始吧</p>
+
+<ol>
+<li>这个bug的原因不难想象，程序中计算分页的代码有问题。我们要追到这部分代码，就要先去找页面。那接下来就观察一下工程结构
+<img src="../photo/2014/4e28fedca0d47d99b625b9a688d22d5c.png" alt="">
+接下来就是我的初步猜测</li>
+</ol>
+
+<ul>
+<li>app 论坛业务所在</li>
+<li>bin 忽略，二进制对业务无影响</li>
+<li>config 一些配置</li>
+<li>db 数据库相关</li>
+<li>doc 里面是readme，看一眼有没有有用的，忽略</li>
+<li>faye_server 不知道是什么，实在找不到的时候才去研究它</li>
+<li>lib 引用的库，忽略</li>
+<li>log 日志忽略</li>
+<li>misc 存放了一些资源,忽略</li>
+<li>public 里面放了404.html等公用的错误页、跳转页什么的，忽略</li>
+<li>script 就放了rails文件，忽略</li>
+<li>spec 不知道什么，rubymine将其颜色设置为灰色，看来是没什么影响忽略</li>
+</ul>
+
+<ol>
+<li><p>有了上面的分析，那么入手点就找到了，我们关注app中的内容，那么就展开看看吧<br>
+<img src="../photo/2014/913626d8cd09d4a8450f70ba95025508.png" alt=""><br>
+从这个目录结构中，如果对web框架有所熟悉，一定会立刻找到切入点，views文件夹，因为视图就是表现层，说白了就是组织web页面，展开后观察一下［社区列表］这个页面在哪里<br>
+<img src="../photo/2014/5e57a2516e6864cacfc771ffd1fffe14.png" alt=""><br>
+从中不难看出topics就是页面所在了，展开topics文件夹，找可能页面去观察代码，最终将页面定位到index.html.erb。</p></li>
+<li><p>问题页面定位到了，我们就开始观察代码吧</p></li>
+</ol>
+<pre class="highlight html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"box box_gray"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"node_info"</span><span class="nt">&gt;</span>
+      <span class="err">&lt;</span>%= render "topics/node_info", node: @node %&gt;
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"topics"</span><span class="nt">&gt;</span>
+      <span class="err">&lt;</span>% if @topics.current_page == 1 %&gt;
+        <span class="err">&lt;</span>% cache(@suggest_topics) do %&gt;
+          <span class="err">&lt;</span>%= render partial: "topics/topic", collection: @suggest_topics, locals: { suggest: true } %&gt;
+        <span class="err">&lt;</span>% end %&gt;
+      <span class="err">&lt;</span>% end %&gt;
+      <span class="err">&lt;</span>%= render partial: "topics/topic", collection: @topics, locals: { suggest: false } %&gt;
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="err">&lt;</span>%= will_paginate @topics, inner_window: 2 %&gt;
+
+  <span class="nt">&lt;/div&gt;</span>
+ ......
+</pre>
+
+<p>注意这一行<code>&lt;%= will_paginate @topics, inner_window: 2 %&gt;</code>，说的很清楚，will_paginate分页。好了，找到了逻辑处理部分的代码，本来按照我老旧的思路，去找will_paginate方法，结果发现这个方法并不是业务逻辑处理，只是一个rails通用方法，那么谁才是业务逻辑处理呢，如果使用过web框架的就会想到mvc，rails也是如此。好，这时候还记得目录结构吧，上面app目录下有一个controllers文件夹，业务处理就在这里了，从中很容易猜到topics_controller.rb。来看下代码</p>
+<pre class="highlight ruby"><span class="c1"># coding: utf-8</span>
+<span class="k">class</span> <span class="nc">TopicsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">load_and_authorize_resource</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span>
+                                     <span class="ss">:favorite</span><span class="p">,</span> <span class="ss">:unfavorite</span><span class="p">,</span> <span class="ss">:follow</span><span class="p">,</span> <span class="ss">:unfollow</span><span class="p">,</span> <span class="ss">:suggest</span><span class="p">,</span> <span class="ss">:unsuggest</span><span class="o">]</span>
+  <span class="n">caches_action</span> <span class="ss">:feed</span><span class="p">,</span> <span class="ss">:node_feed</span><span class="p">,</span> <span class="ss">expires_in: </span><span class="mi">1</span><span class="p">.</span><span class="nf">hours</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@suggest_topics</span> <span class="o">=</span> <span class="no">Topic</span><span class="p">.</span><span class="nf">without_hide_nodes</span><span class="p">.</span><span class="nf">suggest</span><span class="p">.</span><span class="nf">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">suggest_topic_ids</span> <span class="o">=</span> <span class="vi">@suggest_topics</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span>
+
+    <span class="vi">@topics</span> <span class="o">=</span> <span class="no">Topic</span><span class="p">.</span><span class="nf">last_actived</span><span class="p">.</span><span class="nf">without_hide_nodes</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">:_id</span><span class="p">.</span><span class="nf">nin</span> <span class="o">=&gt;</span> <span class="n">suggest_topic_ids</span><span class="p">)</span> <span class="c1">#去数据库查询有多少帖子</span>
+    <span class="vi">@topics</span> <span class="o">=</span> <span class="vi">@topics</span><span class="p">.</span><span class="nf">fields_for_list</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="c1">#这部不太明白，但不影响分析</span>
+    <span class="vi">@topics</span> <span class="o">=</span> <span class="vi">@topics</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">per_page: </span><span class="mi">15</span><span class="p">,</span> <span class="ss">total_entries: </span><span class="mi">1500</span><span class="p">)</span><span class="c1">#这个方法就是计算分页了，可以从参数看出每页15个帖子，但total_entries这个参数却给了一个固定值1500，那么也就是说分100页。。。。bug就在这里</span>
+
+    <span class="n">set_seo_meta</span> <span class="s1">''</span><span class="p">,</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Setting</span><span class="p">.</span><span class="nf">app_name</span><span class="si">}#{</span><span class="n">t</span><span class="p">(</span><span class="s2">"menu.topics"</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+  <span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="c1">#代码多，就看上面这部分吧</span>
+</pre>
+
+<p>上面代码中的注释就是我对代码的分析。我们继续跟到<code>@topics.paginate</code>方法中，</p>
+<pre class="highlight ruby"><span class="c1"># coding: utf-8</span>
+<span class="nb">require</span> <span class="s1">'will_paginate'</span>
+<span class="nb">require</span> <span class="s1">'will_paginate/collection'</span>
+
+<span class="k">module</span> <span class="nn">Mongoid</span>
+  <span class="k">module</span> <span class="nn">WillPaginate</span>
+    <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+    <span class="k">def</span> <span class="nf">paginate</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+      <span class="n">options</span> <span class="o">=</span> <span class="n">base_options</span> <span class="n">options</span>
+
+      <span class="o">::</span><span class="no">WillPaginate</span><span class="o">::</span><span class="no">Collection</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">pager</span><span class="o">|</span> <span class="c1">#从这里读到意思是根据传入的分页参数创建一个分页集合然后遍历每页，将每页的帖子展示</span>
+        <span class="n">items_count</span> <span class="o">=</span> <span class="n">options</span><span class="o">[</span><span class="ss">:total_entries</span><span class="o">]</span> <span class="o">||</span> <span class="nb">self</span><span class="p">.</span><span class="nf">count</span> <span class="c1">#这块就需要了解ruby的语法了，||类似于三目运算，意思是若`options[:total_entries]!=nil`则`items_count=options[:total_entries]`,若`options[:total_entries]=nil`,则`items_count=self.count',转换为业务说法就是，若传入的总贴数为nil则计算数据库中查询出的帖子数量，这里显然逻辑错误。无论何时都应当使用数据库中查询出的帖子数量</span>
+        <span class="n">fill_pager_with</span> <span class="nb">self</span><span class="p">.</span><span class="nf">skip</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:offset</span><span class="o">]</span><span class="p">).</span><span class="nf">limit</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">),</span> <span class="n">items_count</span><span class="p">,</span> <span class="n">pager</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span><span class="nf">.</span><span class="p">.</span><span class="nf">.</span>
+</pre>
+
+<ol>
+<li>问题定位清楚了，就开始想怎么改，已经说过了，无论何时都应当使用数据库中查询出的帖子数量。按照这个思路，我们先以调试模式启动testerhome这个web应用，启动后就可以访问本地调试环境的testerhome了
+<img src="../photo/2014/85daafe25259aed50a66ef4d5d0319ea.png" alt="">
+在调试之前，我们需要取得管理员权限，具体的方法可以查看<a href="http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html" rel="nofollow" target="_blank">http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html</a>这位同学写的。
+我们进入<a href="http://localhost:3000/cpanel" rel="nofollow" target="_blank">http://localhost:3000/cpanel</a>添加分类和节点，这样才能发帖。
+接下来我们就要动代码了，首先我们在<code>app/controllers/topics_controller.rb</code>文件中，将代码修改为如下：</li>
+</ol>
+<pre class="highlight ruby"><span class="c1"># coding: utf-8</span>
+<span class="k">class</span> <span class="nc">TopicsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">load_and_authorize_resource</span> <span class="ss">only: </span><span class="o">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:destroy</span><span class="p">,</span>
+                                     <span class="ss">:favorite</span><span class="p">,</span> <span class="ss">:unfavorite</span><span class="p">,</span> <span class="ss">:follow</span><span class="p">,</span> <span class="ss">:unfollow</span><span class="p">,</span> <span class="ss">:suggest</span><span class="p">,</span> <span class="ss">:unsuggest</span><span class="o">]</span>
+  <span class="n">caches_action</span> <span class="ss">:feed</span><span class="p">,</span> <span class="ss">:node_feed</span><span class="p">,</span> <span class="ss">expires_in: </span><span class="mi">1</span><span class="p">.</span><span class="nf">hours</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@suggest_topics</span> <span class="o">=</span> <span class="no">Topic</span><span class="p">.</span><span class="nf">without_hide_nodes</span><span class="p">.</span><span class="nf">suggest</span><span class="p">.</span><span class="nf">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">suggest_topic_ids</span> <span class="o">=</span> <span class="vi">@suggest_topics</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span>
+
+    <span class="vi">@topics</span> <span class="o">=</span> <span class="no">Topic</span><span class="p">.</span><span class="nf">last_actived</span><span class="p">.</span><span class="nf">without_hide_nodes</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">:_id</span><span class="p">.</span><span class="nf">nin</span> <span class="o">=&gt;</span> <span class="n">suggest_topic_ids</span><span class="p">)</span> <span class="c1">#去数据库查询有多少帖子</span>
+    <span class="vi">@topics</span> <span class="o">=</span> <span class="vi">@topics</span><span class="p">.</span><span class="nf">fields_for_list</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="c1">#这部不太明白，但不影响分析</span>
+    <span class="vi">@topics</span> <span class="o">=</span> <span class="vi">@topics</span><span class="p">.</span><span class="nf">paginate</span><span class="p">(</span><span class="ss">page: </span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">per_page: </span><span class="mi">15</span><span class="p">)</span><span class="c1">#去掉total_entries：1500这个参数，不能写死帖子总数</span>
+
+    <span class="n">set_seo_meta</span> <span class="s1">''</span><span class="p">,</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Setting</span><span class="p">.</span><span class="nf">app_name</span><span class="si">}#{</span><span class="n">t</span><span class="p">(</span><span class="s2">"menu.topics"</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+  <span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="c1">#代码多，就看上面这部分吧</span>
+</pre>
+
+<p>同时要将<code>app/models/mongoid/will_paginate.rb</code>文件中的代码修改如下：</p>
+<pre class="highlight ruby"><span class="c1"># coding: utf-8</span>
+<span class="nb">require</span> <span class="s1">'will_paginate'</span>
+<span class="nb">require</span> <span class="s1">'will_paginate/collection'</span>
+
+<span class="k">module</span> <span class="nn">Mongoid</span>
+  <span class="k">module</span> <span class="nn">WillPaginate</span>
+    <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+    <span class="k">def</span> <span class="nf">paginate</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+      <span class="n">options</span> <span class="o">=</span> <span class="n">base_options</span> <span class="n">options</span>
+
+      <span class="o">::</span><span class="no">WillPaginate</span><span class="o">::</span><span class="no">Collection</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">pager</span><span class="o">|</span> <span class="c1">#从这里读到意思是根据传入的分页参数创建一个分页集合然后遍历每页，将每页的帖子展示</span>
+        <span class="n">items_count</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">count</span> <span class="c1">#不需要total_entries参数，我们使用从数据库中查询出的帖子数目</span>
+        <span class="n">fill_pager_with</span> <span class="nb">self</span><span class="p">.</span><span class="nf">skip</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:offset</span><span class="o">]</span><span class="p">).</span><span class="nf">limit</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">),</span> <span class="n">items_count</span><span class="p">,</span> <span class="n">pager</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span><span class="nf">.</span><span class="p">.</span><span class="nf">.</span>
+</pre>
+
+<p>代码修改完成，接着就去浏览器中访问testerhome，进入社区帖子列表，新建16个帖子，因为我们要看出效果，需要至少2页。造完数据后，我们可以看到如下结果<br>
+<img src="../photo/2014/3683feb2d5c36457e2b3b4537df30cee.png" alt=""><br>
+从中可以看到当前的分页已经正常了，16条数据，分了2页，同时也试试点击第2页，看看是否显示正常。</p>
+
+<p>至此这个bug就修复了。</p>
+<h4>最后</h4>
+<p>之所以想要修复这个bug，是因为我们是testerhome，那么看到bug就不能放过，同时也为社区贡献点东西，只是改完这个没法真实测试，这个需要<a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>群主帮忙了，话说我这古董技术，到现在对git还不熟。另外，在没有看到rubychina那位仁兄写的rubychina实践之前，不知道管理员怎么进，就去学了mongodb，好不容易学会了，去数据库里看到user里有一个admin，但密码是加密的，咋办，，，只好自己注册了一个用户，然后将这个用户的加密密码替换了admin的密码，结果发现仍然访问不了后台管理，最后才找到那篇文章，豁然开朗。这次解决问题的过程，其中有很多都是靠着经验猜出来的，对与rails框架我还不熟悉，通过这次解决问题已经看清一点论轮廓了。希望能帮助到那些想学习开发的新手，同时也欢迎ruby大神给点建议！</p>
+
+<p>最后的最后希望，testerhome能越来越好～各位tester事业生活一帆风顺～好不容易有时间写点东西，又有点忙了，请新秀群不要踢我啊 <img src="../assets/emojis/scream.png" class="emoji" title=":scream:" alt="">，我要学的东西还有很多，以后有时间写东西一定会写～ <img src="../assets/emojis/smirk.png" class="emoji" title=":smirk:" alt=""></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='［新秀群作业］从修复 testerhome(rubychina)网站的一个 bug 学习 ruby&amp;rails on ruby via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1480#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1480#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1480#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1480#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1480#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>9</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply1">1楼</a> · <abbr class="timeago" title="2014-10-15T21:41:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9190" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1480/replies/9190/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>太精彩了！！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply2">2楼</a> · <abbr class="timeago" title="2014-10-15T21:41:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9191" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1480/replies/9191/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>分享为人为自己，也是自己得一种总结，赞！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply3">3楼</a> · <abbr class="timeago" title="2014-10-15T21:47:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9192" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/1480/replies/9192/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="luis" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>娓娓道来，很是精彩！！！<img src="../assets/emojis/plus1.png" class="emoji" title=":+1:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply4">4楼</a> · <abbr class="timeago" title="2014-10-16T07:46:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9194" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1480/replies/9194/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其实这个bug 是 by design 的。。。 不过你的分析很不错啊。。。</p>
+
+<p>field :body<br>
+ field :body_html<br>
+ scope :fields_for_list, -&gt; { without(:body,:body_html) }</p>
+
+<p>在 topic  model 里面。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply5">5楼</a> · <abbr class="timeago" title="2014-10-16T08:39:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9196" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1480/replies/9196/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="umbrella1978" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1480#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 没能共享点完整东西，只能共享点小的了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply6">6楼</a> · <abbr class="timeago" title="2014-10-16T08:39:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9197" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1480/replies/9197/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="umbrella1978" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1480#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 谬赞了，还有很多需要学习</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply7">7楼</a> · <abbr class="timeago" title="2014-10-16T08:40:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9198" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1480/replies/9198/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="umbrella1978" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1480#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 恩 对框架一知半解，光靠猜了。所以不能提交代码，跟随你的提示去研究下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply8">8楼</a> · <abbr class="timeago" title="2014-10-16T08:45:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9199" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1480/replies/9199/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="link1220" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>虽然不是很懂，但是从头到尾看完了！不明觉厉！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1480#reply9">9楼</a> · <abbr class="timeago" title="2014-10-16T11:15:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9204" data-state="" data-type="Reply" href="1480#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/1480/replies/9204/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="mingway_hu" href="1480#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Cool! 分析这块涨大姿势了~orz<br>
+论坛刚开时就发现了~豆瓣好多页面也有这个问题，想了一下，是为了显得内容更充实而故意做的~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @saraben 期待“念念不忘，必有回响”在我身上印证的那一天到来
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1480#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

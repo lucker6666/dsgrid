@@ -1,0 +1,374 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 阻止 JS 的冒泡事件 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../andward"><img alt="113" class="uface" src="../user/large_avatar/113.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">阻止 JS 的冒泡事件</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="andward_xu" href="../andward">andward</a>
+     · 
+    于<abbr class="timeago" title="2015-01-14T10:15:53+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="andward" href="../andward">andward</a> 于<abbr class="timeago" title="2015-01-14T22:59:48+08:00"></abbr>回复
+     · 
+    99次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><img src="../photo/2015/a6ab3bfdfa577b287a413468e873c4d0.jpg" alt=""></p>
+
+<p>原址：<a href="http://andward.github.io/js/jquery/2014/12/29/how-to-stop-event-bubble.html" rel="nofollow" target="_blank">http://andward.github.io/js/jquery/2014/12/29/how-to-stop-event-bubble.html</a></p>
+
+<p>用了一段时间google inbox，赶脚mail task的样式很酷炫，于是也模仿着做了一个task管理系统。<br>
+Google task有个behavior是点击页面别处，当前展开的mail就会收起。查了查实现发现这里应该是阻止了js事件的冒泡。</p>
+
+<p>关于事件冒泡的官方解释：<br>
+After an event triggers on the deepest possible element, it then triggers on parents in nesting order. - 总结一下就是说子元素会逐层往上层查找，直到找到绑定了触发事件的父元素。这儿有个简单的例子：</p>
+<pre class="highlight javascript"><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s1">'class1'</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s1">'class2'</span><span class="o">&gt;&lt;</span><span class="sr">/</span><span class="err">div&gt;</span>
+<span class="o">&lt;</span><span class="sr">/</span><span class="err">div&gt;</span>
+<span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s1">'text/javascript'</span><span class="o">&gt;</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.class1'</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* Act on the event */</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">'background'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="o">&lt;</span><span class="sr">/</span><span class="err">script&gt;</span>
+</pre>
+
+<p>运行代码，如果点击class2的div，整个class1的区域仍然会变红。点击事件从子元素冒泡到了绑定click事件的父元素上。</p>
+
+<p>js的事件冒泡其实有不少好处，例如可以减少同一事件的重复绑定。如果class1下面有10个div都需要触发同一事件而没有事件冒泡，则我们需要写10次相同的事件函数。。那是多么的坑爹~</p>
+
+<p>为了实现google task的效果，就需要阻止&lt;code&gt;$(document).click()&lt;/code&gt;事件的冒泡。很多文章都推荐用stopPropagation方法。这个函数可以阻止事件冒泡:</p>
+<pre class="highlight javascript"><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Hide the menus if visible.
+</span><span class="p">});</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.class2'</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+<span class="p">});</span>
+</pre>
+
+<p>当点击class2时 由于其用了stopPropagation，不会触发到绑定在$(document)的点击事件。js和jquery都支持这个方法。</p>
+
+<p>然而有些同学对这种强行阻止冒泡的行为表示了担忧。见帖：<a href="http://css-tricks.com/dangers-stopping-event-propagation/" target="_blank">dangers-stopping-event-propagation</a>。大意是指这种全局阻止事件冒泡会导致某些lib产生bug(博主举了个boostrap的bug),并推荐一下用法：</p>
+<pre class="highlight javascript"><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">$</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'.class2'</span><span class="p">).</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do sth
+</span>  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+
+<p>大体思路就是检查一下事件绑定的元素以及父元素是不是想要的，不是就触发方法~</p>
+
+<p>两种方法我试了试在我这里都work~~最后我用了第二种方法^_^</p>
+
+<p><img src="../photo/2015/92387388ffe78796970a9ad3659c1ed4.png" alt=""></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='阻止 JS 的冒泡事件 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1860#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1860#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1860#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1860#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1860#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1860#reply1">1楼</a> · <abbr class="timeago" title="2015-01-14T14:47:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11608" data-state="" data-type="Reply" href="1860#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1860/replies/11608/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1860#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>寂寞的三石。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../andward"><img alt="113" class="uface" src="../user/large_avatar/113.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="andward_xu" href="../andward">andward</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1860#reply2">2楼</a> · <abbr class="timeago" title="2015-01-14T14:51:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11609" data-state="" data-type="Reply" href="1860#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="113" href="http://testerhome.com/topics/1860/replies/11609/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="andward" href="1860#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1860#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <img src="../assets/emojis/laughing.png" class="emoji" title=":laughing:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../oscarxie"><img alt="4d43b8fa1e25dfac428fff0d828b3934" class="uface" src="../avatar/4d43b8fa1e25dfac428fff0d828b3934.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="国文" href="../oscarxie">oscarxie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1860#reply3">3楼</a> · <abbr class="timeago" title="2015-01-14T22:04:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11620" data-state="" data-type="Reply" href="1860#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="115" href="http://testerhome.com/topics/1860/replies/11620/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="oscarxie" href="1860#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>图片是你拍的么？看你可以转前端开发了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../andward"><img alt="113" class="uface" src="../user/large_avatar/113.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="andward_xu" href="../andward">andward</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1860#reply4">4楼</a> · <abbr class="timeago" title="2015-01-14T22:59:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11623" data-state="" data-type="Reply" href="1860#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="113" href="http://testerhome.com/topics/1860/replies/11623/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="andward" href="1860#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1860#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../oscarxie" class="at_user" title="@oscarxie"><i>@</i>oscarxie</a> 盗的图…俺功力不足啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="deleted">5楼 已删除.</div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @meiyu 有希望，有爱的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1896" title="你应该学会使用的 5 个 ruby 方法">你应该学会使用的 5 个 ruby 方法</a></li>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+    <li><a href="1838" title="小而美的 ghost driver">小而美的 ghost driver</a></li>
+    <li><a href="1814" title="定制 Gradle 编译时候遇到的坑，慢慢垒">定制 Gradle 编译时候遇到的坑，慢慢垒</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1860#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

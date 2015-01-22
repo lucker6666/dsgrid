@@ -1,0 +1,683 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | ios 7.x 中的 appium 封装的的锁屏以及网络连接方法根本无用啊 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">ios 7.x 中的 appium 封装的的锁屏以及网络连接方法根本无用啊</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+     · 
+    于<abbr class="timeago" title="2014-09-18T14:53:45+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="link1220" href="../link1220">link1220</a> 于<abbr class="timeago" title="2014-09-21T20:20:50+08:00"></abbr>回复
+     · 
+    388次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>下面是我的代码</p>
+<pre class="highlight java">     <span class="c1">//开关网络连接操作</span>
+     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">networkConnectionTest</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">airplaneMode</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">wifi</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">data</span><span class="o">,</span><span class="n">AppiumDriver</span> <span class="n">driver</span><span class="o">){</span>
+         <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"开关网络连接操作"</span><span class="o">);</span>
+         <span class="k">try</span><span class="o">{</span>
+           <span class="n">NetworkConnectionSetting</span> <span class="n">networkConnection</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NetworkConnectionSetting</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+           <span class="n">networkConnection</span><span class="o">.</span><span class="na">setData</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+           <span class="n">networkConnection</span><span class="o">.</span><span class="na">setWifi</span><span class="o">(</span><span class="n">wifi</span><span class="o">);</span>
+           <span class="n">driver</span><span class="o">.</span><span class="na">setNetworkConnection</span><span class="o">(</span><span class="n">networkConnection</span><span class="o">);</span>
+           <span class="n">networkConnection</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">getNetworkConnection</span><span class="o">();</span>
+           <span class="n">assertEquals</span><span class="o">(</span><span class="k">new</span> <span class="n">NetworkConnectionSetting</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="n">wifi</span><span class="o">,</span> <span class="n">data</span><span class="o">),</span> <span class="n">networkConnection</span><span class="o">);</span>
+         <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+             <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"开关网络连接操作失败"</span><span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+         <span class="o">}</span>
+     <span class="o">}</span>
+</pre>
+
+<p>下面是报错信息，无法断开网络连接</p>
+<pre class="highlight java"><span class="n">ERROR</span> <span class="n">running</span> <span class="n">Appium</span> <span class="nl">command:</span> <span class="n">Object</span> <span class="o">[</span><span class="n">object</span> <span class="n">Object</span><span class="o">]</span> <span class="n">has</span> <span class="n">no</span> <span class="n">method</span> <span class="err">'</span><span class="n">setNetworkConnection</span><span class="err">'</span>
+<span class="n">Command</span> <span class="n">duration</span> <span class="n">or</span> <span class="nl">timeout:</span> <span class="mi">20</span> <span class="n">milliseconds</span>
+<span class="n">Build</span> <span class="nl">info:</span> <span class="nl">version:</span> <span class="err">'</span><span class="mf">2.42</span><span class="o">.</span><span class="mi">2</span><span class="err">'</span><span class="o">,</span> <span class="nl">revision:</span> <span class="err">'</span><span class="mi">6</span><span class="n">a6995d31c7c56c340d6f45a76976d43506cd6cc</span><span class="err">'</span><span class="o">,</span> <span class="nl">time:</span> <span class="err">'</span><span class="mi">2014</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">03</span> <span class="mi">10</span><span class="o">:</span><span class="mi">52</span><span class="o">:</span><span class="mi">47</span><span class="err">'</span>
+<span class="n">System</span> <span class="nl">info:</span> <span class="nl">host:</span> <span class="err">'</span><span class="n">ifufeiyangtekiMac</span><span class="o">.</span><span class="na">local</span><span class="err">'</span><span class="o">,</span> <span class="nl">ip:</span> <span class="err">'</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">235.131</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">name</span><span class="o">:</span> <span class="err">'</span><span class="n">Mac</span> <span class="n">OS</span> <span class="n">X</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">arch</span><span class="o">:</span> <span class="err">'</span><span class="n">x86_64</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="err">'</span><span class="mf">10.9</span><span class="o">.</span><span class="mi">4</span><span class="err">'</span><span class="o">,</span> <span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="err">'</span><span class="mf">1.8</span><span class="o">.</span><span class="mi">0</span><span class="err">'</span>
+<span class="n">Driver</span> <span class="nl">info:</span> <span class="n">io</span><span class="o">.</span><span class="na">appium</span><span class="o">.</span><span class="na">java_client</span><span class="o">.</span><span class="na">AppiumDriver</span>
+</pre>
+
+<p>请问，有没有其它的方法？</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='ios 7.x 中的 appium 封装的的锁屏以及网络连接方法根本无用啊 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1415#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1415#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1415#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1415#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1415#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>15</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply1">1楼</a> · <abbr class="timeago" title="2014-09-18T17:03:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8711" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1415/replies/8711/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="wangcityboy" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>试了好多次，上面的办法无法断开wifi，模拟器以及真机上都无断开wifi，<br>
+下面为我的调用方法</p>
+<pre class="highlight java"><span class="n">networkConnectionTest</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span><span class="kc">false</span><span class="o">,</span><span class="kc">true</span><span class="o">,</span> <span class="n">driver</span><span class="o">);</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply2">2楼</a> · <abbr class="timeago" title="2014-09-18T17:11:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8712" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1415/replies/8712/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="wangcityboy" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>运行提示报错，说是没有setNetworkConnection这个方法，但是我看到AppiumDriver中有这个方法啊。</p>
+<pre class="highlight java"><span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">WebDriverException</span><span class="o">:</span> <span class="n">ERROR</span> <span class="n">running</span> <span class="n">Appium</span> <span class="nl">command:</span> <span class="n">Object</span> <span class="o">[</span><span class="n">object</span> <span class="n">Object</span><span class="o">]</span> <span class="n">has</span> <span class="n">no</span> <span class="n">method</span> <span class="err">'</span><span class="n">setNetworkConnection</span><span class="err">'</span>
+<span class="n">Command</span> <span class="n">duration</span> <span class="n">or</span> <span class="nl">timeout:</span> <span class="mi">8</span> <span class="n">milliseconds</span>
+<span class="n">Build</span> <span class="nl">info:</span> <span class="nl">version:</span> <span class="err">'</span><span class="mf">2.42</span><span class="o">.</span><span class="mi">2</span><span class="err">'</span><span class="o">,</span> <span class="nl">revision:</span> <span class="err">'</span><span class="mi">6</span><span class="n">a6995d31c7c56c340d6f45a76976d43506cd6cc</span><span class="err">'</span><span class="o">,</span> <span class="nl">time:</span> <span class="err">'</span><span class="mi">2014</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">03</span> <span class="mi">10</span><span class="o">:</span><span class="mi">52</span><span class="o">:</span><span class="mi">47</span><span class="err">'</span>
+<span class="n">System</span> <span class="nl">info:</span> <span class="nl">host:</span> <span class="err">'</span><span class="n">ifufeiyangtekiMac</span><span class="o">.</span><span class="na">local</span><span class="err">'</span><span class="o">,</span> <span class="nl">ip:</span> <span class="err">'</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">235.131</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">name</span><span class="o">:</span> <span class="err">'</span><span class="n">Mac</span> <span class="n">OS</span> <span class="n">X</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">arch</span><span class="o">:</span> <span class="err">'</span><span class="n">x86_64</span><span class="err">'</span><span class="o">,</span> <span class="n">os</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="err">'</span><span class="mf">10.9</span><span class="o">.</span><span class="mi">4</span><span class="err">'</span><span class="o">,</span> <span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">:</span> <span class="err">'</span><span class="mf">1.8</span><span class="o">.</span><span class="mi">0</span><span class="err">'</span>
+<span class="n">Driver</span> <span class="nl">info:</span> <span class="n">io</span><span class="o">.</span><span class="na">appium</span><span class="o">.</span><span class="na">java_client</span><span class="o">.</span><span class="na">AppiumDriver</span>
+<span class="n">Capabilities</span> <span class="o">[{</span><span class="n">app</span><span class="o">=</span><span class="n">net</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">iosapp</span><span class="o">,</span> <span class="n">networkConnectionEnabled</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">warnings</span><span class="o">={},</span> <span class="n">databaseEnabled</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">deviceName</span><span class="o">=</span><span class="n">iPhone</span><span class="o">,</span> <span class="n">platform</span><span class="o">=</span><span class="n">MAC</span><span class="o">,</span> <span class="n">desired</span><span class="o">={</span><span class="n">app</span><span class="o">=</span><span class="n">net</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">iosapp</span><span class="o">,</span> <span class="n">appium</span><span class="o">-</span><span class="n">version</span><span class="o">=</span><span class="mf">1.0</span><span class="o">,</span> <span class="n">platformVersion</span><span class="o">=</span><span class="mf">7.1</span><span class="o">,</span> <span class="n">platformName</span><span class="o">=</span><span class="n">iOS</span><span class="o">,</span> <span class="n">deviceName</span><span class="o">=</span><span class="n">iPhone</span><span class="o">},</span> <span class="n">appium</span><span class="o">-</span><span class="n">version</span><span class="o">=</span><span class="mf">1.0</span><span class="o">,</span> <span class="n">platformVersion</span><span class="o">=</span><span class="mf">7.1</span><span class="o">,</span> <span class="n">webStorageEnabled</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">locationContextEnabled</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">browserName</span><span class="o">=</span><span class="n">iOS</span><span class="o">,</span> <span class="n">takesScreenshot</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">javascriptEnabled</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">platformName</span><span class="o">=</span><span class="n">iOS</span><span class="o">}]</span>
+<span class="n">Session</span> <span class="nl">ID:</span> <span class="n">d77c5c8b</span><span class="o">-</span><span class="n">e941</span><span class="o">-</span><span class="mi">479</span><span class="n">a</span><span class="o">-</span><span class="mi">983</span><span class="n">a</span><span class="o">-</span><span class="mi">53</span><span class="n">cac363281a</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">NativeConstructorAccessorImpl</span><span class="o">.</span><span class="na">newInstance0</span><span class="o">(</span><span class="n">Native</span> <span class="n">Method</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">NativeConstructorAccessorImpl</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">NativeConstructorAccessorImpl</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">62</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">DelegatingConstructorAccessorImpl</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">DelegatingConstructorAccessorImpl</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">45</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">Constructor</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">408</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">ErrorHandler</span><span class="o">.</span><span class="na">createThrowable</span><span class="o">(</span><span class="n">ErrorHandler</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">204</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">ErrorHandler</span><span class="o">.</span><span class="na">throwIfResponseFailed</span><span class="o">(</span><span class="n">ErrorHandler</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">156</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">openqa</span><span class="o">.</span><span class="na">selenium</span><span class="o">.</span><span class="na">remote</span><span class="o">.</span><span class="na">RemoteWebDriver</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">RemoteWebDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">599</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">io</span><span class="o">.</span><span class="na">appium</span><span class="o">.</span><span class="na">java_client</span><span class="o">.</span><span class="na">AppiumDriver</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">AppiumDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">95</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">io</span><span class="o">.</span><span class="na">appium</span><span class="o">.</span><span class="na">java_client</span><span class="o">.</span><span class="na">AppiumDriver</span><span class="o">.</span><span class="na">setNetworkConnection</span><span class="o">(</span><span class="n">AppiumDriver</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">558</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">com</span><span class="o">.</span><span class="na">teiron</span><span class="o">.</span><span class="na">app</span><span class="o">.</span><span class="na">oschina</span><span class="o">.</span><span class="na">TestRealDevice</span><span class="o">.</span><span class="na">testHello</span><span class="o">(</span><span class="n">TestRealDevice</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">79</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">NativeMethodAccessorImpl</span><span class="o">.</span><span class="na">invoke0</span><span class="o">(</span><span class="n">Native</span> <span class="n">Method</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">NativeMethodAccessorImpl</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">NativeMethodAccessorImpl</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">62</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">DelegatingMethodAccessorImpl</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">DelegatingMethodAccessorImpl</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">43</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">Method</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">483</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">FrameworkMethod</span><span class="err">$</span><span class="mi">1</span><span class="o">.</span><span class="na">runReflectiveCall</span><span class="o">(</span><span class="n">FrameworkMethod</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">47</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">ReflectiveCallable</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ReflectiveCallable</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">12</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">FrameworkMethod</span><span class="o">.</span><span class="na">invokeExplosively</span><span class="o">(</span><span class="n">FrameworkMethod</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">44</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">statements</span><span class="o">.</span><span class="na">InvokeMethod</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">InvokeMethod</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">17</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">statements</span><span class="o">.</span><span class="na">RunBefores</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">RunBefores</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">26</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">statements</span><span class="o">.</span><span class="na">RunAfters</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">RunAfters</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">27</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">runLeaf</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">271</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">runChild</span><span class="o">(</span><span class="n">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">70</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">runChild</span><span class="o">(</span><span class="n">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">50</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="err">$</span><span class="mi">3</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">238</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="err">$</span><span class="mi">1</span><span class="o">.</span><span class="na">schedule</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">63</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">runChildren</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">236</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">access</span><span class="err">$</span><span class="mi">000</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">53</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="err">$</span><span class="mi">2</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">229</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">309</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit4</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">JUnit4TestReference</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">JUnit4TestReference</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">50</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">TestExecution</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">TestExecution</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">38</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">runTests</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">467</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">runTests</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">683</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">390</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">197</span><span class="o">)</span>
+
+<span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">IllegalMonitorStateException</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Object</span><span class="o">.</span><span class="na">wait</span><span class="o">(</span><span class="n">Native</span> <span class="n">Method</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Object</span><span class="o">.</span><span class="na">wait</span><span class="o">(</span><span class="n">Object</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">502</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">com</span><span class="o">.</span><span class="na">teiron</span><span class="o">.</span><span class="na">app</span><span class="o">.</span><span class="na">oschina</span><span class="o">.</span><span class="na">TestRealDevice</span><span class="o">.</span><span class="na">tearDown</span><span class="o">(</span><span class="n">TestRealDevice</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">69</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">NativeMethodAccessorImpl</span><span class="o">.</span><span class="na">invoke0</span><span class="o">(</span><span class="n">Native</span> <span class="n">Method</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">NativeMethodAccessorImpl</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">NativeMethodAccessorImpl</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">62</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">sun</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">DelegatingMethodAccessorImpl</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">DelegatingMethodAccessorImpl</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">43</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">Method</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">483</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">FrameworkMethod</span><span class="err">$</span><span class="mi">1</span><span class="o">.</span><span class="na">runReflectiveCall</span><span class="o">(</span><span class="n">FrameworkMethod</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">47</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">ReflectiveCallable</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ReflectiveCallable</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">12</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">FrameworkMethod</span><span class="o">.</span><span class="na">invokeExplosively</span><span class="o">(</span><span class="n">FrameworkMethod</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">44</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">statements</span><span class="o">.</span><span class="na">RunAfters</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">RunAfters</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">33</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">runLeaf</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">271</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">runChild</span><span class="o">(</span><span class="n">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">70</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">runChild</span><span class="o">(</span><span class="n">BlockJUnit4ClassRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">50</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="err">$</span><span class="mi">3</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">238</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="err">$</span><span class="mi">1</span><span class="o">.</span><span class="na">schedule</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">63</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">runChildren</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">236</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">access</span><span class="err">$</span><span class="mi">000</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">53</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="err">$</span><span class="mi">2</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">229</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runners</span><span class="o">.</span><span class="na">ParentRunner</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ParentRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">309</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit4</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">JUnit4TestReference</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">JUnit4TestReference</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">50</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">TestExecution</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">TestExecution</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">38</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">runTests</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">467</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">runTests</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">683</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">390</span><span class="o">)</span>
+    <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">eclipse</span><span class="o">.</span><span class="na">jdt</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">runner</span><span class="o">.</span><span class="na">RemoteTestRunner</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="n">RemoteTestRunner</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">197</span><span class="o">)</span>
+
+
+</pre>
+
+<p><img src="../photo/2014/59e4402cc75ba9e20921a05295874762.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply3">3楼</a> · <abbr class="timeago" title="2014-09-18T19:36:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8717" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1415/replies/8717/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你自己这个java client 是啥版本啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply4">4楼</a> · <abbr class="timeago" title="2014-09-18T20:15:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8720" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1415/replies/8720/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="link1220" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>被楼主彪悍的主题吸引，以为iOS居然有开放控制WiFi的接口。。。结果一看楼主的截图。。艾玛。。。This is an Android-only method ！<img src="../assets/emojis/unamused.png" class="emoji" title=":unamused:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply5">5楼</a> · <abbr class="timeago" title="2014-09-19T10:36:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="8732" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1415/replies/8732/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="xiaomayi0323" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不写环境，不写版本，不写平台，不看日志，不看提示，这种问题无法回答</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply6">6楼</a> · <abbr class="timeago" title="2014-09-19T10:38:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8734" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1415/replies/8734/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="wangcityboy" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> java client 版本是：1.6.2</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply7">7楼</a> · <abbr class="timeago" title="2014-09-19T10:39:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8735" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1415/replies/8735/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="wangcityboy" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../link1220" class="at_user" title="@link1220"><i>@</i>link1220</a> 那ios的就无法控制了么？请问有没有其它的版本可以控制网络？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply8">8楼</a> · <abbr class="timeago" title="2014-09-19T11:25:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8737" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1415/replies/8737/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="lihuazhang" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我测试下可以运行。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply9">9楼</a> · <abbr class="timeago" title="2014-09-19T11:26:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8738" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1415/replies/8738/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="wangcityboy" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 运行在苹果真机或者ios模拟器上没问题，但是起不到关闭网络连接的作用。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply10">10楼</a> · <abbr class="timeago" title="2014-09-19T11:27:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8739" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1415/replies/8739/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="lihuazhang" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../wangcityboy" class="at_user" title="@wangcityboy"><i>@</i>wangcityboy</a> 。。。你真是无敌了。这个是只给 android。 ios 凑什么热闹啊。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply11">11楼</a> · <abbr class="timeago" title="2014-09-19T11:28:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8740" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1415/replies/8740/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="wangcityboy" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 那ios的断开网络连接就没其它的办法通过代码来实现了么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply12">12楼</a> · <abbr class="timeago" title="2014-09-19T11:53:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8741" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1415/replies/8741/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="lihuazhang" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../wangcityboy" class="at_user" title="@wangcityboy"><i>@</i>wangcityboy</a> 期待你的分享。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply13">13楼</a> · <abbr class="timeago" title="2014-09-19T13:05:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8742" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1415/replies/8742/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="link1220" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../wangcityboy" class="at_user" title="@wangcityboy"><i>@</i>wangcityboy</a> 自己封装一个方法，把系统Settings调起来，通过Xpath一步步的去点击。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply14">14楼</a> · <abbr class="timeago" title="2014-09-20T16:58:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8763" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1415/replies/8763/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="lihuazhang" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../link1220" class="at_user" title="@link1220"><i>@</i>link1220</a> 好像比较难做。 Settings 这种都是不允许操作的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1415#reply15">15楼</a> · <abbr class="timeago" title="2014-09-21T20:20:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8767" data-state="" data-type="Reply" href="1415#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1415/replies/8767/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="link1220" href="1415#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1415#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 先把自己的APP启起来，然后通过小助手点击一步步的可以把Setting从后台调到前台，然后就可以通过xpath来点击所有设置选项了，只是这个时候如果涉及输入法会比较难搞，得自己写一个方法解析系统键盘，当然我认为这是一种非常low的方法。。。暂时没有找到方便的啊。。。<img src="../assets/emojis/grin.png" class="emoji" title=":grin:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @chuyaoyao 希望父母身体健康，攒钱涨工资把父母接到身边照顾
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1415#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

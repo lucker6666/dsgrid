@@ -1,0 +1,921 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 连接 2 个设备测试的时候每次都只运行一个设备？ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">连接 2 个设备测试的时候每次都只运行一个设备？</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+     · 
+    于<abbr class="timeago" title="2014-12-08T15:56:59+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="zhenglxqf" href="../zhenglxqf">zhenglxqf</a> 于<abbr class="timeago" title="2014-12-23T16:19:55+08:00"></abbr>回复
+     · 
+    358次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>我写了2个测试类    ，    测试连接2个设备<br>
+adb devices里面能查到两个设备，但是每次运行的时候总是只运行一个设备</p>
+
+<p>info: [debug] 2 device(s) connected</p>
+
+<blockquote>
+<p>info: Found device 2b7a4e3f<br>
+info: [debug] Setting device id to 2b7a4e3f<br>
+info: [debug] Waiting for device to be ready and to respond to shell commands (timeout = 5)<br>
+info: [debug] executing cmd: D:\sdk\platform-tools\adb.exe -s 2b7a4e3f wait-for-device</p>
+</blockquote>
+
+<p>appium启动了2个，端口分别设置为了4723  4725,</p>
+
+<p>在测试类中也分别指定了设备和端口，还需要设置什么么？怎么才能分别运行两个设备</p>
+
+<p>测试类如下：</p>
+
+<p>第一个测试类如下：<br>
+protected void setUp() throws Exception {<br>
+        // TODO Auto-generated method stub<br>
+        super.setUp();</p>
+
+<p>File classpathRoot = new File(System.getProperty("user.dir"));<br>
+            File appDir = new File(classpathRoot, "/apps/teacher");<br>
+            File app = new File(appDir, "teacher-3.1.3-callnames--ceshi-2014-12-08-1457.apk");<br>
+            DesiredCapabilities capabilities = new DesiredCapabilities();<br>
+            capabilities.setCapability(CapabilityType.BROWSER_NAME, "");<br>
+            capabilities.setCapability("platformName", "Android");<br>
+            capabilities.setCapability("deviceName","2b7a4e3f");<br>
+            capabilities.setCapability("platformVersion", "4.4");<br>
+            capabilities.setCapability("app", app.getAbsolutePath());<br>
+            capabilities.setCapability("appPackage", "air.com.xueersi.ICSClient3");<br>
+            capabilities.setCapability("appActivity", "air.com.xueersi.ICSClient3.LoginActivity");<br>
+            //设置中文输入的属性<br>
+            capabilities.setCapability("unicodeKeyboard", "True");<br>
+            capabilities.setCapability("resetKeyboard", "True");<br>
+            driver = new AppiumDriver(new URL("<a href="http://127.0.0.1:4723/wd/hub" rel="nofollow" target="_blank">http://127.0.0.1:4723/wd/hub</a>"), capabilities);</p>
+
+<p>}</p>
+
+<p><a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a><br>
+    protected void tearDown() throws Exception {<br>
+        // TODO Auto-generated method stub<br>
+        driver.quit();<br>
+    }</p>
+
+<p>/**<br>
+     * Rigourous Test :-)<br>
+     * <a href="http://testerhome.com/throws" class="at_user" title="@throws"><i>@</i>throws</a> InterruptedException <br>
+     */<br>
+    public void testLogin() throws InterruptedException<br>
+    {<br>
+         List&lt;WebElement&gt; textFieldsList = driver.findElementsByClassName("android.widget.EditText");</p>
+
+<p>textFieldsList.get(0).sendKeys("滕俊龙");<br>
+         Thread.sleep(2000);</p>
+
+<p>textFieldsList.get(1).sendKeys("020639");<br>
+         Thread.sleep(2000);</p>
+
+<p>driver.findElementByName("登录").click();<br>
+         Thread.sleep(2000);<br>
+    }</p>
+
+<p>第二个测试类如下：<br>
+protected void setUp() throws Exception {<br>
+        // TODO Auto-generated method stub<br>
+        super.setUp();</p>
+
+<p>File classpathRoot = new File(System.getProperty("user.dir"));<br>
+            File appDir = new File(classpathRoot, "/apps/student");<br>
+            File app = new File(appDir, "test_stu.apk");<br>
+            DesiredCapabilities capabilities = new DesiredCapabilities();<br>
+            capabilities.setCapability(CapabilityType.BROWSER_NAME, "");<br>
+            capabilities.setCapability("platformName", "Android");<br>
+            capabilities.setCapability("deviceName","430072fe470da099");<br>
+            capabilities.setCapability("platformVersion", "4.3");<br>
+            capabilities.setCapability("app", app.getAbsolutePath());<br>
+            capabilities.setCapability("appPackage", "air.ICS.StudentClient");<br>
+            capabilities.setCapability("appActivity", "air.ICS.StudentClient.LoginActivity");<br>
+            //设置中文输入的属性<br>
+            capabilities.setCapability("unicodeKeyboard", "True");<br>
+            capabilities.setCapability("resetKeyboard", "True");<br>
+            driver = new AppiumDriver(new URL("<a href="http://127.0.0.1:4725/wd/hub" rel="nofollow" target="_blank">http://127.0.0.1:4725/wd/hub</a>"), capabilities);</p>
+
+<p>}</p>
+
+<p><a href="http://testerhome.com/Override" class="at_user" title="@Override"><i>@</i>Override</a><br>
+    protected void tearDown() throws Exception {<br>
+        // TODO Auto-generated method stub<br>
+        driver.quit();<br>
+    }</p>
+
+<p>/**<br>
+     * Rigourous Test :-)<br>
+     * <a href="http://testerhome.com/throws" class="at_user" title="@throws"><i>@</i>throws</a> InterruptedException <br>
+     */<br>
+    public void testLogin() throws InterruptedException<br>
+    {</p>
+
+<p>WebElement login_with_guest_button = driver.findElement(By.id("login_with_guest"));<br>
+        login_with_guest_button.click();<br>
+         Thread.sleep(2000);<br>
+         List&lt;WebElement&gt; textFieldsList = driver.findElementsByClassName("android.widget.EditText");</p>
+
+<p>textFieldsList.get(0).sendKeys("aaaaa");<br>
+         Thread.sleep(2000);</p>
+
+<p>driver.findElementByName("登录").click();</p>
+
+<p>}</p>
+
+<p>为什么执行的时候 4725这个端口的appium不执行测试？<br>
+log提示找不到activity   我确定我的activity设置没有错。</p>
+
+<p>error: Failed to start an Appium session, err was: Error: Activity used to start app doesn't exist or cannot be launched! Make sure it exists and is a launchable activity</p>
+
+<blockquote>
+<p>info: [debug] Cleaning up android objects<br>
+info: [debug] Cleaning up appium session<br>
+info: [debug] Error: Activity used to start app doesn't exist or cannot be launched! Make sure it exists and is a launchable activity<br>
+    at null.&lt;anonymous&gt; (E:\study\xuexi\Appium\Appium\node_modules\appium\node_modules\appium-adb\lib\adb.js:1130:21)<br>
+    at null.&lt;anonymous&gt; (E:\study\xuexi\Appium\Appium\node_modules\appium\node_modules\appium-adb\lib\adb.js:172:9)<br>
+    at ChildProcess.exithandler (child_process.js:635:7)<br>
+    at ChildProcess.EventEmitter.emit (events.js:98:17)<br>
+    at maybeClose (child_process.js:743:16)<br>
+    at Process.ChildProcess._handle.onexit (child_process.js:810:5)<br>
+info: [debug] Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: Activity used to start app doesn't exist or cannot be launched! Make sure it exists and is a launchable activity)","origValue":"Activity used to start app doesn't exist or cannot be launched! Make sure it exists and is a launchable activity"},"sessionId":null}<br>
+info: &lt;-- POST /wd/hub/session 500 27197.867 ms - 346 </p>
+</blockquote>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='连接 2 个设备测试的时候每次都只运行一个设备？ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1668#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1668#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1668#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1668#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1668#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>21</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../cylboy"><img alt="672" class="uface" src="../user/large_avatar/672.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="陈龙" href="../cylboy">cylboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply1">1楼</a> · <abbr class="timeago" title="2014-12-08T17:17:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10388" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="672" href="http://testerhome.com/topics/1668/replies/10388/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="cylboy" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我也想知道怎么同时控制两台设备，求高人指点</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply2">2楼</a> · <abbr class="timeago" title="2014-12-08T20:18:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10390" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1668/replies/10390/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="sanlengjingvv" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1639" rel="nofollow" target="_blank">http://testerhome.com/topics/1639</a><br>
+测试类加udid，deviceName虽然必须写但没用<br>
+server还要指定bootstrapPort</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../yangyajie_002"><img alt="716" class="uface" src="../user/large_avatar/716.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="杨雅洁" href="../yangyajie_002">yangyajie_002</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply3">3楼</a> · <abbr class="timeago" title="2014-12-09T12:19:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10408" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="716" href="http://testerhome.com/topics/1668/replies/10408/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="yangyajie_002" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>可以开两个appium.exe，分别监听两个不同的端口。代码里不一样的设备初始化driver端口区别开。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply4">4楼</a> · <abbr class="timeago" title="2014-12-09T14:30:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10417" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10417/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../yangyajie_002" class="at_user" title="@yangyajie_002"><i>@</i>yangyajie_002</a> 你看我代码里也指定了啊  我也是启动了两个appium 都设置过了 <br>
+每次还是都只能发现一个设备</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply5">5楼</a> · <abbr class="timeago" title="2014-12-09T14:32:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10418" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10418/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> udid是啥？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply6">6楼</a> · <abbr class="timeago" title="2014-12-09T15:53:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10429" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10429/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我现在能跑两个类了，但是为什么只能发现一个设备？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply7">7楼</a> · <abbr class="timeago" title="2014-12-09T17:35:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10435" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1668/replies/10435/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="sanlengjingvv" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../nancy2896" class="at_user" title="@nancy2896"><i>@</i>nancy2896</a> <br>
+capabilities.setCapability("udid", "这里填adb devices得到的");</p>
+
+<p><a href="http://appium.io/slate/en/v1.3.4/?ruby#server-flags" rel="nofollow" target="_blank">http://appium.io/slate/en/v1.3.4/?ruby#server-flags</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply8">8楼</a> · <abbr class="timeago" title="2014-12-09T19:18:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10436" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10436/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> <br>
+我是Android设备 应该设置名字就行了吧<br>
+                capabilities.setCapability("platformName", "Android");<br>
+            capabilities.setCapability("deviceName","430072fe4758a07f");<br>
+            capabilities.setCapability("platformVersion", "4.3");</p>
+
+<p>每个类我都指定了设备  可还是发现2个  执行用例只用一个</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply9">9楼</a> · <abbr class="timeago" title="2014-12-10T08:11:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10442" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1668/replies/10442/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="sanlengjingvv" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../nancy2896" class="at_user" title="@nancy2896"><i>@</i>nancy2896</a> <br>
+看2楼，deviceName虽然必须写但没用</p>
+
+<p>On Android this capability is currently ignored，你可以随便填看有没有效果</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply10">10楼</a> · <abbr class="timeago" title="2014-12-10T11:40:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10453" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10453/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> 恩 是没用  关键是连接2个设备的时候 怎么才能指定设备？没有办法了么？</p>
+
+<p>我看官网上有这个命令<br>
+If we had two devices with the ID’s 43364 and 32456, we would start two different Appium servers with the following commands:</p>
+
+<p>node . -p 4492 -bp 2251 -U 32456</p>
+
+<p>node . -p 4491 -bp 2252 -U 43364</p>
+
+<p>可是我执行的时候提示我</p>
+
+<p>C:\Users\Administrator&gt;node . -p 4492 -bp 2251 -U 32456</p>
+
+<p>module.js:340<br>
+    throw err;<br>
+          ^<br>
+Error: Cannot find module 'C:\Users\Administrator'<br>
+    at Function.Module._resolveFilename (module.js:338:15)<br>
+    at Function.Module._load (module.js:280:25)<br>
+    at Function.Module.runMain (module.js:497:10)<br>
+    at startup (node.js:119:16)<br>
+    at node.js:902:3</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply11">11楼</a> · <abbr class="timeago" title="2014-12-10T16:06:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10473" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1668/replies/10473/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="sanlengjingvv" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>appium -p 4492 -bp 2251 -U 32456</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../sziitash"><img alt="1181" class="uface" src="../user/large_avatar/1181.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="benlee" href="../sziitash">sziitash</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply12">12楼</a> · <abbr class="timeago" title="2014-12-10T16:43:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10477" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1181" href="http://testerhome.com/topics/1668/replies/10477/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="sziitash" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你是要同时并行两个设备进行测试吗？据我所知，目前appium还不支持，求打脸。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply13">13楼</a> · <abbr class="timeago" title="2014-12-10T16:48:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10478" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10478/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> 我通过这个启动了 还是不行<br>
+C:\Users\Administrator&gt;appium -p 4492 -bp 2251 -U 430072fe4758a07f<br>
+C:\Users\Administrator&gt;appium -p 4491 -bp 2252 -U 430072fe470da099</p>
+
+<p>端口我都设置一样了  也是每次都只用一个设备执行  你用testNG并行的时候 确实两个机器都跑了？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply14">14楼</a> · <abbr class="timeago" title="2014-12-10T16:50:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10479" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10479/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../sziitash" class="at_user" title="@sziitash"><i>@</i>sziitash</a><br>
+以下是官方文档说明</p>
+
+<p>Parallel Android Tests<br>
+Appium provides a way for users to automate multiple Android sessions on a single machine. All it involves is starting multiple Appium servers with different flags.</p>
+
+<p>The important flags for automating multiple Android sessions are:</p>
+
+<p>-p the main Appium port<br>
+-U the device id<br>
+-bp the Appium bootstrap port<br>
+--chromedriver-port the chromedriver port (if using webviews or chrome)<br>
+--selendroid-port the selendroid port (if using selendroid)<br>
+More information on these flags can be found here.</p>
+
+<p>If we had two devices with the ID’s 43364 and 32456, we would start two different Appium servers with the following commands:</p>
+
+<p>node . -p 4492 -bp 2251 -U 32456</p>
+
+<p>node . -p 4491 -bp 2252 -U 43364</p>
+
+<p>As long as your Appium and Appium bootstrap ports are between 0 and 65536, all they have to be is different so that two Appium servers aren’t trying to listen on the same port. Be sure that your -u flag corresponds with the correct device ID. This is how Appium knows which device to communicate with, so it must be accurate.</p>
+
+<p>If you are using chromedriver or selendroid, set a different port for each server.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../sziitash"><img alt="1181" class="uface" src="../user/large_avatar/1181.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="benlee" href="../sziitash">sziitash</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply15">15楼</a> · <abbr class="timeago" title="2014-12-10T16:56:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10480" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1181" href="http://testerhome.com/topics/1668/replies/10480/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="sziitash" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../nancy2896" class="at_user" title="@nancy2896"><i>@</i>nancy2896</a> 谢谢你的回复。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../sziitash"><img alt="1181" class="uface" src="../user/large_avatar/1181.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="benlee" href="../sziitash">sziitash</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply16">16楼</a> · <abbr class="timeago" title="2014-12-10T16:58:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10481" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1181" href="http://testerhome.com/topics/1668/replies/10481/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="sziitash" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../nancy2896" class="at_user" title="@nancy2896"><i>@</i>nancy2896</a> 你试试用如下代码：<br>
+self.driver = webdriver.Remote('<a href="http://localhost:4723/wd/hub" rel="nofollow" target="_blank">http://localhost:4723/wd/hub</a>', desired_caps)<br>
+指定服务端口时，4723改成4725看看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply17">17楼</a> · <abbr class="timeago" title="2014-12-10T17:00:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10482" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10482/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../sziitash" class="at_user" title="@sziitash"><i>@</i>sziitash</a>  我一个是4723  另一个是4725</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../sziitash"><img alt="1181" class="uface" src="../user/large_avatar/1181.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="benlee" href="../sziitash">sziitash</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply18">18楼</a> · <abbr class="timeago" title="2014-12-10T17:10:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10483" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1181" href="http://testerhome.com/topics/1668/replies/10483/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="sziitash" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../nancy2896" class="at_user" title="@nancy2896"><i>@</i>nancy2896</a> 要把udid和和端口号对应。我配置如下：<br>
+1、appium -p 4492 -bp 2251 -U 7b6312（这是udid哦）<br>
+2、appium -p 4493 -bp 2252 -U 1832596f（这是udid哦）</p>
+
+<p>然后是跑两个脚本（我是用python的）。我亲自测试可以了。<br>
+感谢你们的提问和反馈啊，把一个一直困扰我的问题解决了。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply19">19楼</a> · <abbr class="timeago" title="2014-12-11T11:37:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10494" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10494/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1668#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../sziitash" class="at_user" title="@sziitash"><i>@</i>sziitash</a> 只有ios设备才是udid吧  Android设备就是设备名吧   我用adb devices得到的名字  不对么？<br>
+appium里面要设置端口和bp端口么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../nancy2896"><img alt="1686" class="uface" src="../user/large_avatar/1686.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="梁慧慧" href="../nancy2896">nancy2896</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply20">20楼</a> · <abbr class="timeago" title="2014-12-11T12:44:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10496" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1686" href="http://testerhome.com/topics/1668/replies/10496/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="nancy2896" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>问题解决，初始化的时候多加一行<br>
+capabilities.setCapability("udid","430072fe470da099");<br>
+就能指定设备了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../zhenglxqf"><img alt="Bcdfc5177d112d6b9037702dfa427e51" class="uface" src="../avatar/bcdfc5177d112d6b9037702dfa427e51.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../zhenglxqf">zhenglxqf</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1668#reply21">21楼</a> · <abbr class="timeago" title="2014-12-23T16:19:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10793" data-state="" data-type="Reply" href="1668#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2171" href="http://testerhome.com/topics/1668/replies/10793/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="zhenglxqf" href="1668#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢楼上，终于找到正解了！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1668#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 移动安全第一贴之 ContentProvider &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">移动安全第一贴之 ContentProvider</h1>
+  <div class="info leader">
+    <a class="node" href="node34">移动安全测试</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-04-17T00:38:37+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="55hhy" href="../55hhy">55hhy</a> 于<abbr class="timeago" title="2014-12-08T15:47:56+08:00"></abbr>回复
+     · 
+    1043次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <pre class="highlight ruby"><span class="err">最近公司里</span><span class="n">ppt</span><span class="err">也出现非常多，我也做安全做了一周时间。先来介绍下这个工具吧。</span>
+</pre><pre class="highlight ruby"><span class="err">具体</span><span class="n">user</span> <span class="n">guide</span><span class="err">见：</span><span class="n">https</span><span class="ss">:/</span><span class="o">/</span><span class="n">www</span><span class="p">.</span><span class="nf">mwrinfosecurity</span><span class="p">.</span><span class="nf">com</span><span class="sr">/system/</span><span class="n">assets</span><span class="o">/</span><span class="mi">559</span><span class="o">/</span><span class="n">original</span><span class="o">/</span><span class="n">mwri_drozer</span><span class="o">-</span><span class="n">users</span><span class="o">-</span><span class="n">guide_2013</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">11</span><span class="p">.</span><span class="nf">pdf</span>
+</pre><pre class="highlight ruby"><span class="err">我们需要在</span><span class="n">device</span><span class="err">上安装上相应的</span><span class="n">agent</span> <span class="n">apk</span><span class="err">，然后输入如下命令</span>
+</pre>
+<p><img src="../photo/2014/224f5b659a85a0685c2c2dfd283142a9.png" alt=""></p>
+
+<p><img src="../photo/2014/ee185421b653955accac3779bfd03f2c.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">如果看到这样的界面，说明你成功登录了</span><span class="o">.</span>
+</pre>
+<p><img src="../photo/2014/6f8125fdddd416ae614f20ec43c8ae75.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">这里就先拿</span><span class="n">com</span><span class="p">.</span><span class="nf">taobao</span><span class="p">.</span><span class="nf">taobao</span><span class="err">为例子，我们安装并且登录淘宝之后，此时运行</span>
+</pre>
+<p><img src="../photo/2014/622b8654208f2093b103a84450c37e19.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">当然，我们都知道</span><span class="n">contentprovider</span><span class="err">是通过</span><span class="no">URI</span><span class="err">进行数据共享的，我们可以可以看到会列出可以链接的</span><span class="no">URI</span><span class="err">，如下</span><span class="p">:</span>
+</pre>
+<p><img src="../photo/2014/d341cf4b0758aaba678cf179c835cff7.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">我们来尝试着获取下</span><span class="n">taobao</span><span class="err">这个</span><span class="n">contentprovider</span><span class="err">下面的信息：</span>
+</pre>
+<p><img src="../photo/2014/567c2089ff5f3dcd1d90fe1dd5edee46.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">拿到了信息之后，我们可以开始更改这些信息，又或者注入一些无效的字符串，让</span><span class="n">sql</span><span class="err">语句产生异常。如：</span>
+</pre>
+<p><img src="../photo/2014/f8a2a938ad485b9e09a48e8e4c698d02.png" alt=""><br><img src="../photo/2014/9ace31b0000651dbb78cc6738cf218c9.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">我们再获取信息的时候，发现</span><span class="n">appID</span><span class="err">已经被我改成了之前输入的参数</span><span class="p">:</span>
+</pre>
+<p><img src="../photo/2014/86a53f5c921ee04e0feb10a7e8e5118a.png" alt=""></p>
+<pre class="highlight ruby"><span class="err">同时</span><span class="n">drozer</span><span class="err">提供了很多其他命令和参数，继续尝试中。</span>
+</pre>
+<p><img src="../photo/2014/9f6e0309006a075ba505c42d841c8f63.png" alt=""></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='移动安全第一贴之 ContentProvider via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="714#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="714#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="714#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="714#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="714#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>19</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply1">1楼</a> · <abbr class="timeago" title="2014-04-17T10:30:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3955" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/714/replies/3955/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>他的原理是什么  基于什么技术获得数据和操作数据的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply2">2楼</a> · <abbr class="timeago" title="2014-04-17T10:41:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3956" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3956/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> apk源码还没有看，而且貌似也没有提供。他pdf上面意思是说很多app的私有contentprovider数据库管控不严格，所以可以通过他的cleint读取一些私有数据库，从而更改。具体是源码木有公开。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply3">3楼</a> · <abbr class="timeago" title="2014-04-17T11:40:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3971" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/714/replies/3971/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 代码是开源的, 好像是分社区版和商业版本. 查找uri他貌似是反编译apk, 然后从里面获取字符串匹配出来的, 貌似它还支持扩展. 是系统级别的一个工具. 我看到还有人写了一个sniffer扩展.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply4">4楼</a> · <abbr class="timeago" title="2014-04-17T11:56:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3973" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3973/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 对的，区分的，代码开源了？我去看看，git下面没有仔细看。应该有。但是我试过了一些应用，私有数据库的保护部周我觉得就是经验问题，一般应用不会出这样的问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply5">5楼</a> · <abbr class="timeago" title="2014-04-17T12:00:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3974" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/714/replies/3974/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 数据和特定的状态返回都有可能造假.如果认真的去挖这些问题 我觉得无论哪家公司的app都一堆问题的. 只是目前安全问题还没引起重视, 也没人去深挖. <br>
+反正安全性的地雷是埋下了,说不准哪天就会被人踢爆.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply6">6楼</a> · <abbr class="timeago" title="2014-04-17T12:08:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3975" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/714/replies/3975/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="seveniruby" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 客户端如果有数据安全的问题, 我觉得危害不会大, 只能算是隐私泄露. 自己造异常数据搞出的崩溃其实意义也不大. <br>
+如果是和服务器有交互的, 服务器如何信任了客户端, 危险就会很大. 来自于客户端的任何东西都可能被造假的. 一个造假的客户端很容易会骗过信任和篡改一些流程. 这些会考验服务端是否有完备的验证和各种异常保护机制.<br>
+以前使用成熟的基于服务的业务, 一般影响不大. 毕竟是经过web考验的.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply7">7楼</a> · <abbr class="timeago" title="2014-04-17T12:40:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3976" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3976/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 这块将来肯定是爆点，我个人觉得是。而且现在最多都是混淆，别的基本上也不太注重，现在重点都在CS之间的那层</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply8">8楼</a> · <abbr class="timeago" title="2014-04-17T12:42:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3977" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3977/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 不过本地的话，其实你和服务器交互伪造数据，是http，或者https传输层的mock。但是如果从app本地走的话，大可以在传输层之前就修改掉数据。所以我觉得危害其实没有太大的区别。只不过现在真的没有太重视这块。我这里也是。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply9">9楼</a> · <abbr class="timeago" title="2014-04-17T13:24:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3980" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/714/replies/3980/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="seveniruby" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 传输层的修改不是太容易, 因为有走ssl, 或者二进制协议的. 所以业务实现层面或者app内部修改, 相对容易些.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply10">10楼</a> · <abbr class="timeago" title="2014-04-17T13:58:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3988" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3988/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我之前burpsuite就全部在测试ssl，说实在的，ssl这边漏洞还是蛮大的。要看业务系统怎么架构，怎么设计的。虽然我也同意app内部修改容易点，但是感觉现在大部分企业，包括我司这个point完全不再这个上面。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply11">11楼</a> · <abbr class="timeago" title="2014-04-17T14:12:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3989" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/714/replies/3989/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="seveniruby" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 如果协议层能搞就搞, 协议层可以修改所有的输入, app层只能改流程, 改关键数据字段, 一些协议级别的数据没法修改. 层次不同, 结合使用更好.感觉漏洞肯定是存在于app层, 如果协议层可以搞还是很方便的, 如果协议层解决不了 比如二进制协议, 那么就只能走app层了.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply12">12楼</a> · <abbr class="timeago" title="2014-04-17T15:03:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3996" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3996/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> app这边可挖深度还是很大的～～技术和想法各一半～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../kasi"><img alt="441" class="uface" src="../user/large_avatar/441.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../kasi">kasi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply13">13楼</a> · <abbr class="timeago" title="2014-04-17T15:39:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3997" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="441" href="http://testerhome.com/topics/714/replies/3997/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="kasi" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>2人转  哈哈</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply14">14楼</a> · <abbr class="timeago" title="2014-04-17T15:41:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3998" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/3998/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../kasi" class="at_user" title="@kasi"><i>@</i>kasi</a> 三人转了～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../55hhy"><img alt="268" class="uface" src="../user/large_avatar/268.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="郝辉燕" href="../55hhy">55hhy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply15">15楼</a> · <abbr class="timeago" title="2014-12-08T11:53:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10365" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="268" href="http://testerhome.com/topics/714/replies/10365/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="55hhy" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>最近在我们的app上试了下，结果我们没有用content provider，用的json，这个测试怎么弄？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply16">16楼</a> · <abbr class="timeago" title="2014-12-08T12:29:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10366" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/10366/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../55hhy" class="at_user" title="@55hhy"><i>@</i>55hhy</a> 。。。。啥叫用的json。。。我觉得我们再说两个东西。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../55hhy"><img alt="268" class="uface" src="../user/large_avatar/268.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="郝辉燕" href="../55hhy">55hhy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply17">17楼</a> · <abbr class="timeago" title="2014-12-08T15:08:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10375" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="268" href="http://testerhome.com/topics/714/replies/10375/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="55hhy" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 就是我去找content provider的时候，没有找到，后来开发解释是没有用content provider。直接通过json链接下载的数据。这样子说有解么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply18">18楼</a> · <abbr class="timeago" title="2014-12-08T15:40:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10377" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/714/replies/10377/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="monkey" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../55hhy" class="at_user" title="@55hhy"><i>@</i>55hhy</a> 不是。。你没有明白我这篇文章的意义，然后你也没有说你要测试什么，你问我有没有解。。我表示我不明白。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../55hhy"><img alt="268" class="uface" src="../user/large_avatar/268.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="郝辉燕" href="../55hhy">55hhy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="714#reply19">19楼</a> · <abbr class="timeago" title="2014-12-08T15:47:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10379" data-state="" data-type="Reply" href="714#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="268" href="http://testerhome.com/topics/714/replies/10379/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="55hhy" href="714#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="714#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 你这个是从content provider开始，对？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1576" title="Android 安全测试初探（三）">Android 安全测试初探（三）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="714#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

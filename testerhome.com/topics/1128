@@ -1,0 +1,681 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | gradle 初步构建（一） &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">gradle 初步构建（一）</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-07-10T14:11:41+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-07-12T00:30:16+08:00"></abbr>回复
+     · 
+    1172次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><strong>前言</strong></p>
+
+<p>android gradle 的插件终于把混淆代码的task集成进去了，加上最近，android studio 用的是gradle 来构建项目， 下定决心把android gralde 构建项目的用户指南全部看完， 让不会用gradle 的人也用gradle构建android项目，让打包（注意，打包和构建是两码事）多版本android不再痛苦。最后，题外话：珍惜生命，远离ant....</p>
+
+<p><strong>Gradle build android 历史</strong></p>
+
+<p>Android Tools 主页 ，大概是今年2月份发布 adt21.1 的时候，忽然在主页发现了New Build System 原来是可以用gradle 来构建android项目，至于gradle是什么（既然点击进来看了应该都知道了吧。） 。然后，又看了一下RoadMap 那时候，还并不支持Proguard 打包，于是就没看了。。。</p>
+
+<p>最近，android studio 发布，终于gradle 0.4 也跟着出来了，于是，先把gradle 学了一遍，然后把Gradle Plugin User Guide也认真阅读了一下，根据我的个人体验，如果你对gradle 毫无了解就去看Gradle Plugin User Guide 可能很多地方都一头雾水，但是并不妨碍你用gradle 打包android 应用，只是，出现问题，你就可能很头疼。不过，本篇博文就是让不会gradle 也能用上 gradle 打包android 程序，因为，我也不懂gradle，所以，我把我碰到的问题的解决方案都一一列出。</p>
+
+<p>顺便贴上官方为什么使用gradle 的理由</p>
+
+<p>Domain Specific Language (DSL) to describe and manipulate the build logic<br>
+Build files are Groovy based and allow mixing of declarative elements through the DSL and using code to manipulate the DSL elements to provide custom logic.<br>
+Built-in dependency management through Maven and/or Ivy.<br>
+Very flexible. Allows using best practices but doesn’t force its own way of doing things.<br>
+Plugins can expose their own DSL and their own API for build files to use.<br>
+Good Tooling API allowing IDE integration<br>
+Gradle 基本概念<br>
+首先我们学习几个gradle 的脚步语法，掌握了这几个语法，你就能非常简单的用gradle构建打包android项目了。 首先，我们来看下一个最简单android build.gradle。</p>
+
+<p>那么接下来我们来看我们导出<code>gradle.build</code>的文件：</p>
+<pre class="highlight ruby"><span class="n">buildscript</span> <span class="p">{</span>
+    <span class="n">repositories</span> <span class="p">{</span>
+        <span class="n">mavenCentral</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">dependencies</span> <span class="p">{</span>
+        <span class="n">classpath</span> <span class="s1">'com.android.tools.build:gradle:0.9.+'</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">apply</span> <span class="ss">plugin: </span><span class="s1">'android'</span>
+
+<span class="n">dependencies</span> <span class="p">{</span>
+    <span class="n">compile</span> <span class="n">fileTree</span><span class="p">(</span><span class="ss">dir: </span><span class="s1">'libs'</span><span class="p">,</span> <span class="kp">include</span><span class="p">:</span> <span class="s1">'*.jar'</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">android</span> <span class="p">{</span>
+    <span class="n">compileSdkVersion</span> <span class="mi">15</span>
+    <span class="n">buildToolsVersion</span> <span class="s2">"19.0.3"</span>
+
+    <span class="n">sourceSets</span> <span class="p">{</span>
+        <span class="n">main</span> <span class="p">{</span>
+            <span class="n">manifest</span><span class="p">.</span><span class="nf">srcFile</span> <span class="s1">'AndroidManifest.xml'</span>
+            <span class="n">java</span><span class="p">.</span><span class="nf">srcDirs</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            <span class="n">resources</span><span class="p">.</span><span class="nf">srcDirs</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            <span class="n">aidl</span><span class="p">.</span><span class="nf">srcDirs</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            <span class="n">renderscript</span><span class="p">.</span><span class="nf">srcDirs</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'src'</span><span class="o">]</span>
+            <span class="n">res</span><span class="p">.</span><span class="nf">srcDirs</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'res'</span><span class="o">]</span>
+            <span class="n">assets</span><span class="p">.</span><span class="nf">srcDirs</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'assets'</span><span class="o">]</span>
+        <span class="p">}</span>
+   <span class="n">signingConfigs</span> <span class="p">{</span>  
+        <span class="n">debug</span> <span class="p">{</span>  
+            <span class="n">storeFile</span> <span class="n">file</span><span class="p">(</span><span class="s2">"debug.keystore"</span><span class="p">)</span>  
+        <span class="p">}</span>  
+
+        <span class="n">myConfig</span> <span class="p">{</span>  
+            <span class="n">storeFile</span> <span class="n">file</span><span class="p">(</span><span class="s2">"debug.keystore"</span><span class="p">)</span>  
+            <span class="n">storePassword</span> <span class="s2">"android"</span>  
+            <span class="n">keyAlias</span> <span class="s2">"androiddebugkey"</span>  
+            <span class="n">keyPassword</span> <span class="s2">"android"</span>  
+        <span class="p">}</span>  
+    <span class="p">}</span>  
+
+
+   <span class="n">buildTypes</span><span class="p">{</span>
+     <span class="n">release</span> <span class="p">{</span>
+        <span class="n">signingConfig</span>  <span class="n">signingConfigs</span><span class="p">.</span><span class="nf">myConfig</span>
+     <span class="p">}</span> 
+   <span class="p">}</span>
+
+        <span class="sr">//</span> <span class="no">Move</span> <span class="n">the</span> <span class="n">tests</span> <span class="n">to</span> <span class="n">tests</span><span class="o">/</span><span class="n">java</span><span class="p">,</span> <span class="n">tests</span><span class="o">/</span><span class="n">res</span><span class="p">,</span> <span class="n">etc</span><span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+        <span class="n">instrumentTest</span><span class="p">.</span><span class="nf">setRoot</span><span class="p">(</span><span class="s1">'tests'</span><span class="p">)</span>
+
+        <span class="sr">//</span> <span class="no">Move</span> <span class="n">the</span> <span class="n">build</span> <span class="n">types</span> <span class="n">to</span> <span class="n">build</span><span class="o">-</span><span class="n">types</span><span class="o">/&lt;</span><span class="n">type</span><span class="o">&gt;</span>
+        <span class="sr">//</span> <span class="no">For</span> <span class="n">instance</span><span class="p">,</span> <span class="n">build</span><span class="o">-</span><span class="n">types</span><span class="o">/</span><span class="n">debug</span><span class="o">/</span><span class="n">java</span><span class="p">,</span> <span class="n">build</span><span class="o">-</span><span class="n">types</span><span class="o">/</span><span class="n">debug</span><span class="o">/</span><span class="no">AndroidManifest</span><span class="p">.</span><span class="nf">xml</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+        <span class="sr">//</span> <span class="no">This</span> <span class="n">moves</span> <span class="n">them</span> <span class="n">out</span> <span class="n">of</span> <span class="n">them</span> <span class="n">default</span> <span class="n">location</span> <span class="n">under</span> <span class="n">src</span><span class="o">/&lt;</span><span class="n">type</span><span class="o">&gt;</span><span class="sr">/... which would
+        /</span><span class="o">/</span> <span class="n">conflict</span> <span class="n">with</span> <span class="n">src</span><span class="o">/</span> <span class="n">being</span> <span class="n">used</span> <span class="n">by</span> <span class="n">the</span> <span class="n">main</span> <span class="n">source</span> <span class="n">set</span><span class="o">.</span>
+        <span class="sr">//</span> <span class="no">Adding</span> <span class="kp">new</span> <span class="n">build</span> <span class="n">types</span> <span class="n">or</span> <span class="n">product</span> <span class="n">flavors</span> <span class="n">should</span> <span class="n">be</span> <span class="n">accompanied</span>
+        <span class="sr">//</span> <span class="n">by</span> <span class="n">a</span> <span class="n">similar</span> <span class="n">customization</span><span class="o">.</span>
+        <span class="n">debug</span><span class="p">.</span><span class="nf">setRoot</span><span class="p">(</span><span class="s1">'build-types/debug'</span><span class="p">)</span>
+        <span class="n">release</span><span class="p">.</span><span class="nf">setRoot</span><span class="p">(</span><span class="s1">'build-types/release'</span><span class="p">)</span>
+
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+
+<p>在这里我碰见的问题是，我安装的是gradle的2.0.0版本，但是貌似和目前的ADT的gradle的版本不兼容，所以最终还是换成了1.1.0，才build通过了。</p>
+
+<p>接着我们先可以输入gradle clean来进行依赖库的重置，然后在用gradle build进行相关编译：</p>
+<pre class="highlight ruby"><span class="no">MonkeydeMacBook</span><span class="o">-</span><span class="no">Air</span><span class="ss">:MyProjectDemo</span> <span class="n">monkey</span><span class="err">$</span> <span class="n">gradle</span> <span class="n">build</span>
+<span class="ss">:compileDebugNdk</span>
+<span class="ss">:preBuild</span>
+<span class="ss">:preDebugBuild</span>
+<span class="ss">:checkDebugManifest</span>
+<span class="ss">:prepareDebugDependencies</span>
+<span class="ss">:compileDebugAidl</span>
+<span class="ss">:compileDebugRenderscript</span>
+<span class="ss">:generateDebugBuildConfig</span>
+<span class="ss">:mergeDebugAssets</span>
+<span class="ss">:generateDebugResValues</span>
+<span class="ss">:generateDebugResources</span>
+<span class="ss">:mergeDebugResources</span>
+<span class="ss">:processDebugManifest</span>
+<span class="ss">:processDebugResources</span>
+<span class="ss">:generateDebugSources</span>
+<span class="ss">:compileDebugJava</span>
+<span class="ss">:preDexDebug</span>
+<span class="ss">:dexDebug</span>
+<span class="ss">:processDebugJavaRes</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:validateDebugSigning</span>
+<span class="ss">:packageDebug</span>
+<span class="ss">:assembleDebug</span>
+<span class="ss">:preReleaseBuild</span>
+<span class="ss">:checkReleaseManifest</span>
+<span class="ss">:prepareReleaseDependencies</span>
+<span class="ss">:compileReleaseAidl</span>
+<span class="ss">:compileReleaseRenderscript</span>
+<span class="ss">:generateReleaseBuildConfig</span>
+<span class="ss">:mergeReleaseAssets</span>
+<span class="ss">:generateReleaseResValues</span>
+<span class="ss">:generateReleaseResources</span>
+<span class="ss">:mergeReleaseResources</span>
+<span class="ss">:processReleaseManifest</span>
+<span class="ss">:processReleaseResources</span>
+<span class="ss">:generateReleaseSources</span>
+<span class="ss">:compileReleaseJava</span>
+<span class="ss">:lintVitalRelease</span> <span class="no">SKIPPED</span>
+<span class="ss">:compileReleaseNdk</span>
+<span class="ss">:preDexRelease</span>
+<span class="ss">:dexRelease</span>
+<span class="ss">:processReleaseJavaRes</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:packageRelease</span>
+<span class="ss">:assembleRelease</span>
+<span class="ss">:assemble</span>
+<span class="ss">:compileLint</span>
+<span class="ss">:lint</span>
+<span class="no">Ran</span> <span class="n">lint</span> <span class="n">on</span> <span class="n">variant</span> <span class="ss">debug: </span><span class="mi">6</span> <span class="n">issues</span> <span class="n">found</span>
+<span class="no">Ran</span> <span class="n">lint</span> <span class="n">on</span> <span class="n">variant</span> <span class="ss">release: </span><span class="mi">6</span> <span class="n">issues</span> <span class="n">found</span>
+<span class="no">Wrote</span> <span class="no">HTML</span> <span class="n">report</span> <span class="n">to</span> <span class="n">file</span><span class="ss">:/</span><span class="no">Users</span><span class="o">/</span><span class="n">monkey</span><span class="o">/</span><span class="no">Downloads</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="no">MyProjectDemo</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">lint</span><span class="o">-</span><span class="n">results</span><span class="p">.</span><span class="nf">html</span>
+<span class="no">Wrote</span> <span class="no">XML</span> <span class="n">report</span> <span class="n">to</span> <span class="sr">/Users/mon</span><span class="n">key</span><span class="o">/</span><span class="no">Downloads</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="no">MyProjectDemo</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">lint</span><span class="o">-</span><span class="n">results</span><span class="p">.</span><span class="nf">xml</span>
+<span class="ss">:check</span>
+<span class="ss">:build</span>
+
+<span class="no">BUILD</span> <span class="no">SUCCESSFUL</span>
+</pre>
+
+<p>当然我们还没有加入混淆和签名。所以我们需要在build中增加如下配置：</p>
+<pre class="highlight ruby">   <span class="n">signingConfigs</span> <span class="p">{</span>  
+        <span class="n">debug</span> <span class="p">{</span>  
+            <span class="n">storeFile</span> <span class="n">file</span><span class="p">(</span><span class="s2">"debug.keystore"</span><span class="p">)</span>  
+        <span class="p">}</span>  
+
+        <span class="n">myConfig</span> <span class="p">{</span>  
+            <span class="n">storeFile</span> <span class="n">file</span><span class="p">(</span><span class="s2">"debug.keystore"</span><span class="p">)</span>  
+            <span class="n">storePassword</span> <span class="s2">"android"</span>  
+            <span class="n">keyAlias</span> <span class="s2">"androiddebugkey"</span>  
+            <span class="n">keyPassword</span> <span class="s2">"android"</span>  
+        <span class="p">}</span>  
+    <span class="p">}</span>  
+
+
+   <span class="n">buildTypes</span><span class="p">{</span>
+     <span class="n">release</span> <span class="p">{</span>
+        <span class="n">signingConfig</span>  <span class="n">signingConfigs</span><span class="p">.</span><span class="nf">myConfig</span>
+     <span class="p">}</span> 
+   <span class="p">}</span></pre>
+
+<p>这里需要两个文件。一个是你的签名对应的keystore，一个是zipalign。那么即可最终在build中编译出来没有签名和签名的debug和release的apk包。</p>
+<pre class="highlight ruby"><span class="no">MonkeydeMacBook</span><span class="o">-</span><span class="no">Air</span><span class="ss">:MyProjectDemo</span> <span class="n">monkey</span><span class="err">$</span> <span class="n">gradle</span> <span class="n">build</span>
+<span class="ss">:compileDebugNdk</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:preBuild</span>
+<span class="ss">:preDebugBuild</span>
+<span class="ss">:checkDebugManifest</span>
+<span class="ss">:prepareDebugDependencies</span>
+<span class="ss">:compileDebugAidl</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:compileDebugRenderscript</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateDebugBuildConfig</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:mergeDebugAssets</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateDebugResValues</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateDebugResources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:mergeDebugResources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:processDebugManifest</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:processDebugResources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateDebugSources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:compileDebugJava</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:preDexDebug</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:dexDebug</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:processDebugJavaRes</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:validateDebugSigning</span>
+<span class="ss">:packageDebug</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:assembleDebug</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:preReleaseBuild</span>
+<span class="ss">:checkReleaseManifest</span>
+<span class="ss">:prepareReleaseDependencies</span>
+<span class="ss">:compileReleaseAidl</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:compileReleaseRenderscript</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateReleaseBuildConfig</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:mergeReleaseAssets</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateReleaseResValues</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateReleaseResources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:mergeReleaseResources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:processReleaseManifest</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:processReleaseResources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:generateReleaseSources</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:compileReleaseJava</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:lintVitalRelease</span> <span class="no">SKIPPED</span>
+<span class="ss">:compileReleaseNdk</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:preDexRelease</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:dexRelease</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:processReleaseJavaRes</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:validateMyConfigSigning</span>
+<span class="ss">:packageRelease</span> <span class="no">UP</span><span class="o">-</span><span class="no">TO</span><span class="o">-</span><span class="no">DATE</span>
+<span class="ss">:zipalignRelease</span>
+<span class="ss">:assembleRelease</span>
+<span class="ss">:assemble</span>
+<span class="ss">:compileLint</span>
+<span class="ss">:lint</span>
+<span class="no">Ran</span> <span class="n">lint</span> <span class="n">on</span> <span class="n">variant</span> <span class="ss">debug: </span><span class="mi">6</span> <span class="n">issues</span> <span class="n">found</span>
+<span class="no">Ran</span> <span class="n">lint</span> <span class="n">on</span> <span class="n">variant</span> <span class="ss">release: </span><span class="mi">6</span> <span class="n">issues</span> <span class="n">found</span>
+<span class="no">Wrote</span> <span class="no">HTML</span> <span class="n">report</span> <span class="n">to</span> <span class="n">file</span><span class="ss">:/</span><span class="no">Users</span><span class="o">/</span><span class="n">monkey</span><span class="o">/</span><span class="no">Downloads</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="no">MyProjectDemo</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">lint</span><span class="o">-</span><span class="n">results</span><span class="p">.</span><span class="nf">html</span>
+<span class="no">Wrote</span> <span class="no">XML</span> <span class="n">report</span> <span class="n">to</span> <span class="sr">/Users/mon</span><span class="n">key</span><span class="o">/</span><span class="no">Downloads</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="no">MyProjectDemo</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">lint</span><span class="o">-</span><span class="n">results</span><span class="p">.</span><span class="nf">xml</span>
+<span class="ss">:check</span>
+<span class="ss">:build</span>
+</pre>
+
+<p>BUILD SUCCESSFUL<br>
+未完待续</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='gradle 初步构建（一） via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1128#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1128#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1128#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1128#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1128#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>9</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../55hhy"><img alt="268" class="uface" src="../user/large_avatar/268.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="郝辉燕" href="../55hhy">55hhy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply1">1楼</a> · <abbr class="timeago" title="2014-07-10T17:44:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6594" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="268" href="http://testerhome.com/topics/1128/replies/6594/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="55hhy" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>顶起来 期望看到gradle ＋ emma或者gradle＋jacoco</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply2">2楼</a> · <abbr class="timeago" title="2014-07-10T21:17:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6597" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1128/replies/6597/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>jacoco是王道</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply3">3楼</a> · <abbr class="timeago" title="2014-07-11T00:27:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6599" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1128/replies/6599/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1128#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 嗯是的，现在很多都在用jacoco了～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../shenkai600"><img alt="133" class="uface" src="../user/large_avatar/133.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="沈凯" href="../shenkai600">shenkai600</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply4">4楼</a> · <abbr class="timeago" title="2014-07-11T00:44:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6602" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="133" href="http://testerhome.com/topics/1128/replies/6602/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="shenkai600" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>jenkins ANT已托管.. </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply5">5楼</a> · <abbr class="timeago" title="2014-07-11T01:08:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6603" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1128/replies/6603/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1128#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../shenkai600" class="at_user" title="@shenkai600"><i>@</i>shenkai600</a> @。@。。。托管。。这是晒幸福呀～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../oscarxie"><img alt="4d43b8fa1e25dfac428fff0d828b3934" class="uface" src="../avatar/4d43b8fa1e25dfac428fff0d828b3934.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="国文" href="../oscarxie">oscarxie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply6">6楼</a> · <abbr class="timeago" title="2014-07-11T10:28:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6606" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="115" href="http://testerhome.com/topics/1128/replies/6606/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="oscarxie" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好吧， 我也开始学习gradle</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply7">7楼</a> · <abbr class="timeago" title="2014-07-11T11:17:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6608" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1128/replies/6608/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="monkey" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1128#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../oscarxie" class="at_user" title="@oscarxie"><i>@</i>oscarxie</a> 这货现在坑也异常多。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../oscarxie"><img alt="4d43b8fa1e25dfac428fff0d828b3934" class="uface" src="../avatar/4d43b8fa1e25dfac428fff0d828b3934.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="国文" href="../oscarxie">oscarxie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply8">8楼</a> · <abbr class="timeago" title="2014-07-11T23:16:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6615" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="115" href="http://testerhome.com/topics/1128/replies/6615/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="oscarxie" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> , android studio 是0.8，估计很快1.0； gradle是2.0了吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1128#reply9">9楼</a> · <abbr class="timeago" title="2014-07-12T00:30:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6617" data-state="" data-type="Reply" href="1128#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1128/replies/6617/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="1128#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1128#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../oscarxie" class="at_user" title="@oscarxie"><i>@</i>oscarxie</a> 嗯对的。0.8.。还tmd是beta。。我去。。。gradle是2.0了。但是我换回1.1.0了。。因为2.0我死活编译不过。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+    <li><a href="1697" title="chrome mobile emulation 及周边漫谈和相关应用+想法">chrome mobile emulation 及周边...</a></li>
+    <li><a href="1696" title="谁有轻量级的 Android 模拟器推荐？ 电脑内存 1G 上可流畅运行的">谁有轻量级的 Android 模拟器推荐？ 电脑内存 ...</a></li>
+    <li><a href="1660" title="SDK 测试小结">SDK 测试小结</a></li>
+    <li><a href="1587" title="移动应用自动化测试的困惑">移动应用自动化测试的困惑</a></li>
+    <li><a href="1567" title="DDMS 中生成 Trace 的方法原理是什么">DDMS 中生成 Trace 的方法原理是什么</a></li>
+    <li><a href="1563" title="uiautomatorviewer 不能显示模拟器界面，黑屏，但是信息能出来？谁知道怎么回事？">uiautomatorviewer 不能显示模拟器界面...</a></li>
+    <li><a href="1557" title="通过 xcode 查看 app crash 日志这个方法在 ios8 下面都查看不到了">通过 xcode 查看 app crash 日志这个方...</a></li>
+    <li><a href="1553" title="如何做好移动互联网应用测试 ">如何做好移动互联网应用测试 </a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1128#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

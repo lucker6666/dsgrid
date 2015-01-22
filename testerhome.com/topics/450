@@ -1,0 +1,859 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 关于 webview 问题。请求帮助 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">关于 webview 问题。请求帮助</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="ben" href="../benlooking">benlooking</a>
+     · 
+    于<abbr class="timeago" title="2014-02-10T14:58:07+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="luis" href="../luis">luis</a> 于<abbr class="timeago" title="2014-02-26T22:39:27+08:00"></abbr>回复
+     · 
+    628次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>背景：  小弟要测试一个hybrid 类型的app。apk进来跳转到webview，现在能够显示webview的内容，却不能进行测试操作。<br>
+           手机是Android 4.2.2,电脑是windows。 代码如下：</p>
+<pre class="highlight java">   <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span><span class="s">"Android"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+    <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"4.2"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"WINDOWS"</span><span class="o">);</span>
+       <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-package"</span><span class="o">,</span> <span class="s">"com.paic.mobileoa"</span><span class="o">);</span>
+       <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-activity"</span><span class="o">,</span> <span class="s">".LoadingActivity"</span><span class="o">);</span>
+        <span class="n">remoteWebDriver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteWebDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+
+    <span class="o">}</span>
+    <span class="nd">@After</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">driver</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">addContact</span><span class="o">(){</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">20000</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">switchTo</span><span class="o">().</span><span class="na">window</span><span class="o">(</span><span class="s">"WEBVIEW"</span><span class="o">);</span>
+        <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">findElement</span><span class="o">(</span><span class="n">By</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">"待处理文件"</span><span class="o">)).</span><span class="na">click</span><span class="o">();</span>
+        <span class="n">remoteWebDriver</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: leaveWebView"</span><span class="o">);</span>
+</pre>
+<p>报错信息：<br>
+  报错说：<br>
+               debug: Request received with params: {"name":"WEBVIEW"}<br>
+                 Responding to client that a method is not implemented  为什么啊？？ <br>
+            同样的，我在手机上跑sample里面那个AndroidContactsTest.java就没有问题。</p>
+<pre class="highlight java"><span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="n">bd62b7a5</span><span class="o">-</span><span class="n">c2dd</span><span class="o">-</span><span class="mi">4545</span><span class="o">-</span><span class="mi">9</span><span class="n">f56</span><span class="o">-</span><span class="mi">594957055823</span>
+<span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{}</span>
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">success:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">0</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"platform"</span><span class="o">:</span><span class="s">"WINDOWS"</span><span class="o">,</span><span class="s">"browserN
+ame"</span><span class="o">:</span><span class="s">""</span><span class="o">,</span><span class="s">"version"</span><span class="o">:</span><span class="s">"4.2"</span><span class="o">,</span><span class="s">"webStorageEnabled"</span><span class="o">:</span><span class="kc">false</span><span class="o">,</span><span class="s">"takesScreenshot"</span><span class="o">:</span><span class="kc">true</span><span class="o">,</span><span class="s">"javascriptEnabled"</span>
+<span class="o">:</span><span class="kc">true</span><span class="o">,</span><span class="s">"databaseEnabled"</span><span class="o">:</span><span class="kc">false</span><span class="o">,</span><span class="s">"app-package"</span><span class="o">:</span><span class="s">"com.paic.mobileoa"</span><span class="o">,</span><span class="s">"device"</span><span class="o">:</span><span class="s">"Android"</span><span class="o">,</span><span class="s">"app-acti
+vity"</span><span class="o">:</span><span class="s">".LoadingActivity"</span><span class="o">},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="s">"bd62b7a5-c2dd-4545-9f56-594957055823"</span><span class="o">}</span>
+<span class="n">GET</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="n">bd62b7a5</span><span class="o">-</span><span class="n">c2dd</span><span class="o">-</span><span class="mi">4545</span><span class="o">-</span><span class="mi">9</span><span class="n">f56</span><span class="o">-</span><span class="mi">594957055823</span> <span class="mi">200</span> <span class="mi">9</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">388</span><span class="n">b</span>
+<span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="n">bd62b7a5</span><span class="o">-</span><span class="n">c2dd</span><span class="o">-</span><span class="mi">4545</span><span class="o">-</span><span class="mi">9</span><span class="n">f56</span><span class="o">-</span><span class="mi">594957055823</span><span class="o">/</span><span class="n">wind</span>
+<span class="n">ow</span>
+<span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{</span><span class="s">"name"</span><span class="o">:</span><span class="s">"WEBVIEW"</span><span class="o">}</span>
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">that</span> <span class="n">a</span> <span class="n">method</span> <span class="n">is</span> <span class="n">not</span> <span class="n">implemented</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="n">bd62b7a5</span><span class="o">-</span><span class="n">c2dd</span><span class="o">-</span><span class="mi">4545</span><span class="o">-</span><span class="mi">9</span><span class="n">f56</span><span class="o">-</span><span class="mi">594957055823</span><span class="o">/</span><span class="n">window</span> <span class="mi">501</span> <span class="mi">15</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">180</span><span class="n">b</span>
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='关于 webview 问题。请求帮助 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="450#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="450#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="450#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="450#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="450#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>22</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply1">1楼</a> · <abbr class="timeago" title="2014-02-10T17:01:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2449" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2449/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>capabilities.setCapability("device","Android")换成capabilities.setCapability("device","Selendroid");<br>
+也是问题》</p>
+<pre class="highlight java"><span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span>
+<span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{</span><span class="s">"desiredCapabilities"</span><span class="o">:{</span><span class="s">"platform"</span><span class="o">:</span><span class="s">"WINDOWS"</span><span class="o">,</span><span class="s">"browserNa
+me"</span><span class="o">:</span><span class="s">""</span><span class="o">,</span><span class="s">"app-package"</span><span class="o">:</span><span class="s">"com.paic.mobileoa"</span><span class="o">,</span><span class="s">"device"</span><span class="o">:</span><span class="s">"selendroid"</span><span class="o">,</span><span class="s">"app-activity"</span><span class="o">:</span><span class="s">".LoadingActiv
+ity"</span><span class="o">}}</span>
+<span class="nl">info:</span> <span class="n">Got</span> <span class="n">configuration</span> <span class="n">error</span><span class="o">,</span> <span class="n">not</span> <span class="n">starting</span> <span class="n">session</span>
+<span class="nl">info:</span> <span class="n">Cleaning</span> <span class="n">up</span> <span class="n">appium</span> <span class="n">session</span>
+<span class="nl">error:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">an</span> <span class="n">Appium</span> <span class="n">session</span><span class="o">,</span> <span class="n">err</span> <span class="nl">was:</span> <span class="n">No</span> <span class="n">app</span> <span class="n">set</span><span class="o">;</span> <span class="n">either</span> <span class="n">start</span> <span class="n">appium</span> <span class="n">with</span> <span class="o">--</span><span class="n">ap</span>
+<span class="n">p</span> <span class="n">or</span> <span class="n">pass</span> <span class="n">in</span> <span class="n">an</span> <span class="err">'</span><span class="n">app</span><span class="err">'</span> <span class="n">value</span> <span class="n">in</span> <span class="n">desired</span> <span class="n">capabilities</span>
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">error:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">33</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"message"</span><span class="o">:</span><span class="s">"A new session could
+not be created."</span><span class="o">,</span><span class="s">"origValue"</span><span class="o">:</span><span class="s">"No app set; either start appium with --app or pass in an 'app'
+ value in desired capabilities"</span><span class="o">},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="kc">null</span><span class="o">}</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span> <span class="mi">500</span> <span class="mi">8</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">223</span><span class="n">b</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply2">2楼</a> · <abbr class="timeago" title="2014-02-10T17:31:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2452" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2452/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 改成capabilities.setCapability("device","Selendroid");后根据<br><a href="http://stackoverflow.com/questions/16619143/android-maven-could-not-find-tool-aapt" rel="nofollow" target="_blank">http://stackoverflow.com/questions/16619143/android-maven-could-not-find-tool-aapt</a> 所说<br>
+修改windows版本的mklink aapt.exe ..\build-tools\android-4.2.2\aapt.exe mklink /D lib ..\build-tools\android-4.2.2\lib mklink aidl.exe ..\build-tools\android-4.2.2\aidl.exe 也继续报错<br>
+ Failed to start an Appium session, err was: Error: Could not find aapt in tools</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply3">3楼</a> · <abbr class="timeago" title="2014-02-10T17:31:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2453" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2453/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 看log很清楚嘛，你没设置apk的文件路径呀。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply4">4楼</a> · <abbr class="timeago" title="2014-02-10T17:34:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2454" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2454/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 这是因为改成capabilities.setCapability("device","Selendroid")后的问题。后面加上了路径，报 err was: Error: Could not find aapt in tools。<br>
+之前第一次Ok了就把路径注释了的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply5">5楼</a> · <abbr class="timeago" title="2014-02-10T17:44:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2456" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2456/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> <a href="314" rel="nofollow" target="_blank">http://testerhome.com/topics/314</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply6">6楼</a> · <abbr class="timeago" title="2014-02-10T18:02:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2457" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2457/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 恩。我看过这个帖子了，方法我也根据<a href="http://stackoverflow.com/questions/16619143/android-maven-could-not-find-tool-aapt" rel="nofollow" target="_blank">http://stackoverflow.com/questions/16619143/android-maven-could-not-find-tool-aapt</a>所说改了还是有问题。晚上回去在研究研究</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply7">7楼</a> · <abbr class="timeago" title="2014-02-10T18:13:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2458" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2458/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 试试下载其他版本的android SDK</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply8">8楼</a> · <abbr class="timeago" title="2014-02-11T10:16:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2473" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2473/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> <br>
+   Hi，我昨天试了下，用Selendroid。加了aapt.exe等三个文件可以运行。可以却出现如下问题：<br>
+    1..之前用"device","Android"时，第一次运行完后注释app的路径。之后会去手机里面找。但是在selendroid模式下会报app路径找不到的错。改回Android，就可以。</p>
+<pre class="highlight java"><span class="nl">error:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">an</span> <span class="n">Appium</span> <span class="n">session</span><span class="o">,</span> <span class="n">err</span> <span class="nl">was:</span> <span class="n">No</span> <span class="n">app</span> <span class="n">set</span><span class="o">;</span> <span class="n">either</span> <span class="n">start</span> <span class="n">appium</span> <span class="n">with</span> <span class="o">--</span><span class="n">ap</span>
+<span class="n">p</span> <span class="n">or</span> <span class="n">pass</span> <span class="n">in</span> <span class="n">an</span> <span class="err">'</span><span class="n">app</span><span class="err">'</span> <span class="n">value</span> <span class="n">in</span> <span class="n">desired</span> <span class="n">capabilities</span>
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">error:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">33</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"message"</span><span class="o">:</span><span class="s">"A new session could
+not be created."</span><span class="o">,</span><span class="s">"origValue"</span><span class="o">:</span><span class="s">"No app set; either start appium with --app or pass in an 'app'
+ value in desired capabilities"</span><span class="o">},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="kc">null</span><span class="o">}</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span> <span class="mi">500</span> <span class="mi">7</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">223</span><span class="n">b</span>
+</pre>
+<p>2.如果给Selendroid加上路径后运行报</p>
+<pre class="highlight java"><span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{</span><span class="s">"name"</span><span class="o">:</span><span class="s">"WEBVIEW"</span><span class="o">}</span>
+<span class="nl">debug:</span> <span class="n">Proxying</span> <span class="n">command</span> <span class="n">to</span> <span class="nl">localhost:</span><span class="mi">8080</span>
+<span class="nl">info:</span> <span class="n">Making</span> <span class="n">http</span> <span class="n">request</span> <span class="n">with</span> <span class="nl">opts:</span> <span class="o">{</span><span class="s">"url"</span><span class="o">:</span><span class="s">"http://localhost:8080/wd/hub/session/6800894c-8
+423-4018-b5b1-fa0a042e973c/window"</span><span class="o">,</span><span class="s">"method"</span><span class="o">:</span><span class="s">"POST"</span><span class="o">,</span><span class="s">"json"</span><span class="o">:{</span><span class="s">"name"</span><span class="o">:</span><span class="s">"WEBVIEW"</span><span class="o">}}</span>
+<span class="nl">debug:</span> <span class="n">Proxied</span> <span class="n">response</span> <span class="n">received</span> <span class="n">with</span> <span class="n">status</span> <span class="mi">500</span><span class="o">:</span> <span class="n">undefined</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="mi">6800894</span><span class="n">c</span><span class="o">-</span><span class="mi">8423</span><span class="o">-</span><span class="mi">4018</span><span class="o">-</span><span class="n">b5b1</span><span class="o">-</span><span class="n">fa0a042e973c</span><span class="o">/</span><span class="n">window</span> <span class="mi">500</span> <span class="mi">5204</span><span class="n">ms</span>
+</pre>
+<p>请问一下，appium测试webview只能用Selendroid模式么。<br>
+谢谢~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply9">9楼</a> · <abbr class="timeago" title="2014-02-11T10:57:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2474" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/450/replies/2474/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="lihuazhang" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 不是啊 selendroid 是为了兼容4.1一下的吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply10">10楼</a> · <abbr class="timeago" title="2014-02-11T11:01:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2475" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2475/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <br>
+我在<a href="https://groups.google.com/forum/#!topic/appium-discuss/vUIqIPdjxvc" rel="nofollow" target="_blank">https://groups.google.com/forum/#!topic/appium-discuss/vUIqIPdjxvc</a>看到<br>
+   Jonathan Lipps 说<br>
+If you want to use webviews, you need to use selendroid mode.所以想确认下。<br>
+大神求帮助啊，我的webview一直跑不起来。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply11">11楼</a> · <abbr class="timeago" title="2014-02-11T11:03:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2476" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/450/replies/2476/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="lihuazhang" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 哦 是嘛。。。。 那我不知道了诶。。。我回头帮你看看。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply12">12楼</a> · <abbr class="timeago" title="2014-02-11T11:05:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2477" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2477/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 恩，谢谢。现在用selendroid 不能注释路径。Android又找不到元素。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply13">13楼</a> · <abbr class="timeago" title="2014-02-11T13:01:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2479" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2479/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 要测试hybrid app必须使用selendorid模式，这种模式下app必须指定。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply14">14楼</a> · <abbr class="timeago" title="2014-02-11T13:34:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2480" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2480/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 那每次都要重新安装app么？程序里有动态吗验证的那就不行了哦？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply15">15楼</a> · <abbr class="timeago" title="2014-02-11T14:55:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2485" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2485/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> appium会有check，动态验证码可以通过制定不同activity来跳过，或者开发阶段开个后门吧。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply16">16楼</a> · <abbr class="timeago" title="2014-02-11T15:35:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2486" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2486/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> <br>
+自动check么？就是没有后门开。。诶。。。<br>
+老大，有selendroid下能跑通的demo么。我这边无论怎样都不行，我拿过来研究研究</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply17">17楼</a> · <abbr class="timeago" title="2014-02-11T19:11:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2492" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2492/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 你现在只是动态验证码不知道如何处理还是什么？更新下你的问题。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply18">18楼</a> · <abbr class="timeago" title="2014-02-12T00:31:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2500" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2500/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 老大，现在用selendorid模式测webview，被测app有（动态验证码以及手机短信验证码），现在问题有<br>
+       1。这种模式下页面元素获取不到（之前用过淘宝的athrun可以获取）</p>
+<pre class="highlight java"><span class="nl">debug:</span> <span class="n">Request</span> <span class="n">received</span> <span class="n">with</span> <span class="nl">params:</span> <span class="o">{</span><span class="s">"using"</span><span class="o">:</span><span class="s">"name"</span><span class="o">,</span><span class="s">"value"</span><span class="o">:</span><span class="s">"提交"</span><span class="o">}</span>
+<span class="nl">debug:</span> <span class="n">Proxying</span> <span class="n">command</span> <span class="n">to</span> <span class="nl">localhost:</span><span class="mi">8080</span>
+<span class="nl">info:</span> <span class="n">Making</span> <span class="n">http</span> <span class="n">request</span> <span class="n">with</span> <span class="nl">opts:</span> <span class="o">{</span><span class="s">"url"</span><span class="o">:</span><span class="s">"http://localhost:8080/wd/hub/session/211af7fa-f
+783-4437-93ed-0afa092ba21c/element"</span><span class="o">,</span><span class="s">"method"</span><span class="o">:</span><span class="s">"POST"</span><span class="o">,</span><span class="s">"json"</span><span class="o">:{</span><span class="s">"using"</span><span class="o">:</span><span class="s">"name"</span><span class="o">,</span><span class="s">"value"</span><span class="o">:</span><span class="s">"提交"</span><span class="o">}}</span>
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">error:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">7</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"message"</span><span class="o">:</span><span class="s">"An element could not
+be located on the page using the given search parameters."</span><span class="o">,</span><span class="s">"origValue"</span><span class="o">:</span><span class="s">"Element was not foun
+d."</span><span class="o">},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="s">"211af7fa-f783-4437-93ed-0afa092ba21c"</span><span class="o">}</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="mi">211</span><span class="n">af7fa</span><span class="o">-</span><span class="n">f783</span><span class="o">-</span><span class="mi">4437</span><span class="o">-</span><span class="mi">93</span><span class="n">ed</span><span class="o">-</span><span class="mi">0</span><span class="n">afa092ba21c</span><span class="o">/</span><span class="n">element</span> <span class="mi">500</span> <span class="mi">5105</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">229</span><span class="n">b</span>
+<span class="nl">debug:</span> <span class="n">Appium</span> <span class="n">request</span> <span class="n">initiated</span> <span class="n">at</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="mi">211</span><span class="n">af7fa</span><span class="o">-</span><span class="n">f783</span><span class="o">-</span><span class="mi">4437</span><span class="o">-</span><span class="mi">93</span><span class="n">ed</span><span class="o">-</span><span class="mi">0</span><span class="n">afa092ba21c</span>
+</pre>
+<p>2。不知道怎么跳过动态码的验证。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply19">19楼</a> · <abbr class="timeago" title="2014-02-12T08:41:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="2501" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2501/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../benlooking" class="at_user" title="@benlooking"><i>@</i>benlooking</a> 元素定位不到很可能是对应的元素locator写的不对，建议把html源码放上，也建议用xpaTh定位不要用name....至于验证码最简单的就是开后门，还有就是用代码识别验证码但难度很大，还有就是能否跳过验证码那一页面直接从下一页面的activity开始</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../benlooking"><img alt="355" class="uface" src="../user/large_avatar/355.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ben" href="../benlooking">benlooking</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply20">20楼</a> · <abbr class="timeago" title="2014-02-17T15:36:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2563" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="355" href="http://testerhome.com/topics/450/replies/2563/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="benlooking" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> <br>
+在这个模式下奇怪的报错。。。。</p>
+<pre class="highlight java">  <span class="n">File</span> <span class="n">classpathRoot</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"user.dir"</span><span class="o">));</span>
+       <span class="n">File</span> <span class="n">appDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">classpathRoot</span><span class="o">,</span> <span class="s">"../../../apps/meoa"</span><span class="o">);</span>
+       <span class="n">File</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">appDir</span><span class="o">,</span> <span class="s">"OldMeoa_debug.apk"</span><span class="o">);</span>
+        <span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+       <span class="c1">//capabilities.setCapability("device","Android");</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span><span class="s">"Selendroid"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"4.0"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"WINDOWS"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="n">app</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-package"</span><span class="o">,</span> <span class="s">"com.paic.mobileoa"</span><span class="o">);</span>
+        <span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app-activity"</span><span class="o">,</span> <span class="s">".LoadingActivity"</span><span class="o">);</span>
+        <span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">);</span>
+       <span class="n">remoteWebDriver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteWebDriver</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">capabilities</span><span class="o">);</span>
+</pre><pre class="highlight java"><span class="nl">error:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">an</span> <span class="n">Appium</span> <span class="n">session</span><span class="o">,</span> <span class="n">err</span> <span class="nl">was:</span> <span class="nl">Error:</span> <span class="n">Waited</span> <span class="mi">20</span> <span class="n">secs</span> <span class="k">for</span> <span class="n">selendroid</span> <span class="n">serv</span>
+<span class="n">er</span> <span class="n">and</span> <span class="n">it</span> <span class="n">never</span> <span class="n">showed</span> <span class="n">up</span>
+<span class="nl">info:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="n">with</span> <span class="nl">error:</span> <span class="o">{</span><span class="s">"status"</span><span class="o">:</span><span class="mi">33</span><span class="o">,</span><span class="s">"value"</span><span class="o">:{</span><span class="s">"message"</span><span class="o">:</span><span class="s">"A new session could
+not be created. (Original error: Waited 20 secs for selendroid server and it never showed up
+)"</span><span class="o">,</span><span class="s">"origValue"</span><span class="o">:</span><span class="s">"Waited 20 secs for selendroid server and it never showed up"</span><span class="o">},</span><span class="s">"sessionId"</span><span class="o">:</span><span class="n">nu</span>
+<span class="n">ll</span><span class="o">}</span>
+<span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span> <span class="mi">500</span> <span class="mi">39197</span><span class="n">ms</span> <span class="o">-</span> <span class="mi">268</span><span class="n">b</span>
+
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../chuyaoyao"><img alt="354" class="uface" src="../user/large_avatar/354.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chuya0yao" href="../chuyaoyao">chuyaoyao</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply21">21楼</a> · <abbr class="timeago" title="2014-02-26T12:02:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2791" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="354" href="http://testerhome.com/topics/450/replies/2791/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="chuyaoyao" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="450#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 请问一个问题 selendroid 下xpath 定位不到元素，一直很困扰我<br>
+代码：<br>
+puts <a href="http://testerhome.com/driver" class="at_user" title="@driver"><i>@</i>driver</a>.find_element(:class,'android.widget.HorizontalScrollView')<br>
+puts <a href="http://testerhome.com/driver" class="at_user" title="@driver"><i>@</i>driver</a>.find_element(:xpath,'//ImageButton')<br><img src="../photo/2014/fc6a671c96d1cefb3683c538d019244e.gif" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="450#reply22">22楼</a> · <abbr class="timeago" title="2014-02-26T22:39:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2818" data-state="" data-type="Reply" href="450#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/450/replies/2818/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="luis" href="450#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../chuyaoyao" class="at_user" title="@chuyaoyao"><i>@</i>chuyaoyao</a> 建议贴上元素inspect 结构图</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @jacky 希望一天天的进步，小学妹等着我啊
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="450#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

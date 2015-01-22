@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 Android CTS 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 Android CTS 节点最新发帖.</description>
+    <item>
+      <title>求留下 testerhome</title>
+      <description>&lt;p&gt;需要testerhome，留个脚印吧，证明我们多么需要它。&lt;/p&gt;</description>
+      <author>doctorq</author>
+      <pubDate>Wed, 21 Jan 2015 15:43:09 +0800</pubDate>
+      <link>http://testerhome.com/topics/1914</link>
+      <guid>http://testerhome.com/topics/1914</guid>
+    </item>
+    <item>
+      <title>Android CTS 合集</title>
+      <description>&lt;p&gt;感谢&lt;a href="/doctorq" class="at_user" title="@doctorq"&gt;&lt;i&gt;@&lt;/i&gt;doctorq&lt;/a&gt;给我们贡献了cts的分享。我常常想论坛里有那么多好的帖子，有入门的，有进阶的，但是还是每天很多人来问重复同样的问题。有的时候会觉得我们这些默默贡献文章的同学挺无奈的。这些CTS的文章都是非常好的。很多天了，也没多少人来看，也没多少评论。希望&lt;a href="/doctorq" class="at_user" title="@doctorq"&gt;&lt;i&gt;@&lt;/i&gt;doctorq&lt;/a&gt;不要伤心。我们支持你。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://testerhome.com/topics/1808" target="_blank"&gt;CTS 框架解析&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1858" target="_blank"&gt;CTS 设备管理之自动检测设备&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1863" target="_blank"&gt;CTS 设备管理之设备分类&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1881" target="_blank"&gt;CTS 框架解析之 case 的组织&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1890" target="_blank"&gt;CTS 框架解析之 case 执行结果处理模块&lt;/a&gt;&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Sun, 18 Jan 2015 09:13:55 +0800</pubDate>
+      <link>http://testerhome.com/topics/1891</link>
+      <guid>http://testerhome.com/topics/1891</guid>
+    </item>
+    <item>
+      <title>CTS 框架解析之 case 执行结果处理模块</title>
+      <description>&lt;h4&gt;UML&lt;/h4&gt;
+&lt;p&gt;&lt;img src="/photo/2015/c42f8a2d1dc72efc81520aae0055621f.png" alt=""&gt;&lt;/p&gt;
+&lt;h4&gt;解释&lt;/h4&gt;
+&lt;p&gt;cts框架中将case的执行和case结果的收集分成了独立的2个部分，我们称case的结果收集叫测试结果收集模块。设计的思路来源为ddmlib中的ITestRunListener接口，该接口是一个抽象的观察者组件，cts创建有很多具体的组件。但是这些组件不是一个一个去注册成为监听者的，而是通过run方法传递给ddmlib中RemoteAndroidTestRunner类的。所以只要我们继承了该接口，在run的时候把该接口的实例对象传过去，我们就能在对象实例的相应方法中接受信息。但是我们想要在多个地方都能接受到测试结果呢？没关系，cts为我们准备了ResultForwarder类。看具体实现细节：&lt;/p&gt;
+&lt;h4&gt;ResultForwarder&lt;/h4&gt;&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ResultForwarder&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Create a {@link ResultForwarder} with deferred listener setting. Intended
+     * only for use by subclasses.
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="n"&gt;ResultForwarder&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;mListeners&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Collections&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;emptyList&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Create a {@link ResultForwarder}.
+     * 
+     * @param listeners
+     *            the real {@link ITestInvocationListener}s to forward results
+     *            to
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ResultForwarder&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;mListeners&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Alternate variable arg constructor for {@link ResultForwarder}.
+     * 
+     * @param listeners
+     *            the real {@link ITestInvocationListener}s to forward results
+     *            to
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ResultForwarder&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;mListeners&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;asList&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Set the listeners after construction. Intended only for use by
+     * subclasses.
+     * 
+     * @param listeners
+     *            the real {@link ITestInvocationListener}s to forward results
+     *            to
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setListeners&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;mListeners&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Set the listeners after construction. Intended only for use by
+     * subclasses.
+     * 
+     * @param listeners
+     *            the real {@link ITestInvocationListener}s to forward results
+     *            to
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setListeners&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;mListeners&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;asList&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;invocationStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IBuildInfo&lt;/span&gt; &lt;span class="n"&gt;buildInfo&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invocationStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buildInfo&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;invocationFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Throwable&lt;/span&gt; &lt;span class="n"&gt;cause&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;invocationFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cause&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;invocationEnded&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;elapsedTime&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;InvocationSummaryHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reportInvocationEnded&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;elapsedTime&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;TestSummary&lt;/span&gt; &lt;span class="n"&gt;getSummary&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// should never be called&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testLog&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;dataName&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LogDataType&lt;/span&gt; &lt;span class="n"&gt;dataType&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;InputStreamSource&lt;/span&gt; &lt;span class="n"&gt;dataStream&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testLog] dataName: %s", dataName));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testLog&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dataName&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dataType&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dataStream&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}case开始时显式的调用
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testRunStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;runName&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;testCount&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO, String&lt;/span&gt;
+&lt;span class="c1"&gt;//              .format("[testRunStarted] runName: %s testCount:%d", runName,&lt;/span&gt;
+&lt;span class="c1"&gt;//                      testCount));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testRunStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;runName&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;testCount&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testRunFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;errorMessage&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testRunFailed] errorMessage: %s", errorMessage));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testRunFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;errorMessage&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testRunStopped&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;elapsedTime&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testRunStopped] elapsedTime: %d", elapsedTime));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testRunStopped&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;elapsedTime&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testRunEnded&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;elapsedTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;runMetrics&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testRunEnded] elapsedTime: %d", elapsedTime));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testRunEnded&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;elapsedTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;runMetrics&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testStarted] %s", test.toString()));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestFailure&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testFailed] %s", test.toString()));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testEnded&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;testMetrics&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="c1"&gt;//      CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+&lt;span class="c1"&gt;//              String.format("[testEnded] %s", test.toString()));&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mListeners&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testEnded&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;testMetrics&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;该类中继承于&lt;code&gt;ITestInvocationListener&lt;/code&gt;接口，&lt;code&gt;ITestInvocationListener&lt;/code&gt;也继承与&lt;code&gt;ITestRunListener&lt;/code&gt;接口，然后在&lt;code&gt;ITestRunListener&lt;/code&gt;接口接触上添加了一些cts自定义的方法。&lt;/p&gt;
+
+&lt;p&gt;而我们具体看看&lt;code&gt;ResultForwarder&lt;/code&gt;构造方法你会发现，传递的参数是多个&lt;code&gt;ITestInvocationListener&lt;/code&gt;对象，传递到&lt;code&gt;ResultForwarder&lt;/code&gt;后保存到&lt;code&gt;List&amp;lt;ITestInvocationListener&amp;gt;&lt;/code&gt;集合中。这样当我们&lt;code&gt;ResultForwarder&lt;/code&gt;传递到&lt;code&gt;ddmlib&lt;/code&gt;内部的时候，&lt;code&gt;ResultForwarder&lt;/code&gt;相应方法被调用后，集合里的每一个&lt;code&gt;ITestInvocationListener&lt;/code&gt;对象都会收到结果。良好的设计啊！&lt;/p&gt;
+&lt;h4&gt;ResultForwarder子类&lt;/h4&gt;
+&lt;p&gt;当case执行失败的时候，cts为我们准备了3个处理类，这三个类都是继承与&lt;code&gt;ResultForwarder&lt;/code&gt;，因此它们都是case执行结果的监听器，case失败的时候会自动的进行相关的动作。&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="cm"&gt;/**
+     * 保存bugreport日志 A {@link ResultForwarder} that will forward a bugreport on
+     * each failed test.
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FailedTestBugreportGenerator&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;ResultForwarder&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;ITestDevice&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;FailedTestBugreportGenerator&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ITestDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;mDevice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="c1"&gt;// 当ddmlib中ITestRunListener监听器触发testFailed方法时,该方法被调用.ITestRunListener的方法是由ddmlib内部调用的&lt;/span&gt;
+        &lt;span class="c1"&gt;// 该方法将在android-cts\repository\logs生成bugreport信息的文本文件并打包&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestFailure&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;InputStreamSource&lt;/span&gt; &lt;span class="n"&gt;bugSource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getBugreport&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="c1"&gt;// System.out.println("CtsTest.FailedTestBugreportGenerator.testFailed: 执行case失败,需要保存当前bugreport的信息");&lt;/span&gt;
+            &lt;span class="c1"&gt;// CLog.logAndDisplay(LogLevel.INFO,&lt;/span&gt;
+            &lt;span class="c1"&gt;// String.format("[testFailed] %s", test.toString()));&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testLog&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"bug-%s_%s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getClassName&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestName&lt;/span&gt;&lt;span class="o"&gt;()),&lt;/span&gt; &lt;span class="n"&gt;LogDataType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;TEXT&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bugSource&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;bugSource&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cancel&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * 保存system缓冲区的日志 A {@link ResultForwarder} that will forward a logcat
+     * snapshot on each failed test.
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FailedTestLogcatGenerator&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;ResultForwarder&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;ITestDevice&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;mNumLogcatBytes&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;FailedTestLogcatGenerator&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ITestDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;maxLogcatBytes&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;mDevice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;mNumLogcatBytes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;maxLogcatBytes&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestFailure&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="c1"&gt;// sleep a small amount of time to ensure test failure stack trace&lt;/span&gt;
+            &lt;span class="c1"&gt;// makes it into logcat&lt;/span&gt;
+            &lt;span class="c1"&gt;// capture&lt;/span&gt;
+            &lt;span class="n"&gt;RunUtil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getDefault&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;sleep&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;InputStreamSource&lt;/span&gt; &lt;span class="n"&gt;logSource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLogcat&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mNumLogcatBytes&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testLog&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"logcat-%s_%s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getClassName&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestName&lt;/span&gt;&lt;span class="o"&gt;()),&lt;/span&gt; &lt;span class="n"&gt;LogDataType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;TEXT&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;logSource&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;logSource&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cancel&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * 保存截图 A {@link ResultForwarder} that will forward a screenshot on test
+     * failures.
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FailedTestScreenshotGenerator&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;ResultForwarder&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;ITestDevice&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;FailedTestScreenshotGenerator&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestInvocationListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ITestDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;mDevice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestFailure&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testFailed&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+            &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;InputStreamSource&lt;/span&gt; &lt;span class="n"&gt;screenSource&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getScreenshot&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+                &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testLog&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"screenshot-%s_%s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getClassName&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestName&lt;/span&gt;&lt;span class="o"&gt;()),&lt;/span&gt; &lt;span class="n"&gt;LogDataType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PNG&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;screenSource&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;screenSource&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cancel&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DeviceNotAvailableException&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// TODO: rethrow this somehow&lt;/span&gt;
+                &lt;span class="n"&gt;CLog&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;e&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Device %s became unavailable while capturing screenshot, %s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;1&lt;/code&gt;.老大FailedTestBugreportGenerator：保存bugreport信息。&lt;br&gt;
+&lt;code&gt;2&lt;/code&gt;.老二FailedTestLogcatGenerator：logcat信息，system缓冲区里的日志信息保存到本地。&lt;br&gt;
+&lt;code&gt;3&lt;/code&gt;.老三FailedTestScreenshotGenerator：截图，case失败时保存第一现场的截图。&lt;/p&gt;</description>
+      <author>doctorq</author>
+      <pubDate>Sat, 17 Jan 2015 23:30:12 +0800</pubDate>
+      <link>http://testerhome.com/topics/1890</link>
+      <guid>http://testerhome.com/topics/1890</guid>
+    </item>
+    <item>
+      <title>CTS 框架解析之 case 的组织</title>
+      <description>&lt;h4&gt;uml图&lt;/h4&gt;
+&lt;p&gt;以"作孽"的&lt;code&gt;UML&lt;/code&gt;知识画成的关系图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2015/91f306c33e7c8935f5fde63c167769a6.png" alt=""&gt;&lt;/p&gt;
+&lt;h4&gt;解释&lt;/h4&gt;
+&lt;p&gt;上图涉及5个类：&lt;code&gt;ddmlib&lt;/code&gt;提供的&lt;code&gt;TestIdentifier&lt;/code&gt;类，&lt;code&gt;cts&lt;/code&gt;自定义的&lt;code&gt;IRemoteTest&lt;/code&gt;接口、&lt;code&gt;ITestPackageDef&lt;/code&gt;接口、&lt;code&gt;TestFilter&lt;/code&gt;类和&lt;code&gt;TestPackage&lt;/code&gt;类。具体意义如下：&lt;/p&gt;
+&lt;h4&gt;TestIdentifier&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;ddmlib&lt;/code&gt;为我们提供的属于&lt;code&gt;instrumentation&lt;/code&gt;测试的&lt;code&gt;case&lt;/code&gt;实体类，里面有2个属性，case的类名和方法名。这样我们就可以找到一个case。&lt;/p&gt;
+&lt;h4&gt;IRemoteTest&lt;/h4&gt;
+&lt;p&gt;一种测试类型的接口定义，该测试类型可以直接将结果发送到监听器，让其处理。所以测试runner部分只管撒了欢的跑，抓结果的模块是单独存在的。&lt;/p&gt;
+&lt;h4&gt;ITestPackageDef&lt;/h4&gt;
+&lt;p&gt;case相关信息的容器，信息从哪里来？举个例子，写&lt;code&gt;uiautomator case&lt;/code&gt;的人都了解，我们写的case都要打成jar包，随着jar一起生成的还有一个与jar包名一样的xml文件，我们的信息就是从该xml文件里来，里面定义了jar包的标识符，测试包名等信息。&lt;/p&gt;
+&lt;h4&gt;TestFilter&lt;/h4&gt;
+&lt;p&gt;case的过滤器类，定义一些过滤的条件。里面有2个集合保存了要被过滤掉的case的类名或&lt;code&gt;TestIdentifier&lt;/code&gt;对象，以及1个特殊的类名和方法名，这个属性默认是为&lt;code&gt;null&lt;/code&gt;，一般情况下需要你去设值，如果不设置，那么这个条件就不作为过滤的条件，来具体看看删选的处理代码：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;tests&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;filteredTests&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;(&lt;/span&gt;&lt;span class="n"&gt;tests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;size&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestIdentifier&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;tests&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mIncludedClass&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getClassName&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mIncludedClass&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// skip&lt;/span&gt;
+                &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mIncludedMethod&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestName&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mIncludedMethod&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// skip&lt;/span&gt;
+                &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mExcludedClasses&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;contains&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getClassName&lt;/span&gt;&lt;span class="o"&gt;()))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// skip&lt;/span&gt;
+                &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mExcludedTests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;contains&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// skip&lt;/span&gt;
+                &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;filteredTests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;Collections&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filteredTests&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TestIdComparator&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;filteredTests&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;代码块很简单，随着条件分支一步一步过滤，最后剩下来的case添加到新集合中返回。&lt;/p&gt;
+&lt;h4&gt;TestPackage&lt;/h4&gt;
+&lt;p&gt;包含上面3个实体对象(除了&lt;code&gt;TestFilter&lt;/code&gt;)，一个TestPackage代表了一个case包(jar或者apk等)相关的所有信息，例如一个&lt;code&gt;uiautomator&lt;/code&gt;写出的jar包，那么一个jar包就需要定义一个&lt;code&gt;TestPackage&lt;/code&gt;对象：该jar包包含的case集合，该jar包执行的测试类型，以及jar一些相关属性信息。有了这些就足够了，case就可以执行run的动作了。cts执行的时候只需要得到TestPackage对象集合(代表一个个的case包对象)，就可以遍历得到所有要执行的case。&lt;/p&gt;
+&lt;h4&gt;具体执行过程&lt;/h4&gt;
+&lt;p&gt;cts中是以plan来定义要跑的case包集合，plan则是一个xml文件，里面定义了一个或多个case包的标识信息。这样去case的目录下就可以找到case包以及case包的xml配置文件。当我们传入一个plan进入cts后，发生了什么？(一下方法都是CtsTest中的方法)&lt;/p&gt;
+&lt;h4&gt;buildTestsToRun方法&lt;/h4&gt;
+&lt;p&gt;当测试执行的时候，cts会先调用该方法获得所有TestPackage对象，上面说过，获得这个就足够了。具体该实现：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestPackage&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;buildTestsToRun&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestPackage&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;testPkgList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TestPackage&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="c1"&gt;// 获得testcases目录下所有的xml文件解析出来的case包对象&lt;/span&gt;
+            &lt;span class="n"&gt;ITestPackageRepo&lt;/span&gt; &lt;span class="n"&gt;testRepo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;createTestCaseRepo&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="c1"&gt;// 得到本次plan所需跑的case&lt;/span&gt;
+            &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestPackageDef&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;testPkgDefs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getTestPackagesToRun&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testRepo&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestPackageDef&lt;/span&gt; &lt;span class="n"&gt;testPkgDef&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;testPkgDefs&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;addTestPackage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testPkgList&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;testPkgDef&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testPkgList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;isEmpty&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;logAndDisplay&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LogLevel&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;WARN&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LOG_TAG&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"No tests to run"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;FileNotFoundException&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;IllegalArgumentException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"failed to find CTS plan file"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ParseException&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;IllegalArgumentException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"failed to parse CTS plan file"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ConfigurationException&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;IllegalArgumentException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"failed to process arguments"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;testPkgList&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;首先会去将固定路径下的(cts根目录下的repository\testcases)下所有xml文件解析出来，这些xml文件都是和case包一一对应的，你不能去解析jar包或者apk包吧，所以需要一个case包配置文件的存在，这样我们读取xml的信息就可以得到相关的信息。然后我们要筛选出本次plan需要跑的case包。&lt;/p&gt;
+&lt;h4&gt;getTestPackagesToRun方法&lt;/h4&gt;
+&lt;p&gt;该方法里有4条分支，每条分支代表不同的执行任务的标识。&lt;br&gt;
+&lt;code&gt;1&lt;/code&gt;以plan名定义的任务&lt;br&gt;
+&lt;code&gt;2&lt;/code&gt;.以case包的uri定义的集合所定义的任务&lt;br&gt;
+&lt;code&gt;3&lt;/code&gt;.以class定义的(一个类中的所有case)任务&lt;br&gt;
+&lt;code&gt;4&lt;/code&gt;.以sessionID(cts为之前跑过的任务都定义了一个session)所定义的任务，这个是重跑之前的任务。&lt;/p&gt;
+
+&lt;p&gt;我们来只看第一种，以plan方式启动的任务。&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestPackageDef&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;getTestPackagesToRun&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ITestPackageRepo&lt;/span&gt; &lt;span class="n"&gt;testRepo&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;ParseException&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;FileNotFoundException&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ConfigurationException&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// use LinkedHashSet to have predictable iteration order&lt;/span&gt;
+        &lt;span class="n"&gt;Set&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestPackageDef&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;testPkgDefs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedHashSet&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ITestPackageDef&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mPlanName&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LOG_TAG&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;format&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Executing CTS test plan %s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mPlanName&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+            &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;ctsPlanFile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mCtsBuildHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestPlanFile&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mPlanName&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;ITestPlan&lt;/span&gt; &lt;span class="n"&gt;plan&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;createPlan&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mPlanName&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;plan&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;createXmlStream&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ctsPlanFile&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;uri&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;plan&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestUris&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;mExcludedPackageNames&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;contains&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;ITestPackageDef&lt;/span&gt; &lt;span class="n"&gt;testPackage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;testRepo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTestPackage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="n"&gt;testPackage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setExcludedTestFilter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;plan&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getExcludedTestFilter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+                    &lt;span class="n"&gt;testPkgDefs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testPackage&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mPackageNames&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;size&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mClassName&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mContinueSessionId&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="c1"&gt;// should never get here - was checkFields() not called?&lt;/span&gt;
+            &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;IllegalStateException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"nothing to run?"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;testPkgDefs&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;该分支中，首先根据plan名找到所有xml文件，然后解析xml文件，得到case。这样我们就得到了ITestPackageDef对象，遍历得到所有这样的对象，然后将该对象集合返回。回到上面的&lt;code&gt;buildTestsToRun()&lt;/code&gt;中，然后根据返回的集合元素创建&lt;code&gt;TestPackage&lt;/code&gt;对象集合，这样我们的处理过程就完成了。&lt;/p&gt;</description>
+      <author>doctorq</author>
+      <pubDate>Fri, 16 Jan 2015 13:15:46 +0800</pubDate>
+      <link>http://testerhome.com/topics/1881</link>
+      <guid>http://testerhome.com/topics/1881</guid>
+    </item>
+    <item>
+      <title>CTS 设备管理之设备分类</title>
+      <description>&lt;p&gt;&lt;a href="http://testerhome.com/topics/1858" target="_blank"&gt;上一篇文章&lt;/a&gt;已经讲了cts如何自动检测到设备，效果就是无需我们再去调用&lt;code&gt;ADB&lt;/code&gt;的&lt;code&gt;getIDevice()&lt;/code&gt;得到设备,利用的是ADB中提供的观察者模式做到了这一点，那么得到设备后我们如何对这些设备进行管理的呢？&lt;/p&gt;
+&lt;h4&gt;设备分类&lt;/h4&gt;
+&lt;p&gt;cts中将设备分为3种状态：处于验证中的设备，可用设备，执行任务的设备。这三种状态的设备分别用3个集合保存：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="c1"&gt;//处于验证中的设备集合&lt;/span&gt;
+&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;IDeviceStateMonitor&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="c1"&gt;//可用设备的集合&lt;/span&gt;
+&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;ConditionPriorityBlockingQueue&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;mAvailableDeviceQueue&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="c1"&gt;//执行任务的设备集合&lt;/span&gt;
+&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;IManagedTestDevice&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;mAllocatedDeviceMap&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;1.处于验证中的设备集合&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;mCheckDeviceMap&lt;/code&gt;是一个&lt;code&gt;Map&lt;/code&gt;，&lt;code&gt;key&lt;/code&gt;值表示设备的&lt;code&gt;SN&lt;/code&gt;号，&lt;code&gt;value&lt;/code&gt;值表示当前设备的状态监听器对象&lt;code&gt;IDeviceStateMonitor&lt;/code&gt;(以后会讲到)。当一个新设备被检测的时候会首先放到该Map中，然后会调用&lt;code&gt;IDeviceStateMonitor&lt;/code&gt;.&lt;code&gt;waitForDeviceShell(final long waitTime)&lt;/code&gt;来对设备进行一个扫描，扫描通过以后，就会将设备添加到可用设备集合&lt;code&gt;mAvailableDeviceQueue&lt;/code&gt;中。但是不管扫描成不成功，经过检测步骤后，都会从&lt;code&gt;mCheckDeviceMap&lt;/code&gt;设备集合中删除该设备。所以可以说该容器这是临时存放设备用的，为的是对设备进行验证是否可用，就像机场里过安检一样。&lt;/p&gt;
+&lt;h4&gt;2.可用的设备集合&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;mAvailableDeviceQueue&lt;/code&gt;是一个&lt;a href="http://baike.baidu.com/view/1267829.htm" target="_blank"&gt;优先队列&lt;/a&gt;，且是线程安全的，这是&lt;code&gt;cts&lt;/code&gt;自定义的一个队列数据结构。你可以传入条件选择设备，比如按设备号选择，按平台号选择都可以。返回的是一个&lt;code&gt;IDevice&lt;/code&gt;对象，这是原生的&lt;code&gt;ADB&lt;/code&gt;中定义的接口类。该集合是一个中间集合，它从&lt;code&gt;mCheckDeviceMap&lt;/code&gt;中得到集合，然后等到用户使用设备后，就将集合中的某个元素"送给"了执行任务的设备集合&lt;code&gt;mAllocatedDeviceMap&lt;/code&gt;。&lt;/p&gt;
+&lt;h4&gt;3.执行任务的设备集合&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;mAllocatedDeviceMap&lt;/code&gt;集合是一个Map，&lt;code&gt;key&lt;/code&gt;值表示设备的&lt;code&gt;SN&lt;/code&gt;号，&lt;code&gt;value&lt;/code&gt;值表示的是cts自己定义的设备对象的接口&lt;code&gt;IManagedTestDevice&lt;/code&gt;。当用户选择一个可用设备后，是从可用设备集合&lt;code&gt;mAvailableDeviceQueue&lt;/code&gt;中得到了一个&lt;code&gt;IDevice&lt;/code&gt;,然后&lt;code&gt;cts&lt;/code&gt;使用外观模式，将其封装到了继承自&lt;code&gt;IManagedTestDevice&lt;/code&gt;接口的对象&lt;code&gt;TestDevice&lt;/code&gt;(这个类很重要，以后会单独讲)中，里面有很多关于设备的方法可以被调用，那么用户实际能操作就是这个&lt;code&gt;TestDevice&lt;/code&gt;类。等待任务完成后，该设备将“送还”到可用设备集合中，这只是一个借用的过程，用完了就还给了它，这样的话这个设备还可以继续执行其他任务。&lt;/p&gt;
+&lt;h4&gt;4.总结&lt;/h4&gt;
+&lt;p&gt;通过上面的介绍，我们用一幅图来描述一下3个集合之间的关系。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2015/40f070b5d28e2a7fc7f89d3a43850be6.png" alt=""&gt;&lt;/p&gt;
+&lt;h4&gt;检测设备后分类&lt;/h4&gt;
+&lt;p&gt;终于到了揭晓庐山真面目的时候，以上的种种解释，包括第一篇文章的铺垫，都是为了下面的内容铺垫的，讲代码的东西就是这么的麻烦。先上代码：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ManagedDeviceListener&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;IDeviceChangeListener&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * {@inheritDoc}
+         */&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deviceChanged&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;changeMask&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;IManagedTestDevice&lt;/span&gt; &lt;span class="n"&gt;testDevice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mAllocatedDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="n"&gt;changeMask&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;IDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CHANGE_STATE&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testDevice&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;TestDeviceState&lt;/span&gt; &lt;span class="n"&gt;newState&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TestDeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getStateByDdms&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getState&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                    &lt;span class="n"&gt;testDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDeviceState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;newState&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;containsKey&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;()))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;IDeviceStateMonitor&lt;/span&gt; &lt;span class="n"&gt;monitor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                    &lt;span class="n"&gt;monitor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestDeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getStateByDdms&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getState&lt;/span&gt;&lt;span class="o"&gt;()));&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;mAvailableDeviceQueue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;contains&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getState&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;DeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ONLINE&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;checkAndAddAvailableDevice&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * {@inheritDoc}
+         */&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deviceConnected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;CLog&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;d&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Detected device connect %s, id %d"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;hashCode&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;IManagedTestDevice&lt;/span&gt; &lt;span class="n"&gt;testDevice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mAllocatedDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testDevice&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;isValidDeviceSerial&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getState&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;IDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;DeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ONLINE&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;checkAndAddAvailableDevice&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;containsKey&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;()))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;IDeviceStateMonitor&lt;/span&gt; &lt;span class="n"&gt;monitor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                    &lt;span class="n"&gt;monitor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestDeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getStateByDdms&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getState&lt;/span&gt;&lt;span class="o"&gt;()));&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// this device is known already. However DDMS will allocate a&lt;/span&gt;
+                &lt;span class="c1"&gt;// new IDevice, so need&lt;/span&gt;
+                &lt;span class="c1"&gt;// to update the TestDevice record with the new device&lt;/span&gt;
+                &lt;span class="n"&gt;CLog&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;d&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Updating IDevice for device %s"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                &lt;span class="n"&gt;testDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setIDevice&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;TestDeviceState&lt;/span&gt; &lt;span class="n"&gt;newState&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TestDeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getStateByDdms&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getState&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                &lt;span class="n"&gt;testDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDeviceState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;newState&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isValidDeviceSerial&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;serial&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;serial&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;serial&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;contains&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"?"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * {@inheritDoc}
+         */&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deviceDisconnected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt; &lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mAvailableDeviceQueue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;remove&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;CLog&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Removed disconnected device %s from available queue"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;IManagedTestDevice&lt;/span&gt; &lt;span class="n"&gt;testDevice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mAllocatedDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testDevice&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;testDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDeviceState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestDeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NOT_AVAILABLE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;containsKey&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;()))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;IDeviceStateMonitor&lt;/span&gt; &lt;span class="n"&gt;monitor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mCheckDeviceMap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSerialNumber&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                &lt;span class="n"&gt;monitor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestDeviceState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NOT_AVAILABLE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;updateDeviceMonitor&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;上面的代码我在第一篇文章中有涉及，只是那个时候我把三个监听方法里的具体实现给隐藏了，现在终于把它展现出来了。&lt;/p&gt;
+&lt;h4&gt;deviceChanged方法&lt;/h4&gt;
+&lt;p&gt;该方法会在设备连接的时候调用，但是我们做了个判断，就是设备状态的改变，那就说明该设备连接前&lt;code&gt;ADB&lt;/code&gt;已经知道了该设备的存在，只是它与之前的状态发生了变化，所以在设备第一次连接的时候，该方法里的代码块是不会被调用的。那么再具体说说操作步骤：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;1&lt;/code&gt;.首先判断设备的改变是否是状态的改变，因为设备的变化很有多种，我们需要关心的设备于PC连接状态的改变，所以需要做判断。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;2&lt;/code&gt;.然后从&lt;code&gt;mAllocatedDeviceMap&lt;/code&gt;集合中尝试获得发生改变的设备，这一步是为了检查是否会影响到执行任务的设备。因为在任务执行过程中，不是每时每刻都能去检测状态，所以cts采用的是被动判断，如果状态发生改变，需要通知正在执行任务的设备监听器，由监听器去做相应的处理。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;3&lt;/code&gt;.如果确定状态发生改变的设备是正在执行任务的设备，就需要将其状态设置为新状态。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;4&lt;/code&gt;.如果不是正在执行任务的设备，那么再去验证是否属于另外2个集合中的设备。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;5&lt;/code&gt;.如果是检测集合&lt;code&gt;mCheckDeviceMap&lt;/code&gt;中的元素，那么也要重新设置设备状态，不过这个时候是从检测设备集合中得到设备再改变它的状态。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;6&lt;/code&gt;.如果改变的设备既不是执行任务的设备，也不是检测中的设备，这个时候我们要判断是否是新设备，这个时候可能有人会有疑问？为什么不判断是否存在于可分配设备中呢？这得从&lt;code&gt;deviceChanged&lt;/code&gt;的调用机制来说，&lt;code&gt;deviceChanged&lt;/code&gt;只在设备连接进来的时候会调用，设备掉线的时候该方法不会被调用，那么自然这个里面无需判断是否是可分配设备中。只需要判断传进来的&lt;code&gt;IDevice&lt;/code&gt;的状态是否在线且不在可分配设备列表中，这个时候就要按新设备来处理啦。另外判断是否在该集合中是需要在&lt;code&gt;deviceDisconnected&lt;/code&gt;中判断的。&lt;/p&gt;
+&lt;h4&gt;deviceConnected方法&lt;/h4&gt;
+&lt;p&gt;这个方法会在有设备连接的时候调用，不管是新设备还是旧设备。它的处理步骤如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;1&lt;/code&gt;.首先判断该设备是否正在执行任务，如果正在执行任务，&lt;code&gt;ok&lt;/code&gt;！我们需要更新该设备的状态。如果不是进入第二步:&lt;br&gt;
+&lt;code&gt;2&lt;/code&gt;.如果在线且通过判断其&lt;code&gt;SN&lt;/code&gt;号是可用的，如果条件不通过，跳到第三步，如果通过的话，这个时候需要进行操作判断是否可以放到可用设备集合中。&lt;br&gt;
+&lt;code&gt;3&lt;/code&gt;.是否存在于检测设备集合中，如果存在就将其设备更新下。&lt;/p&gt;
+&lt;h4&gt;deviceDisconnected方法&lt;/h4&gt;
+&lt;p&gt;这个方法会在设备离线的时候调用，&lt;br&gt;
+&lt;code&gt;1&lt;/code&gt;.首先试着从可用集合中删除该设备，然后进入第二步。&lt;br&gt;
+&lt;code&gt;2&lt;/code&gt;.剩下的处理方式和上面的&lt;code&gt;deviceConnected&lt;/code&gt;一样。&lt;/p&gt;
+&lt;h4&gt;总结&lt;/h4&gt;
+&lt;p&gt;设备管理的复杂性较之我所讲的，我所能说的也只是皮毛，希望对此有兴趣研究研究源码。提示一下，在研究源码之前先了解一下23种设计模式中常用模式，对你的理解会很有帮助。&lt;/p&gt;</description>
+      <author>doctorq</author>
+      <pubDate>Wed, 14 Jan 2015 12:06:56 +0800</pubDate>
+      <link>http://testerhome.com/topics/1863</link>
+      <guid>http://testerhome.com/topics/1863</guid>
+    </item>
+    <item>
+      <title>CTS 设备管理之自动检测设备</title>
+      <description>&lt;h4&gt;感慨&lt;/h4&gt;
+&lt;p&gt;经过三个月的蹉跎，项目终于可以推出1.0版本。中间经历过很多坑，中途我们的主程离职走了，我硬着头皮接替了他的工作，从cts框架的启动开始，一点一点地研究源码，debug来debug去，一点一点的理解其中的思想，到现在已经能在cts的框架的基础上做二次开发，能简单的认识到cts处理方式。很有幸我一进入自动化领域首先认识的是cts这套框架，随着研究的深入越来越佩服开发这套框架的google工程师们。我想说的是，做自动化框架开发的人都应该好好研究这个框架，肯定会受益匪浅。其实在学习的时候，我就已经写过好几篇文章，我也将其整理成合集，放到了&lt;a href="http://testerhome.com/topics/1808" target="_blank"&gt;testerhome&lt;/a&gt;上。但那个时候毕竟还是懵懂时期，也没有跳出框架从全局来考虑，现在刚好有点时间，慢慢的把这几个月的研究成果总结一下。&lt;/p&gt;
+&lt;h4&gt;设备管理的重要性&lt;/h4&gt;
+&lt;p&gt;做Android自动化工具开发的都了解，你首先要解决的问题是设备管理问题，在支持 Mult Device的工具中尤其重要。新设备的加入、已有设备的断线离线，在执行case的过程中遇到设备离线了如何去恢复等等，都是在设备管理范畴之内的。那么cts是如何做到的？&lt;/p&gt;
+&lt;h4&gt;1.包裹ADB&lt;/h4&gt;&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tradefed&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;device&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.android.ddmlib.AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.android.ddmlib.IDevice&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="cm"&gt;/**
+ * A wrapper that directs {@link IAndroidDebugBridge} calls to the 'real'
+ * {@link AndroidDebugBridge}.
+ */&lt;/span&gt;
+&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AndroidDebugBridgeWrapper&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;IAndroidDebugBridge&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt; &lt;span class="n"&gt;mAdbBridge&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Creates a {@link AndroidDebugBridgeWrapper}.
+     */&lt;/span&gt;
+    &lt;span class="n"&gt;AndroidDebugBridgeWrapper&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;IDevice&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;getDevices&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mAdbBridge&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;IllegalStateException&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"getDevices called before init"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;mAdbBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getDevices&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;addDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDeviceChangeListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;removeDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDeviceChangeListener&lt;/span&gt; &lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;removeDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;clientSupport&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;adbOsLocation&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;init&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;clientSupport&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;mAdbBridge&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;createBridge&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;adbOsLocation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;terminate&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;terminate&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * {@inheritDoc}
+     */&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;disconnectBridge&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;AndroidDebugBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;disconnectBridge&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这里实际上用到了代理模式。cts中自定义的类&lt;code&gt;AndroidDebugBridgeWrapper&lt;/code&gt;包裹了&lt;code&gt;AndroidDebugBridge&lt;/code&gt;，我们只需要和&lt;code&gt;AndroidDebugBridgeWrapper&lt;/code&gt;交互就行了。然后在&lt;code&gt;AndroidDebugBridge&lt;/code&gt;的基础上自定义了一些方法。继承的方法中重要的是&lt;code&gt;addDeviceChangeListener&lt;/code&gt;和&lt;code&gt;removeDeviceChangeListener&lt;/code&gt;这两个方法，待会我们就要用到。&lt;/p&gt;
+&lt;h4&gt;2.启动ADB&lt;/h4&gt;&lt;pre class="highlight java"&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;DeviceManager&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;IDeviceManager&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="o"&gt;......&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;IAndroidDebugBridge&lt;/span&gt; &lt;span class="n"&gt;mAdbBridge&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;ManagedDeviceListener&lt;/span&gt; &lt;span class="n"&gt;mManagedDeviceListener&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;......&lt;/span&gt;
+    &lt;span class="cm"&gt;/**
+     * The DeviceManager should be retrieved from the {@link GlobalConfiguration}
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;DeviceManager&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * Initialize the device manager. This must be called once and only once before any other
+     * methods are called.
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;synchronized&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDeviceSelection&lt;/span&gt; &lt;span class="n"&gt;globalDeviceFilter&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;IDeviceMonitor&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;globalDeviceMonitors&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;IManagedTestDeviceFactory&lt;/span&gt; &lt;span class="n"&gt;deviceFactory&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="n"&gt;mAdbBridge&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;createAdbBridge&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;mManagedDeviceListener&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ManagedDeviceListener&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="n"&gt;mAdbBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mManagedDeviceListener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+       &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="n"&gt;mAdbBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;init&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt; &lt;span class="cm"&gt;/* client support */&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"adb"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;......&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="cm"&gt;/**
+     * Creates the {@link IAndroidDebugBridge} to use.
+     * &amp;lt;p/&amp;gt;
+     * Exposed so tests can mock this.
+     * @returns the {@link IAndroidDebugBridge}
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;synchronized&lt;/span&gt; &lt;span class="n"&gt;IAndroidDebugBridge&lt;/span&gt; &lt;span class="n"&gt;createAdbBridge&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;AndroidDebugBridgeWrapper&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;在&lt;code&gt;DeviceManage&lt;/code&gt;类的&lt;code&gt;init&lt;/code&gt;方法中，首先通过&lt;code&gt;createAdbBridge()&lt;/code&gt;方法创建一个 &lt;code&gt;IAndroidDebugBridge&lt;/code&gt;对象，其实质是刚才定义的&lt;code&gt;AndroidDebugBridgeWrapper&lt;/code&gt;对象。这样的话我们就得到了该对象的一个实例，接着我们调用了该实例的&lt;code&gt;init&lt;/code&gt;方法(其实有2行代码我故意忽略了，后面会隆重登场)，这样&lt;code&gt;ADB&lt;/code&gt;的初始化工作就完成了。&lt;/p&gt;
+&lt;h4&gt;3.状态监听器&lt;/h4&gt;&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ManagedDeviceListener&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;IDeviceChangeListener&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * {@inheritDoc}
+         */&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deviceChanged&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt; &lt;span class="n"&gt;idevice&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;changeMask&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;   
+        &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * {@inheritDoc}
+         */&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deviceConnected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt; &lt;span class="n"&gt;idevice&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;  
+        &lt;span class="o"&gt;......&lt;/span&gt;        
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * {@inheritDoc}
+         */&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deviceDisconnected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IDevice&lt;/span&gt; &lt;span class="n"&gt;disconnectedDevice&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+         &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;在&lt;code&gt;DeviceManager&lt;/code&gt;类中定义了一个私有类&lt;code&gt;ManagedDeviceListener&lt;/code&gt;，该类实现了&lt;code&gt;ADB&lt;/code&gt;中的接口&lt;code&gt;IDeviceChangeListener&lt;/code&gt;。该接口实际上是观察者模式中的一个抽象观察者，我们定义的&lt;code&gt;ManagedDeviceListener&lt;/code&gt;类是一个具体观察者。当我们注册为设备状态的观察者后，设备状态发生变化后，我们会被通知到。这个时候我们隆重请出刚才我们忽略的2行代码：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;        &lt;span class="n"&gt;mManagedDeviceListener&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ManagedDeviceListener&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;......&lt;/span&gt;
+        &lt;span class="n"&gt;mAdbBridge&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addDeviceChangeListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mManagedDeviceListener&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这两行代码首先初始化了一个设备状态的具体观察者对象的实例，然后将其添加到通知列表中，这个时候&lt;code&gt;ADB&lt;/code&gt;设备发生改变后，就会通知我们的对象，其中相应的三个方法&lt;code&gt;deviceChanged&lt;/code&gt;,&lt;code&gt;deviceConnected&lt;/code&gt;,&lt;code&gt;deviceDisconnected&lt;/code&gt;会被调用，这个时候我们就可以通过一些处理得到新加入的设备，或者已有设备中离线的设备，然后将其删除。这样我们就能很好的监听着设备状态的改变。&lt;/p&gt;
+&lt;h4&gt;4.得到设备&lt;/h4&gt;
+&lt;p&gt;既然我们能准确的监听着设备状态的改变，我们就要用一个(或许是多个)容器去保存这些设备。具体的操作流程我觉得单独写一篇文章来讲比较好，这样才能对得起它良好的设计。&lt;/p&gt;</description>
+      <author>doctorq</author>
+      <pubDate>Tue, 13 Jan 2015 23:02:38 +0800</pubDate>
+      <link>http://testerhome.com/topics/1858</link>
+      <guid>http://testerhome.com/topics/1858</guid>
+    </item>
+    <item>
+      <title>CTS 框架解析</title>
+      <description>&lt;p&gt;之前在csdn上写过几篇Cts的文章。现在将其整理一下放在testerhome上，后续的文章会写在本论坛上，希望做一个合集，详细介绍一下cts，希望对做android自动化框架开发的人有点帮助。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://blog.csdn.net/itfootball/article/details/40044953" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(1)-windows下cts配置&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40184833" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(2)-cts调试环境的搭建&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40189401" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(3)-基础库tradefederation配置&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40210811" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(4)-任务的添加&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40299359" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(5)-9大组件配置&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40339799" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(6)-任务的执行&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40346695" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(7)-任务执行的调度室&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40371161" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(8)-IBuildProvider&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40372615" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(9)-IDeviceRecovery&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40373091" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(10)-TestDeviceOptions&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40373283" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(11)-ICommandOptions&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40376047" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(12)-ITargetPreparer&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40377263" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(13)-任务执行过程&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40379247" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(14)-任务执行过程&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/40395947" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(15)-任务执行完&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1881" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(16)-case的组织&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1890" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;Cts框架解析(17)-case执行结果收集系统&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/41826983" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;cts中设备管理分析(1)-logcat信息收集系统&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/41845253" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;cts中设备管理分析(2)-fastboot状态监听器&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/41846261" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;cts中设备管理分析(3)-设备恢复&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://blog.csdn.net/itfootball/article/details/41849399" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;cts中设备管理分析(4)-设备状态的分类以及恢复模式的分类&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1858" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;cts中设备管理分析(5)-自动检测设备&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://testerhome.com/topics/1863" target="_blank"&gt;&lt;strong&gt;&lt;em&gt;cts中设备管理分析(6)-设备的分类&lt;/em&gt;&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;</description>
+      <author>doctorq</author>
+      <pubDate>Thu, 08 Jan 2015 17:38:06 +0800</pubDate>
+      <link>http://testerhome.com/topics/1808</link>
+      <guid>http://testerhome.com/topics/1808</guid>
+    </item>
+  </channel>
+</rss>

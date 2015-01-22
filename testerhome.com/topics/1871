@@ -1,0 +1,351 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 了解 uiautomatorviewer 新增的 dump --compressed 功能 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../doctorq"><img alt="1011" class="uface" src="../user/large_avatar/1011.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">了解 uiautomatorviewer 新增的 dump --compressed 功能</h1>
+  <div class="info leader">
+    <a class="node" href="node2">自动化测试工具</a>
+     · 
+    <a data-author="true" data-name="doctorq" href="../doctorq">doctorq</a>
+     · 
+    于<abbr class="timeago" title="2015-01-15T11:34:25+08:00"></abbr>发布
+     · 
+    155次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>新版本的<code>uiautomatorviewer</code>工具中新增了<code>dump --compressed</code>功能，可以选择只获取界面中呈现在你面前的控件，非常精简。那么它是怎么做到的，是更换命令了么？还是在<code>dump</code>的基础上在本地做了一个优化呢？速度怎么样？我带着这些疑惑开始了源码分析之路。</p>
+<h4>下载源码</h4>
+<p><a href="https://android.googlesource.com/platform/tools/swt/+/android-5.0.2_r1/uiautomatorviewer/" target="_blank">google source</a></p>
+<h4>配置源码环境</h4>
+<p>解压缩有项目结构如下：</p>
+
+<p><img src="../photo/2015/4a2614b4ddec104946a434d1f82b4bea.png" alt=""></p>
+
+<p>用你熟悉的方式将源码配置IDE中，我用的是eclipse具体配置过程如下：</p>
+
+<p>虽然它有<code>build.gradle</code>，但是我用这个往<code>eclipse</code>里导入<code>gradle</code>依然没成功，没关系，用暴力的方式。直接创建一个<code>gradle</code>项目，然后将源码<code>copy</code>进去(原谅我的无知)，创建的过程看<a href="http://blog.csdn.net/itfootball/article/details/42710653" target="_blank">gradle学习(21)-在eclipse中构建java项目 </a>。导入以后肯定有很多错误，这是缺少jar包造成的，添加如下<code>jar</code>包就行了：</p>
+
+<p><img src="../photo/2015/4bc647cdcc839aedbfb8317b645359a9.png" alt=""></p>
+
+<p>所有jar包都可以在你的sdk目录下的<code>tools/lib</code>中找到，其中需要注意一点的是<code>swt.jar</code>包在以<code>x86</code>开始的文件夹中，选择对应平台的<code>jar</code>包就行。</p>
+
+<p><img src="../photo/2015/bb1e860142cb11c147a04dd2eba571f9.png" alt=""></p>
+
+<p>等这些都完成以后，代码中的x号就会消失，项目结构如下：</p>
+
+<p><img src="../photo/2015/999a3ef1341fd44372d5b2778dd5133c.png" alt=""></p>
+
+<p>这个时候在<code>UiAutomatorViewer</code>类中启动main方法，会出现我们熟悉的<code>uiautomatorviewer</code>工具界面：</p>
+
+<p><img src="../photo/2015/bdd66bb73a2cafa3ffb2590f4fc69fef.png" alt=""></p>
+
+<p>这个时候你点击<code>Device screentshot</code>按钮会报错：</p>
+
+<p><img src="../photo/2015/336194599cca28b29e5d906d72494c0a.png" alt=""></p>
+
+<p>这是因为uiautomatorviewer项目是根据<code>com.android.uiautomator.bindir</code>属性去找sdk路径的，这就要求你启动的时候需要去添加这个属性。打开<code>DebugBridge</code>类可以看到getAdbLocation()方法中代码：</p>
+<pre class="highlight java"><span class="n">String</span> <span class="n">toolsDir</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"com.android.uiautomator.bindir"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">toolsDir</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">File</span> <span class="n">sdk</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">toolsDir</span><span class="o">).</span><span class="na">getParentFile</span><span class="o">();</span>
+
+        <span class="c1">// check if adb is present in platform-tools</span>
+        <span class="n">File</span> <span class="n">platformTools</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">sdk</span><span class="o">,</span> <span class="s">"platform-tools"</span><span class="o">);</span>
+        <span class="n">File</span> <span class="n">adb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">platformTools</span><span class="o">,</span> <span class="n">SdkConstants</span><span class="o">.</span><span class="na">FN_ADB</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">adb</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">adb</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="c1">// check if adb is present in the tools directory</span>
+        <span class="n">adb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">toolsDir</span><span class="o">,</span> <span class="n">SdkConstants</span><span class="o">.</span><span class="na">FN_ADB</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">adb</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">adb</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="c1">// check if we're in the Android source tree where adb is in $ANDROID_HOST_OUT/bin/adb</span>
+        <span class="n">String</span> <span class="n">androidOut</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getenv</span><span class="o">(</span><span class="s">"ANDROID_HOST_OUT"</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">androidOut</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">adbLocation</span> <span class="o">=</span> <span class="n">androidOut</span> <span class="o">+</span> <span class="n">File</span><span class="o">.</span><span class="na">separator</span> <span class="o">+</span> <span class="s">"bin"</span> <span class="o">+</span> <span class="n">File</span><span class="o">.</span><span class="na">separator</span> <span class="o">+</span>
+                    <span class="n">SdkConstants</span><span class="o">.</span><span class="na">FN_ADB</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">adbLocation</span><span class="o">).</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">adbLocation</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</pre>
+
+<p>你可以在<code>main</code>方法中加上这个属性，通过<code>System.setProperty(key, value)</code>来设置，key就是上面<code>com.android.uiautomator.bindir</code>，<code>value</code>值就是你的sdk路径，当然这种方式是不好的，换路径了还得再改，这个很不好的。当然我们不必鸟它，我们采用cts的方式。将返回<code>null</code>值的地方全部用<code>adb</code>代替，代码修改如下:</p>
+<pre class="highlight java"><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">ADB_COMMAND</span> <span class="o">=</span> <span class="s">"adb"</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getAdbLocation</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">toolsDir</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"com.android.uiautomator.bindir"</span><span class="o">);</span> <span class="c1">//$NON-NLS-1$</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">toolsDir</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">ADB_COMMAND</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="o">......</span>
+
+        <span class="k">return</span> <span class="n">ADB_COMMAND</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre>
+
+<p>好，这个时候我们再次点击<code>Device screenshot</code>按钮，就可以像往常一样得到设备的界面了和控件信息了：</p>
+
+<p><img src="../photo/2015/3a37fd77c5af548bc238a419675b32e3.png" alt=""></p>
+<h4>开始调试</h4>
+<p>源码搭建完成，就可以进入主题了，开始研究源码了，在<code>ScreenshotAction</code>类中的<code>run</code>方法里打上断点,以<code>Debug As</code>启动应用程序，然后点击<code>Device screentshot with Compressed</code>进入<code>Debug</code>界面。第一行代码自然是我们断点的地方，因为我们主要看<code>dump --compressed</code>这个功能点，其他地方我就不多做介绍了，我加快速度了，直接进入正题,一路<code>debug</code>到了<code>UiAutomatorHelper</code>的静态方法<code>getUiHierarchyFile(IDevice device, File dst, IProgressMonitor monitor, boolean compressed)</code>中，看重要代码(如果你<code>debug</code>不过来，你直接把断点打在下面的代码块就行了)：</p>
+<pre class="highlight java"><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">getUiHierarchyFile</span><span class="p">(</span><span class="n">IDevice</span> <span class="n">device</span><span class="o">,</span> <span class="n">File</span> <span class="n">dst</span><span class="o">,</span>
+            <span class="n">IProgressMonitor</span> <span class="n">monitor</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">compressed</span><span class="o">)</span> <span class="o">{</span>
+         <span class="o">......</span>
+       <span class="n">monitor</span><span class="o">.</span><span class="na">subTask</span><span class="o">(</span><span class="s">"Taking UI XML snapshot..."</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">compressed</span><span class="o">){</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%s %s --compressed %s"</span><span class="o">,</span> <span class="n">UIAUTOMATOR</span><span class="o">,</span>
+                <span class="n">UIAUTOMATOR_DUMP_COMMAND</span><span class="o">,</span>
+                <span class="n">UIDUMP_DEVICE_PATH</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%s %s %s"</span><span class="o">,</span> <span class="n">UIAUTOMATOR</span><span class="o">,</span>
+                    <span class="n">UIAUTOMATOR_DUMP_COMMAND</span><span class="o">,</span>
+                    <span class="n">UIDUMP_DEVICE_PATH</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">CountDownLatch</span> <span class="n">commandCompleteLatch</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CountDownLatch</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">CountDownLatch</span> <span class="n">commandCompleteLatch</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CountDownLatch</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="n">device</span><span class="o">.</span><span class="na">executeShellCommand</span><span class="o">(</span><span class="n">command</span><span class="o">,</span>
+                    <span class="k">new</span> <span class="n">CollectingOutputReceiver</span><span class="o">(</span><span class="n">commandCompleteLatch</span><span class="o">));</span>
+            <span class="n">commandCompleteLatch</span><span class="o">.</span><span class="na">await</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// ignore exceptions while deleting stale files</span>
+        <span class="o">}</span>
+        <span class="o">......</span>
+    <span class="o">}</span>
+</pre>
+
+<p>执行的命令我们得到</p>
+<pre class="highlight java"><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">uiautomator</span> <span class="n">dump</span> <span class="o">--</span><span class="n">compressed</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">uidump</span><span class="o">.</span><span class="na">xml</span>
+</pre>
+
+<p>那第一个问题解决了，就是这是一个新命令<code>dump --compressed</code>(之前没用过，不知道是不是最新的)。我们获得的简洁版的控件信息也不是在本地优化的，是直接在<code>server</code>端传过来就是这样的，这样速度会提高不少。</p>
+<h4>adb命令实验</h4><pre class="highlight plaintext">C:\Users\hui.qian&gt;adb shell /system/bin/uiautomator dump --compressed /data/loca
+l/tmp/uidump.xml
+UI hierchary dumped to: /data/local/tmp/uidump.xml
+
+C:\Users\hui.qian&gt;adb pull /data/local/tmp/uidump.xml c:\
+394 KB/s (6308 bytes in 0.015s)
+C:\Users\hui.qian&gt;adb shell /system/bin/uiautomator dump /data/local/tmp/uidump.
+xml
+UI hierchary dumped to: /data/local/tmp/uidump.xml
+
+C:\Users\hui.qian&gt;adb pull /data/local/tmp/uidump.xml c:\1.xml
+1363 KB/s (21778 bytes in 0.015s)
+
+</pre>
+
+<p>将上面2个文件进行比较就会发现简洁不少。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='了解 uiautomatorviewer 新增的 dump --compressed 功能 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1871#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1871#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1871#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1871#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1871#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    请没有头像的同学，上传头像吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1892" title="JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法)">JUnit4---实践：运行指定类的某些测试方法(可用...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1871#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

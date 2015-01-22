@@ -1,0 +1,862 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 在 Mac 上配置 Appium 问题收集 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">在 Mac 上配置 Appium 问题收集</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2013-12-23T19:31:55+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xiyue" href="../xiyue">xiyue</a> 于<abbr class="timeago" title="2014-12-31T14:11:00+08:00"></abbr>回复
+     · 
+    1908次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>在这之前，请先阅读 <a href="https://github.com/appium/appium/blob/master/docs/cn/running-on-osx.cn.md">在 Mac OS X 上使用 Appium</a></p>
+<h4>在 Mac 上配置 Appium</h4><h4>需求</h4>
+<p>按照官方的说法：</p>
+
+<ul>
+<li>
+<p>iOS</p>
+
+<ul>
+<li>Mac OSX 10.7+</li>
+<li>XCode 4.5+ 和 Command Line Tools</li>
+</ul>
+</li>
+<li>
+<p>Android</p>
+
+<ul>
+<li>Mac OSX 10.7+</li>
+<li>JAVA 1.6+</li>
+<li>Android SDK ≥ 16 (SDK &lt; 16 in Selendroid mode)</li>
+<li>ant</li>
+<li>maven</li>
+</ul>
+</li>
+</ul><p>按照我的尝试：</p>
+
+<ol>
+<li><p>Mac OSX 10.7+ 是必备的。 推荐使用最新的 <code>10.9.x</code>， 我基本都是在最新的系统上实验的。</p></li>
+<li><p>XCode 是必备的。XCode 和 Command Line Tools 其实提供了一些列的开发环境，不仅 iOS 需要， Android 也会用到。所以建议安装最新的 XCode 5.0.2。在最新的 XCode 上， Command Line Tools 的安装方式变了。大家可以直接在命令行运行 <code>xcode-select --install</code>，会弹出安装界面来。</p></li>
+<li><p>JAVA Android 开发必备。 Mac OSX 上一直觉得 JAVA 不安全，所以不默认安装。需要自己安装配置 JAVA 环境。</p></li>
+<li>
+<p>nodejs —— appium 是用 nodejs 写的，如果要从源代码运行的话，nodejs 还真少不了。另外 appium 也是 nodejs 的一个 module。 我们可以并推荐通过 npm 安装 appium。</p>
+
+<p>很多人在用 npm install 的时候会遇到坑。</p>
+
+<ul>
+<li>比如 https 连不上。 这个就需要配置下 (Registry)[<a href="https://npmjs.org/doc/registry.html" rel="nofollow" target="_blank">https://npmjs.org/doc/registry.html</a>]</li>
+<li>使用 sudo 安装，在某个版本的 appium 里面，如果你使用 sudo npm install -g appium 安装的话，那么你必须找到这个安装的目录，并赋予其他用户读写权限，否则会出错。</li>
+<li>-g 很多人问 -g 这个选项， -g 的意思是全局安装，装好之后，你可以直接在命令行调用。</li>
+<li>更新升级 appium —— <code>sudo npm update -g appium</code>
+</li>
+<li>安装某个版本的 appium —— <code>sudo npm install -g appium@0.12</code>
+</li>
+</ul>
+</li>
+</ol><p>以上软件的安装，我默认大家都会。我自己的环境是使用 (homebrew)[<a href="http://brew.sh/" rel="nofollow" target="_blank">http://brew.sh/</a>] 配合管理软件的。比如 ant 安装：<code>brew install ant</code>。 非常的方便。</p>
+<h4>安装 Appium</h4>
+<p>Mac 下面一般有三种安装方法：</p>
+
+<ol>
+<li> 直接下载 dmg 文件。地址在 <a href="https://bitbucket.org/appium/appium.app/downloads/" rel="nofollow" target="_blank">https://bitbucket.org/appium/appium.app/downloads/</a>。有可能会被墙， vpn 自备。</li>
+<li> 用 nodejs 的 npm 安装。强烈推荐。</li>
+<li> 从源代码执行。</li>
+</ol><h4>Doctor</h4>
+<p>在软件都安装好之后，需要配置各种环境。在以前，需要运行起 Appium 的测试代码，发现一个环境的坑，填一个。现在 Appium 请了一个医生 —— appium-doctor。</p>
+
+<p>在我们使用 npm 安装好 Appium 好之后，大家可以运行下 appium-doctor。</p>
+<pre class="highlight shell">
+➜  ~  appium-doctor
+Running iOS Checks
+✔ Xcode is installed at /Applications/Xcode.app/Contents/Developer
+✔ Xcode Command Line Tools are installed.
+✔ DevToolsSecurity is enabled.
+✔ The Authorization DB is <span class="nb">set </span>up properly.
+✔ Node binary found at /usr/local/bin/node
+✔ iOS Checks were successful.
+
+Running Android Checks
+✔ ANDROID_HOME is <span class="nb">set </span>to <span class="s2">"/Applications/adt-bundle-mac-x86_64-20131030/sdk"</span>
+✔ JAVA_HOME is <span class="nb">set </span>to <span class="s2">"/System/Library/Frameworks/JavaVM.framework/Home."</span>
+✔ ADB exists at /Applications/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb
+✔ Android exists at /Applications/adt-bundle-mac-x86_64-20131030/sdk/tools/android
+✔ Emulator exists at /Applications/adt-bundle-mac-x86_64-20131030/sdk/tools/emulator
+✔ Android Checks were successful.
+
+</pre>
+<p>可以看到，我的系统的环境都配置好了。 我们来试试看，填错一个环境变量，比如 ANDROID_HOME</p>
+<pre class="highlight shell">➜  ~  appium-doctor
+Running iOS Checks
+✔ Xcode is installed at /Applications/Xcode.app/Contents/Developer
+✔ Xcode Command Line Tools are installed.
+✔ DevToolsSecurity is enabled.
+✔ The Authorization DB is <span class="nb">set </span>up properly.
+✔ Node binary found at /usr/local/bin/node
+✔ iOS Checks were successful.
+
+Running Android Checks
+✖ ANDROID_HOME is <span class="nb">set </span>but does not exist on the file system at <span class="s2">"/Axpplications/adt-bundle-mac-x86_64-20131030/sdk"</span>
+Appium-Doctor detected problems. Please fix and rerun Appium-Doctor.
+</pre>
+<p>Appium-Doctor 会帮助你定位环境配置问题。 其实使用 GUI 的 appium 在启动的时候，也会执行一遍 Appium-doctor 以确保环境的正确。</p>
+<h4>iOS</h4>
+<p>必备：</p>
+
+<ul>
+<li>
+<p>iOS 开发证书</p>
+
+<p>一年 99 美元免不了。xCode 5 之后，苹果把开发证书，发布证书，真机调试这一套东西都自动化了。只需要在 Preferences =&gt; Accounts 里面输入你注册的开发者账号。</p>
+</li>
+<li>
+<p>真机</p>
+
+<p>iPhone， iPad， iTouch 随便搞一台。</p>
+</li>
+<li><p>模拟器</p></li>
+</ul><h4>iOS 应用测试</h4>
+<p>Appium 在 iOS 上的实现底层调用的 instruments 的 UIAutomation。有兴趣的同学可以研究下，推荐书籍 Test iOS Apps with UI Automation。</p>
+
+<p>对于一个应用，我们首先要把它 build 成一个 app。 xcode 提供了 <code>xcodebuild</code> 命令。详见 <a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/xcodebuild.1.html">xcodebuild 文档</a></p>
+
+<p>然后对于模拟器来说，只需在 cap 里指定 app 地址就可以了。比如：</p>
+<pre class="highlight java"><span class="n">File</span> <span class="n">appDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"user.dir"</span><span class="o">),</span> <span class="s">"../../../apps/TestApp/build/Release-iphonesimulator"</span><span class="o">);</span>
+<span class="n">File</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">appDir</span><span class="o">,</span> <span class="s">"TestApp.app"</span><span class="o">);</span>
+<span class="n">DesiredCapabilities</span> <span class="n">capabilities</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DesiredCapabilities</span><span class="o">();</span>
+<span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">BROWSER_NAME</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+<span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">VERSION</span><span class="o">,</span> <span class="s">"6.0"</span><span class="o">);</span>
+<span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="n">CapabilityType</span><span class="o">.</span><span class="na">PLATFORM</span><span class="o">,</span> <span class="s">"Mac"</span><span class="o">);</span>
+<span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"device"</span><span class="o">,</span> <span class="s">"iPhone Simulator"</span><span class="o">);</span>
+<span class="n">capabilities</span><span class="o">.</span><span class="na">setCapability</span><span class="o">(</span><span class="s">"app"</span><span class="o">,</span> <span class="n">app</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SwipeableWebDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="o">),</span> <span class="n">capabilities</span><span class="o">);</span>
+</pre>
+<p>对于真机，那你需要build能在你设备上运行的 app 并把它烧到真机上去。你可以直接在 xcode 里选择真机运行或者使用 fruitstrap (未试用过) 推送到真机上。</p>
+
+<p>之后，启动 Appium 时候，需要指定真机 UDID 和 app 的 bundle id。例如：<code>appium -U 45f082689dbaebb0ffa3620b3ae22ad9faff9a30 --app io.appium</code></p>
+<h4>iOS web 测试</h4>
+<p>对于普通的 Webdriver 代码，Appium 也可以充当一个 Selenium Server。</p>
+
+<p>在模拟器上，只要配置下 cap 的 app 参数就可以了。</p>
+<pre class="highlight java"><span class="o">{</span>
+  <span class="nl">app:</span> <span class="err">'</span><span class="n">safari</span><span class="err">'</span>
+  <span class="o">,</span> <span class="nl">device:</span> <span class="err">'</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="err">'</span>
+  <span class="o">,</span> <span class="nl">version:</span> <span class="err">'</span><span class="mf">7.0</span><span class="err">'</span>
+<span class="o">}</span>
+</pre>
+<p>p.s 注意自己的版本号。</p>
+
+<p>在真机上，Appium 还不能直接调用启动 Safari。我想其根本原因应该是和苹果的封闭性有关，之前 Webdriver 上的 SafariDriver 也是破费周折。苹果不允许你对他的产品有任何倾入行为。</p>
+
+<p>不过英雄们还是有很多解决方法，坊间流传两个曲线救国的方法，可以参见 <a href="313" rel="nofollow" target="_blank">http://testerhome.com/topics/313</a>。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='在 Mac 上配置 Appium 问题收集 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="315#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="315#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="315#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="315#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="315#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>20</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply1">1楼</a> · <abbr class="timeago" title="2013-12-23T19:44:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1518" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/315/replies/1518/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="xiaomayi0323" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>总结的真不错啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply2">2楼</a> · <abbr class="timeago" title="2013-12-23T19:54:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1519" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/315/replies/1519/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="xiaomayi0323" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我的环境：<br>
+iOS：<br>
+Mac OSX 10.9.1<br>
+Xcode:5.0.2<br>
+运行正常</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply3">3楼</a> · <abbr class="timeago" title="2013-12-23T20:42:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1520" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/315/replies/1520/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="guo" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>homebrew 真是居家旅行必备啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../dippa"><img alt="271" class="uface" src="../user/large_avatar/271.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tomchen" href="../dippa">dippa</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply4">4楼</a> · <abbr class="timeago" title="2013-12-25T10:22:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1551" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="271" href="http://testerhome.com/topics/315/replies/1551/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="dippa" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Finish ： 10.8.5    Appium0.11.3    Xcode 4.6.3 <br>
+                           Appium0.12.3  Xcode 4.6.3 <br>
+                           Appium0.11.3    Xcode 5.0.0<br>
+                           Appium0.12.3  Xcode 5.0.0</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../jimneylee"><img alt="330" class="uface" src="../user/large_avatar/330.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jimneylee" href="../jimneylee">jimneylee</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply5">5楼</a> · <abbr class="timeago" title="2014-01-09T11:32:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1991" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="330" href="http://testerhome.com/topics/315/replies/1991/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="jimneylee" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很不错，学习<img src="../assets/emojis/smile.png" class="emoji" title=":smile:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply6">6楼</a> · <abbr class="timeago" title="2014-01-09T13:03:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2002" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/315/replies/2002/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../jimneylee" class="at_user" title="@jimneylee"><i>@</i>jimneylee</a> 你做ios开发 还来研究测试哇？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../jimneylee"><img alt="330" class="uface" src="../user/large_avatar/330.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jimneylee" href="../jimneylee">jimneylee</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply7">7楼</a> · <abbr class="timeago" title="2014-01-09T23:06:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2029" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="330" href="http://testerhome.com/topics/315/replies/2029/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="jimneylee" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 恩，其实测试开发在一定程度上需要互相了解，这样出了问题沟通应该会更方便。况且对于我目前的公司，没有专门自动化测试组，学习这个更尤为必要。哈哈，先简单了解通过什么工具能做到自动化测试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply8">8楼</a> · <abbr class="timeago" title="2014-01-09T23:45:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2032" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/315/replies/2032/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="lihuazhang" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../jimneylee" class="at_user" title="@jimneylee"><i>@</i>jimneylee</a> 嗯，公寓上期即必先伤其己。。。 以后论坛里有 iOS 移动开发测试的问题，多多指教</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply9">9楼</a> · <abbr class="timeago" title="2014-02-18T14:04:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2586" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/315/replies/2586/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="oscar" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这篇总结的真不错哦 ，刚看到，上午搞了一上午终于运行起来公司的app了，就是是不是启动真机必须需要付费和需要。。id等，我不是很懂</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply10">10楼</a> · <abbr class="timeago" title="2014-02-18T14:17:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2587" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/315/replies/2587/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="oscar" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>能不能先在mac上启动一个模拟器，然后直接调用里面的app，不是每次运行都起一个模拟器完事后关闭，这样很烦。。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../ifelix"><img alt="97afd5a63c0a8ec388de16f9e9fca50f" class="uface" src="../avatar/97afd5a63c0a8ec388de16f9e9fca50f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="阿飞" href="../ifelix">ifelix</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply11">11楼</a> · <abbr class="timeago" title="2014-02-20T14:33:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2652" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="425" href="http://testerhome.com/topics/315/replies/2652/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="ifelix" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 真机下app和web测试的capabilities参数如何填写？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply12">12楼</a> · <abbr class="timeago" title="2014-02-20T15:28:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2654" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/315/replies/2654/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="lihuazhang" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a> 真机肯定要钱。应该不行。 其实他是调用 instruments的。 instruments 就是每次都会启动一个模拟器。</p>
+
+<p><a href="../ifelix" class="at_user" title="@ifelix"><i>@</i>ifelix</a> 文章里写了吧？ 另外可以看看 sample-code 里面的代码。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../ifelix"><img alt="97afd5a63c0a8ec388de16f9e9fca50f" class="uface" src="../avatar/97afd5a63c0a8ec388de16f9e9fca50f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="阿飞" href="../ifelix">ifelix</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply13">13楼</a> · <abbr class="timeago" title="2014-02-21T10:08:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2677" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="425" href="http://testerhome.com/topics/315/replies/2677/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="ifelix" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> Appium可以测试IOS系统上的Wifi设置/拨号等系统原生非应用的功能吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply14">14楼</a> · <abbr class="timeago" title="2014-02-21T11:13:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2678" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/315/replies/2678/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="lihuazhang" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../ifelix" class="at_user" title="@ifelix"><i>@</i>ifelix</a> instruments 不行。 所以 Appium 也不行。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply15">15楼</a> · <abbr class="timeago" title="2014-02-21T17:11:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2686" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/315/replies/2686/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="oscar" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 那真的很悲剧，没跑一条case 就启动一次，如果用真机呢，申请id 付费，可不可以 不用每次都启动关闭模拟器呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../zhangyuanjian"><img alt="484" class="uface" src="../user/large_avatar/484.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyuanjian" href="../zhangyuanjian">zhangyuanjian</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply16">16楼</a> · <abbr class="timeago" title="2014-03-07T15:21:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3053" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="484" href="http://testerhome.com/topics/315/replies/3053/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="zhangyuanjian" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a> 其实这个问题很简单,你可以考虑下把所有的case,放到一个<a href="http://testerhome.com/test" class="at_user" title="@test"><i>@</i>test</a>中去,然后在<a href="http://testerhome.com/test" class="at_user" title="@test"><i>@</i>test</a>,中去进行你的用例管理和逻辑设计.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply17">17楼</a> · <abbr class="timeago" title="2014-05-23T12:13:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5133" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/315/replies/5133/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="oscar" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>回头好好看看这个帖子，配置个mac上的Android环境</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../xiyue"><img alt="4be41e6b854c3bef2d6c71196ce83a45" class="uface" src="../avatar/4be41e6b854c3bef2d6c71196ce83a45.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../xiyue">xiyue</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply18">18楼</a> · <abbr class="timeago" title="2014-12-31T00:02:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10968" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1608" href="http://testerhome.com/topics/315/replies/10968/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="xiyue" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p> 你好，在配置appium过程中遇到这样的问题：<br>
+通过<a href="http://nodejs.org/node%E5%92%8Cnpm" rel="nofollow" target="_blank">http://nodejs.org/node和npm</a>安装<br>
+安装appium的命令为sudo npm install -g appium</p>
+
+<p>解决方法：安装node时使用的是pkg包，现在想卸载node，卸载命令如下：<br>
+lsbom -f -l -s -pf /var/db/receipts/org.nodejs.pkg.bom \<br>
+| while read i; do<br>
+  sudo rm /usr/local/${i}<br>
+done<br>
+sudo rm -rf /usr/local/lib/node \<br>
+     /usr/local/lib/node_modules \<br>
+     /var/db/receipts/org.nodejs.*<br>
+卸载后，想通过brew安装node，报错：Warning: node-0.10.35 already installed, it's just not linked<br>
+请问该怎么操作呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply19">19楼</a> · <abbr class="timeago" title="2014-12-31T11:16:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10977" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/315/replies/10977/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="lihuazhang" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="315#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../xiyue" class="at_user" title="@xiyue"><i>@</i>xiyue</a> 需要删除干净，另外不要用sudo 安装任何appium的东西。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../xiyue"><img alt="4be41e6b854c3bef2d6c71196ce83a45" class="uface" src="../avatar/4be41e6b854c3bef2d6c71196ce83a45.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../xiyue">xiyue</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="315#reply20">20楼</a> · <abbr class="timeago" title="2014-12-31T14:11:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10991" data-state="" data-type="Reply" href="315#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1608" href="http://testerhome.com/topics/315/replies/10991/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="xiyue" href="315#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我卸载的命令有错误吗？一直提示我node已经安装，查看node版本时，又说node不存在。不知道还有哪里没有删除干净。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+    <li><a href="1900" title="Appium 中如何实现自定义的 UiWatcher 类">Appium 中如何实现自定义的 UiWatcher 类</a></li>
+    <li><a href="1888" title="Appium + Selenium Grid2 = Appium Parallel Execution">Appium + Selenium Grid2 = A...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="315#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 如何调试 android UIAutomator ？ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">如何调试 android UIAutomator ？</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-09-03T23:06:54+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lihuazhang" href="../lihuazhang">lihuazhang</a> 于<abbr class="timeago" title="2014-09-25T16:54:37+08:00"></abbr>回复
+     · 
+    943次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>首先介绍一个 maven 依赖库： <em>maven-android-sdk-deployer</em></p>
+
+<blockquote>
+<p>A tool to install components of the Android SDK to use with the Maven Android Plugin.<br>
+The Maven Android SDK Deployer is a helper maven project that can be used to install the libraries necessary to build Android applications with Maven and the Android Maven Plugin directly from your local Android SDK installation.</p>
+</blockquote>
+
+<p>简单来说，就是整个东西可以帮助你使用 maven 来构建 android sdk 相关的项目，解决依赖。Appium 的 bootstrap 就是用了这个依赖库。</p>
+<h4>如何使用？</h4>
+<ul>
+<li>克隆 <a href="https://github.com/mosabua/maven-android-sdk-deployer" rel="nofollow" target="_blank">https://github.com/mosabua/maven-android-sdk-deployer</a> 到本地</li>
+<li>确保设置了 ANDROID_HOME 和安装了 maven 3.1 </li>
+<li>确保你安装了对应的android sdk 和 api</li>
+<li>在 <code>maven-android-sdk-deployer</code> 目录底下运行 <code>mvn install -P 4.4</code> </li>
+</ul>
+
+<p>这个过程中，可能你的 sdk 有些包没安装，比如 google maps，它会告诉你 build fail，没关系，别管他，除非你想要 maps，那么你先得在 android 的 sdk manager 里面安装它。</p>
+
+<p>mvn install 好之后，我们就可以在 pom.xml 里面大胆的使用：</p>
+<pre class="highlight xml"> <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>android<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>android<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.4.2_r3<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>android.test.uiautomator<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>uiautomator<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.4.2_r3<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+</pre>
+<h4>那我们创建一个新的 UIAutomator 的测试类</h4>
+<p>我使用的是 Intellij IDEA</p>
+
+<ul>
+<li>选择maven项目，如下图，之后的 groupid 和 Artifact id 就随便填写吧。</li>
+</ul>
+
+<p><img src="../photo/2014/eb3212a7ccc1d9e0ffca37298666c977.png" alt=""></p>
+
+<p>目录结构如下：</p>
+
+<p><img src="../photo/2014/dbc74f31a0ac5eddb5f7b1616a32eaf4.png" alt=""></p>
+
+<ul>
+<li>pom.xml 修改为如下：</li>
+</ul>
+
+<p>注： 按官方文档应该用 junit 3， 不过试验下来用 junit4 也没出问题。<br>
+内容不要尽抄。</p>
+<pre class="highlight xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+
+    <span class="nt">&lt;groupId&gt;</span>com.testerhome<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>uiautomator<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>android<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>android<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.4.2_r3<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>android.test.uiautomator<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>uiautomator<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.4.2_r3<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.11<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+
+<span class="nt">&lt;/project&gt;</span>
+</pre>
+
+<p>测试代码如下：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">testerhome</span><span class="o">.</span><span class="na">uiautomator</span><span class="o">;</span><span class="c1">// Import the uiautomator libraries</span>
+
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.core.UiObject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.core.UiObjectNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.core.UiScrollable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.core.UiSelector</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.android.uiautomator.testrunner.UiAutomatorTestCase</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LaunchSettings</span> <span class="kd">extends</span> <span class="n">UiAutomatorTestCase</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="n">testDemo</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">UiObjectNotFoundException</span> <span class="o">{</span>
+
+    <span class="n">getUiDevice</span><span class="o">().</span><span class="na">pressHome</span><span class="o">();</span>
+
+    <span class="n">UiObject</span> <span class="n">allAppsButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UiObject</span><span class="o">(</span><span class="k">new</span> <span class="n">UiSelector</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">description</span><span class="o">(</span><span class="s">"Apps"</span><span class="o">));</span>
+    <span class="n">allAppsButton</span><span class="o">.</span><span class="na">clickAndWaitForNewWindow</span><span class="o">();</span>
+
+    <span class="c1">// 进入设置菜单</span>
+    <span class="n">UiObject</span> <span class="n">settingApp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UiObject</span><span class="o">(</span><span class="k">new</span> <span class="n">UiSelector</span><span class="o">().</span><span class="na">text</span><span class="o">(</span><span class="s">"Settings"</span><span class="o">));</span>
+    <span class="n">settingApp</span><span class="o">.</span><span class="na">click</span><span class="o">();</span>
+    <span class="c1">//休眠3秒</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">3000</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// TODO Auto-generated catch block</span>
+      <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="c1">// 进入语言和输入法设置</span>
+    <span class="n">UiScrollable</span> <span class="n">settingItems</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UiScrollable</span><span class="o">(</span><span class="k">new</span> <span class="n">UiSelector</span><span class="o">().</span><span class="na">scrollable</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+
+    <span class="n">UiObject</span> <span class="n">languageAndInputItem</span> <span class="o">=</span> <span class="n">settingItems</span><span class="o">.</span><span class="na">getChildByText</span><span class="o">(</span>
+        <span class="k">new</span> <span class="n">UiSelector</span><span class="o">().</span><span class="na">text</span><span class="o">(</span><span class="s">"Language &amp; input"</span><span class="o">),</span> <span class="s">"Language &amp; input"</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+    <span class="n">languageAndInputItem</span><span class="o">.</span><span class="na">clickAndWaitForNewWindow</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+<h4>然后根据 UIAutomator 的教程生成 jar 包</h4>
+<p><code>android create uitest-project -n uiautomator-example -t 1 -p uiautomator-example</code></p>
+
+<p><code>ant build</code></p>
+
+<p><code>adb push bin/uiautomator-example.jar /data/local/tmp/</code></p>
+
+<p><code>adb shell uiautomator runtest uiautomator-example.jar -c com.testerhome.uiautomator.LaunchSettings</code></p>
+
+<p>基本上测试脚本就运行起来了。</p>
+<h4>那么如何调试？</h4>
+<p>打开 Android Device Monitor, DDMS 的继任。</p>
+
+<blockquote>
+<p>The standalone version of DDMS is deprecated.<br>
+Please use Android Device Monitor (tools/monitor) instead.</p>
+</blockquote>
+
+<p><img src="../photo/2014/8e312f80e040a10a24cfeba79a3db0b6.png" alt=""></p>
+
+<p>然后使用 debug 模式重新运行：</p>
+
+<p><code>adb shell uiautomator runtest uiautomator-example.jar -c com.testerhome.uiautomator.LaunchSettings -e debug true</code></p>
+<pre class="highlight shell">➜  uiautomator-example  adb shell uiautomator runtest uiautomator-example.jar -c com.testerhome.uiautomator.LaunchSettings -e debug <span class="nb">true
+</span>Sending WAIT chunk
+</pre>
+
+<p>再看 monitor，你会发现有个红色虫子的进程，那个端口就是 debug 监听的端口。<br>
+<img src="../photo/2014/457542cf31969c40704242e50cd31130.png" alt=""></p>
+
+<p>我们再打开， intellij idea 的 debug 配置，添加一个 remote 调试，</p>
+
+<p><img src="../photo/2014/6bedfc82d3406f3937d38ab0c25c1318.png" alt=""></p>
+
+<p>更改端口为之前拿到的端口，然后module classpath设置为要debug的模块，保存</p>
+
+<p><img src="../photo/2014/9658ceb276dcfa5db5050ea818abfbfb.png" alt=""></p>
+
+<p>在主窗口，选择刚刚保存的 remote 配置，运行 debug，</p>
+
+<p><img src="../photo/2014/45665feb542ba8b6dbeffeb77757f58f.png" alt=""></p>
+
+<p>顺利进入 debug 模式：</p>
+
+<p><img src="../photo/2014/1eda20fe264e10e26aa52db9ab7c049e.png" alt=""></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='如何调试 android UIAutomator ？ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1358#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1358#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1358#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1358#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1358#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>5</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1358#reply1">1楼</a> · <abbr class="timeago" title="2014-09-04T06:29:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8326" data-state="" data-type="Reply" href="1358#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1358/replies/8326/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="1358#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>大大的精华</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../xuxu"><img alt="784" class="uface" src="../user/large_avatar/784.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxu" href="../xuxu">xuxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1358#reply2">2楼</a> · <abbr class="timeago" title="2014-09-04T09:00:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8327" data-state="" data-type="Reply" href="1358#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="784" href="http://testerhome.com/topics/1358/replies/8327/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="xuxu" href="1358#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习了！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1358#reply3">3楼</a> · <abbr class="timeago" title="2014-09-04T12:44:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8332" data-state="" data-type="Reply" href="1358#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1358/replies/8332/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1358#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你这教程都可以拆成2个了, 写的很赞.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1358#reply4">4楼</a> · <abbr class="timeago" title="2014-09-04T15:26:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8339" data-state="" data-type="Reply" href="1358#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1358/replies/8339/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="umbrella1978" href="1358#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞~给了一条扩展uiautomator的明路</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="deleted">5楼 已删除.</div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1358#reply6">6楼</a> · <abbr class="timeago" title="2014-09-25T16:54:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8877" data-state="" data-type="Reply" href="1358#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1358/replies/8877/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="1358#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1358#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../xiaorudk" class="at_user" title="@xiaorudk"><i>@</i>xiaorudk</a> 啥异常啊？ 加个头像吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @jacky 希望一天天的进步，小学妹等着我啊
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1358#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

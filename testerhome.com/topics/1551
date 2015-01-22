@@ -1,0 +1,501 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【已解决，降低 appium 版本】连续使用两次 send_keys()，上一次输入框中输入内容部分信息被删除 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【已解决，降低 appium 版本】连续使用两次 send_keys()，上一次输入框中输入内容部分信息被删除</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../strayeagle">strayeagle</a>
+     · 
+    于<abbr class="timeago" title="2014-11-01T18:02:53+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="johnny" href="../johnny">johnny</a> 于<abbr class="timeago" title="2015-01-10T17:45:24+08:00"></abbr>回复
+     · 
+    377次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>大家有没有遇见这样一个现象：<br>
+  调用send_keys时，在界面上向一个编辑区域写入字符（A区）；在相同界面接下来下一个编辑区域写入字符（B区），在 B区 写入字符前，会删除 A区 已经写入的字符内容<br>
+  代码如下：</p>
+<pre class="highlight python">        <span class="c">#开始创建任务</span>
+        <span class="c">#---------------------下面是A区域写入字符---------------------</span>
+        <span class="c">##点击名称，输入任务的名称信息</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plan_name_edit</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">'com.xxx.phone:id/plan_name_edit'</span><span class="p">)</span>
+        <span class="n">task_name</span> <span class="o">=</span> <span class="s">'autoTestMobileTask_'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">randAlpha</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">"点击名称，输入任务的名称: "</span> <span class="o">+</span> <span class="n">task_name</span> <span class="o">+</span> <span class="s">".</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">plan_name_edit</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">task_name</span><span class="p">)</span>
+
+        <span class="c">#---------------------下面是对B区域写入字符---------------------</span>
+        <span class="c">##点击描述，输入任务的描述信息</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">desc_edit</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">'com.xxx.phone:id/plan_description_edit'</span><span class="p">)</span>
+        <span class="n">desc_info</span> <span class="o">=</span> <span class="n">randLowAscii</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">"点击描述，输入任务的描述信息: "</span> <span class="o">+</span> <span class="n">desc_info</span> <span class="o">+</span> <span class="s">".</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">desc_edit</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">desc_info</span><span class="p">)</span>   
+</pre>
+
+<p>日志片段如下：</p>
+<pre class="highlight python"><span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="p">[</span><span class="n">BOOTSTRAP</span><span class="p">]</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="n">Finding</span> <span class="n">com</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">phone</span><span class="p">:</span><span class="nb">id</span><span class="o">/</span><span class="n">plan_name_edit</span> <span class="n">u</span>
+<span class="n">sing</span> <span class="n">ID</span> <span class="k">with</span> <span class="n">the</span> <span class="n">contextId</span><span class="p">:</span>  <span class="n">multiple</span><span class="p">:</span> <span class="n">false</span>
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="p">[</span><span class="n">BOOTSTRAP</span><span class="p">]</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="n">Using</span><span class="p">:</span> <span class="n">UiSelector</span><span class="p">[</span><span class="n">INSTANCE</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">RESOURCE_ID</span><span class="o">=</span><span class="n">com</span><span class="o">.</span>
+<span class="n">xxx</span><span class="o">.</span><span class="n">phone</span><span class="p">:</span><span class="nb">id</span><span class="o">/</span><span class="n">plan_name_edit</span><span class="p">]</span>
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="p">[</span><span class="n">BOOTSTRAP</span><span class="p">]</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="n">Returning</span> <span class="n">result</span><span class="p">:</span> <span class="p">{</span><span class="s">"value"</span><span class="p">:{</span><span class="s">"ELEMENT"</span><span class="p">:</span><span class="s">"3"</span><span class="p">},</span><span class="s">"st</span><span class="err">
+</span><span class="s">atus"</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="k">with</span> <span class="n">success</span><span class="p">:</span> <span class="p">{</span><span class="s">"status"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s">"value"</span><span class="p">:{</span><span class="s">"ELEMENT"</span><span class="p">:</span>
+<span class="s">"3"</span><span class="p">},</span><span class="s">"sessionId"</span><span class="p">:</span><span class="s">"6ddea56b-d162-4e8f-8eed-a04702f9ec4c"</span><span class="p">}</span>
+<span class="n">info</span><span class="p">:</span> <span class="o">&lt;--</span> <span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="mi">6</span><span class="n">ddea56b</span><span class="o">-</span><span class="n">d162</span><span class="o">-</span><span class="mf">4e8</span><span class="n">f</span><span class="o">-</span><span class="mi">8</span><span class="n">eed</span><span class="o">-</span><span class="n">a04702f9ec4c</span><span class="o">/</span><span class="n">element</span> <span class="mi">200</span>
+<span class="mf">33.947</span> <span class="n">ms</span> <span class="o">-</span> <span class="mi">87</span> <span class="p">{</span><span class="s">"status"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s">"value"</span><span class="p">:{</span><span class="s">"ELEMENT"</span><span class="p">:</span><span class="s">"3"</span><span class="p">},</span><span class="s">"sessionId"</span><span class="p">:</span><span class="s">"6ddea56b-d162-4e</span><span class="err">
+</span><span class="s">8f-8eed-a04702f9ec4c"</span><span class="p">}</span>
+<span class="n">info</span><span class="p">:</span> <span class="o">--&gt;</span> <span class="n">POST</span> <span class="o">/</span><span class="n">wd</span><span class="o">/</span><span class="n">hub</span><span class="o">/</span><span class="n">session</span><span class="o">/</span><span class="mi">6</span><span class="n">ddea56b</span><span class="o">-</span><span class="n">d162</span><span class="o">-</span><span class="mf">4e8</span><span class="n">f</span><span class="o">-</span><span class="mi">8</span><span class="n">eed</span><span class="o">-</span><span class="n">a04702f9ec4c</span><span class="o">/</span><span class="n">element</span><span class="o">/</span><span class="mi">3</span><span class="o">/</span><span class="n">va</span>
+<span class="n">lue</span> <span class="p">{</span><span class="s">"sessionId"</span><span class="p">:</span><span class="s">"6ddea56b-d162-4e8f-8eed-a04702f9ec4c"</span><span class="p">,</span><span class="s">"id"</span><span class="p">:</span><span class="s">"3"</span><span class="p">,</span><span class="s">"value"</span><span class="p">:[</span><span class="s">"a"</span><span class="p">,</span><span class="s">"u</span><span class="err">
+</span><span class="s">"</span><span class="p">,</span><span class="s">"t"</span><span class="p">,</span><span class="s">"o"</span><span class="p">,</span><span class="s">"T"</span><span class="p">,</span><span class="s">"e"</span><span class="p">,</span><span class="s">"s"</span><span class="p">,</span><span class="s">"t"</span><span class="p">,</span><span class="s">"M"</span><span class="p">,</span><span class="s">"o"</span><span class="p">,</span><span class="s">"b"</span><span class="p">,</span><span class="s">"i"</span><span class="p">,</span><span class="s">"l"</span><span class="p">,</span><span class="s">"e"</span><span class="p">,</span><span class="s">"T"</span><span class="p">,</span><span class="s">"a"</span><span class="p">,</span><span class="s">"s"</span><span class="p">,</span><span class="s">"k"</span><span class="p">,</span><span class="s">"_"</span><span class="p">,</span><span class="s">"9"</span><span class="p">,</span><span class="s">"2"</span><span class="p">,</span><span class="s">"3</span><span class="err">
+</span><span class="s">"</span><span class="p">,</span><span class="s">"7"</span><span class="p">,</span><span class="s">"4"</span><span class="p">,</span><span class="s">"0"</span><span class="p">]}</span>
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="n">Pushing</span> <span class="n">command</span> <span class="n">to</span> <span class="n">appium</span> <span class="n">work</span> <span class="n">queue</span><span class="p">:</span> <span class="p">[</span><span class="s">"element:setText"</span><span class="p">,{</span><span class="s">"element</span><span class="err">
+</span><span class="s">Id"</span><span class="p">:</span><span class="s">"3"</span><span class="p">,</span><span class="s">"text"</span><span class="p">:</span><span class="s">"autoTestMobileTask_923740"</span><span class="p">,</span><span class="s">"replace"</span><span class="p">:</span><span class="n">false</span><span class="p">}]</span>
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="p">[</span><span class="n">BOOTSTRAP</span><span class="p">]</span> <span class="p">[</span><span class="n">debug</span><span class="p">]</span> <span class="n">Got</span> <span class="n">data</span> <span class="kn">from</span> <span class="nn">client</span><span class="err">:</span> <span class="err">{"</span><span class="nn">cmd</span><span class="err">":"</span><span class="nn">action</span><span class="err">","</span><span class="nn">action</span><span class="err">"
+:"</span><span class="nn">element</span><span class="err">:</span><span class="nn">setText</span><span class="err">","</span><span class="nn">params</span><span class="err">":{"</span><span class="nn">elementId</span><span class="err">":"3","</span><span class="nn">text</span><span class="err">":"</span><span class="nn">autoTestMobileTask_923740</span><span class="err">",
+"</span><span class="nn">replace</span><span class="err">":</span><span class="nn">false</span><span class="err">}}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Got</span> <span class="nn">command</span> <span class="nn">of</span> <span class="nn">type</span> <span class="nn">ACTION</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Got</span> <span class="nn">command</span> <span class="nn">action</span><span class="err">:</span> <span class="nn">setText</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Attempting</span> <span class="nn">to</span> <span class="nn">clear</span> <span class="nn">using</span> <span class="nn">UiObject.clearText</span><span class="err">()
+</span><span class="nn">.</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Updating</span> <span class="nn">class</span> <span class="err">"</span><span class="nn">class</span> <span class="nn">com.android.uiautomator.</span><span class="err">
+</span><span class="nn">core.UiDevice</span><span class="err">"</span> <span class="nn">to</span> <span class="nn">enable</span> <span class="nn">field</span> <span class="err">"</span><span class="nn">mUiAutomationBridge</span><span class="err">"
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Updating</span> <span class="nn">class</span> <span class="err">"</span><span class="nn">class</span> <span class="nn">com.android.uiautomator.</span><span class="err">
+</span><span class="nn">core.UiAutomatorBridge</span><span class="err">"</span> <span class="nn">to</span> <span class="nn">enable</span> <span class="nn">field</span> <span class="err">"</span><span class="nn">mInteractionController</span><span class="err">"
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Finding</span> <span class="nn">methods</span> <span class="nn">on</span> <span class="nn">class</span><span class="err">:</span> <span class="nn">class</span> <span class="nn">com.android.ui</span><span class="err">
+</span><span class="nn">automator.core.InteractionController</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Text</span> <span class="nn">remains</span> <span class="nn">after</span> <span class="nn">clearing</span><span class="err">,</span> <span class="nn">but</span> <span class="nn">it</span> <span class="nn">appears</span> <span class="nn">to</span><span class="err">
+</span> <span class="nn">be</span> <span class="nn">hint</span> <span class="nn">text.</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Text</span> <span class="nn">not</span> <span class="nn">cleared.</span> <span class="nn">Assuming</span> <span class="nn">remainder</span> <span class="nn">is</span> <span class="nn">hint</span> <span class="nn">t</span><span class="err">
+</span><span class="nn">ext.</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Sending</span> <span class="nn">plain</span> <span class="nn">text</span> <span class="nn">to</span> <span class="nn">element</span><span class="err">:</span> <span class="nn">autoTestMobileT</span><span class="err">
+</span><span class="nn">ask_923740</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Returning</span> <span class="nn">result</span><span class="err">:</span> <span class="err">{"</span><span class="nn">value</span><span class="err">":</span><span class="nn">true</span><span class="err">,"</span><span class="nn">status</span><span class="err">":0}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Responding</span> <span class="nn">to</span> <span class="nn">client</span> <span class="nn">with</span> <span class="nn">success</span><span class="err">:</span> <span class="err">{"</span><span class="nn">status</span><span class="err">":0,"</span><span class="nn">value</span><span class="err">":</span><span class="nn">true</span><span class="err">,"</span><span class="nn">sessi</span><span class="err">
+</span><span class="nn">onId</span><span class="err">":"6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">"}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">&lt;--</span> <span class="nn">POST</span> <span class="err">/</span><span class="nn">wd</span><span class="err">/</span><span class="nn">hub</span><span class="err">/</span><span class="nn">session</span><span class="err">/6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">/</span><span class="nn">element</span><span class="err">/3/</span><span class="nn">va</span><span class="err">
+</span><span class="nn">lue</span> <span class="err">200</span> <span class="err">6936</span><span class="nn">.020</span> <span class="nn">ms</span> <span class="err">-</span> <span class="err">76</span> <span class="err">{"</span><span class="nn">status</span><span class="err">":0,"</span><span class="nn">value</span><span class="err">":</span><span class="nn">true</span><span class="err">,"</span><span class="nn">sessionId</span><span class="err">":"6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8</span><span class="err">
+</span><span class="nn">f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">"}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">--&gt;</span> <span class="nn">POST</span> <span class="err">/</span><span class="nn">wd</span><span class="err">/</span><span class="nn">hub</span><span class="err">/</span><span class="nn">session</span><span class="err">/6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">/</span><span class="nn">element</span> <span class="err">{"</span><span class="nn">us</span><span class="err">
+</span><span class="nn">ing</span><span class="err">":"</span><span class="nn">id</span><span class="err">","</span><span class="nn">sessionId</span><span class="err">":"6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">","</span><span class="nn">value</span><span class="err">":"</span><span class="nn">com.xxx.ph</span><span class="err">
+</span><span class="nn">one</span><span class="err">:</span><span class="nn">id</span><span class="err">/</span><span class="nn">plan_description_edit</span><span class="err">"}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Waiting</span> <span class="nn">up</span> <span class="nn">to</span> <span class="err">10000</span><span class="nn">ms</span> <span class="nn">for</span> <span class="nn">condition</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Pushing</span> <span class="nn">command</span> <span class="nn">to</span> <span class="nn">appium</span> <span class="nn">work</span> <span class="nn">queue</span><span class="err">:</span> <span class="err">["</span><span class="nn">find</span><span class="err">",{"</span><span class="nn">strategy</span><span class="err">":"</span><span class="nn">id</span><span class="err">","</span><span class="nn">se</span><span class="err">
+</span><span class="nn">lector</span><span class="err">":"</span><span class="nn">com.xxx.phone</span><span class="err">:</span><span class="nn">id</span><span class="err">/</span><span class="nn">plan_description_edit</span><span class="err">","</span><span class="nn">context</span><span class="err">":"","</span><span class="nn">multiple</span><span class="err">":</span><span class="nn">fa</span><span class="err">
+</span><span class="nn">lse</span><span class="err">}]
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Got</span> <span class="nn">data</span> <span class="nn">from</span> <span class="nn">client</span><span class="err">:</span> <span class="err">{"</span><span class="nn">cmd</span><span class="err">":"</span><span class="nn">action</span><span class="err">","</span><span class="nn">action</span><span class="err">"
+:"</span><span class="nn">find</span><span class="err">","</span><span class="nn">params</span><span class="err">":{"</span><span class="nn">strategy</span><span class="err">":"</span><span class="nn">id</span><span class="err">","</span><span class="nn">selector</span><span class="err">":"</span><span class="nn">com.xxx.phone</span><span class="err">:</span><span class="nn">id</span><span class="err">/</span><span class="nn">plan_descrip</span><span class="err">
+</span><span class="nn">tion_edit</span><span class="err">","</span><span class="nn">context</span><span class="err">":"","</span><span class="nn">multiple</span><span class="err">":</span><span class="nn">false</span><span class="err">}}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Got</span> <span class="nn">command</span> <span class="nn">of</span> <span class="nn">type</span> <span class="nn">ACTION</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Got</span> <span class="nn">command</span> <span class="nn">action</span><span class="err">:</span> <span class="nn">find</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Finding</span> <span class="nn">com.xxx.phone</span><span class="err">:</span><span class="nn">id</span><span class="err">/</span><span class="nn">plan_description</span><span class="err">
+</span><span class="nn">_edit</span> <span class="nn">using</span> <span class="nn">ID</span> <span class="nn">with</span> <span class="nn">the</span> <span class="nn">contextId</span><span class="err">:</span>  <span class="nn">multiple</span><span class="err">:</span> <span class="nn">false</span><span class="err">
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Using</span><span class="err">:</span> <span class="nn">UiSelector</span><span class="err">[</span><span class="nn">INSTANCE</span><span class="err">=0,</span> <span class="nn">RESOURCE_ID</span><span class="err">=</span><span class="nn">com.</span><span class="err">
+</span><span class="nn">xxx.phone</span><span class="err">:</span><span class="nn">id</span><span class="err">/</span><span class="nn">plan_description_edit</span><span class="err">]
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Returning</span> <span class="nn">result</span><span class="err">:</span> <span class="err">{"</span><span class="nn">value</span><span class="err">":{"</span><span class="nn">ELEMENT</span><span class="err">":"4"},"</span><span class="nn">st</span><span class="err">
+</span><span class="nn">atus</span><span class="err">":0}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Responding</span> <span class="nn">to</span> <span class="nn">client</span> <span class="nn">with</span> <span class="nn">success</span><span class="err">:</span> <span class="err">{"</span><span class="nn">status</span><span class="err">":0,"</span><span class="nn">value</span><span class="err">":{"</span><span class="nn">ELEMENT</span><span class="err">":
+"4"},"</span><span class="nn">sessionId</span><span class="err">":"6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">"}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">&lt;--</span> <span class="nn">POST</span> <span class="err">/</span><span class="nn">wd</span><span class="err">/</span><span class="nn">hub</span><span class="err">/</span><span class="nn">session</span><span class="err">/6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">/</span><span class="nn">element</span> <span class="err">200
+40</span><span class="nn">.074</span> <span class="nn">ms</span> <span class="err">-</span> <span class="err">87</span> <span class="err">{"</span><span class="nn">status</span><span class="err">":0,"</span><span class="nn">value</span><span class="err">":{"</span><span class="nn">ELEMENT</span><span class="err">":"4"},"</span><span class="nn">sessionId</span><span class="err">":"6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e</span><span class="err">
+8</span><span class="nn">f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">"}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">--&gt;</span> <span class="nn">POST</span> <span class="err">/</span><span class="nn">wd</span><span class="err">/</span><span class="nn">hub</span><span class="err">/</span><span class="nn">session</span><span class="err">/6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">/</span><span class="nn">element</span><span class="err">/4/</span><span class="nn">va</span><span class="err">
+</span><span class="nn">lue</span> <span class="err">{"</span><span class="nn">sessionId</span><span class="err">":"6</span><span class="nn">ddea56b</span><span class="err">-</span><span class="nn">d162</span><span class="err">-4</span><span class="nn">e8f</span><span class="err">-8</span><span class="nn">eed</span><span class="err">-</span><span class="nn">a04702f9ec4c</span><span class="err">","</span><span class="nn">id</span><span class="err">":"4","</span><span class="nn">value</span><span class="err">":["</span><span class="nn">j</span><span class="err">","</span><span class="nn">d</span><span class="err">
+","</span><span class="nn">z</span><span class="err">","</span><span class="nn">f</span><span class="err">","</span><span class="nn">l</span><span class="err">","</span><span class="nn">z</span><span class="err">","</span><span class="nn">v</span><span class="err">","</span><span class="nn">z</span><span class="err">","</span><span class="nn">a</span><span class="err">","</span><span class="nn">x</span><span class="err">","</span><span class="nn">m</span><span class="err">","</span><span class="nn">e</span><span class="err">","</span><span class="nn">p</span><span class="err">","</span><span class="nn">q</span><span class="err">","</span><span class="nn">y</span><span class="err">","</span><span class="nn">b</span><span class="err">","</span><span class="nn">t</span><span class="err">","</span><span class="nn">l</span><span class="err">","</span><span class="nn">g</span><span class="err">","</span><span class="nn">b</span><span class="err">","</span><span class="nn">i</span><span class="err">","</span><span class="nn">e</span><span class="err">
+","</span><span class="nn">x</span><span class="err">","</span><span class="nn">n</span><span class="err">","</span><span class="nn">x</span><span class="err">","</span><span class="nn">m</span><span class="err">","</span><span class="nn">u</span><span class="err">","</span><span class="nn">l</span><span class="err">","</span><span class="nn">g</span><span class="err">","</span><span class="nn">l</span><span class="err">","</span><span class="nn">g</span><span class="err">","</span><span class="nn">b</span><span class="err">","</span><span class="nn">e</span><span class="err">","</span><span class="nn">f</span><span class="err">","</span><span class="nn">f</span><span class="err">","</span><span class="nn">j</span><span class="err">","</span><span class="nn">f</span><span class="err">","</span><span class="nn">r</span><span class="err">","</span><span class="nn">x</span><span class="err">","</span><span class="nn">h</span><span class="err">","</span><span class="nn">q</span><span class="err">","</span><span class="nn">g</span><span class="err">
+","</span><span class="nn">o</span><span class="err">","</span><span class="nn">z</span><span class="err">","</span><span class="nn">i</span><span class="err">","</span><span class="nn">d</span><span class="err">","</span><span class="nn">l</span><span class="err">","</span><span class="nn">y</span><span class="err">","</span><span class="nn">v</span><span class="err">","</span><span class="nn">l</span><span class="err">","</span><span class="nn">g</span><span class="err">","</span><span class="nn">o</span><span class="err">","</span><span class="nn">m</span><span class="err">","</span><span class="nn">r</span><span class="err">","</span><span class="nn">u</span><span class="err">","</span><span class="nn">v</span><span class="err">","</span><span class="nn">c</span><span class="err">","</span><span class="nn">v</span><span class="err">","</span><span class="nn">v</span><span class="err">","</span><span class="nn">e</span><span class="err">"]}
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Pushing</span> <span class="nn">command</span> <span class="nn">to</span> <span class="nn">appium</span> <span class="nn">work</span> <span class="nn">queue</span><span class="err">:</span> <span class="err">["</span><span class="nn">element</span><span class="err">:</span><span class="nn">setText</span><span class="err">",{"</span><span class="nn">element</span><span class="err">
+</span><span class="nn">Id</span><span class="err">":"4","</span><span class="nn">text</span><span class="err">":"</span><span class="nn">jdzflzvzaxmepqybtlgbiexnxmulglgbeffjfrxhqgozidlyvlgomruvcvve</span><span class="err">","</span><span class="nn">r</span><span class="err">
+</span><span class="nn">eplace</span><span class="err">":</span><span class="nn">false</span><span class="err">}]
+</span><span class="nn">info</span><span class="err">:</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="err">[</span><span class="nn">BOOTSTRAP</span><span class="err">]</span> <span class="err">[</span><span class="nn">debug</span><span class="err">]</span> <span class="nn">Got</span> <span class="nn">data</span> <span class="nn">from</span> <span class="nn">client</span><span class="err">:</span> <span class="err">{"</span><span class="nn">cmd</span><span class="err">":"</span><span class="nn">action</span><span class="err">","</span><span class="nn">action</span><span class="err">"
+:"</span><span class="nn">element</span><span class="err">:</span><span class="nn">setText</span><span class="err">","</span><span class="nn">params</span><span class="err">":{"</span><span class="nn">elementId</span><span class="err">":"4","</span><span class="nn">text</span><span class="err">":"</span><span class="nn">jdzflzvzaxmepqybtlgbiexnxmu</span><span class="err">
+</span><span class="nn">lglgbeffjfrxhqgozidlyvlgomruvcvve</span><span class="err">","</span><span class="nn">replace</span><span class="err">":</span><span class="nn">false</span><span class="err">}}
+
+</span></pre>
+
+<p>现象是：<br>
+    A区域一开始写入的内容为：  autoTestMobileTask_923740，接着要往B区域写入内容，在B区域写入内容前，A区域写入内容后，这一段时间内，发生了这么一个事情：<br>
+         A区域已经写入的内容 autoTestMobileTask_923740，会被删除掉7和0两个数字，截图如下：<br>
+<img src="../photo/2014/6395ae699ed8042e738fdf356fcbce7c.png" alt=""></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【已解决，降低 appium 版本】连续使用两次 send_keys()，上一次输入框中输入内容部分信息被删除 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1551#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1551#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1551#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1551#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1551#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply1">1楼</a> · <abbr class="timeago" title="2014-11-02T01:38:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9589" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1551/replies/9589/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你试试在输入之前先发个click操作</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply2">2楼</a> · <abbr class="timeago" title="2014-11-02T13:21:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9592" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1551/replies/9592/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="sanlengjingvv" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="https://github.com/appium/appium/issues/3839" rel="nofollow" target="_blank">https://github.com/appium/appium/issues/3839</a><br>
+这个么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply3">3楼</a> · <abbr class="timeago" title="2014-11-02T17:47:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9597" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1551/replies/9597/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1551#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> 好像是. 这个问题挺诡异. 大家可以追查下. 有点意思.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../peiminglei"><img alt="8225e81273f3920685373313bd2235d6" class="uface" src="../avatar/8225e81273f3920685373313bd2235d6.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../peiminglei">peiminglei</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply4">4楼</a> · <abbr class="timeago" title="2014-11-03T10:48:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9602" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1808" href="http://testerhome.com/topics/1551/replies/9602/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="peiminglei" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我已经遇到了，尤其是连续两个挨着的edittext操作的时候。1.2版本没有问题。1.3上出现的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply5">5楼</a> · <abbr class="timeago" title="2014-11-03T12:27:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9608" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/1551/replies/9608/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="kevin_xu_v" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="http://www.testerhome.com/topics/1542" rel="nofollow" target="_blank">http://www.testerhome.com/topics/1542</a> 可以看下我的帖子，里面有答案</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply6">6楼</a> · <abbr class="timeago" title="2014-11-03T12:33:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9610" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1551/replies/9610/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="strayeagle" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢大家的答复，如大家所言，的确是个bug，先降级使用appium，等问题解决了，后面再升级回来。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../johnny"><img alt="1875" class="uface" src="../user/large_avatar/1875.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lcy" href="../johnny">johnny</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1551#reply7">7楼</a> · <abbr class="timeago" title="2015-01-10T17:45:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11421" data-state="" data-type="Reply" href="1551#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1875" href="http://testerhome.com/topics/1551/replies/11421/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="johnny" href="1551#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哇哈哈，找到与我相同问题的人了终于！问题应该是这里出的UiObject.clearText()</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscar: 每个人都有每个人的追求和生活方式；我们可以什么都没有，没房、没车、没脑瓜，但是我们得有做人的尊严。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1551#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

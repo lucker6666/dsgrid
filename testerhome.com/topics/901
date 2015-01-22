@@ -1,0 +1,384 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【已解决】运行 android_contacts.py 出错，ImportError: No module named switch_to &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../shuiguolan"><img alt="808c1c2fca133f3b35669a530168ffd1" class="uface" src="../avatar/808c1c2fca133f3b35669a530168ffd1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【已解决】运行 android_contacts.py 出错，ImportError: No module named switch_to</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../shuiguolan">shuiguolan</a>
+     · 
+    于<abbr class="timeago" title="2014-05-21T16:17:52+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xiaomayi0323" href="../xiaomayi0323">xiaomayi0323</a> 于<abbr class="timeago" title="2014-05-30T13:48:00+08:00"></abbr>回复
+     · 
+    731次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>import os<br>
+import unittest<br>
+from appium import webdriver<br>
+from time import sleep</p>
+<h4>Returns abs path relative to this file and not cwd</h4>
+<p>PATH = lambda p: os.path.abspath(<br>
+    os.path.join(os.path.dirname(<strong>file</strong>), p)<br>
+)</p>
+
+<p>class ContactsAndroidTests(unittest.TestCase):<br>
+    def setUp(self):<br>
+        desired_caps = {}<br>
+        desired_caps['platformName'] = 'Android'<br>
+        desired_caps['platformVersion'] = '4.4'<br>
+        desired_caps['deviceName'] = 'Android Emulator'<br>
+        desired_caps['app'] = PATH(<br>
+            '..../app/ContactManager.apk'<br>
+        )<br>
+        desired_caps['appPackage'] = 'com.example.android.contactmanager'<br>
+        desired_caps['appActivity'] = '.ContactManager'</p>
+
+<p>self.driver = webdriver.Remote('<a href="http://localhost:4723/wd/hub" rel="nofollow" target="_blank">http://localhost:4723/wd/hub</a>', desired_caps)</p>
+
+<p>def tearDown(self):<br>
+        self.driver.quit()</p>
+
+<p>def test_add_contacts(self):<br>
+        el = self.driver.find_element_by_name("Add Contact")<br>
+        el.click()</p>
+
+<p>textfields = self.driver.find_elements_by_class_name("android.widget.EditText")<br>
+        textfields[0].send_keys("Appium User")<br>
+        textfields[2].send_keys("someone@appium.io")</p>
+
+<p>self.assertEqual('Appium User', textfields[0].text)<br>
+        self.assertEqual('someone@appium.io', textfields[2].text)</p>
+
+<p>self.driver.find_element_by_name("Save").click()</p>
+
+<p># for some reason "save" breaks things<br>
+        alert = self.driver.switch_to_alert()</p>
+
+<p># no way to handle alerts in Android<br>
+        self.driver.find_element_by_android_uiautomator('new UiSelector().clickable(true)').click()</p>
+
+<p>self.driver.keyevent(3)</p>
+
+<p>if <strong>name</strong> == '__main__':<br>
+    suite = unittest.TestLoader().loadTestsFromTestCase(ContactsAndroidTests)<br>
+    unittest.TextTestRunner(verbosity=2).run(suite)</p>
+
+<p>已经安装了Appium-Python-Client，目前用的python是2.7<br>
+Traceback (most recent call last):<br>
+  File "C:\babyD\myWork\myCode\Appium_Framework_Demo_v1\examples\android_contacts.py", line 8, in &lt;module&gt;<br>
+    from appium import webdriver<br>
+  File "build\bdist.win32\egg\appium\webdriver__init__.py", line 19, in &lt;module&gt;</p>
+
+<p>File "build\bdist.win32\egg\appium\webdriver\webdriver.py", line 19, in &lt;module&gt;<br>
+  File "build\bdist.win32\egg\appium\webdriver\switch_to.py", line 15, in &lt;module&gt;<br>
+ImportError: No module named switch_to</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【已解决】运行 android_contacts.py 出错，ImportError: No module named switch_to via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="901#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="901#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="901#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="901#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="901#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../shuiguolan"><img alt="808c1c2fca133f3b35669a530168ffd1" class="uface" src="../avatar/808c1c2fca133f3b35669a530168ffd1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../shuiguolan">shuiguolan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="901#reply1">1楼</a> · <abbr class="timeago" title="2014-05-21T16:18:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5071" data-state="" data-type="Reply" href="901#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="938" href="http://testerhome.com/topics/901/replies/5071/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="shuiguolan" href="901#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哪位大侠帮忙看看是什么问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../gogily"><img alt="252" class="uface" src="../user/large_avatar/252.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="gogily.liu" href="../gogily">gogily</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="901#reply2">2楼</a> · <abbr class="timeago" title="2014-05-21T18:29:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5075" data-state="" data-type="Reply" href="901#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="252" href="http://testerhome.com/topics/901/replies/5075/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="gogily" href="901#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>from appium import webdriver<br>
+说明你的Appium-Python-Client没有配好，请安装Readme文档配置就可以了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../shuiguolan"><img alt="808c1c2fca133f3b35669a530168ffd1" class="uface" src="../avatar/808c1c2fca133f3b35669a530168ffd1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../shuiguolan">shuiguolan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="901#reply3">3楼</a> · <abbr class="timeago" title="2014-05-27T14:43:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5269" data-state="" data-type="Reply" href="901#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="938" href="http://testerhome.com/topics/901/replies/5269/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="shuiguolan" href="901#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>问题找到了，是eclipse引了两个不同版本号的selenium，谢谢大家帮忙</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="901#reply4">4楼</a> · <abbr class="timeago" title="2014-05-30T13:48:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5398" data-state="" data-type="Reply" href="901#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/901/replies/5398/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="xiaomayi0323" href="901#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>先卸载之前安装的Selenium，再安装Appium-Python-Client，安装Appium-Python-Client时会自动安装Selenium</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @rabbit 希望能够过上每天除了工作还有生活的日子~~惬意。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="901#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

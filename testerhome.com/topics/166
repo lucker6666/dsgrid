@@ -1,0 +1,289 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium 在 Mac OS X 上安装使用文档 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium 在 Mac OS X 上安装使用文档</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2013-10-30T23:18:32+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="tianwei024" href="../tianwei024">tianwei024</a> 于<abbr class="timeago" title="2014-07-04T17:36:36+08:00"></abbr>回复
+     · 
+    1475次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>原文：<a href="https://github.com/appium/appium/blob/master/docs/running-on-osx.md" rel="nofollow" target="_blank">https://github.com/appium/appium/blob/master/docs/running-on-osx.md</a><br>
+译文：<a href="https://github.com/testerhome/appium/blob/master/docs/running-on-osx.cn.md" rel="nofollow" target="_blank">https://github.com/testerhome/appium/blob/master/docs/running-on-osx.cn.md</a></p>
+<h4>在 Mac OS X 上使用 Appium</h4>
+<p>在 OS X 上， Appium 支持 iOS 和 Android 测试</p>
+<h4>系统配置 (iOS)</h4>
+<ul>
+<li>Appium 需要 Mac OS X 10.7， 推荐 10.8。 （经过测试， 10.9 也能工作。）</li>
+<li>确保 Xcode 和 iOS SDK 都已经安装好了。 （当前 Appium 支持 Xcode 4.6.3/iOS 6.1 和 Xcode 5/iOS 7.0。 注意不推荐在基于 Xcode 5 下且低于 7.0 的 iOS 版本进行测试。 参照下篇可以获取更多信息）</li>
+<li>你需要授权 iOS 模拟器的使用。如果你是通过 NPM 安装的 Appium，那么你可以运行 <code>sudo authorize_ios</code> （<code>authorize_ios</code>）是来自 Appium npm 包里的一个二进制执行文件。如果你是从源代码运行 Appium，那么你可以简单的使用 <code>sudo grunt authorize</code>。如果你使用<code>Appium.app</code>, 那你只要用界面来操作。</li>
+</ul><h4>使用多种 iOS SDK 进行测试</h4>
+<p>Appium 使用苹果提供的 <code>instruments</code> 来启动 iOS 模拟器，默认它会使用当前安装的 Xcode 和该 Xcode 下安装好的最高版本的 iOS SDK。这就意味着如果你想测试 iOS 6.1， 但是你安装了 iOS 7.0， 那么 Appium 会强制使用 7.0 的模拟器。 唯一的方法就是安装多个Xcode，然后在安装不同的 SDK。然后在启动 Appium 前，切换到你要测试的特定的版本。</p>
+
+<p>另外，我们发现 Xcode 5 上的 iOS 6.1 测试，会很慢而且不稳定。所以我们推荐，如果要在 6.1 及 6.1 以下版本的 iOS 上进行测试，请使用 Xcode 4.6.3。如果要在 iOS 7.0 上测试，请使用 Xcode 5。假设我们的 Xcode 5 在 <code>/Applications/Xcode.app</code>， Xcode 4.6 在 <code>/Applications/Xcode-4.6.app</code>，我们就可以用下面的命令来切换到 Xcode 4.6 来为 iOS 6.1 测试做准备。</p>
+<pre class="highlight shell">    sudo xcode-select -switch /Applications/Xcode-4.6.app
+</pre>
+<p>如果要回到 Xcode 5 的话，我们再运行一次:</p>
+<pre class="highlight shell">    sudo xcode-select -switch /Applications/Xcode.app
+</pre><h4>系统配置 (Android)</h4>
+<ul>
+<li>确保你已经安装了 <a href="http://developer.android.com/sdk/index.html">Android SDK installed</a>。</li>
+<li>确保你安装的 Android SDK API 大于等于 17。你可以运行 Android SDK 管理器（<code>android</code>） 然后在额外的包里选择你要安装的 API。</li>
+<li>确保你安装了 <code>ant</code>。 我们用 Ant 来构建 Appium 的 bootstrap jar 和 测试程序。Mac OS X Mavericks （小牛）已经不预装 <code>ant</code> 了， 你可以去<a>官网</a>下载。你可以用 <code>homebrew</code> 安装。</li>
+<li>确保你配置好了<code>$ANDROID_HOME</code>，并指向你的 Android SDK 目录。比如你的把 Android SDK 解压到 <code>/usr/local/adt/</code>，  那你就要将如下添加到你的 <code>.bashrc</code> 或 <code>.zshrc</code> 或 <code>.bash_profile</code> 等 shell 配置文件中去:</li>
+</ul><pre class="highlight shell">        <span class="nb">export </span><span class="nv">ANDROID_HOME</span><span class="o">=</span><span class="s2">"/usr/local/adt/sdk"</span>
+</pre>
+<ul>
+<li>确保你安装了 <a href="http://maven.apache.org/download.cgi">Maven 3.0.5</a>。 Maven 3.1.1 不能使用！
+我们需要 Maven 来支持 Selendroid， 借助 Selendroid， Appium 可以在低于 4.2 的 Android 版本里运行。 </li>
+<li>确保你的 AVD 已经配置好了最新的 Android 版本 （一个可以运行的 UIAutomator）（至少 4.1 ）。你可以使用 Android SDK tool 来创建 AVD。 别忘记给 AVD 起个好记的名字，下次你可以用它来启动模拟器并在模拟器上运行测试。</li>
+<li>确保你使用的 AVD 里面的 <code>config.ini</code> 有这条指令 <code>hw.battery=yes</code>。</li>
+<li>Android 有一些硬件加速的模拟器，这些模拟器有自己的限制。你可以在 <a href="https://github.com/appium/appium/blob/master/docs/android-hax-emulator.md">page</a> 找到更多的信息。</li>
+</ul>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium 在 Mac OS X 上安装使用文档 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="166#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>1</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../tianwei024"><img alt="1058" class="uface" src="../user/large_avatar/1058.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tianwei" href="../tianwei024">tianwei024</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="166#reply1">1楼</a> · <abbr class="timeago" title="2014-07-04T17:36:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6498" data-state="" data-type="Reply" href="166#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1058" href="http://testerhome.com/topics/166/replies/6498/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="tianwei024" href="166#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>正需要这方面的资料。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @saraben 期待“念念不忘，必有回响”在我身上印证的那一天到来
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="166#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Calabash Android 简介 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Calabash Android 简介</h1>
+  <div class="info leader">
+    <a class="node" href="node35">Calabash</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-03-22T23:07:19+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-03-25T10:06:28+08:00"></abbr>回复
+     · 
+    1111次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>什么是 Calabash？</h4>
+<p>Calabash 是一个自动化测试框架，它可以测试 Android 和 iOS 原生应用和混合应用。</p>
+
+<p>它有：</p>
+
+<ul>
+<li>calabash-android</li>
+<li>calabash-ios</li>
+</ul><p>主页： <a href="http://calabash.sh" rel="nofollow" target="_blank">http://calabash.sh</a></p>
+<h4>Calabash-android介绍</h4>
+<p>Calabash-android 是支持 android 的 UI 自动化测试框架，PC 端使用了 cucumber 框架，通过 http 和 json 与模拟器和真机上安装的测试 apk 通信，测试 apk 调用  <a href="https://code.google.com/p/robotium/">Robotium</a>  的方法来进行 UI 自动化测试，支持 webview 操作。</p>
+<h4>Calabash-android 架构图</h4>
+<p><img src="../photo/2014/ecb26c170838deda3dd5193fe5c8e737.png" alt=""></p>
+
+<ul>
+<li>Features —— 这里的 feature 就是 cucumber 的 feature，用来描述 <code>user stories</code> 。</li>
+<li>Step Definitions —— Calabash Android 事先已经定义了一些通用的  <a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md">step</a>。你可以根据自己的需求，定义更加复杂的步骤。</li>
+<li>Your app —— 测试之前，你不必对你的应用修改。（这里其实是有问题，后面我们会说到。）</li>
+<li>Instrumentation Test Server —— 这是一个应用，在运行测试的时候会被安装到设备中去。 这个应用是基于  Android SDK 里的 <a href="http://blog.csdn.net/haha_mingg/article/details/6347629">ActivityInstrumentationTestCase2</a>。它是 Calabash Android 框架的一部分。Robotium 就集成在这个应用里。</li>
+</ul><h4>Calabash-android 环境搭建</h4><h4>ruby 环境</h4>
+<ul>
+<li><a href="http://rvm.io/">rvm</a></li>
+<li><a href="https://github.com/sstephenson/rbenv">rbenv</a></li>
+<li>
+<a href="http://rubyinstaller.org/">RubyInstaller.org</a> for windows</li>
+</ul><h4>Android 开发环境</h4>
+<ul>
+<li>JAVA</li>
+<li>Android SDK</li>
+<li>Ant</li>
+</ul><p>指定 JAVA 环境变量， Android SDK 环境变量（ANDROID_HOME）， Ant 加入到 PATH 中去。</p>
+<h4>安装 Calabash-android</h4><pre class="highlight plaintext">gem install calabash-android
+sudo gem install calabash-android # 如果权限不够用这个。
+</pre>
+<p>如有疑问，请参考： <a href="https://github.com/calabash/calabash-android/blob/master/documentation/installation.md" rel="nofollow" target="_blank">https://github.com/calabash/calabash-android/blob/master/documentation/installation.md</a></p>
+<h4>创建 calabash-android 的骨架</h4><pre class="highlight plaintext">calabash-android gen
+</pre>
+<p>会生成如下的目录结构：</p>
+<pre class="highlight plaintext">➜  calabash  tree
+.
+features
+|_support
+| |_app_installation_hooks.rb
+| |_app_life_cycle_hooks.rb
+| |_env.rb
+|_step_definitions
+| |_calabash_steps.rb
+|_my_first.feature
+
+</pre><h4>写测试用例</h4>
+<p>像一般的 cucumber 测试一样，我们只要在 feature 文件里添加测试用例即可。比如我们测试 ContactManager.apk （android sdk sample 里面的， Appium 也用这个 apk）。</p>
+
+<p><img src="../photo/2014/82848ab35b17968a093ce801d0b49a7c.png" alt=""></p>
+
+<p><img src="../photo/2014/aa78cf92cc5ee4152ec2d41bd228239d.png" alt=""></p>
+
+<p>我们想实现，</p>
+
+<ul>
+<li>打开这个应用</li>
+<li>点击 Add Contact 按钮</li>
+<li>添加 Contact Name 为 hello</li>
+<li>添加 Contact Phone 为 13817861875</li>
+<li>添加 Contact Email 为 hengwen@hotmail.com</li>
+<li>保存</li>
+</ul><p>所以我们的 feature 应该是这样的：</p>
+<pre class="highlight gherkin"><span class="kd">Feature</span><span class="p">:</span> Login feature
+
+  <span class="kn">Scenario</span><span class="p">:</span> As a valid user I can log into my app
+    <span class="nf">When</span> I press <span class="s">"Add Contact"</span>
+    <span class="nf">Then</span> I see <span class="s">"Target Account"</span>
+    <span class="nf">Then</span> I enter <span class="s">"hello"</span> into input field number 1
+    <span class="nf">Then</span> I enter <span class="s">"13817861875"</span> into input field number 2
+    <span class="nf">Then</span> I enter <span class="s">"hengwen@hotmail.com"</span> into input field number 3
+    <span class="nf">When</span> I press <span class="s">"Save"</span>
+    <span class="nf">Then</span> I wait for 1 second
+    <span class="nf">Then</span> I toggle checkbox number 1
+    <span class="nf">Then</span> I see <span class="s">"hello"</span>
+
+</pre>
+<p>这里 input field number 就针对了 ContactAdder Activity 中输入框。我现在这样写其实不太友好，比较好的方式是进行再次封装，对 DSL 撰写者透明。比如：</p>
+<pre class="highlight plaintext">When I enter "hello" as "Contact Name"
+</pre>
+<p>step_definition</p>
+<pre class="highlight ruby">
+<span class="no">When</span> <span class="p">(</span><span class="sr">/^I enter "([^\"]*)" as "([^\"]*)"$/</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span> <span class="n">text</span><span class="p">,</span> <span class="n">target</span> <span class="o">|</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="k">case</span> <span class="n">target</span>
+    <span class="k">when</span> <span class="s2">"Contact Name"</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+    <span class="k">end</span>
+    <span class="n">steps</span> <span class="sx">%{
+        Then I enter #{text} into input field number #{index}
+    }</span>
+<span class="k">end</span>
+</pre>
+<p>这样 feature 可读性会强一点。</p>
+<h4>运行 feature</h4>
+<p>在运行之前，我们对 apk 还是得处理下，否则会遇到一些问题。</p>
+
+<ul>
+<li>App did not start (RuntimeError)</li>
+</ul><p>因为calabash-android的client和test server需要通信，所以要在 AndroidManifest.xml 中添加权限：</p>
+
+<p><code>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;</code></p>
+
+<ul>
+<li>ContacterManager 代码本身的问题</li>
+</ul><p>由于 ContacerManager 运行时候，需要你一定要有一个账户，如果没有账户 Save 的时候会出错。为了便于运行，我们要修改下。</p>
+
+<p>源代码地址在 <code>$ANDROID_HOME/samples/android-19/legacy/ContactManager</code>，大家自己去找。</p>
+
+<p>需要修改 <code>com.example.android.contactmanager.ContactAdder</code> 类里面的 <code>createContactEntry</code> 方法，我们需要对 mSelectedAccount 进行判断， 修改地方如下：</p>
+<pre class="highlight java">   <span class="c1">// Prepare contact creation request</span>
+        <span class="c1">//</span>
+        <span class="c1">// Note: We use RawContacts because this data must be associated with a particular account.</span>
+        <span class="c1">//       The system will aggregate this with any other data for this contact and create a</span>
+        <span class="c1">//       coresponding entry in the ContactsContract.Contacts provider for us.</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ContentProviderOperation</span><span class="o">&gt;</span> <span class="n">ops</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ContentProviderOperation</span><span class="o">&gt;();</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">mSelectedAccount</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">)</span> <span class="o">{</span>
+        <span class="n">ops</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ContentProviderOperation</span><span class="o">.</span><span class="na">newInsert</span><span class="o">(</span><span class="n">ContactsContract</span><span class="o">.</span><span class="na">RawContacts</span><span class="o">.</span><span class="na">CONTENT_URI</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">withValue</span><span class="o">(</span><span class="n">ContactsContract</span><span class="o">.</span><span class="na">RawContacts</span><span class="o">.</span><span class="na">ACCOUNT_TYPE</span><span class="o">,</span> <span class="n">mSelectedAccount</span><span class="o">.</span><span class="na">getType</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">withValue</span><span class="o">(</span><span class="n">ContactsContract</span><span class="o">.</span><span class="na">RawContacts</span><span class="o">.</span><span class="na">ACCOUNT_NAME</span><span class="o">,</span> <span class="n">mSelectedAccount</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">ops</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ContentProviderOperation</span><span class="o">.</span><span class="na">newInsert</span><span class="o">(</span><span class="n">ContactsContract</span><span class="o">.</span><span class="na">RawContacts</span><span class="o">.</span><span class="na">CONTENT_URI</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">withValue</span><span class="o">(</span><span class="n">ContactsContract</span><span class="o">.</span><span class="na">RawContacts</span><span class="o">.</span><span class="na">ACCOUNT_TYPE</span><span class="o">,</span> <span class="kc">null</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">withValue</span><span class="o">(</span><span class="n">ContactsContract</span><span class="o">.</span><span class="na">RawContacts</span><span class="o">.</span><span class="na">ACCOUNT_NAME</span><span class="o">,</span> <span class="kc">null</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+
+        <span class="o">}</span>
+
+<span class="o">....</span>
+
+
+  <span class="k">if</span> <span class="o">(</span><span class="n">mSelectedAccount</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Ask the Contact provider to create a new contact</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span><span class="s">"Selected account: "</span> <span class="o">+</span> <span class="n">mSelectedAccount</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">" ("</span> <span class="o">+</span>
+                <span class="n">mSelectedAccount</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span> <span class="o">+</span> <span class="s">")"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span><span class="s">"No selected account"</span><span class="o">);</span>        
+        <span class="o">}</span>
+
+</pre>
+<p>代码修改好之后，导出 apk 文件。</p>
+
+<p>运行很简单：</p>
+<pre class="highlight plaintext">calabash-android run &lt;apk&gt;
+</pre>
+<p>如果遇到签名问题，请用： <code>calabash-android resign apk</code>。</p>
+
+<p>可以看看我运行的情况：</p>
+<pre class="highlight shell">➜  calabash  calabash-android run ContactManager.apk
+Feature: Login feature
+
+  Scenario: As a valid user I can log into my app                <span class="c"># features/my_first.feature:3</span>
+3135 KB/s <span class="o">(</span>556639 bytes <span class="k">in </span>0.173s<span class="o">)</span>
+3315 KB/s <span class="o">(</span>26234 bytes <span class="k">in </span>0.007s<span class="o">)</span>
+    When I press <span class="s2">"Add Contact"</span>                                   <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/press_button_steps.rb:17</span>
+    Then I see <span class="s2">"Target Account"</span>                                  <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/assert_steps.rb:5</span>
+    Then I enter <span class="s2">"hello"</span> into input field number 1               <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/enter_text_steps.rb:5</span>
+    Then I enter <span class="s2">"13817861875"</span> into input field number 2         <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/enter_text_steps.rb:5</span>
+    Then I enter <span class="s2">"hengwen@hotmail.com"</span> into input field number 3 <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/enter_text_steps.rb:5</span>
+    When I press <span class="s2">"Save"</span>                                          <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/press_button_steps.rb:17</span>
+    Then I <span class="nb">wait </span><span class="k">for </span>1 second                                     <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/progress_steps.rb:18</span>
+    Then I toggle checkbox number 1                              <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/check_box_steps.rb:1</span>
+    Then I see <span class="s2">"hello"</span>                                           <span class="c"># calabash-android-0.4.21/lib/calabash-android/steps/assert_steps.rb:5</span>
+
+1 scenario <span class="o">(</span>1 passed<span class="o">)</span>
+9 steps <span class="o">(</span>9 passed<span class="o">)</span>
+0m28.304s
+
+</pre>
+<p>All pass！ </p>
+
+<p><img src="../photo/2014/1ecec94a042486468f0bbefb18010ee3.gif" alt=""></p>
+
+<p>大家看到 gif 是 failed，是因为在模拟器上运行的。而上面全部通过的是我在海信手机上运行的。环境不一样，略有差异。</p>
+<h4>总结</h4>
+<p>本文是对 calabash-android 的一个简单介绍，做的是抛砖引玉的活。移动测试框架并非 Appium 一家，TesterHome 希望其他框架的话题也能热火起来。watch and learn！</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Calabash Android 简介 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="606#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="606#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="606#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="606#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="606#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>6</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../oscarxie"><img alt="4d43b8fa1e25dfac428fff0d828b3934" class="uface" src="../avatar/4d43b8fa1e25dfac428fff0d828b3934.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="国文" href="../oscarxie">oscarxie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="606#reply1">1楼</a> · <abbr class="timeago" title="2014-03-22T23:13:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3296" data-state="" data-type="Reply" href="606#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="115" href="http://testerhome.com/topics/606/replies/3296/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="oscarxie" href="606#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>沙发抢了，LICEcap也收了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="606#reply2">2楼</a> · <abbr class="timeago" title="2014-03-22T23:13:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3297" data-state="" data-type="Reply" href="606#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/606/replies/3297/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="606#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>LICEcap 是用来录制 gif 的，推荐</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="606#reply3">3楼</a> · <abbr class="timeago" title="2014-03-22T23:59:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3298" data-state="" data-type="Reply" href="606#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/606/replies/3298/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="606#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>大赞！！！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="606#reply4">4楼</a> · <abbr class="timeago" title="2014-03-23T03:00:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3300" data-state="" data-type="Reply" href="606#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/606/replies/3300/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="seveniruby" href="606#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>calabash android利用的是robotium自身的远程调用机制吧，还是自己做的远程调用？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="606#reply5">5楼</a> · <abbr class="timeago" title="2014-03-23T07:37:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3302" data-state="" data-type="Reply" href="606#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/606/replies/3302/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="lihuazhang" href="606#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="606#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 就是 robotium</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="606#reply6">6楼</a> · <abbr class="timeago" title="2014-03-25T10:06:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3320" data-state="" data-type="Reply" href="606#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/606/replies/3320/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="606#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这句，说出了你的良苦用心阿。。sudo gem install calabash-android # 如果权限不够用这个。<br>
+哈哈</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="deleted">7楼 已删除.</div>
+</div>
+<div class="reply" id="reply8">
+    <div class="deleted">8楼 已删除.</div>
+</div>
+<div class="reply" id="reply9">
+    <div class="deleted">9楼 已删除.</div>
+</div>
+<div class="reply" id="reply10">
+    <div class="deleted">10楼 已删除.</div>
+</div>
+<div class="reply" id="reply11">
+    <div class="deleted">11楼 已删除.</div>
+</div>
+<div class="reply" id="reply12">
+    <div class="deleted">12楼 已删除.</div>
+</div>
+<div class="reply" id="reply13">
+    <div class="deleted">13楼 已删除.</div>
+</div>
+<div class="reply" id="reply14">
+    <div class="deleted">14楼 已删除.</div>
+</div>
+<div class="reply" id="reply15">
+    <div class="deleted">15楼 已删除.</div>
+</div>
+<div class="reply" id="reply16">
+    <div class="deleted">16楼 已删除.</div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    每个人都会遇到困难, 希望朋友的陪伴能够给你带来新的温暖
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1817" title="Calabash+Gearman 实现多手机同步测试机制">Calabash+Gearman 实现多手机同步测试机制</a></li>
+    <li><a href="1803" title="求助：calabash-android 如何 touch fragment 中 textView">求助：calabash-android 如何 touc...</a></li>
+    <li><a href="1600" title="使用 Gearman+Calabash 并行测试手机 APP">使用 Gearman+Calabash 并行测试手机 APP</a></li>
+    <li><a href="1568" title="Ubuntu 14.04 64 位安装 calabash-android 问题汇总">Ubuntu 14.04 64 位安装 calabas...</a></li>
+    <li><a href="1528" title="calabash iOS 新建项目流程">calabash iOS 新建项目流程</a></li>
+    <li><a href="1522" title="Calabash for Mac 在搭环境的小细节...">Calabash for Mac 在搭环境的小细节...</a></li>
+    <li><a href="1520" title="Calabash 模拟多手机同步测试">Calabash 模拟多手机同步测试</a></li>
+    <li><a href="1396" title="如何解决 Calabash-ios &quot;Connection refused &quot;？">如何解决 Calabash-ios &quot;Connecti...</a></li>
+    <li><a href="1384" title="Calabash-ios framework 的安装过程">Calabash-ios framework 的安装过程</a></li>
+    <li><a href="1347" title="使用 calabash 测试开源中国 Android 客户端">使用 calabash 测试开源中国 Android 客户端</a></li>
+    <li><a href="1323" title="calabash-android 测试问题收集">calabash-android 测试问题收集</a></li>
+    <li><a href="1296" title="中文 Win7 下成功安装 calabash-android 步骤">中文 Win7 下成功安装 calabash-andr...</a></li>
+    <li><a href="1180" title="Calabash 的那些坑">Calabash 的那些坑</a></li>
+    <li><a href="1173" title="Calabash 学习经验小结">Calabash 学习经验小结</a></li>
+    <li><a href="1165" title="用原生 Cucumber 跑 Calabash-Android 测试">用原生 Cucumber 跑 Calabash-And...</a></li>
+    <li><a href="1164" title="Calabash 使用经验 - 安装稳定版本">Calabash 使用经验 - 安装稳定版本</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="606#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

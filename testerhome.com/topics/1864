@@ -1,0 +1,637 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium Wrapper for Java &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium Wrapper for Java</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+     · 
+    于<abbr class="timeago" title="2015-01-14T12:07:59+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lihuazhang" href="../lihuazhang">lihuazhang</a> 于<abbr class="timeago" title="2015-01-21T16:39:11+08:00"></abbr>回复
+     · 
+    246次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>基于Appium的移动测试框架，Appium的Wrapper很关键。Talk is cheap, Java版本代码如下：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">ctrip</span><span class="o">.</span><span class="na">cap</span><span class="o">.</span><span class="na">lanucher</span><span class="o">;</span>
+
+<span class="cm">/**
+ * A service wrapper for Appium Server
+ * 
+ * @author ltyao
+ *
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppiumServer</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LoggerFactory</span>
+            <span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">AppiumServer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">START_TIMEOUT_MILLISECONDS</span> <span class="o">=</span> <span class="mi">30000</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">HttpClient</span> <span class="n">httpClient</span> <span class="o">=</span> <span class="n">HttpClients</span><span class="o">.</span><span class="na">createDefault</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">STATUS_PATH</span> <span class="o">=</span> <span class="s">"/wd/hub/status"</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">PATH</span> <span class="o">=</span> <span class="s">"/wd/hub"</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">ip</span> <span class="o">=</span> <span class="s">"localhost"</span><span class="o">;</span>
+
+    <span class="c1">// private volatile boolean started = false;</span>
+
+    <span class="kd">private</span> <span class="n">Process</span> <span class="n">process</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">appiumPort</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">bootstrapPort</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">selendroidPort</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">chromeDriverPort</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">robotPort</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">appiumLog</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">AndroidDevice</span> <span class="n">device</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">AppiumServer</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">AppiumServer</span><span class="o">(</span><span class="n">AndroidDevice</span> <span class="n">device</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">device</span> <span class="o">=</span> <span class="n">device</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">stopAppium</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">WinProcess</span> <span class="n">winp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WinProcess</span><span class="o">(</span><span class="n">process</span><span class="o">);</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"try to kill process {} Recursively"</span><span class="o">,</span> <span class="n">winp</span><span class="o">.</span><span class="na">getPid</span><span class="o">());</span>
+            <span class="n">winp</span><span class="o">.</span><span class="na">killRecursively</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"stopAppium"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">startAppium</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">startAppium</span><span class="o">(</span><span class="n">START_TIMEOUT_MILLISECONDS</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">startAppium</span><span class="o">(</span><span class="kt">long</span> <span class="n">milliseconds</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">cmds</span> <span class="o">=</span> <span class="n">buildCmds</span><span class="o">();</span>
+
+        <span class="kd">final</span> <span class="n">ProcessBuilder</span> <span class="n">pb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="n">cmds</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">redirectErrorStream</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"start appium with {}"</span><span class="o">,</span> <span class="n">cmds</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+
+        <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">process</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+                    <span class="kt">int</span> <span class="n">exitvalue</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="na">waitFor</span><span class="o">();</span>
+
+                    <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"appium server exitvalue {}"</span><span class="o">,</span> <span class="n">exitvalue</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"startAppium"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+                <span class="o">}</span>
+
+            <span class="o">}</span>
+        <span class="o">}).</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+        <span class="kt">boolean</span> <span class="n">state</span> <span class="o">=</span> <span class="n">isRunning</span><span class="o">();</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">state</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kt">long</span> <span class="n">end</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">milliseconds</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">stopAppium</span><span class="o">();</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="n">AppiumTimeoutException</span><span class="o">(</span><span class="s">"Appium can't be lanuched in "</span>
+                        <span class="o">+</span> <span class="n">milliseconds</span> <span class="o">+</span> <span class="s">" seconds"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">isRunning</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"started appium server {}"</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">restartAppium</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">stopAppium</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">startAppium</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">isRunning</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">URI</span> <span class="n">uri</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URIBuilder</span><span class="o">().</span><span class="na">setScheme</span><span class="o">(</span><span class="s">"http"</span><span class="o">).</span><span class="na">setHost</span><span class="o">(</span><span class="n">ip</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">setPort</span><span class="o">(</span><span class="n">appiumPort</span><span class="o">).</span><span class="na">setPath</span><span class="o">(</span><span class="n">STATUS_PATH</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+
+            <span class="n">HttpGet</span> <span class="n">httpget</span><span class="o">;</span>
+            <span class="n">HttpResponse</span> <span class="n">response</span><span class="o">;</span>
+            <span class="n">httpget</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpGet</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">httpClient</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">httpget</span><span class="o">);</span>
+            <span class="n">HttpEntity</span> <span class="n">entity</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getEntity</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">EntityUtils</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">entity</span><span class="o">);</span>
+            <span class="n">JsonElement</span> <span class="n">json</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonParser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="n">rs</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="na">getAsJsonObject</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"status"</span><span class="o">).</span><span class="na">getAsInt</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="o">;</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// logger.warn("isRunning", e);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">URL</span> <span class="n">getURL</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">URI</span> <span class="n">uri</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URIBuilder</span><span class="o">().</span><span class="na">setScheme</span><span class="o">(</span><span class="s">"http"</span><span class="o">).</span><span class="na">setHost</span><span class="o">(</span><span class="n">ip</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">setPort</span><span class="o">(</span><span class="n">appiumPort</span><span class="o">).</span><span class="na">setPath</span><span class="o">(</span><span class="n">PATH</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">uri</span><span class="o">.</span><span class="na">toURL</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">URISyntaxException</span> <span class="o">|</span> <span class="n">MalformedURLException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">CapException</span><span class="o">(</span><span class="s">"getURL"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getPid</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">WinProcess</span> <span class="n">winp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WinProcess</span><span class="o">(</span><span class="n">process</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">winp</span><span class="o">.</span><span class="na">getPid</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * need to be checked
+     * 
+     * @return
+     */</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">buildCmds</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="n">appiumPort</span> <span class="o">=</span> <span class="n">AvailablePortFinder</span><span class="o">.</span><span class="na">getNextAvailable</span><span class="o">();</span>
+        <span class="n">chromeDriverPort</span> <span class="o">=</span> <span class="n">AvailablePortFinder</span><span class="o">.</span><span class="na">getNextAvailable</span><span class="o">();</span>
+        <span class="n">bootstrapPort</span> <span class="o">=</span> <span class="n">AvailablePortFinder</span><span class="o">.</span><span class="na">getNextAvailable</span><span class="o">();</span>
+        <span class="n">selendroidPort</span> <span class="o">=</span> <span class="n">AvailablePortFinder</span><span class="o">.</span><span class="na">getNextAvailable</span><span class="o">();</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">cmds</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"appium.cmd"</span><span class="o">);</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"--port=%d"</span><span class="o">,</span> <span class="n">appiumPort</span><span class="o">));</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"--chromedriver-port=%d"</span><span class="o">,</span> <span class="n">chromeDriverPort</span><span class="o">));</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"--selendroid-port=%d"</span><span class="o">,</span> <span class="n">selendroidPort</span><span class="o">));</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"--bootstrap-port=%d"</span><span class="o">,</span> <span class="n">bootstrapPort</span><span class="o">));</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">appiumLog</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">appiumLog</span><span class="o">(</span><span class="n">device</span><span class="o">.</span><span class="na">getSerialNumber</span><span class="o">());</span>
+        <span class="n">String</span> <span class="n">qappiumLog</span> <span class="o">=</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">quoteArgument</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">appiumLog</span><span class="o">);</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"--log=%s"</span><span class="o">,</span> <span class="n">qappiumLog</span><span class="o">));</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"--log-timestamp"</span><span class="o">);</span>
+
+        <span class="c1">// switch (config.getDriverType()) {</span>
+        <span class="c1">// case Selendroid:</span>
+        <span class="c1">// selendroidPort = AvailablePortFinder.getNextAvailable();</span>
+        <span class="c1">// cmds.add(String.format("--selendroid-port=%d", selendroidPort));</span>
+        <span class="c1">//</span>
+        <span class="c1">// break;</span>
+        <span class="c1">// case ChromeDriver:</span>
+        <span class="c1">// chromeDriverPort = AvailablePortFinder.getNextAvailable();</span>
+        <span class="c1">// cmds.add(String.format("--chromedriver-port=%d", chromeDriverPort));</span>
+        <span class="c1">//</span>
+        <span class="c1">// default:</span>
+        <span class="c1">// break;</span>
+        <span class="c1">// }</span>
+        <span class="k">return</span> <span class="n">cmds</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getAppiumPort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">appiumPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setAppiumPort</span><span class="o">(</span><span class="kt">int</span> <span class="n">appiumPort</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">appiumPort</span> <span class="o">=</span> <span class="n">appiumPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getBootstrapPort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">bootstrapPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setBootstrapPort</span><span class="o">(</span><span class="kt">int</span> <span class="n">bootstrapPort</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">bootstrapPort</span> <span class="o">=</span> <span class="n">bootstrapPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getSelendroidPort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">selendroidPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setSelendroidPort</span><span class="o">(</span><span class="kt">int</span> <span class="n">selendroidPort</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">selendroidPort</span> <span class="o">=</span> <span class="n">selendroidPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getChromeDriverPort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">chromeDriverPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setChromeDriverPort</span><span class="o">(</span><span class="kt">int</span> <span class="n">chromeDriverPort</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">chromeDriverPort</span> <span class="o">=</span> <span class="n">chromeDriverPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">getRobotPort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">robotPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setRobotPort</span><span class="o">(</span><span class="kt">int</span> <span class="n">robotPort</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">robotPort</span> <span class="o">=</span> <span class="n">robotPort</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">getAppiumLog</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">appiumLog</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Device</span> <span class="n">getDevice</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">device</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">setDevice</span><span class="o">(</span><span class="n">AndroidDevice</span> <span class="n">device</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">device</span> <span class="o">=</span> <span class="n">device</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"AppiumServer [pid="</span> <span class="o">+</span> <span class="n">getPid</span><span class="o">()</span> <span class="o">+</span> <span class="s">",ip="</span> <span class="o">+</span> <span class="n">ip</span> <span class="o">+</span> <span class="s">", appiumPort="</span>
+                <span class="o">+</span> <span class="n">appiumPort</span> <span class="o">+</span> <span class="s">", bootstrapPort="</span> <span class="o">+</span> <span class="n">bootstrapPort</span>
+                <span class="o">+</span> <span class="s">", selendroidPort="</span> <span class="o">+</span> <span class="n">selendroidPort</span> <span class="o">+</span> <span class="s">", chromeDriverPort="</span>
+                <span class="o">+</span> <span class="n">chromeDriverPort</span> <span class="o">+</span> <span class="s">", appiumLog="</span> <span class="o">+</span> <span class="n">appiumLog</span> <span class="o">+</span> <span class="s">"]"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium Wrapper for Java via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1864#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1864#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1864#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1864#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1864#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply1">1楼</a> · <abbr class="timeago" title="2015-01-16T18:21:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11715" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1864/replies/11715/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="anikikun" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Appium的项目，Java跑起来顺吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply2">2楼</a> · <abbr class="timeago" title="2015-01-20T21:52:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11881" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1103" href="http://testerhome.com/topics/1864/replies/11881/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="cosyman" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1864#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 必须顺畅，我们同时运行两台设备木有问题</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply3">3楼</a> · <abbr class="timeago" title="2015-01-20T22:06:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11882" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1864/replies/11882/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1864#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../cosyman" class="at_user" title="@cosyman"><i>@</i>cosyman</a> 能否请你下次来参加我们的分享呢？大家都希望看到真正的落地呢。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply4">4楼</a> · <abbr class="timeago" title="2015-01-20T22:32:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11883" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1864/replies/11883/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="anikikun" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1864#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../cosyman" class="at_user" title="@cosyman"><i>@</i>cosyman</a> 哈哈。我说的顺不是这个顺畅。 想知道的是这个项目以Java+TestNG的这种形式跑，有没有感觉有非常明显的好处或坏处。   同希望得到分享。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply5">5楼</a> · <abbr class="timeago" title="2015-01-21T09:52:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11892" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1103" href="http://testerhome.com/topics/1864/replies/11892/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="cosyman" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1864#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> 不知道明显的好处和坏处和什么比较。因为TestNG，JUnit也好，跑Appium和传统WebDriver区别不大，主要是Appium本身的问题，一个是App有点慢，一个是不够特别稳定（1.3.4已经表现良好)</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply6">6楼</a> · <abbr class="timeago" title="2015-01-21T14:34:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11904" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1103" href="http://testerhome.com/topics/1864/replies/11904/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="cosyman" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1864#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 恩我得先问问老大。可以先写个ppt什么的，其实Appium一路走来还是蛮苦的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1864#reply7">7楼</a> · <abbr class="timeago" title="2015-01-21T16:39:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11937" data-state="" data-type="Reply" href="1864#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1864/replies/11937/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="lihuazhang" href="1864#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1864#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../cosyman" class="at_user" title="@cosyman"><i>@</i>cosyman</a> 嗯，的确能把appium啃下来 不容易的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @rabbit 希望能够过上每天除了工作还有生活的日子~~惬意。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1864#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

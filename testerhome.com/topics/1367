@@ -1,0 +1,568 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | MAC 系统下 appium＋python 自动化测试持续集成实践 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">MAC 系统下 appium＋python 自动化测试持续集成实践</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="zhangyang" href="../hobbs">hobbs</a>
+     · 
+    于<abbr class="timeago" title="2014-09-06T16:43:32+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-09-10T14:38:52+08:00"></abbr>回复
+     · 
+    1068次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>前段时间写过两篇帖子，主要介绍了如何在mac系统上面安装appium并以测试集的方式运行自动化测试脚本。今天这篇文章就主要来说说在完成上面的工作之后，如何实现自动化测试的持续集成。下面介绍的内容是我自己的实践经验，请大家千万不要把这当成是什么持续集成教学帖（当然我也没这水平），持续集成实现的方式不止一种，我所做的就是把我自己实践过的东西分享出来，希望能给大家一点帮助，能在大家进行持续集成实践的时候给大家提供一点参考，仅此而已。啊啊，我发现我废话真是多，好了，说正经的吧。。。。</p>
+
+<p>我想大家应该都听过这样一句话：没有做持续集成的自动化测试都只能叫半自动化测试。因为虽然你写好了脚本，虽然你可能只需要双击运行某个脚本或者只需要在命令行里边敲一个运行脚本的命令就能够运行一次完整的测试，但问题就是你还是要来双击一下或者敲个命令才能运行测试，还是有一个人工的干预。毫无疑问自动化测试的目标应该是无需人工的干预的，完全自动执行的。</p>
+
+<p>那么什么叫持续集成，其实我也不清楚，按我实际实践经验来说，我说不上来持续集成是什么，但我可能隐隐感觉到了持续集成应该干些什么，那么持续集成应该干什么呢？我从流程角度来说说该干什么（我只说移动app测试，并且是我自己接触到的）</p>
+
+<p>1.开发提交代码后自动编包到指定目录下（svn上或者某台服务器的指定目录）<br>
+2.测试机器定时到指定目录下取最新包到本地指定目录<br>
+3.测试机器定时运行某个启动脚本开始运行自动化测试，测试运行完成后生成测试报告文件到指定目录下<br>
+4.测试机器自动发送测试报告到指定邮件收件人（以附件形式或链接形式，我个人喜欢后者）</p>
+
+<p>以上就是我认为的持续集成应该干到事情，web上做持续集成可能还会涉及到包到自动部署内容（我以前看过一篇殷坤大神的介绍他们公司做持续集成的帖子，挺受益，大家可以自己找来看看）</p>
+
+<p>下面我就就上面提到的后3点来说一下我的实践经验，因为第1点是在我着手做自动化测试之前就已经做好，不是我做的所以我也没有什么好说的，具体实现起来应该不难，这个大家通过谷歌百度应该是能解决问题的。<br>
+做持续集成有两种选择。一种是选择一款好用的持续集成工具，这个可能大家一下就想到jenkins；还有一种选择是不用持续集成工具（这话听起来好像一句废话），我们可以通过系统本身的一些功能和其它一些方式来实现持续集成需要实现的功能。我选择的是第二种。</p>
+
+<p>环境：<br>
+操作系统版本是MAC OS X 10.9.1；<br>
+APPIUM 版本是1.1.0；<br>
+python 版本是2.7</p>
+
+<p>整体实现思路：<br>
+整个自动化测试的启动脚本是set_up.py,通过crontab新增定时任务确定一个时间来定时执行setu_up.py以运行自动化测试。<br>
+实际是研发每天12点之前会将当天的包编好放到中转服务器上指定的目录，所以运行自动测试的定时任务时间设定在凌晨2点。</p>
+
+<p>set_up.py 实现以下功能：</p>
+
+<p>1.运行去服务器上取包的脚本fetch_app.sh，如果脚本执行没有成功，则发送失败邮件到指定邮件接收人，邮件内容应包含脚本执行失败信息<br>
+2.如果取包没有发生错误，则执行svn命令从svn上checkout出最新的测试脚本目录到本地<br>
+3.如果上一步命令执行没有出错，则运行命令开始执行测试主控脚本main.py，否则提示svn check out failed并发送失败邮件到相关邮件接收人</p>
+
+<p>对于上面的第2点，补充说明以下。测试脚本存放在svn上，是为了方便多人进行脚本维护，这要求一点就是所有参与脚本维护的测试人员必须确保新编写的脚本在本地测试通过后才能更新到svn上以保证svn上的脚本都是能够正确运行的脚本。</p>
+
+<p>好像漏了点什么？测试报告呢？测试报告在执行main.py脚本的时候生成，测试执行过程中会将测试结果写入该报告，报告格式为html格式。测试报告这块我使用的是第三方的模块HTMLTestRunner.py。这个模块貌似没有包含测试通过率等一些内容，我通过修改这个模块的源码，对测试通过率做了一下统计，另外由于我的测试同事说报告字体太小，出错日志部分背景不好看等等原因（＝＝！），我对字体大小和背景这些东西也做了修改，这些都可以通过修改该模块的代码实现，并且修改起来并不算难，所以如果大家使用这个模块并且有一些自己的需求的话，可以尝试做相应的修改。貌似扯远了。。。。</p>
+
+<p>上面的set_up.py 实现的3个功能中，提到了几个脚本，一个是fetch_app.sh,这是一个shell脚本；另外一个是main.py脚本。通过定时任务来运行测试启动脚本可以通过crontab来实现。至于怎么使用crontab添加定时任务，这个比较简单，大家想详细了解可以自行百度。<br>
+上面都是纯文字，看的人想睡觉，好，下面进入最期待的贴代码环节 ＝。＝：<br>
+首先是定时任务，在终端中敲 crontab -e 命令，按 a键进入编辑模式，添加一个定时任务，如图：<br>
+<img src="../photo/2014/8544c6996dd2956c9ff254f9c93206c4.png" alt=""></p>
+
+<p>上面这个定时任务的意思就是每天凌晨2点钟运行指定目录下的set_up.py脚本。<br>
+再来看看最核心的set_up.py脚本的大致内容，我就不贴详细代码了，原因有这么几个。一是我这部分代码写的烂且有重复之嫌，不想献丑（当然代码本身也很简单）；另外一个发送邮件部分的主要代码是我百度来的，我只是做了一些修改；还有一个原因是我给出一个具体的思路即可，具体的实现方法可以有很多，比如发邮件功能就可以有很多种方法。这样其实也能让大家自己动手去找，去学，对大家自身也是一个经验，一个提升。</p>
+<pre class="highlight python"><span class="c">#-*-coding:utf-8-*-</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span><span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">commands</span>
+
+<span class="kn">from</span> <span class="nn">test_email_list</span> <span class="kn">import</span> <span class="n">read_receiver_list</span>
+
+<span class="n">cmd0</span> <span class="o">=</span> <span class="s">'/Users/hobbs/auto-test/fetch_app.sh'</span>
+<span class="n">fetch_err_info</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">getoutput</span><span class="p">(</span><span class="n">cmd0</span><span class="p">)</span>
+<span class="c">#print err_info</span>
+<span class="k">if</span> <span class="n">err_info</span> <span class="o">==</span> <span class="s">''</span> <span class="p">:</span> 
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">'svn co svn://192.168.888.888/dev/ios-auto-test/ /Users/hobbs/Desktop/ios-auto-test'</span>
+    <span class="n">svn_co_info</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">getoutput</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">svn_co_info</span>
+    <span class="k">if</span> <span class="s">"Checked out revision"</span> <span class="ow">in</span> <span class="n">svn_co_info</span> <span class="p">:</span>
+        <span class="n">cmd2</span> <span class="o">=</span> <span class="s">'python /Users/hobbs/Desktop/ios-auto-test/scripts/main.py'</span>
+        <span class="n">execute_test_info</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">getoutput</span><span class="p">(</span><span class="n">cmd2</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">"test finished!"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">"SVN check out failed"</span>
+        <span class="c">#发送svn检出测试脚本目录失败邮件到指定接收人，邮件内容中包含svn检出脚本失败信息，svn_co_info</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c">#发送取测试包失败邮件到指定接收人，邮件内容中包含取包脚本执行失败信息fetch_err_info，方便查找问题</span>
+    <span class="k">print</span> <span class="s">"send fetch fail email success!!!!"</span>
+
+
+</pre>
+
+<p>对于这段代码补充一点内容，就是我是如何实现发送邮件到指定接收人的，大家看代码中有这么一句</p>
+
+<p><code>from test_email_list import read_receiver_list</code></p>
+
+<p>其中的test_email_list中有个read_receiver_list方法，我将收件人存放在一个指定目录下的txt文件中（也在svn到某个测试目录下，方便大家维护收件人列表），然后用这个方法来读取txt文件并将其存在一个list中，这样我就可以在代码中使用这个list来发送邮件到这个list中的所有收件人。<br>
+大家也许也注意到了，代码中发了两封邮件都是失败邮件，那测试成功的邮件呢？测试成功的邮件放到main.py中去了。（自问自答，我是不是显得很脑残？）那么我们再来看看传说中到main.py长什么样，请看伪代码！</p>
+<pre class="highlight python"><span class="c"># -*- coding:utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">selenium</span>
+<span class="kn">import</span> <span class="nn">unittest</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">HTMLTestRunner</span>
+
+
+<span class="kn">from</span> <span class="nn">test01</span> <span class="kn">import</span> <span class="n">Module1_cls</span>
+<span class="kn">from</span> <span class="nn">test02</span> <span class="kn">import</span> <span class="n">Module2_cls</span>
+<span class="kn">from</span> <span class="nn">test03</span> <span class="kn">import</span> <span class="n">Module3_cls</span>
+
+<span class="kn">from</span> <span class="nn">test_email_list</span> <span class="kn">import</span> <span class="n">read_receiver_list</span>
+
+<span class="k">global</span> <span class="n">reportname</span>
+<span class="n">time_now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">Y</span><span class="si">%</span><span class="s">m</span><span class="si">%</span><span class="s">d</span><span class="si">%</span><span class="s">H</span><span class="si">%</span><span class="s">M</span><span class="si">%</span><span class="s">S"</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">time_now</span>
+
+<span class="n">reportname</span> <span class="o">=</span><span class="s">"/Library/WebServer/Documents/auto-reports/hobbs_Reports/"</span> <span class="o">+</span> <span class="n">time_now</span> <span class="o">+</span> <span class="s">"_report_of_hobbs.html"</span>
+<span class="k">def</span> <span class="nf">suit_run</span><span class="p">():</span>
+
+    <span class="k">global</span> <span class="n">reportname</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="n">reportname</span><span class="p">,</span><span class="s">"wb"</span><span class="p">)</span>
+    <span class="n">suit</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">()</span>
+
+    <span class="n">suit</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">Module1_cls</span><span class="p">))</span>
+    <span class="n">suit</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">Module2_cls</span><span class="p">))</span>
+    <span class="n">suit</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">Module3_cls</span><span class="p">))</span>
+
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">HTMLTestRunner</span><span class="o">.</span><span class="n">HTMLTestRunner</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">fp</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s">"report_of_xxx"</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s">"hobbs report"</span><span class="p">)</span>
+    <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suit</span><span class="p">)</span>
+
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sendMail</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">reportname</span>
+
+    <span class="c">#这里省去发送邮件相关代码，邮件中应给出报告的链接地址。在这里地址为reportname</span>
+
+    <span class="k">print</span> <span class="s">"success!!!!"</span>
+
+<span class="n">suit_run</span><span class="p">()</span>
+<span class="n">sendMail</span><span class="p">()</span>
+
+
+</pre>
+
+<p>对于上面代码做一点补充说明。上文中也说过了，测试报告可以以邮件附件的方式发送给邮件接收人，也可以直接在邮件内容中给出报告的链接地址。我采用的是后者，通过使用MAC自带的webserver来实现。具体为将生成的测试报告放在WebServer的相关目录下（代码中为/Library/WebServer/Documents/auto-reports/hobbs_Reports/，具体的子目录根据自身情况设置），然后邮件中内容中给出http链接即可。提到邮件内容，邮件内容最好能有本次测试的一个概况，如测试了多少case，通过了多少case，通过率多少等等。因为角色不同关注点也会不同，你的boss很可能都不想点链接去查看具体的测试报告，他可能只关心大体结果；但是测试工程师或者开发人员可能就会点进去查看报告的详细情况。</p>
+
+<p>好了，也扯了半天了，就扯到这里。我说过我属于半桶水，半桶水乱晃，所以竟敢大胆在众大神面前扯淡。但是就像我开头说的，我只是想把自己的一点实践经验分享给大家，给大家作个参考。另外一个就是想抛砖引玉，现在砖已经抛了，期待能引来玉。最后我负责抛砖，你负责拍砖，欢迎大家批评指正，今天的淡就扯到这里。。。。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='MAC 系统下 appium＋python 自动化测试持续集成实践 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1367#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1367#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1367#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1367#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1367#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>9</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply1">1楼</a> · <abbr class="timeago" title="2014-09-06T17:04:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8403" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1367/replies/8403/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>嗯写的不错～python的HTMLTestRunner和mac的webserver都是最最落地，也是最能够实现效果的～做的不错啊～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="deleted">2楼 已删除.</div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../oscarxie"><img alt="4d43b8fa1e25dfac428fff0d828b3934" class="uface" src="../avatar/4d43b8fa1e25dfac428fff0d828b3934.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="国文" href="../oscarxie">oscarxie</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply3">3楼</a> · <abbr class="timeago" title="2014-09-06T18:16:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8405" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="115" href="http://testerhome.com/topics/1367/replies/8405/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="oscarxie" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>大赞，希望论坛里更多这样的帖子</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../z7039585"><img alt="161" class="uface" src="../user/large_avatar/161.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="单数" href="../z7039585">z7039585</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply4">4楼</a> · <abbr class="timeago" title="2014-09-06T18:44:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8406" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="161" href="http://testerhome.com/topics/1367/replies/8406/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="z7039585" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞一个 看完收获很大 已收藏</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply5">5楼</a> · <abbr class="timeago" title="2014-09-06T22:03:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8407" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1367/replies/8407/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="link1220" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>顶一下，另外svn://192.168.888.888的地址好霸气！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyang" href="../hobbs">hobbs</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply6">6楼</a> · <abbr class="timeago" title="2014-09-06T22:39:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8408" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1065" href="http://testerhome.com/topics/1367/replies/8408/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="hobbs" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1367#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../link1220" class="at_user" title="@link1220"><i>@</i>link1220</a> 。。。。。这个随便写的 ==! 一时脑残。。。大家知道就好了，我就不改了。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply7">7楼</a> · <abbr class="timeago" title="2014-09-09T16:18:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8438" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1367/replies/8438/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="vigossjjj" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>HTMLTestRunner是把单条结果都放到内存当中，如果出了异常报告会丢。<a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 你怎么看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply8">8楼</a> · <abbr class="timeago" title="2014-09-09T16:25:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8439" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1367/replies/8439/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="monkey" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1367#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 擦，有道理。不过我之前一直用这个模块的，倒是没有碰见异常的样子。你指的异常是说模块或者脚本本身出现一些不可预知的问题么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply9">9楼</a> · <abbr class="timeago" title="2014-09-10T14:34:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8481" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1367/replies/8481/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="vigossjjj" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1367#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 是的，最好单条脚本都有报告，这样即使出错了报告内容也不会丢，并且单条脚本日志可时时查看。或者可以随时生成部分汇总的报告。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1367#reply10">10楼</a> · <abbr class="timeago" title="2014-09-10T14:38:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8482" data-state="" data-type="Reply" href="1367#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1367/replies/8482/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="monkey" href="1367#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1367#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 嗯在理～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscar: 每个人都有每个人的追求和生活方式；我们可以什么都没有，没房、没车、没脑瓜，但是我们得有做人的尊严。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1367#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

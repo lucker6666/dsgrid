@@ -1,0 +1,441 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 解决 iPhone 在非越狱情况通过 command line 访问沙盒实现挂载 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">解决 iPhone 在非越狱情况通过 command line 访问沙盒实现挂载</h1>
+  <div class="info leader">
+    <a class="node" href="node8">产品与解决方案</a>
+     · 
+    <a data-author="true" data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+     · 
+    于<abbr class="timeago" title="2014-03-05T22:24:23+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a> 于<abbr class="timeago" title="2014-03-09T23:07:53+08:00"></abbr>回复
+     · 
+    861次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>准备工作：<br>
+1.安装libimobiledevice,ifuse，ifuse依赖与libimobiledevice，<br>
+可以选择airport或brew安装<br>
+sudo brew update<br>
+sudo brew install libimobiledevice<br>
+sudo brew install ifuse</p>
+
+<p>2.拷贝osxfusefs.fs 到/Library/Filesystems，并添加执行权限<br>
+sudo /bin/cp -RfX /usr/local/Cellar/osxfuse/2.6.2/Library/Filesystems/osxfusefs.fs /Library/Filesystems<br>
+sudo chmod +s /Library/Filesystems/osxfusefs.fs/Support/load_osxfusefs</p>
+
+<p>3.终端输入ifuse -h，会打印出详细使用说明<br>
+挂载某个应用的沙盒到~/myapp：<br>
+app_bundleId=com.my.app<br>
+udid=xxxxxxxxxxxx<br>
+ifuse -u ${udid} --container ${app_bundleId} ~/myapp </p>
+
+<p>4.关闭挂载：<br>
+umount ~/myapp</p>
+
+<p>PS:itoos与iexploer等工具都是基于libimobiledevice库进行开发的，iOS 6.x的越狱也用到了此库，更为重要的是appium也依赖于它，如果大家有安装过appium环境那么可以查看下build/libimobiledevice-macosx/,有许多可执行的unix文件<br>
+idevice_id<br>
+idevicebackup<br>
+idevicebackup2<br>
+idevicedate<br>
+idevicedebugserverproxy<br>
+idevicediagnostics<br>
+ideviceenterrecovery<br>
+ideviceimagemounter<br>
+ideviceinfo<br>
+idevicepair<br>
+ideviceprovision<br>
+idevicescreenshot<br>
+idevicesyslog<br>
+可以直接使用这些命令行工具，例如：<br>
+idevice_id -l 可直接查看手机id<br>
+idevicediagnostics 可让iPhone进行重启，关机，睡眠等。</p>
+
+<p>我们可以利用libimobiledevice与ifuse进行shell封装，辅助实现自动化的测试过程。</p>
+
+<p>另附上git地址：<br><a href="https://github.com/libimobiledevice/libimobiledevice" rel="nofollow" target="_blank">https://github.com/libimobiledevice/libimobiledevice</a>‎<br><a href="https://github.com/libimobiledevice/ifuse" rel="nofollow" target="_blank">https://github.com/libimobiledevice/ifuse</a></p>
+
+<p>第一次发技术相关贴，如有描述不清或错误的地方，请大家多多指点，一起学习哈～</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='解决 iPhone 在非越狱情况通过 command line 访问沙盒实现挂载 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="555#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="555#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="555#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="555#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="555#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply1">1楼</a> · <abbr class="timeago" title="2014-03-05T22:57:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3039" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/555/replies/3039/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>高效, 强赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply2">2楼</a> · <abbr class="timeago" title="2014-03-06T00:42:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3040" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/555/replies/3040/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我去。。。好高大上。。。明儿我就来试试看～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../softblank"><img alt="283" class="uface" src="../user/large_avatar/283.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Boxer" href="../softblank">softblank</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply3">3楼</a> · <abbr class="timeago" title="2014-03-09T00:29:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3072" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="283" href="http://testerhome.com/topics/555/replies/3072/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="softblank" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>强力贴，学习了！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply4">4楼</a> · <abbr class="timeago" title="2014-03-09T10:16:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3076" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/555/replies/3076/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> <br>
+2.拷贝osxfusefs.fs 到/Library/Filesystems，并添加执行权限<br>
+sudo /bin/cp -RfX /usr/local/Cellar/osxfuse/2.6.2/Library/Filesystems/osxfusefs.fs /Library/Filesystems<br>
+sudo chmod +s /Library/Filesystems/osxfusefs.fs/Support/load_osxfusefs</p>
+
+<p>这里需要安装 osxfuse，如果用 dmg 安装的话，就不需要 cp 过去了。<br>
+不过你应该是用 brew 安装的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply5">5楼</a> · <abbr class="timeago" title="2014-03-09T11:51:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3077" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/555/replies/3077/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="vigossjjj" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="555#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 对的 brew安装</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply6">6楼</a> · <abbr class="timeago" title="2014-03-09T22:18:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3083" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/555/replies/3083/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="555#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 还是不太会用。其实 ifuse 本身是一个工具吧？  要插入实体机？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="555#reply7">7楼</a> · <abbr class="timeago" title="2014-03-09T23:07:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3084" data-state="" data-type="Reply" href="555#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/555/replies/3084/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="vigossjjj" href="555#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="555#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 这个是解决对真机沙盒的访问，我主要用来做自动拷贝沙盒中的文件</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @Anikikun: 希望毕业设计顺利按时按量完成，希望上海实习之旅顺利
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="555" title="解决 iPhone 在非越狱情况通过 command line 访问沙盒实现挂载">解决 iPhone 在非越狱情况通过 command ...</a></li>
+    <li><a href="549" title="libimobiledevice 与 ifuse 如何在非越狱 iPhone 访问沙盒？">libimobiledevice 与 ifuse 如何...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="555#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

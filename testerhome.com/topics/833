@@ -1,0 +1,448 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart</h1>
+  <div class="info leader">
+    <a class="node" href="node32">移动性能测试</a>
+     · 
+    <a data-author="true" data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+     · 
+    于<abbr class="timeago" title="2014-05-11T12:20:30+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="ansonwoo" href="../ansonwoo">ansonwoo</a> 于<abbr class="timeago" title="2014-11-28T16:33:54+08:00"></abbr>回复
+     · 
+    2004次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>开发语言：Java<br>
+应用平台：Android</p>
+
+<p>框架：<br>
+1. 为什么选择jenkins<br>
+    jenkins的优点太多，这里就不一一列举，我的性能测试只是把我的工具集成到jenkins，定时去起，定时发报告的功能<br>
+2. 为什么选择monkeyrunner<br>
+Android平台选择monkeyrunner可能是大家第一会想到的，可惜的是monkeyrunner是那么的不给力，但是勉强可以用用，monkeyrunner主要坑爹的地方是抓取控件不准，目前这个问题还是没法解决，最终决定以后找个好的替代，为什么没选择appium，首先appium的定位也不是很稳定，比monkeyrunner好点，但是不适合再封装，其实可以集成到jenkins，性能测试只作为一个appium的测试用例也可，这种方式后续研究。<br>
+3. 为什么选择jfreechart<br>
+Android的图片绘制就是用的是jfreechart，大家可以在SDK tools里面可以看到jfreechart的jar包，可以直接引用，对于java的开源图片绘制库目前就只知道这个。</p>
+
+<p>实现：<br>
+    性能测试主要是模拟用户操作记录性能测试数据，OK，那我需要做的无非就是3个事情：<br>
+1. 模拟用户操作<br>
+    当然你可以手动去点击，那网易的开源工具Emmagee和腾讯的GT，都可以作为手动性能测试的选择，我觉得是开发的一个很好选择，那要自动化就让他随机取操作，随机点击很简单，根据屏幕分辨率设置随机坐标去点击，随机滑动同样的道理。<br>
+2. 记录性能测试数据<br>
+记录前需要获取，之前有篇很好的性能测试帖子：<a href="470" rel="nofollow" target="_blank">http://testerhome.com/topics/470</a><br>
+很感谢kasi这位大侠，主要是通过adb shll dumpsys这个命令去获取，后面跟的参数我就不一一多讲，这里推荐一篇博客：<a href="http://blog.csdn.net/nei504293736/article/details/9249863" rel="nofollow" target="_blank">http://blog.csdn.net/nei504293736/article/details/9249863</a>。<br>
+还要做的是就是你间隔多长时间去获取一次，这可以通过配置文件去配置，把命令输出的需要抓取的数据拿出，存放到一个csv文件，为什么选择csv，因为它可以直接用excel打开，用excel可以直接手动去绘制一个折线图，方法可以看这里：<a href="http://jingyan.baidu.com/article/3ea51489107a8852e61bba97.html" rel="nofollow" target="_blank">http://jingyan.baidu.com/article/3ea51489107a8852e61bba97.html</a><br>
+需要抓取的数据：CPU占用,内存占用，功耗，流量。当然要取什么数据根据自己的测试需求去定，这里只是给出一个基础。<br>
+最后把获取的数据存储在一个arraylist里面。<br>
+3. 生成测试报告<br>
+    测试报告是在jenkins做的事情，代码里面主要是绘制折线图（绘制什么图可自己根据自己需求去做，jfreechart支持大部分的图的绘制），绘图无非就是把拿到的数据传给jfreechart，然后配置jenkins，获取图片后生成报告自动发送到你的邮箱里面</p>
+
+<p>TODOs<br>
+    目前只实现了基本功能，需要做的还有很多，我把封装的业务去除后会把代码放到github上，希望有兴趣android app 性能自动化测试的同学可以参与进来，咱们交流下，一起进步，或者有大神带着我进步也可，需要解决的问题会在md文件的TODOs里面写明，还需要做的事情很多，希望坛子里面大神多多指教，汇聚开源的力量，寻找android app性能自动化测试的解决方案。</p>
+
+<p>BTW，马刺打的真好！</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="833#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="833#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="833#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="833#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="833#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>8</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="plus" href="../zouaiyong">zouaiyong</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply1">1楼</a> · <abbr class="timeago" title="2014-05-12T10:12:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4698" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="507" href="http://testerhome.com/topics/833/replies/4698/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="zouaiyong" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好贴，学习了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply2">2楼</a> · <abbr class="timeago" title="2014-05-12T13:07:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4708" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/833/replies/4708/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="kevin_xu_v" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="833#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../zouaiyong" class="at_user" title="@zouaiyong"><i>@</i>zouaiyong</a> 互相学习</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply3">3楼</a> · <abbr class="timeago" title="2014-05-12T15:09:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4712" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/833/replies/4712/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>求更新头像</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply4">4楼</a> · <abbr class="timeago" title="2014-05-12T17:43:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4718" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/833/replies/4718/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="kevin_xu_v" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="833#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 好的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../tianwei024"><img alt="1058" class="uface" src="../user/large_avatar/1058.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tianwei" href="../tianwei024">tianwei024</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply5">5楼</a> · <abbr class="timeago" title="2014-06-27T16:22:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6241" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1058" href="http://testerhome.com/topics/833/replies/6241/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="tianwei024" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>做个标记！学习！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../guodongya"><img alt="947a9b5e35cb7b4a8136773a43217bb6" class="uface" src="../avatar/947a9b5e35cb7b4a8136773a43217bb6.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dongya.guo" href="../guodongya">guodongya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply6">6楼</a> · <abbr class="timeago" title="2014-08-04T12:58:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7238" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1351" href="http://testerhome.com/topics/833/replies/7238/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="guodongya" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>怎么配置环境啊，谢谢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply7">7楼</a> · <abbr class="timeago" title="2014-08-19T23:42:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7812" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/833/replies/7812/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="kevin_xu_v" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="833#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../guodongya" class="at_user" title="@guodongya"><i>@</i>guodongya</a> 你指的是开发环境？Github上面有说明</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../ansonwoo"><img alt="1835" class="uface" src="../user/large_avatar/1835.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../ansonwoo">ansonwoo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="833#reply8">8楼</a> · <abbr class="timeago" title="2014-11-28T16:33:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10135" data-state="" data-type="Reply" href="833#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1835" href="http://testerhome.com/topics/833/replies/10135/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="ansonwoo" href="833#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Hi 如果用Emmagee的话 数据你是解析CSV把数据存到arraylist里面呢 还是对改动Emmagee, 直接写到arrayList里面呢?</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @monkey: 希望我能够在中国找到我理想的工作环境！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1831" title="如何选用 seed 的值？">如何选用 seed 的值？</a></li>
+    <li><a href="1734" title="基于变化取性能响应时间尝试">基于变化取性能响应时间尝试</a></li>
+    <li><a href="1591" title="性能测试专题卡斯访谈录">性能测试专题卡斯访谈录</a></li>
+    <li><a href="846" title="Android 应用性能自动化测试工具初探（二）">Android 应用性能自动化测试工具初探（二）</a></li>
+    <li><a href="833" title="Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart">Android 应用性能自动化测试工具初探（一） je...</a></li>
+    <li><a href="651" title="xcode5.1 下面安装 reportlab 的问题">xcode5.1 下面安装 reportlab 的问题</a></li>
+    <li><a href="637" title="python 之 Android 通用性能开源工具 0.000001 版">python 之 Android 通用性能开源工具 0...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="833#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

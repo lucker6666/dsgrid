@@ -1,0 +1,512 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Hunting Memory Leaks in Java &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Hunting Memory Leaks in Java</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-04-23T09:40:00+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lihuazhang" href="../lihuazhang">lihuazhang</a> 于<abbr class="timeago" title="2014-04-23T23:14:54+08:00"></abbr>回复
+     · 
+    345次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><a href="http://www.toptal.com/java/hunting-memory-leaks-in-java" rel="nofollow" target="_blank">http://www.toptal.com/java/hunting-memory-leaks-in-java</a></p>
+
+<p>Inexperienced programmers often think that Java’s automatic garbage collection completely frees them from worrying about memory management. This is a common misperception: while the garbage collector does its best, it’s entirely possible for even the best programmer to fall prey to crippling memory leaks. Let me explain.</p>
+
+<p>A memory leak occurs when object references that are no longer needed are unnecessarily maintained. These leaks are bad. For one, they put unnecessary pressure on your machine as your programs consume more and more resources. To make things worse, detecting these leaks can be difficult: static analysis often struggles to precisely identify these redundant references, and existing leak detection tools track and report fine-grained information about individual objects, producing results that are hard to interpret and lack precision.</p>
+
+<p>In other words, leaks are either too hard to identify, or identified in terms that are too specific to be useful.</p>
+
+<p>There actually four categories of memory issues with similar and overlapping symptoms, but varied causes and solutions:</p>
+
+<p>Performance: usually associated with excessive object creation and deletion, long delays in garbage collection, excessive operating system page swapping, and more.<br>
+Resource constraints: occurs when there’s either to little memory available or your memory is too fragmented to allocate a large object—this can be native or, more commonly, Java heap-related.<br>
+Java heap leaks: the classic memory leak, in which Java objects are continuously created without being released. This is usually caused by latent object references.<br>
+Native memory leaks: associated with any continuously growing memory utilization that is outside the Java heap, such as allocations made by JNI code, drivers or even JVM allocations.<br>
+In this post, I’ll focus on Java heaps leaks and outline an approach to detect such leaks based on Java VisualVM reports and utilizing a visual interface for analyzing Java technology-based applications while they’re running.</p>
+
+<p>But before you can prevent and hunt down memory leaks, you should understand how and why they occur. (Note: If you have a good handle on the intricacies of memory leaks, you can skip ahead.)</p>
+
+<p>Memory Leaks: A Primer</p>
+
+<p>For starters, think of memory leakage as a disease and Java’s OutOfMemoryError (OOM, for brevity) as a symptom. But as with any disease, not all OOMs necessarily imply memory leaks: an OOM can occur due to the generation of a large number of local variables or other such events. On the other hand, not all memory leaks necessarily manifest themselves as OOMs, especially in the case of desktop applications or client applications (which aren’t run for very long without restarts).</p>
+
+<p>Think of memory leakage as a disease and the OutOfMemoryError as a symptom. But not all OutOfMemoryErrors imply memory leaks, and not all memory leaks manifest themselves as OutOfMemoryErrors.<br>
+Why are these leaks so bad? Among other things, leaking blocks of memory during program execution often degrades system performance over time, as allocated but unused blocks of memory will have to be swapped out once the system runs out of free physical memory. Eventually, a program may even exhaust its available virtual address space, leading to the OOM.</p>
+
+<p>Deciphering the OutOfMemoryError</p>
+
+<p>As mentioned above, the OOM is a common indication of a memory leak. Essentially, the error is thrown when there’s insufficient space to allocate a new object. Try as it might, the garbage collector can’t find the necessary space, and the heap can’t be expanded any further. Thus, an error emerges, along with a stack trace.</p>
+
+<p>The first step in diagnosing your OOM is to determine what the error actually means. This sounds obvious, but the answer isn’t always so clear. For example: Is the OOM appearing because the Java heap is full, or because the native heap is full? To help you answer this question, lets analyze a few of the the possible error messages:</p>
+
+<p>java.lang.OutOfMemoryError: Java heap space<br>
+java.lang.OutOfMemoryError: PermGen space<br>
+java.lang.OutOfMemoryError: Requested array size exceeds VM limit<br>
+java.lang.OutOfMemoryError: request &lt;size&gt; bytes for &lt;reason&gt;. Out of swap space?<br>
+java.lang.OutOfMemoryError: &lt;reason&gt; &lt;stack trace&gt; (Native method)<br>
+“Java heap space”</p>
+
+<p>This error message doesn’t necessarily imply a memory leak. In fact, the problem can be as simple as a configuration issue.</p>
+
+<p>For example, I was responsible for analyzing an application which was consistently producing this type of OutOfMemoryError. After some investigation, I figured out that the culprit was an array instantiation that was demanding too much memory; in this case, it wasn’t the application’s fault, but rather, the application server was relying on the default heap size, which was too small. I solved the problem by adjusting the JVM’s memory parameters.</p>
+
+<p>In other cases, and for long-lived applications in particular, the message might be an indication that we’re unintentionally holding references to objects, preventing the garbage collector from cleaning them up. This is the Java language equivalent of a memory leak. (Note: APIs called by an application could also be unintentionally holding object references.)</p>
+
+<p>Another potential source of these “Java heap space” OOMs arises with the use of finalizers. If a class has a finalize method, then objects of that type do not have their space reclaimed at garbage collection time. Instead, after garbage collection, the objects are queued for finalization, which occurs later. In the Sun implementation, finalizers are executed by a daemon thread. If the finalizer thread cannot keep up with the finalization queue, then the Java heap could fill up and an OOM could be thrown.</p>
+
+<p>“PermGen space”</p>
+
+<p>This error message indicates that the permanent generation is full. The permanent generation is the area of the heap that stores class and method objects. If an application loads a large number of classes, then the size of the permanent generation might need to be increased using the -XX:MaxPermSize option.</p>
+
+<p>Interned java.lang.String objects are also stored in the permanent generation. The java.lang.String class maintains a pool of strings. When the intern method is invoked, the method checks the pool to see if an equivalent string is present. If so, it’s returned by the intern method; if not, the string is added to the pool. In more precise terms, the java.lang.String.intern method returns a string’s canonical representation; the result is a reference to the same class instance that would be returned if that string appeared as a literal. If an application interns a large number of strings, you might need to increase the size of the permanent generation.</p>
+
+<p>Note: you can use the jmap -permgen command to print statistics related to the permanent generation, including information about internalized String instances.</p>
+
+<p>“Requested array size exceeds VM limit”</p>
+
+<p>This error indicates that the application (or APIs used by that application) attempted to allocate an array that is larger than the heap size. For example, if an application attempts to allocate an array of 512MB but the maximum heap size is 256MB, then an OOM will be thrown with this error message. In most cases, the problem is either a configuration issue or a bug that results when an application attempts to allocate a massive array.</p>
+
+<p>“Request &lt;size&gt; bytes for &lt;reason&gt;. Out of swap space?”</p>
+
+<p>This message appears to be an OOM. However, the HotSpot VM throws this apparent exception when an allocation from the native heap failed and the native heap might be close to exhaustion. Included in the message are the size (in bytes) of the request that failed and the reason for the memory request. In most cases, the &lt;reason&gt; is the name of the source module that’s reporting an allocation failure.</p>
+
+<p>If this type of OOM is thrown, you might need to use troubleshooting utilities on your operating system to diagnose the issue further. In some cases, the problem might not even be related to the application. For example, you might see this error if:</p>
+
+<p>The operating system is configured with insufficient swap space.<br>
+Another process on the system is consuming all available memory resources.<br>
+It’s also is possible that the application failed due to a native leak (for example, if some bit of application or library code is continuously allocating memory but fails to releasing it to the operating system).</p>
+
+<p>&lt;reason&gt; &lt;stack trace&gt; (Native method)</p>
+
+<p>If you see this error message and the top frame of your stack trace is a native method, then that native method has encountered an allocation failure. The difference between this message and the previous is that the allocation failure was detected in a JNI or native method rather than in Java VM code.</p>
+
+<p>If this type of OOM is thrown, you might need to use utilities on the operating system to further diagnose the issue.</p>
+
+<p>Application Crash Without OOM</p>
+
+<p>Occasionally, an application might crash soon after an allocation failure from the native heap. This occurs if you’re running native code that doesn’t check for errors returned by memory allocation functions.</p>
+
+<p>For example, the malloc system call returns NULL if there is no memory available. If the return from malloc is not checked, then the application might crash when it attempts to access an invalid memory location. Depending on the circumstances, this type of issue can be difficult to locate.</p>
+
+<p>In some cases, the information from the fatal error log or the crash dump will be sufficient. If the cause of a crash is determined to be a lack of error-handling in some memory allocations, then you must hunt down the reason for said allocation failure. As with any other native heap issue, the system might be configured with insufficient swap space, another process might be consuming all available memory resources, etc.</p>
+
+<p>Diagnosing Leaks</p>
+
+<p>In most cases, diagnosing memory leaks requires very detailed knowledge of the application in question. Warning: the process can be lengthy and iterative.</p>
+
+<p>Our strategy for hunting down memory leaks will be relatively straightforward:</p>
+
+<p>Identify symptoms<br>
+Enable verbose garbage collection<br>
+Enable profiling<br>
+Analyze the trace<br>
+1. Identify Symptoms</p>
+
+<p>As discussed, in many cases, the Java process will eventually throw an OOM runtime exception, a clear indicator that your memory resources have been exhausted. In this case, you need to distinguish between a normal memory exhaustion and a leak. Analyzing the OOM’s message and try to find the culprit based on the discussions provided above.</p>
+
+<p>Oftentimes, if a Java application requests more storage than the runtime heap offers, it can be due to poor design. For instance, if an application creates multiple copies of an image or loads a file into an array, it will run out of storage when the image or file is very large. This is a normal resource exhaustion. The application is working as designed (although this design is clearly boneheaded).</p>
+
+<p>But if an application steadily increases its memory utilization while processing the same kind of data, you might have a memory leak.</p>
+
+<ol>
+<li>Enable Verbose Garbage Collection</li>
+</ol><p>One of the quickest ways to assert that you indeed have a memory leak is to enable verbose garbage collection. Memory constraint problems can usually be identified by examining patterns in the verbosegc output.</p>
+
+<p>Specifically, the -verbosegc argument allows you to generates a trace each time the garbage collection (GC) process is begun. That is, as memory is being garbage-collected, summary reports are printed to standard error, giving you a sense of how your memory is being managed.</p>
+
+<p>Here’s some typical output generated with the –verbosegc option:</p>
+
+<p>Each block (or stanza) in this GC trace file is numbered in increasing order. To make sense of this trace, you should look at successive Allocation Failure stanzas and look for freed memory (bytes and percentage) decreasing over time while total memory (here, 19725304) is increasing. These are typical signs of memory depletion.</p>
+
+<p>Editor's note: want posts just like this delivered straight to your inbox? Subscribe below to receive our latest engineering articles.</p>
+
+<p>We will never share your email with any 3rd party or spam you<br>
+3. Enable Profiling</p>
+
+<p>Different JVMs offer different ways to generate trace files to reflect heap activity, which typically include detailed information about the type and size of objects. This is called profiling the heap.</p>
+
+<ol>
+<li>Analyze the Trace</li>
+</ol><p>This post focuses on the trace generated by Java VisualVM. Traces can come in different formats, as they can be generated by different tools, but the idea behind them is always the same: find a block of objects in the heap that should not be there, and determine if these objects accumulate instead of releasing. Of particular interest are transient objects that are known to be allocated each time a certain event is triggered in the Java application. The presence of many object instances that ought to exist only in small quantities generally indicates an application bug.</p>
+
+<p>Finally, solving memory leaks requires you to review your code thoroughly. Learning about the type of object leaking can be very helpful and considerably speedup debugging.</p>
+
+<p>How Does Garbage Collection Work in the JVM?</p>
+
+<p>Before we start our analysis of an application with a memory leak issue, let’s first look at how garbage collection works in the JVM.</p>
+
+<p>The JVM uses a form of garbage collector called a tracing collector, which essentially operates by pausing the world around it, marking all root objects (objects referenced directly by running threads), and following their references, marking each object it sees along the way.</p>
+
+<p>Java implements something called a generational garbage collector based upon the generational hypothesis assumption, which states that the majority of objects that are created are quickly discarded, and objects that are not quickly collected are likely to be around for a while.</p>
+
+<p>Based on this assumption, Java partitions objects into multiple generations. Here’s a visual interpretation:</p>
+
+<p>Young Generation - This is where objects start out. It has two sub-generations:<br>
+Eden Space - Objects start out here. Most objects are created and destroyed in the Eden Space. Here, the GC does Minors GCs, which are optimized garbage collections. When a Minor GC is performed, any references to objects that are still needed are migrated to one of the survivors spaces (S0 or S1).<br>
+Survivor Space (S0 and S1) - Objects that survive Eden end up here. There are two of these, and only one is in use at any given time (unless we have a serious memory leak). One is designated as empty, and the other as live, alternating with every GC cycle.<br>
+Tenured Generation - Also known as the old generation (old space in Fig. 2), this space holds older objects with longer lifetimes (moved over from the survivor spaces, if they live for long enough). When this space is filled up, the GC does a Full GC, which costs more in terms of performance. If this space grows without bound, the JVM will throw an OutOfMemoryError - Java heap space.<br>
+Permanent Generation - A third generation closely related to the tenured generation, the permanent generation is special because it holds data required by the virtual machine to describe objects that do not have an equivalence at the Java language level. For example, objects describing classes and methods are stored in the permanent generation.<br>
+Java is smart enough to apply different garbage collection methods to each generation. The young generation is handled using a tracing, copying collector called the Parallel New Collector. This collector stops the world, but because the young generation is generally small, the pause is short.</p>
+
+<p>For more information about the JVM generations and how them work in more detail visit the Memory Management in the Java HotSpot™ Virtual Machine documentation.</p>
+
+<p>Detecting a Memory Leak</p>
+
+<p>To find and eliminate a memory leak, you need the proper tools. It’s time to detect and remove such a leak using the Java VisualVM.</p>
+
+<p>Remotely Profiling the Heap with Java VisualVM</p>
+
+<p>VisualVM is a tool that provides a visual interface for viewing detailed information about Java technology-based applications while they are running.</p>
+
+<p>With VisualVM, you can view data related to local applications and those running on remote hosts. You can also capture data about JVM software instances and save the data to your local system.</p>
+
+<p>In order to benefit from all of Java VisualVM’s features, you should run the Java Platform, Standard Edition (Java SE) version 6 or above.</p>
+
+<p>Enabling Remote Connection for the JVM</p>
+
+<p>In a production environment, it’s often difficult to access the actual machine on which our code will be running. Luckily, we can profile our Java application remotely.</p>
+
+<p>First, we need to grant ourselves JVM access on the target machine. To do so, create a file called jstatd.all.policy with the following content:</p>
+
+<p>grant codebase "file:${java.home}/../lib/tools.jar" {<br>
+   permission java.security.AllPermission;<br>
+};<br>
+Once the file has been created, we need to enable remote connections to the target VM using the jstatd - Virtual Machine jstat Daemon tool, as follows:</p>
+
+<p>jstatd -p &lt;PORT_NUMBER&gt; -J-Djava.security.policy=&lt;PATH_TO_POLICY_FILE&gt;<br>
+For example:</p>
+
+<p>jstatd -p 1234 -J-Djava.security.policy=D:\jstatd.all.policy<br>
+With the jstatd started in the target VM, we are able to connect to the target machine and remotely profile the application with memory leak issues.</p>
+
+<p>Connecting to a Remote Host</p>
+
+<p>In the client machine, open a prompt and type jvisualvm to open the VisualVM tool.</p>
+
+<p>Next, we must add a remote host in VisualVM. As the target JVM is enabled to allow remote connections from another machine with J2SE 6 or greater, we start the Java VisualVM tool and connect to the remote host. If the connection with the remote host was successful, we will see the Java applications that are running in the target JVM, as seen here:</p>
+
+<p>To profile and analyze the application, we just double-click its name in the side panel.</p>
+
+<p>Now that we’re all setup, let’s investigate an application with a memory leak issue, which we’ll call MemLeak.</p>
+
+<p>MemLeak</p>
+
+<p>Of course, there are a number of ways to create memory leaks in Java. For simplicity we will define a class to be a key in a HashMap, but we will not define the equals() and hashcode() methods.</p>
+
+<p>A HashMap is a hash table implementation for the Map interface, and as such it defines the basic concepts of key and value: each value is related to a unique key, so if the key for a given key-value pair is already present in the HashMap, its current value is replaced.</p>
+
+<p>It’s mandatory that our key class provides a correct implementation of the equals() and hashcode() methods. Without them, there is no guarantee that a good key will be generated.</p>
+
+<p>By not defining the equals() and hashcode() methods, we add the same key to the HashMap over and over and, instead of replacing the key as it should, the HashMap grows continuously, failing to identify these identical keys and throwing an OutOfMemoryError.</p>
+
+<p>Here’s the MemLeak class:</p>
+
+<p>package com.post.memory.leak;</p>
+
+<p>import java.util.Map;</p>
+
+<p>public class MemLeak {<br>
+    public final String key;</p>
+
+<p>public MemLeak(String key) {<br>
+        this.key =key;<br>
+    }</p>
+
+<p>public static void main(String args[]) {<br>
+        try {<br>
+            Map map = System.getProperties();</p>
+
+<p>for(;;) {<br>
+                map.put(new MemLeak("key"), "value");<br>
+            }<br>
+        } catch(Exception e) {<br>
+            e.printStackTrace();<br>
+        }<br>
+    }<br>
+}<br>
+Note: the memory leak is not due to the infinite loop on line 14: the infinite loop can lead to a resource exhaustion, but not a memory leak. If we had properly implemented equals() and hashcode() methods, the code would run fine even with the infinite loop as we would only have one element inside the HashMap.</p>
+
+<p>(For those interested, here are some alternative means of (intentionally) generating leaks.)</p>
+
+<p>Using Java VisualVM</p>
+
+<p>With Java VisualVM, we can monitor the Java Heap and identify if its behavior is indicative of a memory leak.</p>
+
+<p>Here’s a graphical representation of MemLeak’s Java Heap just after initialization (recall our discussion of the various generations):</p>
+
+<p>After just 30 seconds, the Old Generation is almost full, indicating that, even with a Full GC, the Old Generation is ever-growing, a clear sign of a memory leak.</p>
+
+<p>One means of detecting the cause of this leak is shown in the following image (click to zoom), generated using Java VisualVM with a heapdump. Here, we see that 50% of Hashtable$Entry objects are in the heap, while the second line points us to the MemLeak class. Thus, the memory leak is caused by a hash table used within the MemLeak class.</p>
+
+<p>Finally, observe the Java Heap just after our OutOfMemoryError in which the Young and Old generations are completely full.</p>
+
+<p>Conclusion</p>
+
+<p>Memory leaks are among the most difficult Java application problems to resolve, as the symptoms are varied and difficult to reproduce. Here, we’ve outlined a step-to-step approach to discovering memory leaks and identifying their sources. But above all, read your error messages closely and pay attention to your stack traces—not all leaks are as simple as they appear.</p>
+
+<p>Appendix</p>
+
+<p>Along with Java VisualVM, there are several other tools that can perform memory leak detection. Many leak detectors operate at the library level by intercepting calls to memory management routines. For example: HPROF, is a simple command line tool bundled with the Java 2 Platform Standard Edition (J2SE) for heap and CPU profiling. The output of HPROF can be analyzed directly or used as an input for others tools like JHAT. When we work with Java 2 Enterprise Edition (J2EE) applications, there are a number of heapdump solutions that are friendlier to analyze, such as IBM Heapdumps for Websphere application servers.</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Hunting Memory Leaks in Java via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="732#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="732#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="732#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="732#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="732#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>2</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="732#reply1">1楼</a> · <abbr class="timeago" title="2014-04-23T22:45:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4166" data-state="" data-type="Reply" href="732#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/732/replies/4166/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="732#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>高大上的文章, 没人回, 看来大家都被英文挡住了 包括我</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="732#reply2">2楼</a> · <abbr class="timeago" title="2014-04-23T23:14:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4168" data-state="" data-type="Reply" href="732#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/732/replies/4168/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="732#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="732#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 这边开发老大推荐的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="732#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

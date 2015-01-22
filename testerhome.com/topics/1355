@@ -1,0 +1,576 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 模拟器运行 app 出错,求解 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">模拟器运行 app 出错,求解</h1>
+  <div class="info leader">
+    <a class="node" href="node40">习惯性伸手党区</a>
+     · 
+    <a data-author="true" data-name="云朵" href="../yunduo1220">yunduo1220</a>
+     · 
+    于<abbr class="timeago" title="2014-09-03T11:39:44+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="yunduo1220" href="../yunduo1220">yunduo1220</a> 于<abbr class="timeago" title="2014-09-05T13:29:06+08:00"></abbr>回复
+     · 
+    883次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>源码信息</p>
+<pre class="highlight python"><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span>
+                       <span class="s">'test-ios/testpackage/build/Release-iphoneos'</span><span class="p">,</span>
+                        <span class="s">'XyqMobile.app'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">app</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="s">'http://127.0.0.1:4723/wd/hub'</span><span class="p">,</span><span class="n">desired_capabilities</span><span class="o">=</span><span class="p">{</span>
+                <span class="s">'app'</span><span class="p">:</span> <span class="n">app</span><span class="p">,</span>
+                <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'iOS'</span><span class="p">,</span>
+                <span class="s">'platformVersion'</span><span class="p">:</span> <span class="s">'7.0'</span><span class="p">,</span>
+                <span class="s">'deviceName'</span><span class="p">:</span> <span class="s">'iPhone Simulator'</span>
+            <span class="p">})</span>
+<span class="k">print</span> <span class="s">"--------------test-----------------"</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">launch_app</span><span class="p">()</span>
+</pre>
+
+<p>报错信息</p>
+<pre class="highlight python"><span class="n">info</span><span class="p">:</span> <span class="n">Attempting</span> <span class="n">to</span> <span class="n">retry</span> <span class="n">launching</span> <span class="n">instruments</span><span class="p">,</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">retry</span> <span class="c">#3</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Killall</span> <span class="n">iPhoneSimulator</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="k">with</span> <span class="n">error</span><span class="p">:</span> <span class="p">{</span><span class="s">"status"</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="s">"value"</span><span class="p">:{</span><span class="s">"message"</span><span class="p">:</span><span class="s">"A new session could not be created. (Original error: Instruments crashed on startup)"</span><span class="p">,</span><span class="s">"origValue"</span><span class="p">:</span><span class="s">"Instruments crashed on startup"</span><span class="p">},</span><span class="s">"sessionId"</span><span class="p">:</span><span class="n">null</span><span class="p">}</span><span class="n">info</span><span class="p">:</span> <span class="n">Spawning</span> <span class="n">instruments</span> <span class="k">with</span> <span class="n">command</span><span class="p">:</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Xcode</span><span class="o">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Developer</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">instruments</span> <span class="o">-</span><span class="n">t</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Xcode</span><span class="o">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Instruments</span><span class="o">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">PlugIns</span><span class="o">/</span><span class="n">AutomationInstrument</span><span class="o">.</span><span class="n">bundle</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">Automation</span><span class="o">.</span><span class="n">tracetemplate</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">game</span><span class="o">-</span><span class="n">netease</span><span class="o">/</span><span class="n">Desktop</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">ios</span><span class="o">/</span><span class="n">testpackage</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">Release</span><span class="o">-</span><span class="n">iphoneos</span><span class="o">/</span><span class="n">XyqMobile</span><span class="o">.</span><span class="n">app</span> <span class="o">-</span><span class="n">e</span> <span class="n">UIASCRIPT</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">uiauto</span><span class="o">/</span><span class="n">uiauto</span><span class="o">/</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">js</span> <span class="o">-</span><span class="n">e</span> <span class="n">UIARESULTSPATH</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">instruments</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">And</span> <span class="n">extra</span> <span class="n">without</span><span class="o">-</span><span class="n">delay</span> <span class="n">env</span><span class="p">:</span> <span class="p">{</span><span class="s">"DYLD_INSERT_LIBRARIES"</span><span class="p">:</span><span class="s">"/usr/local/lib/node_modules/appium/node_modules/appium-instruments/thirdparty/iwd/InstrumentsShim.dylib"</span><span class="p">,</span><span class="s">"LIB_PATH"</span><span class="p">:</span><span class="s">"/usr/local/lib/node_modules/appium/node_modules/appium-instruments/thirdparty/iwd"</span><span class="p">}</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">And</span> <span class="n">launch</span> <span class="n">timeouts</span> <span class="p">(</span><span class="ow">in</span> <span class="n">ms</span><span class="p">):</span> <span class="p">{</span><span class="s">"global"</span><span class="p">:</span><span class="mi">90000</span><span class="p">}</span>
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">INST</span> <span class="n">STDERR</span><span class="p">]</span> <span class="n">posix</span> <span class="n">spawn</span> <span class="n">failure</span><span class="p">;</span> <span class="n">aborting</span> <span class="n">launch</span> <span class="p">(</span><span class="n">binary</span> <span class="o">==</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">game</span><span class="o">-</span><span class="n">netease</span><span class="o">/</span><span class="n">Desktop</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">ios</span><span class="o">/</span><span class="n">testpackage</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">Release</span><span class="o">-</span><span class="n">iphoneos</span><span class="o">/</span><span class="n">XyqMobile</span><span class="o">.</span><span class="n">app</span><span class="o">/</span><span class="n">XyqMobile</span><span class="p">)</span><span class="o">.</span>
+
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">INST</span> <span class="n">STDERR</span><span class="p">]</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">03</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">27.917</span> <span class="n">instruments</span><span class="p">[</span><span class="mi">1335</span><span class="p">:</span><span class="mi">707</span><span class="p">]</span> <span class="n">Recording</span> <span class="n">cancelled</span> <span class="p">:</span> <span class="n">At</span> <span class="n">least</span> <span class="n">one</span> <span class="n">target</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">launch</span><span class="p">;</span> <span class="n">aborting</span> <span class="n">run</span>
+<span class="n">Instruments</span> <span class="n">Trace</span> <span class="n">Error</span> <span class="p">:</span> <span class="n">Error</span> <span class="n">Domain</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">apple</span><span class="o">.</span><span class="n">instruments</span> <span class="n">Code</span><span class="o">=</span><span class="mi">1</span> <span class="s">"Error Starting Recording"</span> <span class="n">UserInfo</span><span class="o">=</span><span class="mh">0x7ffc14f016f0</span> <span class="p">{</span><span class="n">NSLocalizedDescription</span><span class="o">=</span><span class="n">Error</span> <span class="n">Starting</span> <span class="n">Recording</span><span class="p">,</span> <span class="n">NSLocalizedRecoverySuggestion</span><span class="o">=</span><span class="n">At</span> <span class="n">least</span> <span class="n">one</span> <span class="n">target</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">launch</span><span class="p">;</span> <span class="n">aborting</span> <span class="n">run</span><span class="p">}</span>
+<span class="n">Instruments</span> <span class="n">Trace</span> <span class="n">Error</span> <span class="p">:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">trace</span><span class="o">.</span>
+
+<span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="n">INSTSERVER</span><span class="p">]</span> <span class="n">Instruments</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">253</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Killall</span> <span class="n">instruments</span>
+<span class="n">error</span><span class="p">:</span> <span class="n">Instruments</span> <span class="n">crashed</span> <span class="n">on</span> <span class="n">startup</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Stopping</span> <span class="n">iOS</span> <span class="n">log</span> <span class="n">capture</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Killing</span> <span class="n">the</span> <span class="n">simulator</span> <span class="n">process</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Killing</span> <span class="nb">any</span> <span class="n">other</span> <span class="n">simulator</span> <span class="n">daemons</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Cleaning</span> <span class="n">app</span> <span class="n">state</span><span class="o">.</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Deleted</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">game</span><span class="o">-</span><span class="n">netease</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Application</span> <span class="n">Support</span><span class="o">/</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="o">/</span><span class="mf">7.0</span><span class="o">.</span><span class="mi">3</span><span class="o">/</span><span class="n">Applications</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Deleted</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">game</span><span class="o">-</span><span class="n">netease</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Application</span> <span class="n">Support</span><span class="o">/</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="o">/</span><span class="mf">7.0</span><span class="o">.</span><span class="mi">3</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Caches</span><span class="o">/</span><span class="n">locationd</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Deleted</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">game</span><span class="o">-</span><span class="n">netease</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Application</span> <span class="n">Support</span><span class="o">/</span><span class="n">iPhone</span> <span class="n">Simulator</span><span class="o">/</span><span class="mf">7.0</span><span class="o">.</span><span class="mi">3</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Keychains</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Cleaning</span> <span class="n">up</span> <span class="n">appium</span> <span class="n">session</span>
+<span class="n">error</span><span class="p">:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">an</span> <span class="n">Appium</span> <span class="n">session</span><span class="p">,</span> <span class="n">err</span> <span class="n">was</span><span class="p">:</span> <span class="n">Error</span><span class="p">:</span> <span class="n">Instruments</span> <span class="n">crashed</span> <span class="n">on</span> <span class="n">startup</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Error</span><span class="p">:</span> <span class="n">Instruments</span> <span class="n">crashed</span> <span class="n">on</span> <span class="n">startup</span>
+    <span class="n">at</span> <span class="n">Instruments</span><span class="o">.</span><span class="n">onInstrumentsExit</span> <span class="p">(</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">instruments</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">instruments</span><span class="o">.</span><span class="n">js</span><span class="p">:</span><span class="mi">398</span><span class="p">:</span><span class="mi">31</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">null</span><span class="o">.&lt;</span><span class="n">anonymous</span><span class="o">&gt;</span> <span class="p">(</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">appium</span><span class="o">-</span><span class="n">instruments</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">instruments</span><span class="o">.</span><span class="n">js</span><span class="p">:</span><span class="mi">328</span><span class="p">:</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">ChildProcess</span><span class="o">.</span><span class="n">EventEmitter</span><span class="o">.</span><span class="n">emit</span> <span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">js</span><span class="p">:</span><span class="mi">98</span><span class="p">:</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Process</span><span class="o">.</span><span class="n">ChildProcess</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">onexit</span> <span class="p">(</span><span class="n">child_process</span><span class="o">.</span><span class="n">js</span><span class="p">:</span><span class="mi">807</span><span class="p">:</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">info</span><span class="p">:</span> <span class="n">Responding</span> <span class="n">to</span> <span class="n">client</span> <span class="k">with</span> <span class="n">error</span><span class="p">:</span> <span class="p">{</span><span class="s">"status"</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="s">"value"</span><span class="p">:{</span><span class="s">"message"</span><span class="p">:</span><span class="s">"A new session could not be created. (Original error: Instruments crashed on startup)"</span><span class="p">,</span><span class="s">"origValue"</span><span class="p">:</span><span class="s">"Instruments crashed on startup"</span><span class="p">},</span><span class="s">"sessionId"</span><span class="p">:</span><span class="n">null</span><span class="p">}</span>
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='模拟器运行 app 出错,求解 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1355#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1355#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1355#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1355#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1355#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>12</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply1">1楼</a> · <abbr class="timeago" title="2014-09-03T13:14:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8306" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1355/replies/8306/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请说明上下文，并且按照发帖的规定来。否则马上删贴</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply2">2楼</a> · <abbr class="timeago" title="2014-09-03T16:06:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8317" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8317/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 不好意思，已改 愿求解...</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply3">3楼</a> · <abbr class="timeago" title="2014-09-03T17:30:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8321" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1355/replies/8321/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="link1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>每当我看到 A new session could not be created. 这个报错的时候会习惯性的stop and launch一下appium，然后再试一次。。。o(╯□╰)o</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply4">4楼</a> · <abbr class="timeago" title="2014-09-05T11:12:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8369" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8369/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>  需要哪些信息?<br><br>
+系统版本:os x 10.8.5 <br>
+appium 是最新版本的 <br>
+appium-doctor ios checks 是没有错的 <br>
+运行simple-code也可以正常运行 ，但是用不是simple-code里的app就报错了 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply5">5楼</a> · <abbr class="timeago" title="2014-09-05T11:15:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8371" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1355/replies/8371/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1355#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../yunduo1220" class="at_user" title="@yunduo1220"><i>@</i>yunduo1220</a> 你用simpole的code，那么是simple的app么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply6">6楼</a> · <abbr class="timeago" title="2014-09-05T11:17:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8372" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8372/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>  code用的是上面贴的，app若是用simple里的app（Testapp）是可以的，但是若换成我自己的app就不行了  “iOS 模拟器”未能安装此应用程序。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply7">7楼</a> · <abbr class="timeago" title="2014-09-05T11:23:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8373" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1355/replies/8373/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="monkey" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1355#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../yunduo1220" class="at_user" title="@yunduo1220"><i>@</i>yunduo1220</a> 你app签名是发布签名还是debug签名？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply8">8楼</a> · <abbr class="timeago" title="2014-09-05T11:24:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8374" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8374/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 用的是debug签名 ~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply9">9楼</a> · <abbr class="timeago" title="2014-09-05T11:25:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8375" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1355/replies/8375/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1355#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../yunduo1220" class="at_user" title="@yunduo1220"><i>@</i>yunduo1220</a> 从log上面看你instruments已经启动了，appium的session也有了，你全部关闭，重启跑一遍呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply10">10楼</a> · <abbr class="timeago" title="2014-09-05T13:14:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8381" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8381/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 不行的  放大招 重启电脑 也不行....提示  “iOS 模拟器”未能安装此应用程序。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply11">11楼</a> · <abbr class="timeago" title="2014-09-05T13:24:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8382" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8382/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>客户端的Traceback信息</p>
+<pre class="highlight python"><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">"/Users/game-ns/Desktop/ios_simple.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">23</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="s">'deviceName'</span><span class="p">:</span> <span class="s">'iPhone Simulator'</span>
+  <span class="n">File</span> <span class="s">"/usr/local/lib/python2.7/site-packages/appium/webdriver/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">35</span><span class="p">,</span> <span class="ow">in</span> <span class="n">__init__</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">WebDriver</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">keep_alive</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/usr/local/lib/python2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">73</span><span class="p">,</span> <span class="ow">in</span> <span class="n">__init__</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/usr/local/lib/python2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">121</span><span class="p">,</span> <span class="ow">in</span> <span class="n">start_session</span>
+    <span class="s">'desiredCapabilities'</span><span class="p">:</span> <span class="n">desired_capabilities</span><span class="p">,</span>
+  <span class="n">File</span> <span class="s">"/usr/local/lib/python2.7/site-packages/selenium/webdriver/remote/webdriver.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">173</span><span class="p">,</span> <span class="ow">in</span> <span class="n">execute</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span><span class="o">.</span><span class="n">check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">"/usr/local/lib/python2.7/site-packages/selenium/webdriver/remote/errorhandler.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">164</span><span class="p">,</span> <span class="ow">in</span> <span class="n">check_response</span>
+    <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span>
+<span class="n">selenium</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">WebDriverException</span><span class="p">:</span> <span class="n">Message</span><span class="p">:</span> <span class="s">u'A new session could not be created. (Original error: Instruments never checked in)'</span> 
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../yunduo1220"><img alt="654" class="uface" src="../user/large_avatar/654.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云朵" href="../yunduo1220">yunduo1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1355#reply12">12楼</a> · <abbr class="timeago" title="2014-09-05T13:29:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8383" data-state="" data-type="Reply" href="1355#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="654" href="http://testerhome.com/topics/1355/replies/8383/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="yunduo1220" href="1355#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 是build的包不对么  build指令格式<br>
+xcodebuild -sdk iphonesimulator7.0 -configuration Debug -target XyqMobile -arch armv7s</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @z7039585: 想换个好工作 找个妹纸~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1895" title="UiScrollable 如何做到让它一个 item 接着一个 item 滚动？">UiScrollable 如何做到让它一个 item ...</a></li>
+    <li><a href="1649" title="问个关于 jenkins 配置 maven 项目的问题">问个关于 jenkins 配置 maven 项目的问题</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1355#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

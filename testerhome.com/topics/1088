@@ -1,0 +1,377 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | appium 简明教程（9）——如何获取 android app 的 Activity &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">appium 简明教程（9）——如何获取 android app 的 Activity</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="乙醇" href="../easonhan007">easonhan007</a>
+     · 
+    于<abbr class="timeago" title="2014-06-30T10:00:34+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="strayeagle" href="../strayeagle">strayeagle</a> 于<abbr class="timeago" title="2014-10-08T22:47:53+08:00"></abbr>回复
+     · 
+    1047次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>有时候在appium的Desired Capabilities中需要指定被测app的appActivity，下面的方法可能会对你有所帮助。</p>
+<h4>方法一</h4>
+<p>如有你有待测项目的源码，那么直接查看源码就好。如果没有，那么请联系有源码的同学，这是推荐方法。</p>
+
+<p><strong>本文版权归乙醇所有，欢迎转载，但请注明作者与出处，严禁用于任何商业用途</strong></p>
+<h4>方法二</h4>
+<p>如果你没有代码，那么可以反编译该app。</p>
+
+<p>这里将用到2个工具，分别是dex2jar和jd-gui。你可以在<a href="http://pan.baidu.com/s/1bnlHYyz" target="_blank">这里下载</a>目前为止的最新版本以及示例apk。</p>
+
+<p>我们以工具包里的<code>ContactManager.apk</code>为例，简单介绍一下反编译的流程。</p>
+
+<ul>
+<li>1，重命名ContactManager.apk为ContactManager.zip并解压得到文件classes.dex；</li>
+<li>2，解压dex2jar-0.0.9.15.zip，并从命令行进入该文件夹；</li>
+<li>3，运行命令 <code>d2j-dex2jar.bat path_to\classes.dex</code> 在当前文件夹下得到<code>classes-dex2jar.jar</code>；</li>
+<li>4，解压jd-gui-0.3.6.windows.zip得到文件jd-gui.exe；</li>
+<li>5，使用jd-gui.exe打开classes-dex2jar.jar；</li>
+</ul>
+
+<p>嗯，好了，可以尽情欣赏了。上图。<br>
+<img src="http://images.cnitblog.com/i/146263/201406/242142526427042.png" alt="jd-gui效果"></p>
+
+<p>上图所示的ContactManager就是待测app的main activity。</p>
+<h4>方法三</h4>
+<p>参考testerhome的<a href="1030" target="_blank">这个帖子</a></p>
+
+<p>使用log查看大法(嗯，windows上没grep不幸福，好在有powershell的Select-String，可以拿来勉强一用)，直接搬砖。</p>
+
+<ul>
+<li>a、启动待测apk</li>
+<li>b、开启日志输出：adb logcat&gt;D:/log.txt </li>
+<li>c、关闭日志输出：ctrl+c</li>
+<li>d、查看日志
+找寻：</li>
+</ul>
+<pre class="highlight plaintext">Displayed com.mm.android.hsy/.ui.LoginActivity: +3s859ms
+appPackage = com.mm.android.hsy
+appActivity = .ui.LoginActivity
+</pre>
+
+<p>好了，准备活动做的差不多了。下一节乙醇带大家进行控件定位之旅。</p>
+
+<p><strong>本文版权归乙醇所有，欢迎转载，但请注明作者与出处，严禁用于任何商业用途</strong></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='appium 简明教程（9）——如何获取 android app 的 Activity via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1088#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1088#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1088#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1088#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1088#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1088#reply1">1楼</a> · <abbr class="timeago" title="2014-06-30T10:57:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6310" data-state="" data-type="Reply" href="1088#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1088/replies/6310/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="1088#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>还是反编译来的靠谱一些。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../hy1984427"><img alt="Cd3c95ba7b4a17e0228061277bc6d247" class="uface" src="../avatar/cd3c95ba7b4a17e0228061277bc6d247.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../hy1984427">hy1984427</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1088#reply2">2楼</a> · <abbr class="timeago" title="2014-07-03T11:07:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6429" data-state="" data-type="Reply" href="1088#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="575" href="http://testerhome.com/topics/1088/replies/6429/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="hy1984427" href="1088#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其实hierarchyviewer可以直接获得package的value还有acvitity的value。个人感觉这是最方便的获取方法，只是不能复制粘贴，需要自己手动输入。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../ianxiaohanxu"><img alt="1490" class="uface" src="../user/large_avatar/1490.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Alex" href="../ianxiaohanxu">ianxiaohanxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1088#reply3">3楼</a> · <abbr class="timeago" title="2014-09-11T15:29:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8505" data-state="" data-type="Reply" href="1088#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1490" href="http://testerhome.com/topics/1088/replies/8505/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="ianxiaohanxu" href="1088#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>还有一种方法，也不错<br>
+adb shell<br>
+cd system/app<br>
+ls | grep 'apk'<br>
+这样可以看到系统自带的所有apk，然后<br>
+aapt dump badging &lt;apk&gt;<br>
+可以查看对应apk的package和activity</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1088#reply4">4楼</a> · <abbr class="timeago" title="2014-10-08T22:47:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="9014" data-state="" data-type="Reply" href="1088#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1088/replies/9014/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="strayeagle" href="1088#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>cmd中直接执行 aapt dump badging app的绝对路径，查找屏显信息中的launchable-activity: name=，name=后面就是所要的activity信息了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @luis: 希望项目自动化测试有个好的开始，14年我能hold住场子。。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+    <li><a href="1900" title="Appium 中如何实现自定义的 UiWatcher 类">Appium 中如何实现自定义的 UiWatcher 类</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1088#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

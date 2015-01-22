@@ -1,0 +1,619 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【已解决】真机已安装 app，不要每次都重新安装 apk ，如何执行其他用例时能获取到 driver 属性信息 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【已解决】真机已安装 app，不要每次都重新安装 apk ，如何执行其他用例时能获取到 driver 属性信息</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../strayeagle">strayeagle</a>
+     · 
+    于<abbr class="timeago" title="2014-09-25T23:29:57+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="mongnet" href="../mongnet">mongnet</a> 于<abbr class="timeago" title="2014-10-09T23:29:13+08:00"></abbr>回复
+     · 
+    765次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>真机上已经调用如下类方法进行了安装app</p>
+<pre class="highlight python"><span class="k">class</span> <span class="nc">installApp</span><span class="p">():</span>
+    <span class="s">'''  安装app   '''</span>
+    <span class="k">def</span> <span class="nf">installAndroidApp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''  定义安装app函数--安卓     '''</span>
+        <span class="c"># Returns abs path relative to this file and not cwd</span>
+        <span class="n">PATH</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">p</span><span class="p">))</span>
+
+        <span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'platformName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Android'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'platformVersion'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'4.3'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'deviceName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Android Emulator'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'app'</span><span class="p">]</span> <span class="o">=</span> <span class="n">PATH</span><span class="p">(</span><span class="s">r'G:</span><span class="err">\</span><span class="s">workspace</span><span class="err">\</span><span class="s">src</span><span class="err">\</span><span class="s">common</span><span class="err">\</span><span class="s">testApp</span><span class="err">\</span><span class="s">testApp.apk'</span><span class="p">)</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'app-Package'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'com.android.test'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'app-Activity'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'.test'</span>
+
+        <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://localhost:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">driver</span>
+</pre>
+
+<p>执行下一个用例的时候，也需要使用driver的属性方法，可是不能再调用上面的函数了，因为调用还是会再次安装app，<br>
+请问：如何在不安装app的情况下，获取driver的属性方法呢？</p>
+
+<p>查询了下资料，说是将<br><br>
+desired_caps['app'] = PATH(r'G:\workspace\src\common\testApp\testApp.apk')<br>
+代码注释掉，不过我试了，注释掉上面这行后，依然报错：</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- encoding:UTF-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span><span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">getDriverInfo</span><span class="p">():</span>
+    <span class="s">'''    获取driver属性信息的类     '''</span>
+
+    <span class="k">def</span> <span class="nf">androidDriverInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''   定义获取driver属性信息的函数--安卓     '''</span>
+        <span class="c"># Returns abs path relative to this file and not cwd</span>
+        <span class="c">#PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))</span>
+
+        <span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'platformName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Android'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'platformVersion'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'4.3'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'deviceName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Android Emulator'</span>
+        <span class="c">#desired_caps['app'] = PATH(r'G:\workspace\src\common\testApp\testApp.apk')</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'app-Package'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'com.android.test'</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">'app-Activity'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'.test'</span>
+
+        <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://localhost:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">driver</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">driverInfo</span> <span class="o">=</span> <span class="n">getDriverInfo</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">driverInfo</span><span class="o">.</span><span class="n">androidDriverInfo</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">app</span><span class="o">.</span><span class="n">contexts</span><span class="p">()</span>
+
+</pre>
+
+<p>报错的信息如下：<br>
+  File "C:\Python27\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 164, in check_response<br>
+    raise exception_class(message, screen, stacktrace)<br>
+selenium.common.exceptions.WebDriverException: Message: u"A new session could not be created. (Original error: No app set; either start appium with --app or pass in an 'app' value in desired capabilities, or set androidPackage to launch pre-existing app on device)" </p>
+
+<p>请问大家是如何解决执行测试用例的时候，不要每次都重新安装 apk ，就可以获取driver属性信息的？</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【已解决】真机已安装 app，不要每次都重新安装 apk ，如何执行其他用例时能获取到 driver 属性信息 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1437#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1437#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1437#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1437#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1437#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>10</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply1">1楼</a> · <abbr class="timeago" title="2014-09-26T08:30:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8884" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1437/replies/8884/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不是很明白，但是你的意思是不要每次都重新安装apk 吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply2">2楼</a> · <abbr class="timeago" title="2014-09-26T08:45:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8887" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1437/replies/8887/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="link1220" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>重连Session应该可以，不过，你这样后面每一个脚本都依赖于前面的脚本，相当于没有初始化了，真的好吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply3">3楼</a> · <abbr class="timeago" title="2014-09-26T09:00:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8888" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1437/replies/8888/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="strayeagle" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1437#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>  是的，执行下个用例，就不用再需要安装app，直接使用driver属性信息</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply4">4楼</a> · <abbr class="timeago" title="2014-09-26T09:12:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8889" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/1437/replies/8889/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="luis" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>设置全局driver，后面case都掉它！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply5">5楼</a> · <abbr class="timeago" title="2014-09-26T22:49:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8938" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1437/replies/8938/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="strayeagle" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1437#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 关键是不知道如何获取这个全局的driver啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply6">6楼</a> · <abbr class="timeago" title="2014-09-27T14:55:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8944" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1437/replies/8944/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="strayeagle" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在 阿里-sh-lihuazhang  C-上海-西陆之风  @上海-L.T. 的帮助下，终于解决了这个问题</p>
+<pre class="highlight python"><span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">common.testCaseBase</span> <span class="kn">import</span> <span class="n">desired_capabilities</span>
+
+
+<span class="k">class</span> <span class="nc">getDriverInfo</span><span class="p">():</span>
+    <span class="s">'''   获取driver属性信息的类     '''</span>
+
+    <span class="k">def</span> <span class="nf">androidDriverInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''  定义获取driver属性信息的函数--安卓     '''</span>
+
+        <span class="n">desired_caps</span> <span class="o">=</span> <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">get_desired_capabilities</span><span class="p">(</span><span class="s">'WeChat_480.apk'</span><span class="p">)</span>
+
+        <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://localhost:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">'</span><span class="se">\n</span><span class="s"> for test'</span><span class="p">,</span><span class="n">driver</span><span class="p">,</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span>
+        <span class="k">return</span> <span class="n">driver</span>
+
+    <span class="k">def</span> <span class="nf">iOSDriverInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''  定义安装app函数-iOS     '''</span>
+        <span class="k">pass</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">driverInfo</span> <span class="o">=</span> <span class="n">getDriverInfo</span><span class="p">()</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">driverInfo</span><span class="o">.</span><span class="n">androidDriverInfo</span><span class="p">()</span>
+</pre>
+
+<p>如上代码调用的时候，安装app，如果app已经安装了，在不想安装app的情况下， 可通过dos窗口，通过启动appium带上 --no-reset 即可避免执行用例的时候再次安装app<br>
+ --no-reset  参数解释 如下：<br>
+ --no-reset      Don't reset app state between sessions (IOS: don't<br>
+                       delete app plist files; Android: don't uninstall app<br>
+                       before new session)</p>
+
+<p>如上解释可通过dos窗口执行 appium --no-reset -h 获得</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply7">7楼</a> · <abbr class="timeago" title="2014-09-27T14:58:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8945" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1437/replies/8945/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="strayeagle" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>原来的代码也可以使用，总之一句话，app已安装，在不想每次执行用例都需要再次安装app的情况下，启动appium带上--no-reset即可</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../mongnet"><img alt="727" class="uface" src="../user/large_avatar/727.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../mongnet">mongnet</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply8">8楼</a> · <abbr class="timeago" title="2014-10-07T18:43:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9010" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="727" href="http://testerhome.com/topics/1437/replies/9010/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="mongnet" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight python"><span class="kn">from</span> <span class="nn">common.testCaseBase</span> <span class="kn">import</span> <span class="n">desired_capabilities</span>
+</pre>
+
+<p><a href="1437#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../strayeagle" class="at_user" title="@strayeagle"><i>@</i>strayeagle</a> 你这个模块是自己写的吗？ <br>
+我根据例子里面的 import desired_capabilities引入报没有这个模块</p>
+<pre class="highlight python"><span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">appium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchContextException</span>
+<span class="kn">import</span> <span class="nn">desired_capabilities</span>
+</pre>
+<pre class="highlight python">    <span class="kn">import</span> <span class="nn">desired_capabilities</span>
+<span class="nb">ImportError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="n">desired_capabilities</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply9">9楼</a> · <abbr class="timeago" title="2014-10-08T23:07:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9015" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1437/replies/9015/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="strayeagle" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../mongnet" class="at_user" title="@mongnet"><i>@</i>mongnet</a> <br>
+desired_capabilities类内容如下：</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="c">#-*- coding:UTF-8 -*-</span>
+
+<span class="c"># Licensed under the Apache License, Version 2.0 (the "License");</span>
+<span class="c"># you may not use this file except in compliance with the License.</span>
+<span class="c"># You may obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#</span>
+<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c"># distributed under the License is distributed on an "AS IS" BASIS,</span>
+<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c"># See the License for the specific language governing permissions and</span>
+<span class="c"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c"># Returns abs path relative to this file and not cwd</span>
+<span class="n">PATH</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">p</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_desired_capabilities</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'Android'</span><span class="p">,</span>
+        <span class="s">'platformVersion'</span><span class="p">:</span> <span class="s">'4.3'</span><span class="p">,</span>
+        <span class="s">'deviceName'</span><span class="p">:</span> <span class="s">'Android Emulator'</span><span class="p">,</span>
+        <span class="s">'appPackage'</span> <span class="p">:</span> <span class="s">'com.xxx.phone'</span><span class="p">,</span>
+        <span class="s">'appActivity'</span> <span class="p">:</span> <span class="s">'com.xxx.ui.FlowPager'</span><span class="p">,</span>
+        <span class="s">'app'</span><span class="p">:</span> <span class="n">PATH</span><span class="p">(</span><span class="s">r'../testApp/'</span> <span class="o">+</span> <span class="n">app</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">desired_caps</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span><span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">get_desired_capabilities</span><span class="p">(</span><span class="s">'testBase_2.1.apk'</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">app</span>
+
+
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../mongnet"><img alt="727" class="uface" src="../user/large_avatar/727.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../mongnet">mongnet</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1437#reply10">10楼</a> · <abbr class="timeago" title="2014-10-09T23:29:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9047" data-state="" data-type="Reply" href="1437#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="727" href="http://testerhome.com/topics/1437/replies/9047/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="mongnet" href="1437#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>谢谢 <a href="../strayeagle" class="at_user" title="@strayeagle"><i>@</i>strayeagle</a>  的回复，我开始还以为这个模块是系统的了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="deleted">11楼 已删除.</div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @saraben 期待“念念不忘，必有回响”在我身上印证的那一天到来
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1437#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

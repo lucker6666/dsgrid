@@ -1,0 +1,703 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Robotium 娱乐小工具，临门一脚把我搞吐血了 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../bh01251859"><img alt="755" class="uface" src="../user/large_avatar/755.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Robotium 娱乐小工具，临门一脚把我搞吐血了</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="渺小" href="../bh01251859">bh01251859</a>
+     · 
+    于<abbr class="timeago" title="2014-08-06T21:58:15+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="shixue33" href="../shixue33">shixue33</a> 于<abbr class="timeago" title="2014-08-09T21:55:43+08:00"></abbr>回复
+     · 
+    1216次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>最近闲来无事写了一个Robotium的小工具，脑袋里YY着诸多功能的实现，没想到临门一脚把我搞吐血了，特来求一下实现思路，先阐述一下我目前实现的思路</p>
+
+<p>一、项目背景：<br>
+     一个android应用市场APK<br>
+     一个已经打包封装成APK的robotium脚本</p>
+
+<p>二、各组件：<br>
+      1.一个功能类似于Monkey的robotium脚本，动态获取当前设备屏幕宽，高，去掉信号栏高度，然后随机数生成一个坐标进行点击</p>
+
+<p>2.由于有下载应用功能，下载应用后会自动弹出系统的应用安装界面，会导致脚本挂掉，所以添加了一个Service,在程序启动时启动Service进行监听Activity,判断当前Activity为系统安装界面或系统卸载界面，则唤醒被测程序Activity</p>
+
+<p>3.APK首页是一个ListView，想法是启动程序，首先展示当前手机上所有非系统的应用，然后点击某个被测程序条目，取得该条目对应应用的mainActivity，传入到robotium脚本中，做到动态启动脚本（命令行启动）</p>
+
+<p>三、目前遇到的问题：</p>
+
+<p>以上各组件功能都已实现，唯独剩最后一步，将点击取到的对应APK条目的mainActivity字符串传给Robotium Test类出现问题，在脚本中打印mainActivity这个变量，脚本都会报空指针错误，好像Robotium启动后就把我这个变量销毁了一样，尝试过各种传值方法，以及使用Service进行传值，都没得到解决，特来求一解决思路</p>
+
+<p>PS：已经解决了，证明Robotium封装成APK，是和APK进程分进程的，尝试跨进程传值，使用Handler传值失败，最后用了最SB的方式，在oncItemClick的时候写SD卡文件，然后在Robotium脚本启动时读文件将MainActivity读出来</p>
+
+<p>附代码（demo,未优化）：</p>
+
+<p>Robotium脚本的：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">baih</span><span class="o">.</span><span class="na">Monkey</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Random</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">android.graphics.Rect</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.test.ActivityInstrumentationTestCase2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.util.DisplayMetrics</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.robotium.solo.Solo</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">BaihMonkey</span> <span class="kd">extends</span> <span class="n">ActivityInstrumentationTestCase2</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span> <span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Class</span> <span class="n">launcherActivityClass</span><span class="o">;</span>
+
+    <span class="kd">static</span><span class="o">{</span>
+        <span class="n">File</span> <span class="n">file</span><span class="o">=</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"/mnt/sdcard"</span><span class="o">,</span> <span class="s">"activityName.txt"</span><span class="o">);</span>
+
+        <span class="k">try</span> <span class="o">{</span>           
+            <span class="n">BufferedReader</span>  <span class="n">fileReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span> <span class="o">(</span><span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="n">file</span><span class="o">));</span>
+            <span class="n">String</span> <span class="n">activityName</span> <span class="o">=</span> <span class="n">fileReader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">activityName</span><span class="o">);</span>
+            <span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span><span class="o">=</span><span class="n">activityName</span><span class="o">;</span>          
+            <span class="n">fileReader</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// TODO Auto-generated catch block</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// TODO Auto-generated catch block</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="n">BaihMonkey</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+          <span class="kd">super</span><span class="o">(</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span><span class="o">));</span>
+         <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="n">Solo</span> <span class="n">solo</span><span class="o">;</span>
+  <span class="n">String</span> <span class="n">logtag</span><span class="o">=</span><span class="s">"LikeMonkey_log"</span><span class="o">;</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">protected</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+          <span class="n">solo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solo</span><span class="o">(</span><span class="n">getInstrumentation</span><span class="o">(),</span> <span class="n">getActivity</span><span class="o">());</span>
+
+         <span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMonkey</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>
+          <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">6000</span><span class="o">);</span>
+          <span class="n">DisplayMetrics</span> <span class="n">ty</span><span class="o">=</span><span class="k">new</span> <span class="n">DisplayMetrics</span><span class="o">();</span>
+          <span class="c1">//getActivity().getWindowManager().getDefaultDisplay().getMetrics(ty);</span>
+          <span class="n">Rect</span> <span class="n">frame</span><span class="o">=</span><span class="k">new</span> <span class="n">Rect</span><span class="o">();</span>
+          <span class="n">solo</span><span class="o">.</span><span class="na">getCurrentActivity</span><span class="o">().</span><span class="na">getWindow</span><span class="o">().</span><span class="na">getDecorView</span><span class="o">().</span><span class="na">getWindowVisibleDisplayFrame</span><span class="o">(</span><span class="n">frame</span><span class="o">);</span>
+          <span class="kt">int</span> <span class="n">statusBarHeight</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="na">top</span><span class="o">;</span>
+          <span class="n">solo</span><span class="o">.</span><span class="na">getCurrentActivity</span><span class="o">().</span><span class="na">getWindowManager</span><span class="o">().</span><span class="na">getDefaultDisplay</span><span class="o">().</span><span class="na">getMetrics</span><span class="o">(</span><span class="n">ty</span><span class="o">);</span>
+          <span class="kt">int</span> <span class="n">x2</span><span class="o">=</span><span class="n">ty</span><span class="o">.</span><span class="na">widthPixels</span><span class="o">;</span>
+          <span class="kt">int</span> <span class="n">y2</span><span class="o">=</span><span class="n">ty</span><span class="o">.</span><span class="na">heightPixels</span><span class="o">;</span>
+          <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"x="</span><span class="o">+</span><span class="n">x2</span><span class="o">);</span>
+          <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"y="</span><span class="o">+</span><span class="n">y2</span><span class="o">);</span>
+          <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+          <span class="o">{</span>
+              <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">2000</span><span class="o">);</span>
+              <span class="n">Random</span> <span class="n">setindex</span><span class="o">=</span><span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+              <span class="kt">int</span> <span class="n">setId</span><span class="o">=</span><span class="n">setindex</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span>
+              <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">logtag</span><span class="o">,</span> <span class="s">"==="</span><span class="o">+</span><span class="n">setId</span><span class="o">);</span>
+              <span class="k">switch</span> <span class="o">(</span><span class="n">setId</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">logtag</span><span class="o">,</span> <span class="s">"操作左滑动"</span><span class="o">);</span>
+                <span class="n">solo</span><span class="o">.</span><span class="na">scrollToSide</span><span class="o">(</span><span class="n">solo</span><span class="o">.</span><span class="na">LEFT</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.8</span><span class="o">);</span>     <span class="c1">//左滑动</span>
+                <span class="k">break</span><span class="o">;</span>              
+            <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">logtag</span><span class="o">,</span> <span class="s">"操作右滑动"</span><span class="o">);</span>
+                <span class="n">solo</span><span class="o">.</span><span class="na">scrollToSide</span><span class="o">(</span><span class="n">solo</span><span class="o">.</span><span class="na">RIGHT</span><span class="o">,</span> <span class="o">(</span><span class="kt">float</span><span class="o">)</span> <span class="mf">0.8</span><span class="o">);</span>   <span class="c1">//右滑动</span>
+                <span class="k">break</span><span class="o">;</span>              
+            <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">logtag</span><span class="o">,</span> <span class="s">"操作返回"</span><span class="o">);</span>
+                <span class="n">solo</span><span class="o">.</span><span class="na">goBack</span><span class="o">();</span>       <span class="c1">//返回</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="o">}</span>
+              <span class="n">Random</span> <span class="n">x</span><span class="o">=</span><span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+              <span class="kt">int</span> <span class="n">Rxindex</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">x2</span><span class="o">);</span>
+              <span class="kt">int</span> <span class="n">xIndex</span><span class="o">=</span><span class="n">Rxindex</span><span class="o">+</span><span class="mi">10</span><span class="o">;</span>
+              <span class="n">Random</span> <span class="n">y</span><span class="o">=</span><span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+              <span class="kt">int</span> <span class="n">Ryindex</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">y2</span><span class="o">);</span>
+              <span class="kt">int</span> <span class="n">yIndex</span><span class="o">=</span><span class="n">Ryindex</span><span class="o">+</span><span class="n">statusBarHeight</span><span class="o">+</span><span class="mi">5</span><span class="o">;</span>
+              <span class="k">if</span><span class="o">(</span><span class="n">yIndex</span><span class="o">&gt;=</span><span class="n">y2</span> <span class="o">||</span>  <span class="n">xIndex</span><span class="o">&gt;=</span><span class="n">x2</span><span class="o">)</span>
+              <span class="o">{</span>
+                  <span class="k">continue</span><span class="o">;</span>
+              <span class="o">}</span>
+              <span class="k">else</span>
+              <span class="o">{</span>
+                <span class="n">solo</span><span class="o">.</span><span class="na">clickOnScreen</span><span class="o">(</span><span class="n">xIndex</span><span class="o">,</span> <span class="n">yIndex</span><span class="o">);</span>
+              <span class="o">}</span>
+          <span class="o">}</span>
+ <span class="o">}</span>
+
+
+<span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+          <span class="n">solo</span><span class="o">.</span><span class="na">finishOpenedActivities</span><span class="o">();</span>
+         <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+
+<p>APK首页，第三方应用列表的：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">baih</span><span class="o">.</span><span class="na">Monkey</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.BufferedWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.Intent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.IntentFilter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.pm.ActivityInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.pm.ApplicationInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.pm.PackageInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.pm.PackageManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.pm.PackageManager.NameNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.pm.ResolveInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Handler</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Message</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.view.View</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.Adapter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.AdapterView</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.AdapterView.OnItemClickListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.ListAdapter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.ListView</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppListActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+    <span class="cm">/** Called when the activity is first created. */</span>
+    <span class="n">ListView</span> <span class="n">lv</span><span class="o">;</span>
+    <span class="n">AppInfo</span> <span class="n">adapter</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span><span class="o">;</span>
+    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;&gt;</span> <span class="n">items</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;&gt;();</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">newfile</span><span class="o">);</span>
+        <span class="n">Intent</span> <span class="n">serviceIntent</span> <span class="o">=</span><span class="k">new</span> <span class="n">Intent</span><span class="o">(</span><span class="k">this</span><span class="o">,</span><span class="n">StartService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">startService</span><span class="o">(</span><span class="n">serviceIntent</span><span class="o">);</span>
+        <span class="n">lv</span> <span class="o">=</span> <span class="o">(</span><span class="n">ListView</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">lv</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">PackageManager</span>  <span class="n">pm</span><span class="o">=</span> <span class="n">getPackageManager</span><span class="o">();</span>
+        <span class="c1">//得到PackageManager对象</span>
+        <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">PackageInfo</span><span class="o">&gt;</span> <span class="n">packs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="na">getInstalledPackages</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="c1">//得到系统 安装的所有程序包的PackageInfo对象</span>
+
+        <span class="n">Intent</span> <span class="n">mainIntent</span> <span class="o">=</span><span class="k">new</span> <span class="n">Intent</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">ACTION_MAIN</span><span class="o">,</span><span class="kc">null</span><span class="o">);</span>
+        <span class="n">mainIntent</span><span class="o">.</span><span class="na">addCategory</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">CATEGORY_LAUNCHER</span><span class="o">);</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">ResolveInfo</span><span class="o">&gt;</span> <span class="n">res</span><span class="o">=</span><span class="n">pm</span><span class="o">.</span><span class="na">queryIntentActivities</span><span class="o">(</span><span class="n">mainIntent</span><span class="o">,</span> <span class="n">PackageManager</span><span class="o">.</span><span class="na">GET_ACTIVITIES</span><span class="o">);</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">ResolveInfo</span> <span class="n">resolveInfo</span> <span class="o">:</span> <span class="n">res</span><span class="o">){</span>
+
+            <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;();</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"icon"</span><span class="o">,</span> <span class="n">resolveInfo</span><span class="o">.</span><span class="na">loadIcon</span><span class="o">(</span><span class="n">pm</span><span class="o">));</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"appName"</span><span class="o">,</span> <span class="n">resolveInfo</span><span class="o">.</span><span class="na">loadLabel</span><span class="o">(</span><span class="n">pm</span><span class="o">));</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"packageName"</span><span class="o">,</span> <span class="n">resolveInfo</span><span class="o">.</span><span class="na">activityInfo</span><span class="o">.</span><span class="na">packageName</span><span class="o">);</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"activityName"</span><span class="o">,</span> <span class="n">resolveInfo</span><span class="o">.</span><span class="na">activityInfo</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">ApplicationInfo</span> <span class="n">itemApplicationInfo</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="na">getApplicationInfo</span><span class="o">(</span><span class="n">resolveInfo</span><span class="o">.</span><span class="na">activityInfo</span><span class="o">.</span><span class="na">packageName</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">((</span><span class="n">itemApplicationInfo</span><span class="o">.</span><span class="na">flags</span><span class="o">&amp;</span><span class="n">ApplicationInfo</span><span class="o">.</span><span class="na">FLAG_SYSTEM</span><span class="o">)==</span><span class="mi">0</span><span class="o">)</span>
+                <span class="o">{</span>
+                <span class="n">items</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NameNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span> 
+        <span class="n">adapter</span> <span class="o">=</span>  <span class="k">new</span> <span class="n">AppInfo</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">items</span><span class="o">,</span> <span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">applist_activity</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span>
+                <span class="s">"icon"</span><span class="o">,</span> <span class="s">"appName"</span><span class="o">,</span> <span class="s">"packageName"</span> <span class="o">},</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span> <span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">icon</span><span class="o">,</span>
+                <span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">appName</span><span class="o">,</span> <span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">packageName</span> <span class="o">});</span>
+        <span class="c1">//参数:Context,ArrayList(item的集合),item的layout,包含ArrayList中Hashmap的key的数组,key所对应的值相对应的控件id</span>
+                <span class="n">lv</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+
+                <span class="n">lv</span><span class="o">.</span><span class="na">setOnItemClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">OnItemClickListener</span><span class="o">()</span> <span class="o">{</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">onItemClick</span><span class="o">(</span><span class="n">AdapterView</span><span class="o">&lt;?&gt;</span> <span class="n">parent</span><span class="o">,</span> <span class="n">View</span> <span class="n">view</span><span class="o">,</span>
+                    <span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="kt">long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated method stub</span>
+                <span class="c1">//TARGET_PACKAGE_ID =(String) items.get(position).get("packageName");</span>
+                <span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">items</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">position</span><span class="o">).</span><span class="na">get</span><span class="o">(</span><span class="s">"activityName"</span><span class="o">);</span>                
+                <span class="n">File</span> <span class="n">file</span><span class="o">=</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"/mnt/sdcard"</span><span class="o">,</span> <span class="s">"activityName.txt"</span><span class="o">);</span>              
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="k">if</span><span class="o">(!</span><span class="n">file</span><span class="o">.</span><span class="na">exists</span><span class="o">()){</span>
+                        <span class="kt">boolean</span> <span class="n">creatFile</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="na">createNewFile</span><span class="o">();</span>
+                        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"创建文件:"</span> <span class="o">+</span> <span class="n">creatFile</span><span class="o">);</span>
+                    <span class="o">}</span>   
+                    <span class="n">BufferedWriter</span> <span class="n">mWriter</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedWriter</span><span class="o">(</span><span class="k">new</span> <span class="n">FileWriter</span><span class="o">(</span><span class="n">file</span><span class="o">));</span>
+                    <span class="n">mWriter</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span><span class="o">);</span>
+                    <span class="n">mWriter</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+                    <span class="n">mWriter</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// TODO Auto-generated catch block</span>
+                    <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>               
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"==activityName===="</span><span class="o">+</span><span class="n">LAUNCHER_ACTIVITY_FULL_CLASSNAME</span><span class="o">);</span>
+                <span class="n">Runtime</span> <span class="n">run</span><span class="o">=</span><span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">();</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"开始执行"</span><span class="o">);</span>
+                    <span class="n">run</span><span class="o">.</span><span class="na">exec</span><span class="o">(</span><span class="s">"am instrument -w baih.Monkey/android.test.InstrumentationTestRunner"</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">// TODO Auto-generated catch block</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span> 
+            <span class="o">}</span>       
+        <span class="o">});</span>
+
+    <span class="o">}</span>
+
+
+<span class="o">}</span>
+</pre>
+
+<p>Service监听的：</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">baih</span><span class="o">.</span><span class="na">Monkey</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">baih.Monkey.BaihMonkey</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.ActivityGroup</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.ActivityManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.ActivityManager.RunningAppProcessInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.ActivityManager.RunningTaskInfo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.Instrumentation</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.KeyguardManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.Service</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.ComponentName</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.Intent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.IntentFilter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.IBinder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Message</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.os.Process</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.view.KeyEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.widget.Toast</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">StartService</span> <span class="kd">extends</span> <span class="n">Service</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">activityName</span><span class="o">;</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">IBinder</span> <span class="n">onBind</span><span class="o">(</span><span class="n">Intent</span> <span class="kt">int</span><span class="n">ent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// TODO Auto-generated method stub</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onCreate</span><span class="o">(){</span>
+        <span class="n">IntentFilter</span> <span class="kt">int</span><span class="n">ent</span> <span class="o">=</span><span class="k">new</span> <span class="n">IntentFilter</span><span class="o">(</span><span class="s">"android.intent.action.VIEW"</span><span class="o">);</span>
+        <span class="c1">//intent.addAction(Intent.ACTION_VIEW);</span>
+        <span class="kt">int</span><span class="n">ent</span><span class="o">.</span><span class="na">setPriority</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">);</span>
+        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">(),</span> <span class="s">"service已启动"</span><span class="o">,</span> <span class="mi">3000</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"===================service已启动"</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">ActivityManager</span> <span class="n">ActivityList</span><span class="o">=(</span><span class="n">ActivityManager</span><span class="o">)</span><span class="n">getApplicationContext</span><span class="o">().</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">ACTIVITY_SERVICE</span><span class="o">);</span>
+        <span class="k">new</span> <span class="n">Thread</span><span class="o">(){</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">run</span><span class="o">(){</span>
+                <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+                <span class="o">{</span>
+                 <span class="n">List</span><span class="o">&lt;</span><span class="n">RunningTaskInfo</span><span class="o">&gt;</span> <span class="n">acList</span><span class="o">=</span><span class="n">ActivityList</span><span class="o">.</span><span class="na">getRunningTasks</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+                 <span class="n">RunningTaskInfo</span> <span class="n">mTaskInfo</span><span class="o">;</span>
+                 <span class="n">mTaskInfo</span><span class="o">=</span><span class="n">acList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+                 <span class="n">String</span> <span class="n">name</span><span class="o">=</span><span class="n">mTaskInfo</span><span class="o">.</span><span class="na">topActivity</span><span class="o">.</span><span class="na">getClassName</span><span class="o">();</span>
+                <span class="c1">// String setup="com.android.packageinstaller.PackageInstallerActivity";</span>
+                 <span class="n">String</span> <span class="n">setup</span><span class="o">=</span><span class="s">"com.android.packageinstaller.PackageInstallerActivity"</span><span class="o">;</span>
+                 <span class="n">String</span> <span class="n">uninstall</span><span class="o">=</span><span class="s">"com.android.packageinstaller.UninstallerActivity"</span><span class="o">;</span>
+                 <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>   
+                 <span class="k">if</span><span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">setup</span><span class="o">)</span> <span class="o">||</span> <span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">uninstall</span><span class="o">)</span> <span class="o">)</span>
+                 <span class="o">{</span>
+                     <span class="n">List</span><span class="o">&lt;</span><span class="n">RunningTaskInfo</span><span class="o">&gt;</span> <span class="n">ac1</span><span class="o">=</span><span class="n">ActivityList</span><span class="o">.</span><span class="na">getRunningTasks</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+                     <span class="n">RunningTaskInfo</span> <span class="n">ra1</span><span class="o">;</span>
+                     <span class="n">ra1</span><span class="o">=</span><span class="n">ac1</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+                     <span class="n">String</span> <span class="n">name1</span><span class="o">=</span><span class="n">ra1</span><span class="o">.</span><span class="na">topActivity</span><span class="o">.</span><span class="na">getClassName</span><span class="o">();</span>
+
+                     <span class="n">ComponentName</span> <span class="n">componentName</span> <span class="o">=</span>  <span class="n">ra1</span><span class="o">.</span><span class="na">topActivity</span><span class="o">;</span>
+                     <span class="n">Intent</span> <span class="kt">int</span><span class="n">ent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Intent</span><span class="o">();</span>
+                     <span class="c1">//intent.setComponent(componentName);</span>
+                     <span class="kt">int</span><span class="n">ent</span><span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="s">"com.stnts.suileyoo.gamecenter"</span><span class="o">,</span> <span class="s">"com.android.haoyouduo.StartupActivity"</span><span class="o">);</span>
+                     <span class="kt">int</span><span class="n">ent</span><span class="o">.</span><span class="na">setAction</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">ACTION_MAIN</span><span class="o">);</span>
+                     <span class="kt">int</span><span class="n">ent</span><span class="o">.</span><span class="na">setFlags</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">FLAG_ACTIVITY_NEW_TASK</span><span class="o">);</span>
+                     <span class="n">startActivity</span><span class="o">(</span><span class="kt">int</span><span class="n">ent</span><span class="o">);</span>
+                     <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"===========操作返回"</span><span class="o">);</span>
+                     <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="s">"==========="</span><span class="o">+</span><span class="n">name1</span><span class="o">);</span>                     
+                 <span class="o">}</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">4000</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="c1">// TODO Auto-generated catch block</span>
+                        <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>   
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+        <span class="o">}.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onStart</span><span class="o">(){</span>
+        <span class="kd">final</span> <span class="n">ActivityManager</span> <span class="n">ma</span><span class="o">=(</span><span class="n">ActivityManager</span><span class="o">)</span><span class="n">getApplicationContext</span><span class="o">().</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">ACTIVITY_SERVICE</span><span class="o">);</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">RunningTaskInfo</span><span class="o">&gt;</span> <span class="n">ac</span><span class="o">=</span><span class="n">ma</span><span class="o">.</span><span class="na">getRunningTasks</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">RunningTaskInfo</span> <span class="n">ra</span><span class="o">;</span>
+        <span class="n">ra</span><span class="o">=</span><span class="n">ac</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">name</span><span class="o">=</span><span class="n">ra</span><span class="o">.</span><span class="na">topActivity</span><span class="o">.</span><span class="na">getClassName</span><span class="o">();</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"baih"</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">name</span><span class="o">==</span><span class="s">"com.android.packageinstaller.PackageInstallerActivity"</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">Runtime</span> <span class="n">run</span><span class="o">=</span><span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">();</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">run</span><span class="o">.</span><span class="na">exec</span><span class="o">(</span><span class="s">"input keyevent 4"</span><span class="o">);</span>
+
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// TODO Auto-generated catch block</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+         <span class="o">}</span>
+
+
+<span class="o">}</span>
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Robotium 娱乐小工具，临门一脚把我搞吐血了 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1234#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1234#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1234#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1234#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1234#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>5</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1234#reply1">1楼</a> · <abbr class="timeago" title="2014-08-06T22:04:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="7404" data-state="" data-type="Reply" href="1234#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1234/replies/7404/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="1234#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>观望~~~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1234#reply2">2楼</a> · <abbr class="timeago" title="2014-08-06T22:32:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="7405" data-state="" data-type="Reply" href="1234#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1234/replies/7405/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="1234#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哟。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../bh01251859"><img alt="755" class="uface" src="../user/large_avatar/755.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="渺小" href="../bh01251859">bh01251859</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1234#reply3">3楼</a> · <abbr class="timeago" title="2014-08-07T12:18:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7413" data-state="" data-type="Reply" href="1234#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="755" href="http://testerhome.com/topics/1234/replies/7413/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="bh01251859" href="1234#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 感谢给出的思路建议</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../qinggchu"><img alt="203" class="uface" src="../user/large_avatar/203.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qing" href="../qinggchu">qinggchu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1234#reply4">4楼</a> · <abbr class="timeago" title="2014-08-09T15:36:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7458" data-state="" data-type="Reply" href="1234#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="203" href="http://testerhome.com/topics/1234/replies/7458/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="qinggchu" href="1234#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主的想法不错，赞一个，同时学习下，哈哈</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1234#reply5">5楼</a> · <abbr class="timeago" title="2014-08-09T21:55:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="7459" data-state="" data-type="Reply" href="1234#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1234/replies/7459/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="shixue33" href="1234#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>拜读一下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @Anikikun: 希望毕业设计顺利按时按量完成，希望上海实习之旅顺利
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1234#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

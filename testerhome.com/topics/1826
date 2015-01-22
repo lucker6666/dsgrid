@@ -1,0 +1,450 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome |  史上最简单 Robotium 跨进程操作实践——基于 ADB 框架 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qinggchu"><img alt="203" class="uface" src="../user/large_avatar/203.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title"> 史上最简单 Robotium 跨进程操作实践——基于 ADB 框架</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="qing" href="../qinggchu">qinggchu</a>
+     · 
+    于<abbr class="timeago" title="2015-01-10T15:42:52+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="luis" href="../luis">luis</a> 于<abbr class="timeago" title="2015-01-11T10:51:11+08:00"></abbr>回复
+     · 
+    441次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>最开始发在csdn的，为了更多小伙伴看到，特在这里再转一下。<a href="http://blog.csdn.net/qingchunjun/article/details/42580937" rel="nofollow" target="_blank">http://blog.csdn.net/qingchunjun/article/details/42580937</a></p>
+
+<p>Robotium是Android平台下一款非常优秀的自动化测试框架，它做android平台自动化的优势想必看到这篇文章的人应该都很清楚。但优点归优点，缺点也比较多，最明显的缺点有两个，一是必须要和被测系统签名保持一致，二是不能做任何跨进程的操作。</p>
+
+<p>很多小伙伴知道怎么用robotium，也知道它有这些限制，但不知道其中的原因。这里简单地说一下，robotium的这些先天不足的主要原因是由于它本身是基于instrumentation机制的，这既有好处也有坏处。好处是通过instrumentation注入到被测进程，从而与被测进程运行在同一进程空间，使得它能够非常方便地识别被测应用中的被测对象，并对这些对象进行操作。坏处是既然robotium已经跟被测应用”合体”了，那么根据android的进程隔离机制，它自然也被系统隔离在其他进程之外，无法跨进程操作任何对象，如图（1）所示。</p>
+
+<p><img src="../photo/2015/65f123aa69884669c16e014a9421d378.jpg" alt=""></p>
+
+<p>图（1）Android进程沙箱示意图</p>
+
+<p>其实使用相同的签名对于单应用的测试来说并不是难事，网上有很多应用重签名的方法和工具供大家使用。但不能跨进程操作确实成为了robotium最大的软肋，很多第三方的应用测试或多或少都有一些跨进程操作的测试场景，所以不少人因为这个问题而放弃了robotium，甚是可惜啊。</p>
+
+<p>作为robotium的铁杆粉之一(我最开始接触android自动化测试就是用的robotium)，断断续续用了好几年，一直觉得是android平台最好用的自动化测试工具之一。对于robotium怎样突破进程的限制也做过一些研究，网上比较多的解决方案无外乎有以下几种：</p>
+
+<ol>
+<li><p>自己写服务做server，基于AIDL或编写socket与monkeyserver进行通讯，然后在robotium测试脚本里调用接口方法来间接地进行跨进程的操作，这种方式可以参考下这篇文章的例子：<a href="http://www.robotium.cn/archives/584aidl%E6%8E%A5%E5%8F%A3%E6%9D%A5%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C%EF%BC%8C%E6%AF%94%E5%A6%82%E8%B0%83%E7%94%A8%E6%8B%8D%E7%85%A7%E6%93%8D%E4%BD%9C%EF%BC%8C%E6%89%80%E4%BB%A5%E5%85%B6%E5%AE%9E%E4%BE%8B%E5%AD%90%E5%B9%B6%E4%B8%8D%E6%98%AF%E5%BE%88%E5%A4%9A%EF%BC%8C%E6%8A%80%E6%9C%AF%E4%B8%8A%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7%E8%BE%83%E5%A4%A7%E3%80%82" rel="nofollow" target="_blank">http://www.robotium.cn/archives/584aidl接口来进行操作，比如调用拍照操作，所以其实例子并不是很多，技术上的局限性较大。</a>。文章的作者只是给出了思路，我自己曾经按照这种方法去实现过，发现该方法的优势是比较稳定，缺点就是实现起来确实比较复杂，而且有些操作无法找到现成的系统</p></li>
+<li><p>基于广播和service服务。这种方法的实现方式可以参考<a href="http://www.ltesting.net/ceshi/open/kygncsgj/2013/0507/206229.htmlapi%EF%BC%8C%E9%9A%BE%E5%BA%A6%E4%B9%9F%E4%B8%8D%E7%AE%97%E5%B0%8F%EF%BC%8C%E6%89%80%E4%BB%A5%E4%B8%80%E8%88%AC%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E8%BF%99%E7%A7%8D%E6%96%B9%E5%BC%8F%E3%80%82" rel="nofollow" target="_blank">http://www.ltesting.net/ceshi/open/kygncsgj/2013/0507/206229.htmlapi，难度也不算小，所以一般不建议使用这种方式。</a>这篇文章的描述。这种方法我没有亲自去试过，但不难发现这种方法原理稍微简单些，但该方法貌似需要系统签名，而且自己写广播和服务来调用系统</p></li>
+</ol>
+
+<p>综合上面的这些跨进程的解决方案，其实都感觉不太理想，对于很多初学者来说不是太难实现就是局限性比较大，一直没有找到一个比较理想的解决方案。直到后来在testerhome上看到一个技术很牛的兄弟把常用的adb命令做了一个很完备的封装(PS：真的是很全了，至少常用的adb命令都在，我甚至之前都没有想过adb命令还能做这么多事情)，做成了一个独立的测试辅助工具。我就突然联想到为何不能使用adb命令来辅助robotium进行跨进程操作呢？既然该框架已经封装了基于adb的所有操作，而且adb又是不受系统限制的，那么基于这个框架理论上进行跨进程操作是没有任何问题的。后来经过试验，确实效果不错，轻量级、操作简单、使用方便，并且轻松跨进程，真是居家测试、屌丝逆袭的必备神器啊。好了，闲话不多说了，接下来我们就来详细地看看究竟是怎么用的。</p>
+
+<p>先来简单地介绍下这个adb命令框架的常用接口。这个框架里有三个主要的包，分别介绍如下：</p>
+
+<p>xuxu.autotest这个包里面主要有两个类，一个是AdbDevice，封装了功能测试中常用的一些操作，如获取当前activity的名称和包名、获取设备分辨率、关闭应用、点击对象等常用功能，非常实用。另一个类是XuImage，顾名思义，即封装了一些常见的图片操作，如得到指定边界的图片截图、对比图片是否一致、截取图片等。</p>
+
+<p>xuxu.autotest.element这个包主要用于获取被测对象，主要是封装了一个Position对象，用于通过Class Name、Id、Contentdesc等属性来获取一个被测对象，其底层是通过uiautomator来dump 当前ui的xml文件的，可以获取到所有对象节点的xml文件。</p>
+
+<p>xuxu.autotest.utils这个包里面主要提供了对Date日期时间的操作，ImageUtil对图片的操作及正则表达式和shell语句的操作的封装，方便大家的使用。总的来说整个框架的接口设计还是非常齐全的，可以实现很多常用功能，具体功能大家可以自己看源码和帮助文档来摸索。</p>
+
+<p>接下来就进入我们本次的主题——跨进程。为了方便大家理解，我会在本文中选择两个非常常见的跨进程操作场景来说明如何跨进程，也就是大家喜闻乐见的相机拍照和打电话来进行演示。</p>
+
+<p>例子1、跨进程操作之相机拍照。</p>
+
+<p>被测程序非常简单，程序界面截图如下图（2）所示：<br>
+<img src="../photo/2015/37c762fa3e7e7e6673669795a6c83ac2.jpg" alt=""><br>
+图（2）</p>
+
+<p>点击第一个界面的“拍照片”按钮后，进入界面2，点击其中的“拍张照片”后启动系统的相机，当用户按下拍照功能键后，系统可以将用户拍下的照片显示在应用中，以备后续浏览或者是上传。由于相机应用和我们所写的被测应用是两个不同的应用，所以这就属于典型的跨进程操作，Robotium框架本身是无法对这个相机界面进行操作的。</p>
+
+<p>接下来看看关键的测试工程怎么创建的。测试工程的创建方法非常简单，操作步骤如下：</p>
+
+<ol>
+<li><p>首先按照常规的android测试工程的建法，创建一个常规测试工程。</p></li>
+<li><p>在工程中引入robotium和adbForAndroid的jar包。</p></li>
+</ol>
+
+<p>这样，我们的测试工程就准备好了。</p>
+
+<p>接下来的步骤就是写测试脚本。由于AdbForAndroid框架是按照元素的相关属性来查找并定位被测对象的，所以首先要弄清楚我们要操作的跨进程的界面上的对象的信息，这些信息我们可以通过很多现成工具来看，我这里选择android自带的uiautomatorviewer。先在模拟器上手工打开被测程序，进入拍照的相机界面，并用uiautomatorviewer查看界面元素信息如下图(3)所示：</p>
+
+<p><img src="../photo/2015/e6785e3a9f10a1b225dc29753dbacbef.jpg" alt=""><br>
+图（3）</p>
+
+<p>我们可以看到，我们要点击的拍照按钮的属性在图（3）的右下角的列表中已全部展现出来。那么我们该选哪个呢？这个问题取决于adbForAndroid框架支持由哪些属性来获取元素。通过查询其帮助文档，我们知道目前这个框架中常用的查找元素的方法如下：<br>
+findElementByContentdesc<br>
+findElementByClass<br>
+findElementByText<br>
+findElementById</p>
+
+<p>由于我现在使用的模拟器版本为4.2.2，所以uiautomatorviewer无法显示id属性，如果大家用的是4.3版本以上，就可以看到元素的id属性了。<br>
+那么现在这种情况来看，我们最好就选择Contentdesc属性来定位对象了。代码很简单，如下：<br>
+Element element =position.findElementByContentdesc("Shutter button");<br><br>
+adbDevice.tap(element);  //点击拍照按钮<br><br>
+好，接下来点击了拍照按钮之后，拍照功能还会让你选择是确定还是取消操作，如下图（4）所示：<br>
+<img src="../photo/2015/6f573a1669c286f262736b78507f69a8.jpg" alt=""></p>
+
+<p>图（4）</p>
+
+<p>那么如法炮制，我们通过查询获知，这个用于确定的“√”按钮，它的属性能用于定位的其实只有class属性。不过这里要注意的是，此时由于我们用的是class属性，大家可以看到界面上class属性跟我们要点击的“√”这个按钮相同的对象很多，所以我们必须用findElementsByClass方法了。这个方法返回的是一个ArrayList&lt;Element&gt;，所以我们可以写如下的代码来获取所有class属性为”android.widget.ImageView”的元素列表。</p>
+
+<p>ArrayList&lt;Element&gt; imageViews =position.findElementsByClass("android.widget.ImageView");  </p>
+
+<p>好，写完之后，现在问题来了，究竟这个数组里面哪个index才是对应的我们要点击的“√”按钮呢？经过试验，我发现界面上多个相同元素返回到数组中时，对应元素位置是按照界面上的位置从上到下、从左到右来的，所以我们要点击的这个按钮的index应该是4。所以点击它的代码如下：</p>
+
+<p>adbDevice.tap(imageViews.get(4));    //2是x，3是重拍，4是√  </p>
+
+<p>上面的代码运行完后，界面就会回到我们的被测程序，后面的操作就不用我再多说了，大家看看是不是非常简单？大笑</p>
+
+<p>例子2、跨进程操作之打电话</p>
+
+<p>有了第一个例子的基础，其实第二个例子就很好实现了。被测程序非常简单，如下图（5）所示：<br>
+<img src="../photo/2015/0835e84fe4ea660d77f082757bae0f7f.jpg" alt=""></p>
+
+<p>图（5）</p>
+
+<p>点击“拨打该号码”后，系统自动进入拨号界面，所以也是典型的跨进程测试场景。</p>
+
+<p>实现方法还是跟例1中一样，先还是用uiautomatorviewer查看界面中的对象信息，再使用对应的方法来操作对象即可。而且在这个例子中，我还给大家演示了另外一种情况，即有些跨进程操作不但要进行操作，还要取得一些对象属性来进行验证，这也是基本可以的。这里我直接给出我的测试代码(稍微封装了一下)：</p>
+
+<p>public boolean CallUtil(String callNumber){<br><br>
+            Element  element;<br><br>
+            boolean  result;<br><br>
+            //验证是否拨打了正确的号码<br><br>
+            if(callNumber.length() == 11){//正常号码需要转变为 x xxx-xxx-xxxx的格式<br><br>
+                    StringformatCallNumber = callNumber.substring(0, 1) + " " +callNumber.substring(1, 4) + "-" + callNumber.substring(4,7) +"-" + callNumber.substring(7, callNumber.length());<br><br>
+                    element= position.findElementByText(formatCallNumber);<br><br>
+                    try{<br><br>
+                            Thread.sleep(2000);  //线程休眠2秒<br><br>
+                    }catch (InterruptedException e) {<br><br>
+                            e.printStackTrace();<br><br>
+                    }<br><br>
+            }else{<br><br>
+                    element= position.findElementByText(callNumber);//除正常号码外，其他格式的号码不进行格式转换<br><br>
+            }<br><br>
+            if(element != null){<br><br>
+                    result= true;<br><br>
+            }else{<br><br>
+                    result= false;<br><br>
+            }<br><br>
+            element= position.findElementByContentdesc("End");   //挂断电话<br><br>
+            if(element != null) adbDevice.tap(element);<br><br>
+            return  result;<br><br>
+    }  </p>
+
+<p>好了，整个过程非常简单。我相信能用robotium的童鞋用起来应该都没有任何问题，所有代码都是非常易用易懂的。</p>
+
+<p>相信通过前面的实例，大家可以发现说这是“史上最简单”的Robotium跨进程操作解决方案我估计没人会反对，这并不是夸大事实、博人眼球，确实很简单，功能也很强大。其他也不用我多说了，最后我再来对该框架总结一下下吧：</p>
+
+<p>优点：</p>
+
+<ol>
+<li><p>确实非常全，基本封装了adb的所有常用命令，它本身就是一个adb命令使用大全了。</p></li>
+<li><p>框架接口设计清晰易懂，简单明了，封装成jar包，用起来也很方便。另外希望大家都能看看它的源码并了解它的实现细节，作者封装得还是很不错的，很值得我们学习，而不仅仅是简单地使用它。</p></li>
+<li><p>不需要root权限。其实这点还是很重要的，有些公司的测试机是没有root权限，用adb就很方便。对于不想放弃robotium，又确实有跨进程操作需求的童鞋来说，真的是非常实用的一个框架。</p></li>
+</ol>
+
+<p>目前已知的不足：</p>
+
+<ol>
+<li><p>手机的版本必须是4.1以上，即至少必须支持uiautomator的手机才行，因为该框架本身底层是依赖于uiautomator来dump出对象布局xml文件，最终获取对象的坐标进行操作的，所以你的手机版本本身并不支持uiautomator的话，就没法实现dump操作。</p></li>
+<li><p>有些对象是uiautomator也无法识别和操作的，那当然这个框架也无能为力了。比如屏幕最上方的通知消息栏的对象，所有工具都没法显示和识别，这个肯定没办法了，另外还比如输入文字时的弹出键盘上的按钮对象等，也无法识别，大家可以试试。</p></li>
+</ol>
+
+<p>以后想要尝试的改进：</p>
+
+<ol>
+<li><p>对于手机版本的支持问题，个人觉得有个曲线救国的方法可以解决。即我们可以稍微修改下源码，加入判断手机版本的代码，判断当前手机版本如果高于4.1，就直接通过uiautomator来dump，如果低于4.1，则读取PC上事先导出到指定位置的xml文件。这样的话，如果你使用的手机不是4.1以上的版本，只需要事先把被测应用用4.1以上版本的手机通过uiautomator先dump到PC的一个指定路径上就行了，这样效果应该是一样的，只要最终能得到对象坐标就OK。</p></li>
+<li><p>再加一些比较实用的功能。比如现在可以根据text来查找对象，但实际上很多时候我们可能是得到对象了，但想通过这个对象去获取对象的其他属性，所以建议增加类似getXXXXByElement(Element e)这样的方法，有空试一下，呵呵。</p></li>
+</ol>
+
+<p>以上只是我的一些个人想法，如果大家还有一些什么别的建议，也欢迎大家都提出来，一起来完善这个很实用的框架。</p>
+
+<p>最后，再次感谢AdbForAndroid框架的作者: xuxu。</p>
+
+<p>框架源码github地址：<a href="https://github.com/gb112211/Adb-For-Test" rel="nofollow" target="_blank">https://github.com/gb112211/Adb-For-Test</a><br>
+本文中相关样例工程源码(含被测程序和测试程序)下载 </p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title=' 史上最简单 Robotium 跨进程操作实践——基于 ADB 框架 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1826#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1826#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1826#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1826#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1826#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>3</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1826#reply1">1楼</a> · <abbr class="timeago" title="2015-01-10T19:06:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11423" data-state="" data-type="Reply" href="1826#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1826/replies/11423/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1826#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>超赞. 这个方向的确很有价值. 思路很好.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../qinggchu"><img alt="203" class="uface" src="../user/large_avatar/203.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qing" href="../qinggchu">qinggchu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1826#reply2">2楼</a> · <abbr class="timeago" title="2015-01-10T20:12:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11426" data-state="" data-type="Reply" href="1826#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="203" href="http://testerhome.com/topics/1826/replies/11426/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="qinggchu" href="1826#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1826#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 谢谢，大家一起努力，打造更强的测试工具，呵呵。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1826#reply3">3楼</a> · <abbr class="timeago" title="2015-01-11T10:51:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11429" data-state="" data-type="Reply" href="1826#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/1826/replies/11429/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="luis" href="1826#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>跨进程操作一般思路就是android利用uiautomator, 还有就是利用坐标，再者就是mock一下绕过去。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    请没有头像的同学，上传头像吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1826#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

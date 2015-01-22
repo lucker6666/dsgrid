@@ -1,0 +1,653 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Robot Framework 运行 Appium @seveniruby 的例子提示无法找到 Create Dictionary 解决方法 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../vincent"><img alt="274" class="uface" src="../user/large_avatar/274.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Robot Framework 运行 Appium @seveniruby 的例子提示无法找到 Create Dictionary 解决方法</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../vincent">vincent</a>
+     · 
+    于<abbr class="timeago" title="2014-01-06T15:45:40+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="vincent" href="../vincent">vincent</a> 于<abbr class="timeago" title="2014-03-10T16:03:41+08:00"></abbr>回复
+     · 
+    591次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>环境：<br>
+    System: Ubuntu 13.10<br>
+    Python Ver: 2.7.5<br>
+    Robot Framework Ver: 2.8.3</p>
+
+<p>添加keyword: openapp</p>
+<pre class="highlight plaintext">*** Keywords ***
+open app
+    [Arguments]    ${package}    ${activity}
+    ${capabilities}=    Create Dictionary
+    Set To Dictionary    ${capabilities}    browserName    android
+    Set To Dictionary    ${capabilities}    version    4.1
+    Set To Dictionary    ${capabilities}    platform    linux
+    Set To Dictionary    ${capabilities}    takesScreenshot    false
+    Set To Dictionary    ${capabilities}    javascriptEnabled    false
+    Set To Dictionary    ${capabilities}    app-activity    ${activity}
+    Set To Dictionary    ${capabilities}    app-package    ${package}
+    Log Dictionary    ${capabilities}
+    Close Browser
+    Close All Browsers
+    Set Selenium Timeout    30
+    Open Browser    \    browser=android    remote_url=http://127.0.0.1:4723/wd/hub    desired_capabilities=${capabilities}
+</pre>
+<p>调用openapp启动application时提示：<code>No keyword with name 'Create Dictionary' found.</code></p>
+
+<p>需在TestSuite中添加Library: <code>Collections</code></p>
+
+<p>再运行即可，分享给更多RF新人！</p>
+
+<p>感谢<a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>解答！</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Robot Framework 运行 Appium @seveniruby 的例子提示无法找到 Create Dictionary 解决方法 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="366#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="366#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="366#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="366#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="366#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>17</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply1">1楼</a> · <abbr class="timeago" title="2014-01-06T16:06:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1829" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/366/replies/1829/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的很认真. 呵呵. 鼓励大家多分享.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../atm123"><img alt="Ed8e0b0bf291c437cd002e32415d4936" class="uface" src="../avatar/ed8e0b0bf291c437cd002e32415d4936.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="涛涛" href="../atm123">atm123</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply2">2楼</a> · <abbr class="timeago" title="2014-01-07T22:01:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1895" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="245" href="http://testerhome.com/topics/366/replies/1895/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="atm123" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../vincent" class="at_user" title="@vincent"><i>@</i>vincent</a> 能不能留个QQ讨论下，我在IOS上搭建环境怎么都不对，我的QQ是847901297非常感谢啊~~~~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply3">3楼</a> · <abbr class="timeago" title="2014-01-07T22:02:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1896" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/366/replies/1896/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../atm123" class="at_user" title="@atm123"><i>@</i>atm123</a> 可以加论坛大群，大家都在里面</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../atm123"><img alt="Ed8e0b0bf291c437cd002e32415d4936" class="uface" src="../avatar/ed8e0b0bf291c437cd002e32415d4936.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="涛涛" href="../atm123">atm123</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply4">4楼</a> · <abbr class="timeago" title="2014-01-08T08:35:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1906" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="245" href="http://testerhome.com/topics/366/replies/1906/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="atm123" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>嗯，加了的，呵呵</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply5">5楼</a> · <abbr class="timeago" title="2014-01-08T10:59:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1918" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/366/replies/1918/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="spikeshen" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 大群在哪=。=</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply6">6楼</a> · <abbr class="timeago" title="2014-01-08T11:04:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1922" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/366/replies/1922/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="mingway_hu" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a> TesterHome官方群 315508626</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply7">7楼</a> · <abbr class="timeago" title="2014-01-08T11:05:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1923" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/366/replies/1923/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="spikeshen" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 多谢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply8">8楼</a> · <abbr class="timeago" title="2014-01-08T11:06:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1925" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/366/replies/1925/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="spikeshen" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 呃。。貌似找不到啊。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply9">9楼</a> · <abbr class="timeago" title="2014-01-08T11:10:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1926" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/366/replies/1926/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="mingway_hu" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a>  我这能搜到啊~大家都在里面呢~你再试试~<br>
+微信账号：测试圈 官方QQ群：315508626</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../spikeshen"><img alt="219" class="uface" src="../user/large_avatar/219.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="shen" href="../spikeshen">spikeshen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply10">10楼</a> · <abbr class="timeago" title="2014-01-08T11:28:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1932" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="219" href="http://testerhome.com/topics/366/replies/1932/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="spikeshen" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> 难道因为我用的web qq？确实搜索不到。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply11">11楼</a> · <abbr class="timeago" title="2014-01-08T11:29:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1933" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/366/replies/1933/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="mingway_hu" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../spikeshen" class="at_user" title="@spikeshen"><i>@</i>spikeshen</a> 这~没用过web的~不晓得啦~你用手机或pc的试试~<br>
+要是确认不能搜到，还能给tx提个bug~哈哈~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../jacky"><img alt="212" class="uface" src="../user/large_avatar/212.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jacky">jacky</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply12">12楼</a> · <abbr class="timeago" title="2014-03-10T09:41:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3087" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="212" href="http://testerhome.com/topics/366/replies/3087/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="jacky" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../vincent" class="at_user" title="@vincent"><i>@</i>vincent</a>  HI,按照你的keyword,<br>
+Keyword 'Capture Page Screenshot' could not be run on failure: No browser is open，<br>
+但是我的keyword里面没有这个，另外我导入的lib是Selenium2Library，是不是导错了？<br>
+谢谢啊。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply13">13楼</a> · <abbr class="timeago" title="2014-03-10T09:49:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3088" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/366/replies/3088/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="mingway_hu" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../jacky" class="at_user" title="@jacky"><i>@</i>jacky</a>  ??</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../jacky"><img alt="212" class="uface" src="../user/large_avatar/212.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jacky">jacky</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply14">14楼</a> · <abbr class="timeago" title="2014-03-10T09:54:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3089" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="212" href="http://testerhome.com/topics/366/replies/3089/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="jacky" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> sorry,搞错了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../vincent"><img alt="274" class="uface" src="../user/large_avatar/274.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../vincent">vincent</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply15">15楼</a> · <abbr class="timeago" title="2014-03-10T14:59:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3108" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="274" href="http://testerhome.com/topics/366/replies/3108/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="vincent" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../jacky" class="at_user" title="@jacky"><i>@</i>jacky</a> 導的是對的，我遇到過這個問題，但是現在忘記是什麼原因了，你連接手機，程序啓動了麼？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../jacky"><img alt="212" class="uface" src="../user/large_avatar/212.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jacky">jacky</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply16">16楼</a> · <abbr class="timeago" title="2014-03-10T15:09:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3110" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="212" href="http://testerhome.com/topics/366/replies/3110/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="jacky" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../vincent" class="at_user" title="@vincent"><i>@</i>vincent</a>  好了，按照之前seveniruby 说过的改了一下response.js。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../vincent"><img alt="274" class="uface" src="../user/large_avatar/274.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../vincent">vincent</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="366#reply17">17楼</a> · <abbr class="timeago" title="2014-03-10T16:03:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3113" data-state="" data-type="Reply" href="366#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="274" href="http://testerhome.com/topics/366/replies/3113/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="vincent" href="366#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="366#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../jacky" class="at_user" title="@jacky"><i>@</i>jacky</a> 嗯～祝順利</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @chuyaoyao 希望父母身体健康，攒钱涨工资把父母接到身边照顾
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="366#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

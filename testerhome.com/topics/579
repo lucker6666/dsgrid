@@ -1,0 +1,342 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | [转]android OutOfMemory 时抓取 heap 快照 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">[转]android OutOfMemory 时抓取 heap 快照</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="思寒" href="../seveniruby">seveniruby</a>
+     · 
+    于<abbr class="timeago" title="2014-03-17T16:54:48+08:00"></abbr>发布
+     · 
+    482次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这篇文章文章写的很不错，推荐大家读一下。</p>
+
+<p>（这里不教你如何分析heap快照，只说明如何在关键时候抓取）<br>
+首先说一下，在程序没有崩溃的时候如何抓取heap快照。<br>
+这个大家应该都知道，在ddms中自带此功能。</p>
+
+<p><img src="http://dl.iteye.com/upload/attachment/0072/8464/5ec09800-7852-3a5d-8853-2c56238aa20e.png" alt=""><br>
+见上图<br>
+首先我们选中一个进程，然后点击 Update Heap按钮（小绿虫子旁边的按钮），这时就能看到heap使用情况<br>
+如果想取出快照详细分析，我们可以点击 Dump HPROF File按钮，保存到电脑上面。使用android-sdk/tools/hprof-conv这个工具把文件转换一下，之后用MAT分析即可。<br>
+Java代码  收藏代码<br>
+hprof-conv '/home/su1216/data.hprof' '/home/su1216/data_ok.hprof'<br><br>
+这时MAT能直接打开data_ok.hprof文件。</p>
+
+<p>如果想要OOM时的内存快照该怎么办，我们总不能紧盯着手机的同时再盯着电脑，OOM出现的瞬间抓取内存快照，这显然是不现实的。<br>
+如果OOM并不经常复现，那么我们会错过很多修改bug的机会，浪费很多时间。</p>
+
+<p>下面给大家一种抓取OOM时的heap快照的方法<br>
+由于OOM时的heap快照较大，所以抓取的内存快照我选择保存到sd卡中，因此要有写入外部存储的权限<br>
+Xml代码  收藏代码<br>
+&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/&gt;<br><br>
+然后我们需要实现UncaughtExceptionHandler这个接口<br>
+记得要设置未捕获异常的Handler，设置为自己。<br>
+当出现了异常的时候，uncaughtException方法会被调用，所以如果我们可以在这里抓取内存快照。<br>
+Java代码  收藏代码</p>
+<pre class="highlight java"><span class="kn">import</span> <span class="nn">java.lang.Thread.UncaughtExceptionHandler</span><span class="o">;</span>  
+
+<span class="kn">import</span> <span class="nn">android.os.Debug</span><span class="o">;</span>  
+<span class="kn">import</span> <span class="nn">android.os.Environment</span><span class="o">;</span>  
+<span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>  
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CrashHandler</span> <span class="kd">implements</span> <span class="n">UncaughtExceptionHandler</span> <span class="o">{</span>  
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">TAG</span> <span class="o">=</span> <span class="s">"CrashHandler"</span><span class="o">;</span>  
+    <span class="kd">private</span> <span class="n">Thread</span><span class="o">.</span><span class="na">UncaughtExceptionHandler</span> <span class="n">mDefaultHandler</span><span class="o">;</span>  
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">OOM</span> <span class="o">=</span> <span class="s">"java.lang.OutOfMemoryError"</span><span class="o">;</span>  
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">HPROF_FILE_PATH</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageDirectory</span><span class="o">().</span><span class="na">getPath</span><span class="o">()</span> <span class="o">+</span> <span class="s">"/data.hprof"</span><span class="o">;</span>  
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">CrashHandler</span> <span class="n">sCrashHandler</span><span class="o">;</span>  
+
+    <span class="kd">private</span> <span class="n">CrashHandler</span><span class="o">()</span> <span class="o">{}</span>  
+
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kd">static</span> <span class="n">CrashHandler</span> <span class="n">getInstance</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="k">if</span> <span class="o">(</span><span class="n">sCrashHandler</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>  
+            <span class="n">sCrashHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CrashHandler</span><span class="o">();</span>  
+        <span class="o">}</span>  
+        <span class="k">return</span> <span class="n">sCrashHandler</span><span class="o">;</span>  
+    <span class="o">}</span>  
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">init</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="n">mDefaultHandler</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">getDefaultUncaughtExceptionHandler</span><span class="o">();</span>  
+        <span class="n">Thread</span><span class="o">.</span><span class="na">setDefaultUncaughtExceptionHandler</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>  
+    <span class="o">}</span>  
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">isOOM</span><span class="o">(</span><span class="n">Throwable</span> <span class="n">throwable</span><span class="o">){</span>  
+        <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">"getName:"</span> <span class="o">+</span> <span class="n">throwable</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>  
+        <span class="k">if</span><span class="o">(</span><span class="n">OOM</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">throwable</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">())){</span>  
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>  
+        <span class="o">}</span><span class="k">else</span><span class="o">{</span>  
+            <span class="n">Throwable</span> <span class="n">cause</span> <span class="o">=</span> <span class="n">throwable</span><span class="o">.</span><span class="na">getCause</span><span class="o">();</span>  
+            <span class="k">if</span><span class="o">(</span><span class="n">cause</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>  
+                <span class="k">return</span> <span class="n">isOOM</span><span class="o">(</span><span class="n">cause</span><span class="o">);</span>  
+            <span class="o">}</span>  
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>  
+        <span class="o">}</span>  
+    <span class="o">}</span>  
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">uncaughtException</span><span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span><span class="o">,</span> <span class="n">Throwable</span> <span class="n">throwable</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">if</span><span class="o">(</span><span class="n">isOOM</span><span class="o">(</span><span class="n">throwable</span><span class="o">)){</span>  
+            <span class="k">try</span> <span class="o">{</span>  
+                <span class="n">Debug</span><span class="o">.</span><span class="na">dumpHprofData</span><span class="o">(</span><span class="n">HPROF_FILE_PATH</span><span class="o">);</span>  
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>  
+                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">"couldn’t dump hprof"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>  
+            <span class="o">}</span>  
+        <span class="o">}</span>  
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">mDefaultHandler</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>  
+            <span class="n">mDefaultHandler</span><span class="o">.</span><span class="na">uncaughtException</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="n">throwable</span><span class="o">);</span>  
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>  
+            <span class="n">android</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">Process</span><span class="o">.</span><span class="na">killProcess</span><span class="o">(</span><span class="n">android</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">Process</span><span class="o">.</span><span class="na">myPid</span><span class="o">());</span>  
+            <span class="n">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>  
+        <span class="o">}</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+
+</pre>
+<p>最关键的代码是这句</p>
+
+<p>Java代码  收藏代码<br>
+Debug.dumpHprofData(HPROF_FILE_PATH);  </p>
+
+<p>使得我们可以自己控制抓取heap快照的时机<br>
+OutOfMemoryError是系统级别的错误，所以一般情况下不该捕获它。<br>
+万一有人捕获了，并且重新抛出了一个调用了initCause方法的异常，我们也应该截获它，然后修正bug，而不是掩藏它。</p>
+
+<p>我们在这里只是需要抓取内存快照，干完活之后要记得把throwable交给系统来处理<br>
+Java代码  收藏代码<br>
+mDefaultHandler.uncaughtException(thread, throwable);<br><br>
+当然，我们在这个地方实际上也可以屏蔽掉force close对话框，很神奇吧。。。</p>
+
+<p>结尾顺便说一下，如何查看android对应用的内存限制<br>
+每款手机对应用的限制都是不一样的，毕竟硬件不同，我们可以使用如下方式来查看单独的应用可使用的最大内存：</p>
+<pre class="highlight plaintext">adb shell getprop | grep heap  
+
+
+
+</pre>
+<p>输入命令之后回查到上述几个结果</p>
+
+<p>更改上述参数可以在build.prop修改<br>
+build.prop在system下,pull出来修改后再push回去,reboot即可</p>
+
+<p>我们可以根据这个来估计heap的大小，检查sd卡剩余空间是否够用。</p>
+
+<p>转贴请保留以下链接<br>
+本人blog地址<br><a href="http://su1216.iteye.com/" rel="nofollow" target="_blank">http://su1216.iteye.com/</a><br><a href="http://blog.csdn.net/su1216/" rel="nofollow" target="_blank">http://blog.csdn.net/su1216/</a></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='[转]android OutOfMemory 时抓取 heap 快照 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="579#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="579#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="579#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="579#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="579#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @rabbit 希望能够过上每天除了工作还有生活的日子~~惬意。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="579#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

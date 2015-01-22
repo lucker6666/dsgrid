@@ -1,0 +1,588 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Jmeter 的一些东西 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Jmeter 的一些东西</h1>
+  <div class="info leader">
+    <a class="node" href="node15">白盒测试</a>
+     · 
+    <a data-author="true" data-name="GUO" href="../guo">guo</a>
+     · 
+    于<abbr class="timeago" title="2013-12-16T17:23:03+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="ansonwoo" href="../ansonwoo">ansonwoo</a> 于<abbr class="timeago" title="2014-11-07T16:18:35+08:00"></abbr>回复
+     · 
+    643次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>最近改用Jmeter了,记录点东西<br>
+#和LoadRunner的区别<br>
+##编写脚本<br>
+LR提供.net,java,c三种语言的支持,Jmeter只支持Java一种语言的开发,直接提供api的只是其中一种叫JavaRrequest的Sampler<br>
+只要继承他的AbstractJavaSamplerClient类,打个包丢lib下面,就可以了,有点像Junit<br>
+不过开源项目嘛,各种Processer,Listener之类的东西都是可以自定义开发的,就是麻烦一点</p>
+
+<p>##接口<br>
+LR里面有个transcation的概念,主要有三个属性:name,duration,status.<br>
+通过它提供的api,可以在业务开始的时候调用lr.start_transcation(name)开始一个事件,在结束的时候lr.end_transcation(name,passOrNot)来完成一个事件,这样就自动计算了处理花费的时间,并记录了最终状态<br>
+,在contorller上就会体现出name业务的一次执行,TPS或者RPS图标上可以观察到相应的曲线<br>
+Jmeter里也有这么个东西,不过因为Jmeter里的业务处理部分叫Sampler,所以叫SampleResult.<br>
+每个Sampler每次执行,都需要return一个SampleResult.这个Result包含的内容很多,不光上面的包含name,duration,status,还可以保存request和respones,而且还能嵌套,一个Result可以包很很多SubResult.<br>
+最终这些结果都被"Listener"接收到(Sampler,Listener的概念不说了,网上google一下一堆)<br><strong>主要接口</strong></p>
+<pre class="highlight java"><span class="n">ampleStart</span><span class="o">()</span>
+<span class="n">sampleEnd</span><span class="o">()</span>
+<span class="n">setSuccessful</span><span class="o">()</span>
+<span class="n">setSampleLabel</span><span class="o">()</span>
+<span class="n">setRequestHeaders</span><span class="o">()</span>
+<span class="n">setResponseData</span><span class="o">()</span>
+</pre>
+<p>##监控,结果展示和分布式<br>
+这方面Jmeter相比来说太弱,不说了<br>
+推荐个插件jmeter-plugin<br>
+Transactions per Second<br>
+Response Times Over Time<br>
+PerMon Metrics Collector</p>
+
+<p>##多线程<br>
+LR里面有个叫Vuser的东西,一个Vuser可以认为是一个独立的线程,也可以设置让他是一个独立的进程,不设置默认50个Vuser一个进程.每个Vuser是一个测试脚本的完整实例.<br>
+顺便说一句,LR的api只有从主线程里调用才起作用,别的现成调用都不干活,不过这都不是事<br>
+Jmeter么...... 一个测试计划下面可以有多个线程池,线程池是用来执行各种Sampler的,可以设置线程的数量,执行次数<br>
+每个线程会都会把线程池下面的东西(sampler,controller之类的)顺序执行一遍</p>
+
+<p>##上下文<br>
+LR没有<br>
+Jmeter通过JMeterContextService.getContext()可以获得一个JMeterContext,这里面能包含一个工作线程中的大部分有用的信息,比如:<br>
+getPreviousResult()获取上一个sampler的结果<br>
+getVariables()获得一个JMeterVariables,这个东西就是个Map,Value是个Object,这样可以在线程里任何地方存取你需要的任何类型,很灵活也很好用</p>
+
+<p>未完待续...</p>
+
+<p>目前,个人感觉性能测试还是LR好用,可惜收费,还很贵,而且只能Windows<br>
+Jmeter怎么看怎么像个自动化接口测试的东西</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Jmeter 的一些东西 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="294#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="294#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="294#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="294#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="294#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>13</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply1">1楼</a> · <abbr class="timeago" title="2013-12-16T18:01:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="1242" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/294/replies/1242/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>jmeter才是最灵活的方式. 比lr好很多. <br>
+只是用起来需要一些专业知识, 所以不像lr那样容易.<br>
+jmeter是在自动化概念上封装了性能测试场景, 其实lr也是一样.<br>
+lr也是可以写自动化脚本的.</p>
+
+<p>对于初级入门来说, lr毕竟会好些, 操作人性化, 报表功能强大.<br>
+lr较难在linux上跑, 企业级别的测试, lr也撑不起来, 需要自己编写工具.</p>
+
+<p>目前lr和jmeter都是只用在偏前端的一些性能测试场景中, 偏重业务场景分析.<br>
+后端测试jmeter可能会用上, lr就不行了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply2">2楼</a> · <abbr class="timeago" title="2013-12-16T18:50:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1249" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/294/replies/1249/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="guo" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+LR好用主要就是报表,可以实时统计回来数据,最后测试结果太大的时候还能是使用SQL数据库暂存<br>
+应付百万并发连接的测试没啥问题,主要还是看脚本写的质量了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply3">3楼</a> · <abbr class="timeago" title="2013-12-16T20:02:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1250" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/294/replies/1250/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 现在的服务器都是使用linux  在存放服务器和测试环境的集群中都没有了windows 所以lr的应用场景有限  在办公环境中加压很容易搞垮办公网络  百万连接lr貌似搞不起来  主要是window太差 用linux加压更节省资源  持续集成也方便  lr在做复杂业务的性能测试还是很好的 现在连jmeter用的也不是太多 他的加压能力也有限 也是适合处理复杂业务场景</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply4">4楼</a> · <abbr class="timeago" title="2013-12-16T20:33:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1253" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/294/replies/1253/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="guo" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 现在就是,环境里没windows的服务器了,所以只能换jmeter<br>
+windows其实没那么差,java7 nio在windows上表现就挺好的<br>
+最大的问题就是要钱</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply5">5楼</a> · <abbr class="timeago" title="2013-12-16T20:44:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1254" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/294/replies/1254/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> windows在发起连接和维持连接这个方面还是挺差的. 而且修改连接参数很麻烦.windows在连接数超过2k的时候, 基本就顶不住了. 而linux可以达到上万. 在消耗的cpu和内存方面也比windows少很多. 你用多了linux就知道windows有多挫了.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply6">6楼</a> · <abbr class="timeago" title="2013-12-16T21:19:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1256" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/294/replies/1256/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="lihuazhang" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>试试看 gatling，用协程，效率高很多</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply7">7楼</a> · <abbr class="timeago" title="2013-12-19T09:13:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1339" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/294/replies/1339/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="qddegtya" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 说说我的看法吧~LR处理后端信令场景的测试其实未尝不可,我们在实际项目中有过实施,甚至还尝试自写puntch过程来验证硬件某转发模块的(SIP协议)队列处理能力,严格意义上来讲，LR能够测试任何基于消息模型的产品,只不过国内LR盗版横行,别看各大论坛都在谈LR,但是他的普及率其实真不算高...况且,让TE用C写一段复杂的后端测试脚本确实多少有点难度,导致了这块的案例非常少;再者,从模拟用户真实操作的角度上来讲,性能测试肯定是偏向于前端业务,以此来触发后端处理,从而验证系统的容量。拙见~哈哈~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../simple"><img alt="50" class="uface" src="../user/large_avatar/50.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../simple">simple</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply8">8楼</a> · <abbr class="timeago" title="2013-12-31T19:57:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1753" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="50" href="http://testerhome.com/topics/294/replies/1753/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="simple" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我用jmeter运行一个简单脚本，发送http请求，100个线程，时间设置无限，跑一晚上后，内存溢出了，汗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply9">9楼</a> · <abbr class="timeago" title="2014-01-02T10:25:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1755" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/294/replies/1755/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="guo" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../simple" class="at_user" title="@simple"><i>@</i>simple</a> 你是不是开着那个什么树列别啥的了，那个会吧结果一直记录在内存里，数据量多了就不行，正式测试的时候最好吧一些没有的记录都关了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply10">10楼</a> · <abbr class="timeago" title="2014-01-02T10:29:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1756" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/294/replies/1756/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="guo" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 我以前就是这么做的，不过不是用的C，现在支持C＃和JAVA的脚本，降低了很多开发难度<br>
+而且发现很多公司验收的时候还比较认可LR出的报告，可见知名度还是相当高的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../kiven"><img alt="7cab92bc4ff44276f0a1b5c752630dee" class="uface" src="../avatar/7cab92bc4ff44276f0a1b5c752630dee.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="kiven" href="../kiven">kiven</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply11">11楼</a> · <abbr class="timeago" title="2014-03-14T14:38:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3167" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="512" href="http://testerhome.com/topics/294/replies/3167/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="kiven" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Arguments、JavaSamplerContext....这些没写</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../simple"><img alt="50" class="uface" src="../user/large_avatar/50.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../simple">simple</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply12">12楼</a> · <abbr class="timeago" title="2014-08-20T20:34:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7835" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="50" href="http://testerhome.com/topics/294/replies/7835/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="simple" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a>  知道原因了，长时间施压，不能设置“查看结果树”，不然会在bin目录下生成一个很大的文件</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../ansonwoo"><img alt="1835" class="uface" src="../user/large_avatar/1835.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../ansonwoo">ansonwoo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="294#reply13">13楼</a> · <abbr class="timeago" title="2014-11-07T16:18:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9730" data-state="" data-type="Reply" href="294#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1835" href="http://testerhome.com/topics/294/replies/9730/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="ansonwoo" href="294#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="294#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../simple" class="at_user" title="@simple"><i>@</i>simple</a> 可以勾选Errors</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="294" title="Jmeter 的一些东西">Jmeter 的一些东西</a></li>
+    <li><a href="37" title="如何检测内存泄漏">如何检测内存泄漏</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="294#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

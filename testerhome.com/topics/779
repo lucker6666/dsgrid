@@ -1,0 +1,694 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 1.0.0 版本 find_elements_by_android_uiautomator()方法求助 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../fzuliwei"><img alt="626" class="uface" src="../user/large_avatar/626.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">1.0.0 版本 find_elements_by_android_uiautomator()方法求助</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="LW" href="../fzuliwei">fzuliwei</a>
+     · 
+    于<abbr class="timeago" title="2014-05-03T17:35:10+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="seveniruby" href="../seveniruby">seveniruby</a> 于<abbr class="timeago" title="2014-05-10T18:55:45+08:00"></abbr>回复
+     · 
+    695次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>import os<br>
+import unittest<br>
+from appium import webdriver<br>
+from time import sleep</p>
+<h4>Returns abs path relative to this file and not cwd</h4>
+<p>PATH = lambda p: os.path.abspath(<br>
+    os.path.join(os.path.dirname(<strong>file</strong>), p)<br>
+)</p>
+
+<p>desired_caps = {}<br>
+desired_caps['platformName'] = 'Android'<br>
+desired_caps['platformVersion'] = '4.2.2'<br>
+desired_caps['deviceName'] = 'Android Emulator'<br>
+desired_caps['app'] = PATH(<br>
+    'D:/Python/appium/ContactManager.apk'<br>
+)<br>
+desired_caps['appPackage'] = 'com.example.android.contactmanager'<br>
+desired_caps['appActivity'] = '.ContactManager'</p>
+
+<p>driver = webdriver.Remote('<a href="http://localhost:4723/wd/hub" rel="nofollow" target="_blank">http://localhost:4723/wd/hub</a>', desired_caps)<br>
+driver.find_element_by_name("Add Contact")<br>
+els = driver.find_elements_by_android_uiautomator('new UiSelector().clickable(true)')<br>
+print els<br>
+driver.quit()</p>
+
+<p>===code部分</p>
+
+<p>info: Welcome to Appium v1.0.0 (REV f0a00fab2335fa88cb355ab4dc43a9cd3f3236c0)<br>
+info: Appium REST http interface listener started on 127.0.0.1:4723<br>
+info: socket.io started<br>
+info: Non-default server args: {"udid":"HC3BGW9E0305","address":"127.0.0.1","log":"D:\Python\appium\log\2014-05-03.log"}<br>
+debug: Appium request initiated at /wd/hub/session<br>
+debug: Request received with params: {"sessionId":null,"desiredCapabilities":{"deviceName":"Android Emulator","app":"D:\Python\appium\ContactManager.apk","platformVersion":"4.2.2","appPackage":"com.example.android.contactmanager","platformName":"Android","appActivity":".ContactManager"}}<br>
+info: Using local app from desired caps: D:\Python\appium\ContactManager.apk<br>
+info: Creating new appium session 96c07e38-8897-4abb-8ff8-d6b0ecb5b552<br>
+info: Starting android appium<br>
+debug: Using fast reset? true<br>
+info: Preparing device for session<br>
+info: Checking whether app is actually present<br>
+info: Checking whether adb is present<br>
+info: [ADB] Using adb from D:\Python\eclipse\sdk\platform-tools\adb.exe<br>
+info: Trying to find a connected android device<br>
+info: [ADB] Getting connected devices...<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" devices<br>
+info: [ADB] 1 device(s) connected<br>
+info: Setting device id to HC3BGW9E0305<br>
+info: [ADB] Waiting for device to be ready and to respond to shell commands (timeout = 5)<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 wait-for-device<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "echo 'ready'"<br>
+info: Starting logcat capture<br>
+info: Getting device API level<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "getprop ro.build.version.sdk"<br>
+info: Device is at API Level 17<br>
+debug: java -jar "C:\Users\Administrator\AppData\Roaming\npm\node_modules\appium\lib\devices\android\helpers\strings_from_apk.jar" "D:\Python\appium\ContactManager.apk" "C:\Windows\Temp\com.example.android.contactmanager"<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 push "C:\Windows\Temp\com.example.android.contactmanager\strings.json" /data/local/tmp<br>
+info: Checking whether aapt is present<br>
+info: [ADB] Using aapt from D:\Python\eclipse\sdk\build-tools\17.0.0\aapt.exe<br>
+debug: processFromManifest: "D:\Python\eclipse\sdk\build-tools\17.0.0\aapt.exe" dump xmltree "D:\Python\appium\ContactManager.apk" AndroidManifest.xml<br>
+debug: Set app process to: .contactmanager<br>
+debug: Not uninstalling app since server not started with --full-reset<br>
+debug: Checking app cert for D:\Python\appium\ContactManager.apk: java -jar "C:\Users\Administrator\AppData\Roaming\npm\node_modules\appium\lib\devices\android\helpers\verify.jar" "D:\Python\appium\ContactManager.apk"<br>
+debug: App already signed.<br>
+info: Zip-aligning D:\Python\appium\ContactManager.apk<br>
+info: Checking whether zipalign is present<br>
+info: [ADB] Using zipalign from D:\Python\eclipse\sdk\tools\zipalign.exe<br>
+debug: zipAlignApk: "D:\Python\eclipse\sdk\tools\zipalign.exe" -f 4 "D:\Python\appium\ContactManager.apk" "E:\Temp\appium11443-5860-16vs21k.tmp"<br>
+info: MD5 for app is b2d2916bb5388e1dc281ec3e71ef1234<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "ls /data/local/tmp/b2d2916bb5388e1dc281ec3e71ef1234.apk"<br>
+debug: Getting install status for com.example.android.contactmanager<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "pm list packages -3 com.example.android.contactmanager"<br>
+info: [ADB] App is installed<br>
+info: Running fast reset (stop and clear)<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "am force-stop com.example.android.contactmanager"<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "pm clear com.example.android.contactmanager"<br>
+info: [ADB] Forwarding system:4724 to device:4724<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 forward tcp:4724 tcp:4724<br>
+debug: Pushing appium bootstrap to device...<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 push "C:\Users\Administrator\AppData\Roaming\npm\node_modules\appium\build\android_bootstrap\AppiumBootstrap.jar" /data/local/tmp/<br>
+debug: Pushing unlock helper app to device...<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 install "C:\Users\Administrator\AppData\Roaming\npm\node_modules\appium\build\unlock_apk\unlock_apk-debug.apk"<br>
+info: Attempting to kill all 'uiautomator' processes<br>
+info: Getting all processes with 'uiautomator'<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "ps 'uiautomator'"<br>
+info: No matching processes found<br>
+info: Running bootstrap<br>
+debug: spawning: D:\Python\eclipse\sdk\platform-tools\adb.exe -s HC3BGW9E0305 shell uiautomator runtest AppiumBootstrap.jar -c io.appium.android.bootstrap.Bootstrap<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: current=1<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: id=UiAutomatorTestRunner<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: class=io.appium.android.bootstrap.Bootstrap<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: stream=<br>
+info: [UIAUTOMATOR STDOUT] io.appium.android.bootstrap.Bootstrap:<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: numtests=1<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: test=testRunServer<br>
+info: [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: 1<br>
+info: [BOOTSTRAP] [info] Socket opened on port 4724<br>
+info: [BOOTSTRAP] [info] Appium Socket Server Ready<br>
+info: [BOOTSTRAP] [info] Loading json...<br>
+debug: Waking up device if it's not alive<br>
+info: Pushing command to appium work queue: ["wake",{}]<br>
+info: [BOOTSTRAP] [info] json loading complete.<br>
+info: [BOOTSTRAP] [info] Registered crash watchers.<br>
+info: [BOOTSTRAP] [info] Client connected<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"wake","params":{}}<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: wake<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "dumpsys window"<br>
+info: [BOOTSTRAP] [info] Returning result: {"value":true,"status":0}<br>
+info: Writing dumpsys output to C:\Users\Administrator\AppData\Roaming\npm\node_modules\appium.dumpsys.log<br>
+debug: Screen already unlocked, continuing.<br>
+info: Pushing command to appium work queue: ["getDataDir",{}]<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"getDataDir","params":{}}<br>
+debug: dataDir set to: /data/local/tmp<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "am start -S -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -f 0x10200000 -n com.example.android.contactmanager/.ContactManager"<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: getDataDir<br>
+info: [BOOTSTRAP] [info] Returning result: {"value":"\/data\/local\/tmp","status":0}<br>
+info: Waiting for activity to  be focused<br>
+info: Getting focused package and activity<br>
+debug: executing: "D:\Python\eclipse\sdk\platform-tools\adb.exe" -s HC3BGW9E0305 shell "dumpsys window windows"<br>
+info: Device launched! Ready for commands<br>
+info: Setting command timeout to the default of 60 secs<br>
+info: Appium session started with sessionId 96c07e38-8897-4abb-8ff8-d6b0ecb5b552<br>
+debug: 127.0.0.1 - - "POST /wd/hub/session HTTP/1.1" - 9 "-" "Python-urllib/2.7"<br>
+debug: Appium request initiated at /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552<br>
+debug: Request received with params: {}<br>
+info: Responding to client with success: {"status":0,"value":{"platform":"LINUX","browserName":"Android","platformVersion":"4.2.2","webStorageEnabled":false,"takesScreenshot":true,"javascriptEnabled":true,"databaseEnabled":false,"warnings":{},"desired":{"deviceName":"Android Emulator","app":"D:\Python\appium\ContactManager.apk","platformVersion":"4.2.2","appPackage":"com.example.android.contactmanager","platformName":"Android","appActivity":".ContactManager"},"deviceName":"Android Emulator","app":"D:\Python\appium\ContactManager.apk","appPackage":"com.example.android.contactmanager","platformName":"Android","appActivity":".ContactManager"},"sessionId":"96c07e38-8897-4abb-8ff8-d6b0ecb5b552"}<br>
+debug: 127.0.0.1 - - "GET /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552 HTTP/1.1" - 817 "-" "Python-urllib/2.7"<br>
+debug: Appium request initiated at /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552/element<br>
+debug: Request received with params: {"using":"name","sessionId":"96c07e38-8897-4abb-8ff8-d6b0ecb5b552","value":"Add Contact"}<br>
+warn: [DEPRECATED] The "name" Locator strategy has been deprecated and will be removed.  Please use the "accessibility id" Locator strategy instead.<br>
+info: Pushing command to appium work queue: ["find",{"strategy":"name","selector":"Add Contact","context":"","multiple":false}]<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"find","params":{"strategy":"name","selector":"Add Contact","context":"","multiple":false}}<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: find<br>
+info: [BOOTSTRAP] [debug] Finding Add Contact using NAME with the contextId: <br>
+info: [BOOTSTRAP] [info] Returning result: {"value":{"ELEMENT":"1"},"status":0}<br>
+info: Responding to client with success: {"status":0,"value":{"ELEMENT":"1"},"sessionId":"96c07e38-8897-4abb-8ff8-d6b0ecb5b552"}<br>
+debug: 127.0.0.1 - - "POST /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552/element HTTP/1.1" - 109 "-" "Python-urllib/2.7"<br>
+debug: Appium request initiated at /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552/element/1/click<br>
+debug: Request received with params: {"sessionId":"96c07e38-8897-4abb-8ff8-d6b0ecb5b552","id":"1"}<br>
+info: Pushing command to appium work queue: ["element:click",{"elementId":"1"}]<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"element:click","params":{"elementId":"1"}}<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: click<br>
+info: [BOOTSTRAP] [info] Returning result: {"value":true,"status":0}<br>
+info: Responding to client with success: {"status":0,"value":true,"sessionId":"96c07e38-8897-4abb-8ff8-d6b0ecb5b552"}<br>
+debug: 127.0.0.1 - - "POST /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552/element/1/click HTTP/1.1" - 89 "-" "Python-urllib/2.7"<br>
+debug: Appium request initiated at /wd/hub/session/96c07e38-8897-4abb-8ff8-d6b0ecb5b552/elements<br>
+debug: Request received with params: {"using":"-android uiautomator","sessionId":"96c07e38-8897-4abb-8ff8-d6b0ecb5b552","value":"new UiSelector().clickable(true)"}<br>
+info: Pushing command to appium work queue: ["find",{"strategy":"-android uiautomator","selector":"new UiSelector().clickable(true)","context":"","multiple":true}]<br>
+info: [BOOTSTRAP] [info] Got data from client: {"cmd":"action","action":"find","params":{"strategy":"-android uiautomator","selector":"new UiSelector().clickable(true)","context":"","multiple":true}}<br>
+info: [BOOTSTRAP] [info] Got command of type ACTION<br>
+info: [BOOTSTRAP] [debug] Got command action: find<br>
+info: [BOOTSTRAP] [debug] Finding new UiSelector().clickable(true) using ANDROID_UIAUTOMATOR with the contextId: <br>
+info: [BOOTSTRAP] [info] Element[] is null: (0)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (1)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (2)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (3)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (4)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (5)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (6)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (7)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (8)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (9)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (10)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (11)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (12)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (13)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (14)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (15)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (16)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (17)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (18)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (19)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (20)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (21)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (22)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (23)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (24)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (25)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (26)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (27)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (28)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (29)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (30)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (31)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (32)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (33)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (34)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (35)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (36)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (37)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (38)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (39)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (40)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (41)<br>
+info: [BOOTSTRAP] [info] Element[] is null: (42)<br>
+===日志部分</p>
+
+<p>求助为什么后面都是element[] is null<br>
+这个方法找不到界面上可点击的目标控件么</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='1.0.0 版本 find_elements_by_android_uiautomator()方法求助 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="779#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="779#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="779#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="779#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="779#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>8</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../fzuliwei"><img alt="626" class="uface" src="../user/large_avatar/626.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="LW" href="../fzuliwei">fzuliwei</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply1">1楼</a> · <abbr class="timeago" title="2014-05-04T19:44:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4406" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="626" href="http://testerhome.com/topics/779/replies/4406/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="fzuliwei" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight python"><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="n">Returns</span> <span class="nb">abs</span> <span class="n">path</span> <span class="n">relative</span> <span class="n">to</span> <span class="n">this</span> <span class="nb">file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">cwd</span>
+
+<span class="n">PATH</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="nb">abs</span><span class="n">path</span><span class="p">(</span>
+<span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="nb">dir</span><span class="n">name</span><span class="p">(</span><span class="nb">file</span><span class="p">),</span> <span class="n">p</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'platformName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Android'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'platformVersion'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'4.2.2'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'deviceName'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'Android Emulator'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'app'</span><span class="p">]</span> <span class="o">=</span> <span class="n">PATH</span><span class="p">(</span>
+<span class="s">'D:/Python/appium/ContactManager.apk'</span>
+<span class="p">)</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'appPackage'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'com.example.android.contactmanager'</span>
+<span class="n">desired_caps</span><span class="p">[</span><span class="s">'appActivity'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'.ContactManager'</span>
+
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://localhost:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">"Add Contact"</span><span class="p">)</span>
+<span class="n">els</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_android_uiautomator</span><span class="p">(</span><span class="s">'new UiSelector().clickable(true)'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">els</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply2">2楼</a> · <abbr class="timeago" title="2014-05-04T22:41:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4411" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/779/replies/4411/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>clickable这个特性比较特殊, 有一些控件看起来是可点击的, 单其实clickable是false, 只是上层容器的clickable是true. 你最好借助于uiautomatorviewer看下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../tomdejia"><img alt="6b10d138410495aee158c12d0a595762" class="uface" src="../avatar/6b10d138410495aee158c12d0a595762.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../tomdejia">tomdejia</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply3">3楼</a> · <abbr class="timeago" title="2014-05-07T18:39:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4563" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="734" href="http://testerhome.com/topics/779/replies/4563/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="tomdejia" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="779#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+请问您有没有碰到过这种现象：<br>
+imageButton 可以定位到，click()方法后却没有效果。。<br>
+这种问题应该如何解决？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply4">4楼</a> · <abbr class="timeago" title="2014-05-08T07:14:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4575" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/779/replies/4575/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="seveniruby" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="779#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../tomdejia" class="at_user" title="@tomdejia"><i>@</i>tomdejia</a> 我以前测试过, 是ok的.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../tomdejia"><img alt="6b10d138410495aee158c12d0a595762" class="uface" src="../avatar/6b10d138410495aee158c12d0a595762.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../tomdejia">tomdejia</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply5">5楼</a> · <abbr class="timeago" title="2014-05-08T14:51:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4603" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="734" href="http://testerhome.com/topics/779/replies/4603/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="tomdejia" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="779#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+我可能没有描述清楚问题。我的这个问题跟楼主的情况不一样，我是采用0.18版本的，Android+window系统。<br>
+现象是：app中某个页面里的imageButton通过find_element_by_id可以找到，click方法执行后也没有报错，但是在真机上观察，并没有实现点击的真正效果。<br>
+通过monitor查看该button是clickable=true</p>
+
+<p>这种现象是什么原因，如何解决？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../eric"><img alt="451" class="uface" src="../user/large_avatar/451.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../eric">eric</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply6">6楼</a> · <abbr class="timeago" title="2014-05-09T08:54:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4633" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="451" href="http://testerhome.com/topics/779/replies/4633/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="eric" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你这个日志是正常的，可能是他内部的一个BUG，不过你这日志说明已经获取相关的对象了。我去获取ImageView对象列表的时候，日志也是这样的，但是可以继续操作。如果没有获取到对象，提示的是 index= 0 ;size = 0。<br>
+你不要用打印，你可以直接去点击试试，应该能点击的到某个对象的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../fzuliwei"><img alt="626" class="uface" src="../user/large_avatar/626.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="LW" href="../fzuliwei">fzuliwei</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply7">7楼</a> · <abbr class="timeago" title="2014-05-10T14:34:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4672" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="626" href="http://testerhome.com/topics/779/replies/4672/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="fzuliwei" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight python"><span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">import</span> <span class="nn">desired_capabilities</span>
+
+
+<span class="k">class</span> <span class="nc">FindByUIAutomatorTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">desired_caps</span> <span class="o">=</span> <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">get_desired_capabilities</span><span class="p">(</span><span class="s">'ApiDemos-debug.apk'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://localhost:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+    <span class="c">#def test_find_single_element(self):</span>
+        <span class="c">#el = self.driver.find_element_by_android_uiautomator('new UiSelector().description("Animation")')</span>
+        <span class="c">#self.assertIsNotNone(el)</span>
+
+    <span class="k">def</span> <span class="nf">test_find_multiple_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">els</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_android_uiautomator</span><span class="p">(</span><span class="s">'new UiSelector().clickable(true)'</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">els</span><span class="p">:</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+        <span class="c">#self.assertTrue(len(els) &gt; 11)</span>
+
+    <span class="c">#def test_element_find_single_element(self):</span>
+        <span class="c">#el = self.driver.find_element_by_class_name('android.widget.ListView')</span>
+
+        <span class="c">#sub_el = el.find_element_by_android_uiautomator('new UiSelector().description("Animation")')</span>
+        <span class="c">#self.assertIsNotNone(sub_el)</span>
+
+    <span class="c">#def test_element_find_multiple_elements(self):</span>
+        <span class="c">#el = self.driver.find_element_by_class_name('android.widget.ListView')</span>
+
+        <span class="c">#sub_els = el.find_elements_by_android_uiautomator('new UiSelector().clickable(true)')</span>
+        <span class="c">#self.assertTrue(len(sub_els) &gt; 11)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre>
+<p>===用官方的代码点击没有效果</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="779#reply8">8楼</a> · <abbr class="timeago" title="2014-05-10T18:55:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4677" data-state="" data-type="Reply" href="779#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/779/replies/4677/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="seveniruby" href="779#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="779#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../fzuliwei" class="at_user" title="@fzuliwei"><i>@</i>fzuliwei</a>  <a href="../eric" class="at_user" title="@eric"><i>@</i>eric</a>  有可能获取到了对象, 但是点击的位置不多, 你是这用getevent命令来监听下点击事件. 或者uiautomator events. 看看点击的位置在什么地方</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    每个人都会遇到困难, 希望朋友的陪伴能够给你带来新的温暖
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="779#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

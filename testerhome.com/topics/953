@@ -1,0 +1,699 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Calabash 使用以及修改 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Calabash 使用以及修改</h1>
+  <div class="info leader">
+    <a class="node" href="node35">Calabash</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-05-29T23:54:59+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-08-18T13:53:02+08:00"></abbr>回复
+     · 
+    1096次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>接下来我大量在项目中投入calabash的使用。今天稍微小小尝试了下。</p>
+
+<p>这里不得不说，mac上ruby2.0真的是大坑，各种报错，最终还是换了1.9.2的版本，顺利安装了<br>
+  同样的windows的同学真的也要注意，2.0各种不能安装，然后也要注意GBK字符串的问题，坑太多了。</p>
+
+<p>安装完毕之后，执行<code>calabash-android gen</code>就能够看到生成如下目录<br><img src="../photo/2014/be42d2e932da606efaf9ae1cd4fc288a.png" alt=""></p>
+
+<p>然后呢，我们放一个要测试的apk到features同一级的目录下，运行<code>calabash-android run &lt;apk&gt;</code>即可运行features的脚本my_first.feature。<br>
+  我在这里做了一个试验，就是我们自己apk的一个登录，my_first.feature脚本如下：</p>
+<pre class="highlight ruby"><span class="no">Feature</span><span class="p">:</span> <span class="no">Login</span> <span class="n">feature</span>
+
+  <span class="no">Scenario</span><span class="p">:</span> <span class="no">As</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">user</span> <span class="n">I</span> <span class="n">can</span> <span class="n">log</span> <span class="n">into</span> <span class="n">my</span> <span class="n">app</span>
+    <span class="n">check_element_exists</span><span class="p">(</span><span class="s2">"支付宝商户版"</span><span class="p">)</span>
+    <span class="no">When</span> <span class="n">I</span> <span class="n">press</span> <span class="s2">"我是店长"</span>
+    <span class="no">Then</span> <span class="n">I</span> <span class="n">see</span> <span class="s2">"支付宝账户登录"</span>
+    <span class="no">Then</span> <span class="n">I</span> <span class="n">enter</span> <span class="s2">"xuanyuanyang@alitest.com"</span> <span class="n">into</span> <span class="n">input</span> <span class="n">field</span> <span class="n">number</span> <span class="mi">1</span>
+    <span class="no">Then</span> <span class="n">I</span> <span class="n">enter</span> <span class="s2">"111111"</span> <span class="n">into</span> <span class="n">input</span> <span class="n">field</span> <span class="n">number</span> <span class="mi">2</span>
+    <span class="no">When</span> <span class="n">I</span> <span class="n">press</span> <span class="s2">"登录"</span>
+    <span class="no">When</span> <span class="n">I</span> <span class="n">press</span> <span class="n">view</span> <span class="n">with</span> <span class="nb">id</span> <span class="s2">"guide"</span>
+    <span class="no">Then</span> <span class="n">I</span> <span class="n">see</span> <span class="s2">"支付宝收银"</span></pre>
+<p>运行结果如下显示：<br><img src="../photo/2014/37021047b927f12f9c99439fab4d1569.png" alt=""></p>
+
+<p>其实这些都不是关键，关键是我们接下来可以来分析一下内部实现。其实大部分人还会看到features目录下有一个calabash_steps.rb文件。这里接下来慢慢来讲。</p>
+
+<p>首先我们来看下calabash默认的steps到底是定义在哪里的。默认定义在源码中<code>/Users/monkey/Documents/open_source/calabash-android/ruby-gem/lib/calabash-android/steps</code>目录下。这个下面写的非常清楚，将各个需要在features中用到的step都封装了起来。<br><img src="../photo/2014/f4bdac690364cd536e121363a80764fb.png" alt=""></p>
+
+<p>那么对应这些step中关键字的实现又在哪里呢？我们继续往下看。</p>
+
+<p>实现都在源码中的这个目录中<code>/Users/monkey/Documents/open_source/calabash-android/ruby-gem/test-server/instrumentation-backend/src/sh/calaba/instrumentationbackend/actions</code>，但是这里要注意的是，你千万不要幻想将其中的robotium的jar包换成最新的，否则你要修改的地方太多了。<br><img src="../photo/2014/bf86bd527508cd4ad970501c078c1b12.png" alt=""></p>
+
+<p>那么接着我们可以来尝试着自己增加一些step的实现，首先我们先导入calabash instrumentationbackend。如下显示，我们主要关心的是actions相关的package。<br><img src="../photo/2014/8ae40b4dd2e4bc7ef9684d31913e5101.png" alt=""></p>
+
+<p>在View的包中我增加了一个类AssertViewTextById。为了方便测试，hardcode了一段逻辑在其中，如下代码</p>
+<pre class="highlight ruby"><span class="n">package</span> <span class="n">sh</span><span class="p">.</span><span class="nf">calaba</span><span class="p">.</span><span class="nf">instrumentationbackend</span><span class="p">.</span><span class="nf">actions</span><span class="p">.</span><span class="nf">view</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="n">android</span><span class="p">.</span><span class="nf">view</span><span class="o">.</span><span class="no">View</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">android</span><span class="p">.</span><span class="nf">widget</span><span class="o">.</span><span class="no">EditText</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">sh</span><span class="p">.</span><span class="nf">calaba</span><span class="p">.</span><span class="nf">instrumentationbackend</span><span class="o">.</span><span class="no">InstrumentationBackend</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">sh</span><span class="p">.</span><span class="nf">calaba</span><span class="p">.</span><span class="nf">instrumentationbackend</span><span class="o">.</span><span class="no">Result</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">sh</span><span class="p">.</span><span class="nf">calaba</span><span class="p">.</span><span class="nf">instrumentationbackend</span><span class="o">.</span><span class="no">TestHelpers</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">sh</span><span class="p">.</span><span class="nf">calaba</span><span class="p">.</span><span class="nf">instrumentationbackend</span><span class="p">.</span><span class="nf">actions</span><span class="o">.</span><span class="no">Action</span><span class="p">;</span>
+
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">AssertViewTextById</span> <span class="n">implements</span> <span class="no">Action</span> <span class="p">{</span>
+
+    <span class="vi">@Override</span>
+    <span class="kp">public</span> <span class="no">Result</span> <span class="n">execute</span><span class="p">(</span><span class="no">String</span><span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">final</span> <span class="no">View</span> <span class="n">view</span> <span class="o">=</span> <span class="no">TestHelpers</span><span class="p">.</span><span class="nf">getViewById</span><span class="p">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">);</span>
+        <span class="n">final</span> <span class="no">View</span> <span class="n">view2</span> <span class="o">=</span> <span class="no">InstrumentationBackend</span><span class="p">.</span><span class="nf">solo</span><span class="p">.</span><span class="nf">getView</span><span class="p">(</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="nf">equals</span><span class="p">(</span><span class="n">view2</span><span class="p">))</span> <span class="p">{</span>
+
+            <span class="k">return</span> <span class="no">Result</span><span class="p">.</span><span class="nf">successResult</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kp">new</span> <span class="no">Result</span><span class="p">(</span><span class="kp">false</span><span class="p">,</span> <span class="s2">" was not found"</span><span class="p">);</span>
+
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="vi">@Override</span>
+    <span class="kp">public</span> <span class="no">String</span> <span class="n">key</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">"assert_text_by_id"</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre>
+<p>注意，高潮来了。这里的key()里面的返回就是steps中需要对应的关键字，接着重要的一步就是，我们需要在<code>assert_steps.rb</code>中增加如下step</p>
+<pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^I check viewtext with id "([^\"]*)" = "([^\"]*)"$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">view_id</span><span class="p">,</span><span class="n">text</span><span class="o">|</span>
+  <span class="n">performAction</span><span class="p">(</span><span class="s1">'assert_text_by_id'</span><span class="p">,</span><span class="n">view_id</span><span class="p">,</span><span class="n">text</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+<p>那么接下来我们需要重新编译，到ruby-gem目录中，然后输入rake build，会将你新增的类放到calabash环境中去。</p>
+
+<p>然后我们来尝试下新的这个“动作”，features如下编写：</p>
+<pre class="highlight ruby">
+  <span class="no">Scenario</span><span class="p">:</span> <span class="n">into</span> <span class="n">app</span> <span class="n">the</span> <span class="n">first</span> <span class="nb">test</span> <span class="k">case</span>
+  <span class="no">When</span> <span class="n">I</span> <span class="n">press</span> <span class="n">image</span> <span class="n">button</span> <span class="n">number</span> <span class="mi">1</span>
+  <span class="no">When</span> <span class="n">I</span> <span class="n">press</span> <span class="n">image</span> <span class="n">button</span> <span class="n">number</span> <span class="mi">2</span>
+  <span class="no">When</span> <span class="n">I</span> <span class="n">press</span> <span class="n">image</span> <span class="n">button</span> <span class="n">number</span> <span class="mi">3</span>
+  <span class="no">Then</span> <span class="n">I</span> <span class="n">check</span> <span class="n">viewtext</span> <span class="n">with</span> <span class="nb">id</span> <span class="s2">"amountInput"</span> <span class="o">=</span> <span class="s2">"amountInput"</span>
+</pre>
+<p>执行之后如下显示：<br><img src="../photo/2014/fdc6a4ab3cbb7674bb5da400b875e2ae.png" alt=""></p>
+
+<p>说明这个step整个calabash已经认识了，故添加成功！！！</p>
+
+<p>最后说下report，相对来讲，重要的信息一应俱全，真的很棒！！同时还兼容ios哟！！！<br><img src="../photo/2014/38f3f5fe21e2fe1f683e8b09beeebfd0.png" alt=""><br><img src="../photo/2014/e8f94b5022c8d966753c88d489ac9e9a.png" alt=""></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Calabash 使用以及修改 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="953#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="953#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="953#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="953#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="953#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>16</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply1">1楼</a> · <abbr class="timeago" title="2014-05-29T23:57:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5353" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/953/replies/5353/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>期待calabash 的壮大</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply2">2楼</a> · <abbr class="timeago" title="2014-05-29T23:58:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5354" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/5354/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 是啊。。我觉得很多真的不够人性化。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../chouti"><img alt="3949b43a989430f9959e816e105cbbcc" class="uface" src="../avatar/3949b43a989430f9959e816e105cbbcc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chouti" href="../chouti">chouti</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply3">3楼</a> · <abbr class="timeago" title="2014-05-30T07:57:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5357" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="853" href="http://testerhome.com/topics/953/replies/5357/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="chouti" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我正从Calabash转到Appium的途中。对我来讲Calabash从安装到写出第一个用例开始执行比Appium要方便的多（我在Appium上也准备使用Ruby+Cucumber）但是，Calabash的一个缺点是需要在待测对象中添加它们的Framework再编译，这点比较蛋疼，特别对于iOS来讲。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply4">4楼</a> · <abbr class="timeago" title="2014-05-30T08:54:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5360" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/5360/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../chouti" class="at_user" title="@chouti"><i>@</i>chouti</a> appium其实也蛋疼的。现在更新的用不来了。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../chouti"><img alt="3949b43a989430f9959e816e105cbbcc" class="uface" src="../avatar/3949b43a989430f9959e816e105cbbcc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chouti" href="../chouti">chouti</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply5">5楼</a> · <abbr class="timeago" title="2014-05-30T08:59:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5361" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="853" href="http://testerhome.com/topics/953/replies/5361/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="chouti" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 嗯，我同意。我转向Appium后写出第一个用例的时间，比刚接触Calabash写出第一个用例的时间多出N倍。我说的蛋疼是在于和开发共同维护一份xcode配置文件后的版本控制问题。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../joshua"><img alt="21765a70f8f6a8cda8e5576f30c954f7" class="uface" src="../avatar/21765a70f8f6a8cda8e5576f30c954f7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Joshua Tung" href="../joshua">joshua</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply6">6楼</a> · <abbr class="timeago" title="2014-05-30T10:19:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5376" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="394" href="http://testerhome.com/topics/953/replies/5376/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="joshua" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个真心赞啊！<br>
+之前想过用calabash结合robotium做测试框架，但是一看到calabash的这种描述型代码就很胃疼，毫无美感……</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply7">7楼</a> · <abbr class="timeago" title="2014-05-30T10:47:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5381" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/5381/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../joshua" class="at_user" title="@joshua"><i>@</i>joshua</a> 其实感觉蛮美的～～哈哈～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../pinghailinfeng"><img alt="896" class="uface" src="../user/large_avatar/896.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jeff" href="../pinghailinfeng">pinghailinfeng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply8">8楼</a> · <abbr class="timeago" title="2014-06-09T15:15:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5625" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="896" href="http://testerhome.com/topics/953/replies/5625/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="pinghailinfeng" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>高潮了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply9">9楼</a> · <abbr class="timeago" title="2014-06-09T16:41:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5626" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/5626/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../pinghailinfeng" class="at_user" title="@pinghailinfeng"><i>@</i>pinghailinfeng</a>  ＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply10">10楼</a> · <abbr class="timeago" title="2014-07-14T22:48:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6641" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/953/replies/6641/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="qddegtya" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>最大的坑就是只支持ruby。。。。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply11">11楼</a> · <abbr class="timeago" title="2014-07-15T10:11:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6642" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/6642/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 自己重写一个python的～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply12">12楼</a> · <abbr class="timeago" title="2014-08-18T13:41:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7758" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/953/replies/7758/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="qddegtya" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 已做到了，Lub即是~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply13">13楼</a> · <abbr class="timeago" title="2014-08-18T13:48:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="7759" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/7759/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> lub。。。看着好眼熟。。我去看看</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply14">14楼</a> · <abbr class="timeago" title="2014-08-18T13:48:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="7760" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/7760/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 。。。。。。。草。。怪不得那么眼熟。。就是你那个呀</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply15">15楼</a> · <abbr class="timeago" title="2014-08-18T13:50:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7761" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/953/replies/7761/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="qddegtya" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 额。。。才看到。。。等我最近忙完了再去折腾一下，最近只想回到现实中好好处理完事情。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="953#reply16">16楼</a> · <abbr class="timeago" title="2014-08-18T13:53:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7762" data-state="" data-type="Reply" href="953#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/953/replies/7762/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="monkey" href="953#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="953#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 时间管理好就ok</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @Anikikun: 希望毕业设计顺利按时按量完成，希望上海实习之旅顺利
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1817" title="Calabash+Gearman 实现多手机同步测试机制">Calabash+Gearman 实现多手机同步测试机制</a></li>
+    <li><a href="1803" title="求助：calabash-android 如何 touch fragment 中 textView">求助：calabash-android 如何 touc...</a></li>
+    <li><a href="1600" title="使用 Gearman+Calabash 并行测试手机 APP">使用 Gearman+Calabash 并行测试手机 APP</a></li>
+    <li><a href="1568" title="Ubuntu 14.04 64 位安装 calabash-android 问题汇总">Ubuntu 14.04 64 位安装 calabas...</a></li>
+    <li><a href="1528" title="calabash iOS 新建项目流程">calabash iOS 新建项目流程</a></li>
+    <li><a href="1522" title="Calabash for Mac 在搭环境的小细节...">Calabash for Mac 在搭环境的小细节...</a></li>
+    <li><a href="1520" title="Calabash 模拟多手机同步测试">Calabash 模拟多手机同步测试</a></li>
+    <li><a href="1396" title="如何解决 Calabash-ios &quot;Connection refused &quot;？">如何解决 Calabash-ios &quot;Connecti...</a></li>
+    <li><a href="1384" title="Calabash-ios framework 的安装过程">Calabash-ios framework 的安装过程</a></li>
+    <li><a href="1347" title="使用 calabash 测试开源中国 Android 客户端">使用 calabash 测试开源中国 Android 客户端</a></li>
+    <li><a href="1323" title="calabash-android 测试问题收集">calabash-android 测试问题收集</a></li>
+    <li><a href="1296" title="中文 Win7 下成功安装 calabash-android 步骤">中文 Win7 下成功安装 calabash-andr...</a></li>
+    <li><a href="1180" title="Calabash 的那些坑">Calabash 的那些坑</a></li>
+    <li><a href="1173" title="Calabash 学习经验小结">Calabash 学习经验小结</a></li>
+    <li><a href="1165" title="用原生 Cucumber 跑 Calabash-Android 测试">用原生 Cucumber 跑 Calabash-And...</a></li>
+    <li><a href="1164" title="Calabash 使用经验 - 安装稳定版本">Calabash 使用经验 - 安装稳定版本</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="953#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium + Selenium Grid2 = Appium Parallel Execution &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../colorhaake"><img alt="95446996dd2b17877bfbfdeaf25a2ca3" class="uface" src="../avatar/95446996dd2b17877bfbfdeaf25a2ca3.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium + Selenium Grid2 = Appium Parallel Execution</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="JJ" href="../colorhaake">colorhaake</a>
+     · 
+    于<abbr class="timeago" title="2015-01-16T16:49:52+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="seveniruby" href="../seveniruby">seveniruby</a> 于<abbr class="timeago" title="2015-01-21T16:02:59+08:00"></abbr>回复
+     · 
+    285次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Hi all,</p>
+
+<p>今天要分享一下我用appium + selenium grd2 來達到 appium parallel execution的經驗<br>
+我這邊主要試的是iOS device的parallel execution</p>
+
+<p>簡單說一下selenium grid的架構，他需要一台hub來連接多個node<br>
+hub用來分配test到各個node上面去執行，因為appium所用的web driver是和selenium是同一套<br>
+所以說appium可以用於selenium grid上面, 也就是說我可以針對iOS或android的原生app去平行化跑automation<br>
+<img src="../photo/2015/dc49796233439d55cc73c9637dc54b6d.jpg" alt=""></p>
+
+<p>準備資料：Mac OS*3(1台mac mini搭配裡面2個Mac OS VM)，這邊我把mac mini當作hub，另外兩個Mac OS VM當作node使用<br>
+為什麼要各自的Mac OS VM呢？因為Mac OS的限制，一台Mac OS只能跑一台iOS device<br>
+所以我用了VM，一個VM接一台iOS device；至於android就沒有這個限制了，所以說你可以同一台machine上面既跑hub也跑多個node都沒關係</p>
+
+<p>首先在這3台Mac OS都裝上appium，怎麼裝appium我就不詳細描述了</p>
+
+<p>接著在mac mini上面，下載最新版的selenium grid 2 <br>
+<a href="http://selenium-release.storage.googleapis.com/index.html" rel="nofollow" target="_blank">http://selenium-release.storage.googleapis.com/index.html</a><br>
+我這邊下載的版本是selenium-server-standalone-2.44.0.jar</p>
+
+<p>在來在另外兩台Mac OS VM上面，分別找個位置去建立一個configuration file<br>
+我的configuration如下</p>
+<pre class="highlight python"><span class="p">{</span>
+
+    <span class="s">"capabilities"</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">{</span>
+
+            <span class="s">"browserName"</span><span class="p">:</span> <span class="s">"iphone 6"</span><span class="p">,</span>
+
+            <span class="s">"version"</span><span class="p">:</span> <span class="s">"8.0"</span><span class="p">,</span>
+
+            <span class="s">"maxInstances"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+
+            <span class="s">"platform"</span><span class="p">:</span> <span class="s">"MAC"</span>
+
+        <span class="p">}</span>
+
+    <span class="p">],</span>
+
+    <span class="s">"configuration"</span><span class="p">:</span> <span class="p">{</span>
+
+        <span class="s">"cleanUpCycle"</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+
+        <span class="s">"timeout"</span><span class="p">:</span><span class="mi">30000</span><span class="p">,</span>
+
+        <span class="s">"hub"</span><span class="p">:</span> <span class="s">"http://10.1.200.113:4444/grid/register"</span><span class="p">,</span>
+
+        <span class="s">"host"</span><span class="p">:</span> <span class="s">"10.1.201.178"</span><span class="p">,</span>
+
+        <span class="s">"proxy"</span><span class="p">:</span> <span class="s">"org.openqa.grid.selenium.proxy.DefaultRemoteProxy"</span><span class="p">,</span>
+
+        <span class="s">"maxSession"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+
+        <span class="s">"port"</span><span class="p">:</span> <span class="mi">4723</span><span class="p">,</span>
+
+        <span class="s">"hubPort"</span><span class="p">:</span> <span class="mi">4444</span><span class="p">,</span>
+
+        <span class="s">"hubHost"</span><span class="p">:</span> <span class="s">"10.1.200.113"</span><span class="p">,</span>
+
+        <span class="s">"url"</span><span class="p">:</span> <span class="s">"http://10.1.201.178:4723/wd/hub"</span><span class="p">,</span>
+
+        <span class="s">"remoteHost"</span><span class="p">:</span> <span class="s">"http://10.1.201.178:4723"</span><span class="p">,</span>
+
+        <span class="s">"register"</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+
+        <span class="s">"registerCycle"</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span>
+
+         <span class="s">"role"</span><span class="p">:</span> <span class="s">"node"</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre>
+
+<p>記得要把相對應的address改成你的環境裡面的設定</p>
+
+<p>在來就是執行的部分</p>
+
+<p>在hub上面打開terminal，run以下的command</p>
+
+<p>java -jar selenium-server-standa-2.44.0.jar -port 4444 -role hub -nodeTimeout 600</p>
+
+<p>不加-port 4444也行，因為預設的port就是4444</p>
+
+<p>接著在各個node上面先連結你的testing device，這邊就是iPhone，連到node上面</p>
+
+<p>打開terminal，run以下的command</p>
+
+<p>appium -a 10.1.201.178 -p 4723 -U $(your device's udid)  --nodeconfig $(your absolute path to  config.json)</p>
+
+<p>其中 10.1.201.178是你node的ip address，port是你appium要開的port。這兩個資料要和你的config.json裡面設定的要一樣, 記得把各個參數改成你相對應的環境參數，這邊nodeconfig的位址記得改成絕對路徑</p>
+
+<p>輸入完之後，你可以從node的terminal裡面看到</p>
+
+<p>info: --&gt; GET /wd/hub/status {}</p>
+
+<p>info: [debug] Responding to client with success: {"status":0,"value":{"build":{"version":"1.3.4","revision":"c8c79a85fbd6870cd6fc3d66d038a115ebe22efe"}}}</p>
+
+<p>的訊息</p>
+
+<p>接著在hub的terminal裡面也會看到連結成功的訊息</p>
+
+<p>或者從hub機器裡，打開browser，輸入<a href="http://localhost:444" rel="nofollow" target="_blank">http://localhost:444</a></p>
+
+<p>也可以看到這台hub所連接的node的資訊<br>
+<img src="../photo/2015/3a269a226384854c776e426c1d1591f1.png" alt=""></p>
+
+<p>如果到這邊都沒問題的話，就可以run你的test case了</p>
+
+<p>你要測試的app記得放在node機器裡面，如果你的app位置是放在local的話</p>
+
+<p>run你的test case就和run appium一樣，只是你要把server address和port改成hub的位址資訊</p>
+
+<p>連結到hub之後，hub就會自動的把你的test case轉到node上面去run</p>
+
+<p>run了一次，還沒跑完的時候，在run一次test case，hub會幫你把test case轉到另一台free的node上面去run，這樣子就是appium parallel execution</p>
+
+<p>大概就是這樣</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium + Selenium Grid2 = Appium Parallel Execution via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1888#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1888#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1888#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1888#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1888#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../link1220"><img alt="1427" class="uface" src="../user/large_avatar/1427.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="鬼谷后人甲" href="../link1220">link1220</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply1">1楼</a> · <abbr class="timeago" title="2015-01-16T17:01:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11713" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1427" href="http://testerhome.com/topics/1888/replies/11713/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="link1220" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好高端，我怎么就没想过在MAC MINI上面搭VM呢。。。这样子的MAC MINI内存需要几G才能承受得住？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply2">2楼</a> · <abbr class="timeago" title="2015-01-16T17:56:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11714" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1103" href="http://testerhome.com/topics/1888/replies/11714/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="cosyman" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>恩，在Windows下面跑Android，我们进行了大量实验，不够稳定。可以试试Mac版了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../colorhaake"><img alt="95446996dd2b17877bfbfdeaf25a2ca3" class="uface" src="../avatar/95446996dd2b17877bfbfdeaf25a2ca3.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="JJ" href="../colorhaake">colorhaake</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply3">3楼</a> · <abbr class="timeago" title="2015-01-16T19:19:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11716" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2219" href="http://testerhome.com/topics/1888/replies/11716/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="colorhaake" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在Mac下的原因就是要同時跑android和iOS<br>
+目前開了兩台VM，使用量也才用了60GB<br>
+原則上目前還沒有跑大量的case<br>
+機器還承受的住</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply4">4楼</a> · <abbr class="timeago" title="2015-01-18T17:26:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11749" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1888/replies/11749/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="seveniruby" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞。 一直没人写对应的文章，这个算是第一发了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply5">5楼</a> · <abbr class="timeago" title="2015-01-18T17:27:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11750" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1888/replies/11750/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1888#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../cosyman" class="at_user" title="@cosyman"><i>@</i>cosyman</a> 尽量不要再windows上去接管。 另外设备太多的时候， 不稳定的原因会增多，有些是网络连接的问题， 可能已经超出appium的范畴了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../cosyman"><img alt="29bea2982cf098795915166d7a907376" class="uface" src="../avatar/29bea2982cf098795915166d7a907376.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Bluesky Yao" href="../cosyman">cosyman</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply6">6楼</a> · <abbr class="timeago" title="2015-01-20T13:06:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11853" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1103" href="http://testerhome.com/topics/1888/replies/11853/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="cosyman" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1888#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 所以是重写Appium，还是优化Selendroid，或者定制个Appium Grid，如何选择，并做下去都有困难....</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1888#reply7">7楼</a> · <abbr class="timeago" title="2015-01-21T16:02:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11924" data-state="" data-type="Reply" href="1888#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1888/replies/11924/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="1888#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1888#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../cosyman" class="at_user" title="@cosyman"><i>@</i>cosyman</a> 不太好回答. 有些操作依赖adb. 脱离pc有点难. 如果不考虑adb, 可以把架构调整到更好些.<br>
+比如不再使用pc转发请求到mobile端口的方式,而是从mobile上直接连接远程服务器.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    快来晒出你的星语心愿吧 http://testerhome.com/topics/533
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1888#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

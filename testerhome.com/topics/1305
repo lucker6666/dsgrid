@@ -1,0 +1,503 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Linux MySQL Apache Django 配置 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../andward"><img alt="113" class="uface" src="../user/large_avatar/113.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Linux MySQL Apache Django 配置</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="andward_xu" href="../andward">andward</a>
+     · 
+    于<abbr class="timeago" title="2014-08-25T14:29:15+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="seveniruby" href="../seveniruby">seveniruby</a> 于<abbr class="timeago" title="2014-08-27T11:40:22+08:00"></abbr>回复
+     · 
+    329次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><img src="http://andward-blog-picture.qiniudn.com/people_crossing.jpg" alt="image"></p>
+
+<p>原帖地址：<a href="http://andward.github.io/python/django/2014/06/24/lmap-setup.html" rel="nofollow" target="_blank">http://andward.github.io/python/django/2014/06/24/lmap-setup.html</a></p>
+
+<p>最近workstation备份把home目录清空了，于是重新配了一下Django，发现之前的设置什么的全部都忘光了-__-! 看来必须记一记才行，免得再要重配的时候东找西找。</p>
+
+<p><strong>安装各种包</strong></p>
+
+<p>俺用的是ubuntu，装包什么的最方便了.</p>
+
+<p>Pip - python的包获取/安装工具，相当好用。django各个版本它都有：</p>
+
+<p><code>sudo apt-get install python-pip</code></p>
+
+<p>Django - 装原来用过的版本。不然的话会有很多兼容的问题（坑）。我用的是1.4.5的版本：</p>
+
+<p><code>pip install django==1.4.5</code></p>
+
+<p>Apache - 一般都是2.2.1吧：</p>
+
+<p><code>sudo apt-get install apache2</code></p>
+
+<p>MySQL - 装个server就够了：</p>
+
+<p><code>sudo apt-get install mysql-server</code></p>
+
+<p>MySQLdb - MySQL跟Django的data layer：</p>
+
+<p><code>sudo apt-get install python-mysqldb</code></p>
+
+<p>Mod_wsgi - 支持Apache模块和python应用的通信组件：</p>
+
+<p><code>sudo apt-get install libapache2-mod-wsgi</code></p>
+
+<p><strong>建立app</strong></p>
+
+<p>如果你已经有项目了，直接mv项目到/var/www/下面就行了。如果是新项目，同样到www的目录下新建一个项目：<br>
+<code>django-admin.py startproject your-app</code></p>
+
+<p><strong>配置apache</strong></p>
+
+<p>cd去/etc/apache2/site-available/下，把80端口的virtualshost换了。</p>
+<pre class="highlight plaintext">&lt;VirtualHost *:80&gt;
+
+         ServerAdmin your-app
+         ServerName your-app.com
+
+         DocumentRoot /var/www/your-app
+         &lt;Directory /&gt;
+                 Options FollowSymLinks
+                 AllowOverride None
+         &lt;/Directory&gt;
+         &lt;Directory /var/www/&gt;
+                 Options Indexes FollowSymLinks MultiViews
+                 AllowOverride None
+                 Order allow,deny
+                 allow from all
+         &lt;/Directory&gt;
+
+         ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+         &lt;Directory "/usr/lib/cgi-bin"&gt;
+                 AllowOverride None
+                 Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                 Order allow,deny
+                 Allow from all
+         &lt;/Directory&gt;
+
+         ErrorLog ${APACHE_LOG_DIR}/error.log
+
+         # Possible values include: debug, info, notice, warn, error, crit,
+         # alert, emerg.
+         LogLevel warn
+
+         CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+     Alias /doc/ "/usr/share/doc/"
+     &lt;Directory "/usr/share/doc/"&gt;
+         Options Indexes MultiViews FollowSymLinks
+         AllowOverride None
+         Order deny,allow
+         Deny from all
+         Allow from 127.0.0.0/255.0.0.0 ::1/128
+
+     &lt;/Directory&gt;
+ &lt;/VirtualHost&gt;
+</pre>
+
+<p><strong>配置wsgi</strong></p>
+
+<p>在/var/www/下新建一个文件夹叫apache，然后在文件夹里面新建一个叫django.wsgi的文件，加入以下：</p>
+<pre class="highlight plaintext"> import os
+ import sys
+ import django.core.handlers.wsgi
+ sys.stdout=sys.stderr
+ sys.path.append(r'/var/www/your-app')
+ os.environ['DJANGO_SETTINGS_MODULE']='settings'
+ application=django.core.handlers.wsgi.WSGIHandler()
+</pre>
+
+<p>如果你有多个app分支，建议把setting分开成多个配置文件。然后再切到/etc/apache2/下面，在httpd.conf里面加上：</p>
+<pre class="highlight plaintext">WSGIScriptAlias / /var/www/apache/django.wsgi
+WSGIScriptAlias / /var/www/apache/django.wsgi
+</pre>
+
+<p>###配置MySQL</p>
+
+<p><code>mysql -u root -p yourpwd</code>进入MySQL，建一个新的database<code>create database new_database</code>。在setting里面加入MySQL信息：</p>
+<pre class="highlight plaintext">DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'new_database',
+        'USER': 'root',
+        'PASSWORD': 'your password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
+</pre>
+
+<p><strong>配置settings</strong></p>
+
+<p>一些路径的配置：</p>
+<pre class="highlight plaintext">INSTALLED_APPS = ('your-app') #加入你的app
+
+DEBUG = True #开debug，如果是prod请设置成False
+TEMPLATE_DEBUG = DEBUG
+
+SITE_URL = '/var/www/your-app'
+
+MEDIA_ROOT = SITE_URL + '/media/'
+
+TEMPLATE_DIRS = (SITE_URL + '/template',)
+
+STATIC_PATH = SITE_URL + "/static/"
+</pre>
+
+<p>大功告成~</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Linux MySQL Apache Django 配置 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1305#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1305#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1305#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1305#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1305#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>6</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1305#reply1">1楼</a> · <abbr class="timeago" title="2014-08-25T19:20:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7952" data-state="" data-type="Reply" href="1305#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1305/replies/7952/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1305#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>回帖很少， 我赞一下， 看来大家还是对移动测试更感兴趣</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../andward"><img alt="113" class="uface" src="../user/large_avatar/113.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="andward_xu" href="../andward">andward</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1305#reply2">2楼</a> · <abbr class="timeago" title="2014-08-25T20:24:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7957" data-state="" data-type="Reply" href="1305#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="113" href="http://testerhome.com/topics/1305/replies/7957/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="andward" href="1305#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1305#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> thanks😁</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1305#reply3">3楼</a> · <abbr class="timeago" title="2014-08-25T21:22:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7965" data-state="" data-type="Reply" href="1305#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1305/replies/7965/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="lihuazhang" href="1305#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你用 django 干嘛？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../andward"><img alt="113" class="uface" src="../user/large_avatar/113.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="andward_xu" href="../andward">andward</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1305#reply4">4楼</a> · <abbr class="timeago" title="2014-08-25T21:48:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7967" data-state="" data-type="Reply" href="1305#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="113" href="http://testerhome.com/topics/1305/replies/7967/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="andward" href="1305#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1305#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 平日耍耍…做了个release report放在局域网用</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1305#reply5">5楼</a> · <abbr class="timeago" title="2014-08-25T22:29:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7971" data-state="" data-type="Reply" href="1305#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1305/replies/7971/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="1305#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个我玩过～～不过是很久前了～赞个～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1305#reply6">6楼</a> · <abbr class="timeago" title="2014-08-27T11:40:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8032" data-state="" data-type="Reply" href="1305#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1305/replies/8032/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="seveniruby" href="1305#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>django也不错, gae也是用的它. 不过发展的还是太慢. 我现在被android逼的重回坑爹的java.<br>
+java里面的spring和play还是不错的. spring架构更优秀, 将来会超越rails和django</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    请没有头像的同学，上传头像吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1305#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

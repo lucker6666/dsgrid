@@ -1,0 +1,1581 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 使用 calabash 测试开源中国 Android 客户端 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">使用 calabash 测试开源中国 Android 客户端</h1>
+  <div class="info leader">
+    <a class="node" href="node35">Calabash</a>
+     · 
+    <a data-author="true" data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+     · 
+    于<abbr class="timeago" title="2014-09-01T22:37:47+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="htmlbiji" href="../htmlbiji">htmlbiji</a> 于<abbr class="timeago" title="2014-12-13T11:57:04+08:00"></abbr>回复
+     · 
+    753次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Calabash-android是支持android的UI自动化测试框架，前面已经介绍过《<a href="http://my.oschina.net/fitnessefan/blog/305350" target="_blank">中文Win7下成功安装calabash-android步骤</a>》，这篇博文尝试测试一个真实应用：开源中国客户端。目的是和大家一起学习calabash测试工具。</p>
+<h4>测试环境与源码准备</h4><h4>先介绍一下oschina.net</h4>
+<p>&lt;www.oschina.net&gt; </p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/205552_gNW5_1990460.png" alt="在此输入图片描述"></p>
+
+<p>oschina除了有网站，还有三大平台手机客户端：</p>
+
+<p><a href="http://www.oschina.net/app" rel="nofollow" target="_blank">http://www.oschina.net/app</a></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/205812_xiA1_1990460.png" alt="客户端下载"></p>
+
+<p>客户端已经开源！</p>
+
+<p>那么开源可以用来做什么呢？</p>
+
+<p>我正在学用calabash-android，得找到一个合适的待测app，平时手机上开源中国这个app用的蛮顺手了，所以就选它了，在此特别向开源中国的开发工程师致谢！</p>
+<h4>环境准备：ADT+calabash-android</h4>
+<p>可以参考：<br><br>
+<a href="http://my.oschina.net/fitnessefan/blog/305350" target="_blank">中文Win7下成功安装calabash-android步骤</a></p>
+<h4>下载oschina/android-app源代码</h4>
+<p>首先到 <a href="http://git.oschina.net/oschina/android-app" rel="nofollow" target="_blank">http://git.oschina.net/oschina/android-app</a> ，  </p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/210554_zPkP_1990460.png" alt="在此输入图片描述"></p>
+
+<p>以下两种下载源代码方式的方式都可以：  </p>
+
+<ol>
+<li>可以直接点击”下载zip“</li>
+<li>复制git仓库url: <a href="https://git.oschina.net/oschina/android-app.gitEclipse/ADT%E4%B8%AD%E6%89%93%E5%BC%80Windows" rel="nofollow" target="_blank">https://git.oschina.net/oschina/android-app.gitEclipse/ADT中打开Windows</a>，然后在 &gt; Open Perspective &gt; Other... &gt; Get Resporsitory Exploring，clone源代码</li>
+</ol>
+
+<p>导入到ADT中后，源代码如下：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/211723_WQFQ_1990460.png" alt="在此输入图片描述"></p>
+<h4>在adt-bundle-20140702中编译运行oschina/android-app的几个问题</h4>
+<p><strong>问题1：</strong> adt-bundle-20140702的API版本是20，所以要修改project.properties：<br>
+<code>target=android-15</code> 改成 <code>target=android-20</code></p>
+
+<p><strong>问题2：</strong> 源代码是使用了已作废的class: android.webkit.CacheManager<br>
+oschina-android-app/src/net/oschina/app/AppContext.java中使用了android.webkit.CacheManager<br>
+所以要把相关代码禁掉：</p>
+
+<p>61行：   </p>
+<pre class="highlight plaintext">    //import android.webkit.CacheManager;
+</pre>
+
+<p>1503到1509行：  </p>
+<pre class="highlight plaintext">    //      File file = CacheManager.getCacheFileBaseDir();  
+    //      if (file != null &amp;&amp; file.exists() &amp;&amp; file.isDirectory()) {  
+    //          for (File item : file.listFiles()) {  
+    //              item.delete();  
+    //          }  
+    //          file.delete();  
+    //      }         
+</pre>
+
+<p>问题3：Run As Android Application报错：Installation error: INSTALL_FAILED_VERSION_DOWNGRADE<br>
+原因是：手机已经装了一个开源中国的１.7.7.0版本，而ADT要下载的是1.7.6.9版本，Android系统不允许安装一个比已安装版本更旧的版本，所以从手机上卸载已有的１.7.7.0版本就可以了。</p>
+<h4>ADT编译并上传oschina/android-app到手机</h4>
+<p>Run As Android Application &gt; 选择连接到电脑Usb的手机 &gt; OK<br>
+<img src="http://static.oschina.net/uploads/space/2014/0901/214305_k5WO_1990460.png" alt="在此输入图片描述"></p>
+
+<p>#calabash测试步骤</p>
+<h4>先确认oschina/android-app声明了访问网络的权限</h4>
+<p>oschina/android-app项目的AndroidManifest.xml中应该如下行：</p>
+<pre class="highlight plaintext">    &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+</pre>
+<h4>在oschina/android-app根目录中创建calabash目录</h4>
+<p>在命令行下进入oschina/android-app的源代码根目录：</p>
+<pre class="highlight plaintext">    D:\git\oschina&gt;cd android-app
+
+    D:\git\oschina\android-app&gt;dir
+     Volume Serial Number is 9823-AB19
+
+     Directory of D:\git\oschina\android-app
+
+    2014/09/01  20:26    &lt;DIR&gt;          .
+    2014/09/01  20:26    &lt;DIR&gt;          ..
+    2014/09/01  20:21               783 .classpath
+    2014/09/01  20:21    &lt;DIR&gt;          .git
+    2014/09/01  20:21                64 .gitignore
+    2014/09/01  20:21               822 .project
+    2014/09/01  20:21    &lt;DIR&gt;          .settings
+    2014/09/01  20:21            10,829 AndroidManifest.xml
+    2014/09/01  20:21    &lt;DIR&gt;          assets
+    2014/09/01  20:42    &lt;DIR&gt;          bin
+    2014/09/01  20:26    &lt;DIR&gt;          gen
+    2014/09/01  20:21    &lt;DIR&gt;          libs
+    2014/09/01  20:21            18,092 LICENSE.txt
+    2014/09/01  20:21             1,424 proguard.cfg
+    2014/09/01  20:41               563 project.properties
+    2014/09/01  20:21             4,183 README.md
+    2014/09/01  20:21    &lt;DIR&gt;          res
+    2014/09/01  20:21    &lt;DIR&gt;          src
+                   8 File(s)         36,760 bytes
+                  10 Dir(s)  133,131,993,088 bytes free
+
+    D:\git\oschina\android-app&gt;
+</pre>
+
+<p>创建calabash目录：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app&gt;mkdir calabash
+</pre>
+
+<p>创建cucumber skeleton：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app&gt;cd calabash
+
+    D:\git\oschina\android-app\calabash&gt;calabash-android gen
+
+    ----------Question----------
+    I'm about to create a subdirectory called features.
+    features will contain all your calabash tests.
+    Please hit return to confirm that's what you want.
+    ---------------------------
+
+
+    ----------Info----------
+    features subdirectory created.
+    ---------------------------
+
+    D:\git\oschina\android-app\calabash&gt;dir
+     Volume Serial Number is 9823-AB19
+
+     Directory of D:\git\oschina\android-app\calabash
+
+    2014/09/01  21:54    &lt;DIR&gt;          .
+    2014/09/01  21:54    &lt;DIR&gt;          ..
+    2014/09/01  21:54    &lt;DIR&gt;          features
+                   0 File(s)              0 bytes
+                   3 Dir(s)  133,131,988,992 bytes free
+
+    D:\git\oschina\android-app\calabash&gt;
+</pre>
+
+<p>编辑 D:\git\oschina\android-app\calabash\features\my_first.feature：<br>
+初始内容：</p>
+<pre class="highlight plaintext">    Feature: Login feature
+
+      Scenario: As a valid user I can log into my app
+        When I press "Login"
+        Then I see "Welcome to coolest app ever"
+</pre>
+
+<p>第一行Feature: XX，第二行 Scenario: YY是给人读的，所以随便填写什么中文英文内容都可以<br>
+关键内容是第三行When I press ..和第四行Then I see ..,    这是给Cucumber软件识别的。<br>
+When后面跟动作语句，Then后面跟内容检查语句</p>
+
+<p>先尝试如下改动：</p>
+<pre class="highlight plaintext">    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I see "软件版本更新"
+</pre>
+
+<p>用 <code>%windir%\system32\cmd.exe /k chcp65001&amp;&amp;ansicon</code> 启动ansicon，<br><br>
+运行calabash-andriod run</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android run D:\git\oschina\android-app\bin\oschina-android-app.apk
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/221601_dpHf_1990460.png" alt="在此输入图片描述"><br>
+测试失败，原因是Then的默认等待时间只有2秒，开源中国app的启动时间比较长。<br>
+ansicon中未能显示中文："软件版本更新"，这个后面补充中有描述。</p>
+
+<p>按照 <a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md" rel="nofollow" target="_blank">https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/canned_steps.md</a>的指导，可以指定等待几秒：</p>
+<pre class="highlight plaintext">    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I wait for 10 seconds
+        Then I see "软件版本更新"
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/222124_xHgk_1990460.png" alt="在此输入图片描述"></p>
+
+<p>手机上看到的开源中国启动后画面：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0901/222455_AU4S_1990460.png" alt="在此输入图片描述"></p>
+
+<p>按钮“立即更新”为什么是红色的？以后再解决。</p>
+
+<p>到此步为止，calabash测试开源中国Android客户端的环境已经建立完毕，接下去同学们就可以欢快的尝试canned_steps.md里的各个预定义步骤了。</p>
+
+<p>我也会继续完成这个测试用例，大家一起共同进步！</p>
+<h4>补充解决问题：calabash测试输出中不能显示中文</h4>
+<p><strong>解决方法：</strong><br><br>
+ansicon启动时，不要用<code>chcp 65001</code>设置为UTF-8编码，<br>
+用 <code>%windir%\system32\cmd.exe /k ansicon</code> 启动ansicon，然后运行calabash:</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/213538_G0CP_1990460.png" alt="在此输入图片描述"></p>
+<h4>试用calabash预定义指令</h4><h4>试用 press, don't see, screenshot</h4>
+<p>运行前，先把D:\git\oschina\android-app\calabash下的screenshot_*.png都删了，避免搞不清楚旧图和新图。  </p>
+
+<p>不解释，看脚本和截图：  </p>
+<pre class="highlight plaintext">    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I wait for 5 seconds
+        Then I take a screenshot
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I take a screenshot
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/220315_n0R6_1990460.png" alt="在此输入图片描述"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/220330_wsC4_1990460.png" alt="在此输入图片描述"></p>
+
+<p>calabash脚本生成的手机截图：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/220352_5fY3_1990460.png" alt="在此输入图片描述"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/220402_5iYe_1990460.png" alt="在此输入图片描述"></p>
+<h4>到系统设置中启用左右滑动，为了后面测试手势指令</h4><pre class="highlight plaintext">    Feature: 启动开源中国
+
+      Scenario: 启动应用后，能看到软件版本更新信息
+        Then I wait for 5 seconds
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I see "最新资讯"
+        Then I take a screenshot
+        Then I press the menu key
+        Then I see "系统设置"
+        Then I take a screenshot
+        When I press "系统设置"
+        Then I see "已关闭左右滑动"
+        Then I take a screenshot
+        When I press "已关闭左右滑动"
+        Then I see "已启用左右滑动"
+        Then I take a screenshot
+        Then I go back
+        Then I see "最新资讯"
+        Then I take a screenshot
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/225019_k283_1990460.png" alt="在此输入图片描述"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/225031_BbC2_1990460.png" alt="在此输入图片描述"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/225040_kigD_1990460.png" alt="在此输入图片描述"></p>
+<h4>手势：swipe right = 翻看右边的内容</h4>
+<p>这个right比较难理解，是不是解释为“翻看右边的内容”比较容易记住。</p>
+<pre class="highlight plaintext">    Feature: 启动开源中国
+          ...
+          Then I swipe right
+          Then I see "问答"
+          Then I don't see "最新资讯"
+          Then I take a screenshot
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0904/200440_FIlI_1990460.png" alt="在此输入图片描述">    </p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0904/200248_9lY2_1990460.gif" alt="在此输入图片描述"></p>
+<h4>scroll up 运行失败</h4><pre class="highlight plaintext">          Then I scroll up
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0904/201223_2wOs_1990460.png" alt="在此输入图片描述"></p>
+
+<p>找不到android.widget.ScrollView元素，看样子oschina的可滚动区域不是用标准控件实现的。</p>
+<h4>通过id找到控件并做相应操作</h4>
+<p>接下去我要搜索包含"calabash"的博客，</p>
+
+<p>首先要点击首页右上角的放大镜图标：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/135717_vTd6_1990460.png" alt="放大镜图标"></p>
+
+<p>这个图标上没有text可以识别，所以必须到首页布局文件mail.xml中找到搜索图标的id，</p>
+
+<p>ADT中打开文件：D:\git\oschina\android-app\res\layout\main.xml</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/140345_WMd2_1990460.png" alt="main.xml"></p>
+
+<p>点击搜索图标，右上角的Outline指示搜索图标在main_header.xml中定义。</p>
+
+<p>双击 include-main_header，ADT打开main_header.xml：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/140405_IJbp_1990460.png" alt="search-id"></p>
+
+<p>点击搜索图标，右边的Outline和Properties区都指示搜索图标的id是main_head_search，控件类型是：ImageButton</p>
+
+<p>接下去在calabash中可以用id点击搜索图标了：</p>
+<pre class="highlight plaintext">      Feature: 搜索包含calabash的博客
+
+        Scenario: 启动应用后，能搜到包含calabash的博客
+          Then I wait for 5 seconds
+          Then I see "软件版本更新"
+          Then I see "以后再说"
+          Then I take a screenshot
+          When I press "以后再说"
+          Then I don't see "以后再说"
+          Then I see "最新资讯"
+          Then I take a screenshot
+          When I press view with id "main_head_search"
+          Then I see "软件"
+          Then I see "问答"
+          Then I see "博客"
+          Then I see "新闻"
+          Then I take a screenshot
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/144432_A6Mz_1990460.png" alt="with-id"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/144452_ONYH_1990460.png" alt="搜索输入框"></p>
+
+<p>我尝试了把<code>I press view with id "main_head_search"</code> 改成 <code>I press "main_head_search"</code>，也能找到该搜索图标。<br><br>
+说明：<code>I press "text/id"</code> 是万能语法，同时支持文本和id定位控件。那我就不用再记住复杂语句<code>I press view with id "main_head_search"</code>了。</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/145125_mSXt_1990460.png" alt="no-with-id"></p>
+<h4>输入文本并按回车键搜索</h4><pre class="highlight plaintext">      Feature: 搜索包含calabash的博客
+          ...
+          When I enter "calabash测试" into input field number 1
+          Then I take a screenshot
+          When I press the enter button
+          Then I see "已加载全部"
+          Then I take a screenshot
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/153048_KjjQ_1990460.png" alt="calabash-index-enter"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/152100_Lymj_1990460.png" alt="输入calabash测试">    </p>
+
+<p>这里的<code>enter button</code> 就是软键盘上的"搜索"键。</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/153155_JFYw_1990460.png" alt="搜索calabash结果"></p>
+
+<p><strong>注意：</strong> 用index查找控件，是从1开始的，而不是像C/Java数组的元素下标那样从0开始。</p>
+<h4>为了验证index从1开始，下面再尝试登录</h4><pre class="highlight plaintext">      Feature: 登录开源中国
+
+        Scenario: 启动应用后，输入账号和密码能登录开源中国
+          Then I wait for 5 seconds
+          Then I see "软件版本更新"
+          Then I see "以后再说"
+          Then I take a screenshot
+          When I press "以后再说"
+          Then I don't see "以后再说"
+          Then I see "最新资讯"
+          Then I take a screenshot
+          Then I press the menu key
+          Then I see "用户登录"
+          Then I take a screenshot
+          When I press "用户登录"
+          Then I see "记住我的登录信息"
+          Then I take a screenshot
+          When I enter "username" into input field number 1
+          And I enter "123456" into input field number 2
+          And I press button number 2 
+          Then I see "登录失败用户名或口令错"
+          Then I take a screenshot
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/160900_vgtB_1990460.png" alt="calabash-login">      </p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/160952_RkvF_1990460.png" alt="在此输入图片描述"></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0908/161016_mTIg_1990460.png" alt="在此输入图片描述"></p>
+
+<p><strong>说明：</strong><br><br>
+1. 登录窗口中，有两个输入框："账号"和"密码"，index分别是1和2<br><br>
+2. 登录窗口中，有两个button："记住我的登录信息"和"登录"，index分别是1和2，checkbox也是button，奇怪吧？<br><br>
+3. 尝试<code>I press "登录"</code>定位登录按钮失败  </p>
+<h4>calabash测试集管理</h4><h4>一个Feature下包含多个Scenario</h4>
+<p>把 <code>D:\git\oschina\android-app\calabash\features\first.feature</code>  改名为 startup.feature，内容如下：</p>
+<pre class="highlight plaintext">    Feature: 启动开源中国
+
+      Scenario: 首次启动应用后，启用左右滑动
+        When I wait up to 5 seconds to see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I see "最新资讯"
+        Then I take a screenshot
+        Then I press the menu key
+        Then I see "系统设置"
+        Then I take a screenshot
+        When I press "系统设置"
+        Then I see "已关闭左右滑动"
+        And  I see "启动检查更新"
+        Then I take a screenshot
+        When I press "已关闭左右滑动"
+        Then I see "已启用左右滑动"
+        When I press "启动检查更新"
+        Then I take a screenshot
+
+      Scenario: 第二次启动应用后，往右滑动到"问答"
+        When I wait up to 5 seconds to see "最新资讯"
+        When I swipe right
+        Then I see "问答"
+        Then I take a screenshot      
+</pre>
+
+<p>本Feature有两个Scenario：  </p>
+
+<ul>
+<li>第一个在系统设置中启用左右滑动，关闭启动时检查更新</li>
+<li>第二个往右滑动到“问答”页</li>
+</ul>
+
+<p><strong>需要说明的是：</strong>  </p>
+
+<ul>
+<li>每个Feature在运行前都会退出app，卸载app，重装app，启动app<br>
+</li>
+<li>每个Scenario在运行前都会退出app，启动app<br>
+</li>
+<li>
+<code>I see "启动检查更新"</code> 只有在1280x720分辨率的手机上才能看到；854x480的手机上看不到，会运行错误。</li>
+</ul>
+<h4>一次运行多个Feature文件</h4>
+<p>按照 <a href="http://www.cnblogs.com/puresoul/archive/2011/12/28/2305160.html" rel="nofollow" target="_blank">http://www.cnblogs.com/puresoul/archive/2011/12/28/2305160.html</a> 的《Cucumber入门之Gherkin》介绍，  </p>
+
+<blockquote>
+<p>一旦我们写好了一个feature文件，我们就可以使用 cucumber命令来运行它。如果cucumber命令后不跟任何东西的话，那么它会执行所有的.feature文件。如果我们只想运行某一个.feature文件,我们可以使用命令cucumber features\feature_name</p>
+</blockquote>
+
+<p>我现在在目录<code>D:\git\oschina\android-app\calabash\features</code>下有两个feature文件：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;dir features\*.feature
+     驱动器 D 中的卷是 工作
+     卷的序列号是 9823-AB19
+
+     D:\git\oschina\android-app\calabash\features 的目录
+
+    2014/09/14  21:17               775 login.feature
+    2014/09/15  21:20               932 startup.feature
+                   2 个文件          1,707 字节
+                   0 个目录 131,744,169,984 可用字节
+</pre>
+
+<p>login.feature 和 startup.feature，feature的执行顺序无关紧要，因为每个feature运行时都要重新安装一遍app。</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android run ..\bin\oschina-android-app.apk
+</pre>
+
+<p>将执行这两个feature文件。</p>
+
+<p>如果只想执行 <code>startup.feature</code> 文件，要在calabash-android命令后面添加<code>features\startup.feature</code> ：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android run ..\bin\oschina-android-app.apk features\startup.feature
+</pre>
+
+<p><strong>中文Win7环境特别说明：</strong><br><br>
+如果feature文件名是中文的，比如：启动.feature，那么在cmd 中 <code>chcp 65001</code> 后，运行命令：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android run ..\bin\oschina-android-app.apk features\启动.feature
+</pre>
+
+<p>将报错：</p>
+<pre class="highlight plaintext">    invalid byte sequence in UTF-8 (ArgumentError)
+</pre>
+
+<p>中文Win7下中文编码统计：  </p>
+
+<ul>
+<li>文件名：GBK</li>
+<li>feature文件内容：UTF-8</li>
+<li>cmd：首次测试app或换手机后，UTF-8，feature中的中文显示为空白</li>
+<li>cmd：第二次测试app，GBK，feature中的中文能正确显示</li>
+</ul>
+
+<p>Ubuntu环境下，feature文件名包含中文没有任何问题。</p>
+
+<p>我们看一下calabash-android的命令参数格式：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android
+      Usage: calabash-android &lt;command-name&gt; [parameters] [options]
+      &lt;command-name&gt; can be one of
+        help
+          prints more detailed help information.
+        gen
+          generate a features folder structure.
+        setup
+          sets up a non-default keystore to use with this test project.
+        resign &lt;apk&gt;
+          resigns the app with the currently configured keystore.
+        build &lt;apk&gt;
+          builds the test server that will be used when testing the app.
+        run &lt;apk&gt;
+          runs Cucumber in the current folder with the enviroment needed.
+        version
+          prints the gem version
+
+      &lt;options&gt; can be
+        -v, --verbose
+          Turns on verbose logging
+</pre>
+
+<p>我猜想其中的<code>[parameters]</code>就是指cucumber参数</p>
+<h4>扩展calabash预定义指令</h4><h4>从环境变量读取测试数据</h4>
+<p><strong>有一个现实的需求：</strong><br><br>
+如果有一个oschina测试帐号要在多个Feature中使用，<br><br>
+或者我的calabash测试脚本共享给其他人后，他的oschina测试帐号要换成自己的。<br><br>
+如果直接修改Feature文件中的账号和密码，可能要修改多个地方。<br><br>
+所以，设想是否能扩展calabash预定义指令：</p>
+<pre class="highlight plaintext">    Then /^I enter "([^\"]*)" into input field number (\d+)$/ do |text, index|
+</pre>
+
+<p>扩展为支持从环境变量读取输入文本：</p>
+<pre class="highlight plaintext">    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+</pre>
+
+<p>从文件 <code>D:\ruby-1.9.3-p545-i386-mingw32\lib\ruby\gems\1.9.1\gems\calabash-android-0.5.1\lib\calabash-android\steps\enter_text_steps.rb</code> 中拷贝：</p>
+<pre class="highlight plaintext">    Then /^I enter "([^\"]*)" into input field number (\d+)$/ do |text, index|
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+</pre>
+
+<p>到 <code>D:\git\oschina\android-app\calabash\features\step_definitions\calabash_steps.rb</code> 中，改动后，如下：</p>
+<pre class="highlight plaintext">    require 'calabash-android/calabash_steps'
+
+    Then /^I enter %([^%]*)% into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+
+    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+</pre>
+
+<p>这里环境变量支持两种格式：</p>
+
+<ul>
+<li>
+<code>%text_ev%</code> Windows cmd的格式</li>
+<li>
+<code>$text_ev</code> Linux Bash的格式</li>
+</ul>
+
+<p>然后运行calabash前，设置环境变量：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;set td_username_1=username1
+    D:\git\oschina\android-app\calabash&gt;set td_password_1=123456
+</pre>
+
+<p>上述两条命令也可以放到 testdata.bat 文件中，然后执行testdata.bat：</p>
+<pre class="highlight plaintext">    set td_username_1=username1
+    set td_password_1=123456
+</pre>
+
+<p>修改 login.feature ：</p>
+<pre class="highlight plaintext">    Feature: 登录开源中国
+
+      Scenario: 启动应用后，输入错误的账号和密码不能登录
+        Then I wait for 5 seconds
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+        Then I see "最新资讯"
+        Then I take a screenshot
+        Then I press the menu key
+        Then I see "用户登录"
+        Then I take a screenshot
+        When I press "用户登录"
+        Then I see "记住我的登录信息"
+        Then I take a screenshot
+        When I enter %td_username_1% into input field number 1
+        And I enter $td_password_1 into input field number 2
+        And I press button number 2 
+        Then I see "登录失败用户名或口令错"
+        Then I take a screenshot
+</pre>
+
+<p>运行calabash：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android run ..\bin\oschina-android-app.apk features\login.feature
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0915/214716_t6wH_1990460.png" alt="在此输入图片描述"></p>
+
+<p>为了支持跨平台测试数据维护，可以把环境变量设置放入ruby脚本 testdata.rb 中：</p>
+<pre class="highlight plaintext">    ENV["td_username_1"]="username1"
+    ENV["td_password_1"]="123456"
+</pre>
+
+<p>在irb中运行calabash：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;irb
+    irb(main):001:0&gt; require './testdata.rb'
+    =&gt; true
+    irb(main):002:0&gt; ENV["td_username_1"]
+    =&gt; "username1"
+    irb(main):003:0&gt;exec('calabash-android run ..\bin\oschina-android-app.apk features\login.feature')
+</pre>
+
+<p>Ruby设置和读取环境变量真是太方便了，执行系统命令也很方便，不需要到处import库，值得深入掌握。</p>
+
+<p><strong>Linux补充：</strong>  </p>
+
+<p>Linux下可以把测试数据写入testdata.bashrc 中：</p>
+<pre class="highlight plaintext">    export td_username_1="username1"
+    export td_password_1="123456"
+</pre>
+
+<p>enter_text_steps.rb 文件位置：</p>
+<pre class="highlight plaintext">    /var/lib/gems/1.9.1/gems/calabash-android-0.5.2/lib/calabash-android/steps/enter_text_steps.rb
+</pre>
+<h4>使用cucumber steps封装calabash预定义指令</h4><pre class="highlight plaintext">    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      enter_text("android.widget.EditText index:#{index.to_i-1}", text)
+    end
+</pre>
+
+<p>等价于：</p>
+<pre class="highlight plaintext">    Then /^I enter \$([^\$]*) into input field number (\d+)$/ do |text_ev, index|
+      text = ENV[text_ev]
+      steps %{
+       Then I enter "#{text}" into input field number #{index}
+      }
+    end
+</pre>
+
+<p><strong>说明：</strong><br>
+<strong>steps</strong>是cucumber的ruby api，用于封装其他cucumber指令。<br>
+<strong>%{}</strong>是ruby中表示多行字符串的格式。一对大括号之间的所有换行符和空格符都会原原本本的输出。</p>
+<pre class="highlight plaintext">    %{
+      第一行
+      第二行
+    }
+</pre>
+
+<p>等价于： </p>
+<pre class="highlight plaintext">    "\n  第一行\n  第二行\n  "
+</pre>
+<h4>定义指令I ignore upgrade prompt 忽略升级提示</h4>
+<p>每次运行feature的第一个scenario时，总要忽略升级提示，第二个scenario时，又不要忽略升级提示，<br>
+所以我准备定义一个指令，判断如果出现升级提示，则点击忽略按钮。<br>
+忽略提示的步骤如下：</p>
+<pre class="highlight plaintext">        Then I see "软件版本更新"
+        Then I see "以后再说"
+        Then I take a screenshot
+        When I press "以后再说"
+        Then I don't see "以后再说"
+</pre>
+
+<p>简单封装如下：</p>
+<pre class="highlight plaintext">    Then /^I ignore upgrade prompt$/ do
+      puts "如果出现升级提示，则点击忽略按钮"
+      steps %{
+        Then I see "软件版本更新"
+        Then I see "以后再说"
+        When I press "以后再说"
+        Then I don't see "以后再说"
+      }
+    end
+</pre>
+
+<p>上面假定一定出现升级提示，<br>
+下面，进一步判断升级提示出现后，再点击忽略按钮：<br>
+根据 calabash Ruby API <a href="https://github.com/calabash/calabash-android/blob/master/documentation/ruby_api.md" rel="nofollow" target="_blank">https://github.com/calabash/calabash-android/blob/master/documentation/ruby_api.md</a><br>
+使用 element_exists(uiquery)判断"以后再说"是否出现</p>
+<pre class="highlight plaintext">    Then /^I ignore upgrade prompt$/ do
+      if element_exists("* {text CONTAINS[c] '以后再说'}")
+        puts "看到了升级提示，取消升级完成启动"
+        steps %{
+          When I press "以后再说"
+          Then I don't see "以后再说"
+        }
+      else
+        puts "未看到升级提示，正常启动"
+      end
+    end
+</pre>
+
+<p>uiquery语法是直接从 <a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb" rel="nofollow" target="_blank">https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb</a> 里的 Then /^I touch the "([^\"]*)" text$/ do |text| 里拷贝的。</p>
+
+<p><strong>login.feature 应用新定义的指令：</strong></p>
+<pre class="highlight plaintext">    Feature: 登录开源中国
+
+      Scenario: 启动应用后，输入错误的账号和密码不能登录
+        When I wait for 5 seconds
+        And I ignore upgrade prompt
+        Then I see "最新资讯"
+        Then I take a screenshot
+
+        When I press the menu key
+        Then I see "用户登录"
+        Then I take a screenshot
+
+        When I press "用户登录"
+        Then I see "记住我的登录信息"
+        Then I take a screenshot
+        When I enter %td_username_1% into input field number 1
+        And I enter $td_password_1 into input field number 2
+        And I press button number 2 
+        Then I see "登录失败用户名或口令错"
+        Then I take a screenshot
+</pre>
+
+<p>具体执行结果就不贴啦，相信大家都会执行测试了。</p>
+<h4>ruby控制台下使用query查询app当前页面的控件</h4>
+<p>参考文档：<br><br>
+<a href="https://github.com/calabash/calabash-android/wiki/05-Query-Syntax" rel="nofollow" target="_blank">https://github.com/calabash/calabash-android/wiki/05-Query-Syntax</a><br><br>
+<a href="http://blog.lesspainful.com/2012/12/18/Android-Query/" rel="nofollow" target="_blank">http://blog.lesspainful.com/2012/12/18/Android-Query/</a></p>
+
+<p>按照上述文档很容易查询控件的id, 比如启动开源中国后的首页，查询结果：</p>
+<pre class="highlight plaintext">    D:\git\oschina\android-app\calabash&gt;calabash-android console ..\bin\oschina-android-app.apk
+    irb(main):001:0&gt; reinstall_apps
+    5168 KB/s (2498389 bytes in 0.472s)
+    3800 KB/s (544875 bytes in 0.140s)
+    nil
+    irb(main):002:0&gt; start_test_server_in_background
+    nil
+</pre>
+
+<p>启动后首页弹出升级提示对话框：  </p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/220352_5fY3_1990460.png" alt="在此输入图片描述"></p>
+<pre class="highlight plaintext">    irb(main):003:0&gt; query('button')
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0916/203432_gSJj_1990460.png" alt="在此输入图片描述"></p>
+
+<p>看出问题没有，中文编码问题又来捣乱了：</p>
+
+<p><code>"text" =&gt; "\u7ACB\u5373\u66F4\u65B0",</code> 的中文是"**立即更新**"，这里只能看的是4个中文字<br>
+<code>"text" =&gt; "\u4EE5\u540E\u518D\u8BF4",</code> 的中文是"**以后再说**"</p>
+
+<p>又要说人家Ubuntu了，Ubuntu下query结果的中文能直接显示。</p>
+
+<p>在console下还可以点击按钮，<br><br>
+<a href="https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb" rel="nofollow" target="_blank">https://github.com/calabash/calabash-android/blob/master/ruby-gem/lib/calabash-android/steps/press_button_steps.rb</a> 中定义了按button编号点击的指令 ：</p>
+<pre class="highlight plaintext">    Then /^I press button number (\d+)$/ do |index|
+      tap_when_element_exists("android.widget.Button index:#{index.to_i-1}")
+    end
+</pre>
+
+<p>要选择按钮"以后再说"，把 <code>#{index.to_i-1}</code> 代成1， 在console下输入：</p>
+<pre class="highlight plaintext">    tap_when_element_exists("android.widget.Button index:1")
+</pre>
+
+<p>然后按钮"以后再说"被点击，升级提示对话框消失了：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0903/220402_5iYe_1990460.png" alt="在此输入图片描述"></p>
+
+<p>所以，可以放心的在feature文件中加入指令：</p>
+<pre class="highlight plaintext">    Then I press button number 2
+</pre>
+
+<p>下面还希望找到右上角搜索图标的id，在console下输入：</p>
+<pre class="highlight plaintext">    query("*")
+</pre>
+
+<p>总共列出了111个控件，编号从0到110，其中第7个是：</p>
+<pre class="highlight plaintext">    irb(main):008:0&gt; query("*")
+    [
+        ...
+        [  7] {
+                            "id" =&gt; "main_head_search",
+                       "enabled" =&gt; true,
+            "contentDescription" =&gt; nil,
+                         "class" =&gt; "android.widget.ImageButton",
+                          "rect" =&gt; {
+                "center_y" =&gt; 90,
+                "center_x" =&gt; 676,
+                  "height" =&gt; 80,
+                       "y" =&gt; 50,
+                   "width" =&gt; 80,
+                       "x" =&gt; 636
+            },
+        ...
+    ]
+</pre>
+
+<p>根据其坐标(x,y) = (636,50)，可以确定就是右上角的搜索按钮，按钮的id是main_head_search。</p>
+
+<p>还可以查询本页面的button：</p>
+<pre class="highlight plaintext">     query("imagebutton")
+</pre>
+
+<p>只有1个查询结果，就是搜索按钮：</p>
+<pre class="highlight plaintext">    irb(main):008:0&gt; query("imagebutton")
+    [
+        [0] {
+                            "id" =&gt; "main_head_search",
+                       "enabled" =&gt; true,
+            "contentDescription" =&gt; nil,
+                         "class" =&gt; "android.widget.ImageButton",
+                          "rect" =&gt; {
+                "center_y" =&gt; 90,
+                "center_x" =&gt; 676,
+                  "height" =&gt; 80,
+                       "y" =&gt; 50,
+                   "width" =&gt; 80,
+                       "x" =&gt; 636
+            },
+                           "tag" =&gt; nil,
+                   "description" =&gt; "android.widget.ImageButton{42a889a0 VFED..C. ..
+    ...... 636,0-716,80 #7f0b00a3 app:id/main_head_search}"
+        }
+    ]
+</pre>
+
+<p>接下来可以用两者方式点击搜索按钮，<br><br>
+第一种，对应指令是 <code>Then I press image button number 1</code>：</p>
+<pre class="highlight plaintext">    tap_when_element_exists("android.widget.ImageButton index:0")
+</pre>
+
+<p>第二种，对应指令是 <code>Then I press "main_head_search"</code>：</p>
+<pre class="highlight plaintext">    tap_when_element_exists("* marked:'main_head_search'")
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='使用 calabash 测试开源中国 Android 客户端 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1347#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1347#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1347#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1347#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1347#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>23</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply1">1楼</a> · <abbr class="timeago" title="2014-09-01T23:21:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8245" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1347/replies/8245/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>牛～期待更为深入的探索～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../beerbox"><img alt="909" class="uface" src="../user/large_avatar/909.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="西门吹牛" href="../beerbox">beerbox</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply2">2楼</a> · <abbr class="timeago" title="2014-09-02T13:23:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8260" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="909" href="http://testerhome.com/topics/1347/replies/8260/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="beerbox" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我现在发现比较困难一点的是元素的定位，我知道用console,但不知道怎么定位到我想要的元素，这个要跟你学习了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply3">3楼</a> · <abbr class="timeago" title="2014-09-03T11:18:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8302" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/8302/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有的app首次进入的时候会有一些引导页，每次运行一个Scenario的时候，都会启动和关闭客户端，每次都会出现引导页，这点很烦人，让开发去掉这个引导页吗？不知道有没有什么比较好的解决方式。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../purpose"><img alt="820" class="uface" src="../user/large_avatar/820.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="顾铖" href="../purpose">purpose</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply4">4楼</a> · <abbr class="timeago" title="2014-09-03T11:33:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8303" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="820" href="http://testerhome.com/topics/1347/replies/8303/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="purpose" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好贴，不得不顶~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply5">5楼</a> · <abbr class="timeago" title="2014-09-03T11:33:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8304" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1347/replies/8304/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../beerbox" class="at_user" title="@beerbox"><i>@</i>beerbox</a> 元素定位，底层用的是robotium，你说下具体定位碰见的问题是啥</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply6">6楼</a> · <abbr class="timeago" title="2014-09-03T11:34:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8305" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1347/replies/8305/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../doufuli010" class="at_user" title="@doufuli010"><i>@</i>doufuli010</a> 引导页面，ok。如果走calabash每次都会有引导页面明显应该是个bug。引导界面不是应该只有第一次有么。calabash的关闭只不过是两次back，不是卸载应用。所以我不明白为什么每次都会有</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply7">7楼</a> · <abbr class="timeago" title="2014-09-03T14:28:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8311" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/8311/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 据我的观察来看，每次运行calabash的时候，客户端的图标都会有一段时间是不见的，我觉得他的原理可能是在手机上的一片虚拟的地方将那个包，卸载重新安装了，但是底层的原理我就不太懂了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply8">8楼</a> · <abbr class="timeago" title="2014-09-03T14:30:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8312" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/8312/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其实引导页也无非就是滑屏，点击，calabash预制有一个I swipe left，I swipe right。但是貌似不太好用。得想办法改进改进才行。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply9">9楼</a> · <abbr class="timeago" title="2014-09-03T14:37:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8313" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1347/replies/8313/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="monkey" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../doufuli010" class="at_user" title="@doufuli010"><i>@</i>doufuli010</a> 应该不是卸载重新安装，因为我的应用也是有引导界面的。底层调用robotium的退出，所以就是back</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply10">10楼</a> · <abbr class="timeago" title="2014-09-03T14:45:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8314" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1347/replies/8314/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="htmlbiji" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>现在那些应用的引导页真是很考验智商啊，每次升级京东，UC什么的，要划屏几次，然后在最后一个五颜六色的引导页中找到一个花花绿绿的五花八门的名称的按钮，点击。长叹一口气，终于到首页了。<br>
+尼玛，打开个应用不是智力测试啊！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply11">11楼</a> · <abbr class="timeago" title="2014-09-03T15:55:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8316" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/8316/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../htmlbiji" class="at_user" title="@htmlbiji"><i>@</i>htmlbiji</a> 呵呵，是啊。我从来都不看引导页的，我觉得正常人的智商都是可以操作app的。你用calabash解决了这个问题了吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply12">12楼</a> · <abbr class="timeago" title="2014-09-10T14:45:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8483" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/8483/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的越来越详尽了，赞一个。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply13">13楼</a> · <abbr class="timeago" title="2014-09-16T21:26:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8674" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1347/replies/8674/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="htmlbiji" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../doufuli010" class="at_user" title="@doufuli010"><i>@</i>doufuli010</a> <br>
+看看，不缺啥了吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply14">14楼</a> · <abbr class="timeago" title="2014-09-17T11:36:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8680" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/1347/replies/8680/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="young" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主写的很详细！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply15">15楼</a> · <abbr class="timeago" title="2014-09-17T12:44:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8681" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1347/replies/8681/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="htmlbiji" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply14" class="at_floor" data-floor="14">#14楼</a> <a href="../young" class="at_user" title="@young"><i>@</i>young</a> <br>
+要是发表后能生成文章目录，看起来就更方便了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply16">16楼</a> · <abbr class="timeago" title="2014-09-28T16:57:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8973" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/8973/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../htmlbiji" class="at_user" title="@htmlbiji"><i>@</i>htmlbiji</a> 恩恩  挺详尽的了  暂时我用到的  好像都写到了  引导页的问题我也已经解决了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply17">17楼</a> · <abbr class="timeago" title="2014-11-27T11:37:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10070" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/10070/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主，显示“登陆失败用户名或口令错”的控件是toast吗？我也是用的I see “******”，但是用例好像不能执行通过啊？楼主有什么好的建议吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply18">18楼</a> · <abbr class="timeago" title="2014-11-27T15:35:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10088" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1347/replies/10088/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="htmlbiji" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../doufuli010" class="at_user" title="@doufuli010"><i>@</i>doufuli010</a> <br>
+toast比较难抓到，因为一闪即逝。<br>
+可以写个循环，每秒用elements_exists检查是否看到了toast内容，直到超时为止。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../doufuli010"><img alt="6dc42af41fb3ea5638607fcc4aa05f65" class="uface" src="../avatar/6dc42af41fb3ea5638607fcc4aa05f65.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王欢" href="../doufuli010">doufuli010</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply19">19楼</a> · <abbr class="timeago" title="2014-12-12T17:07:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10544" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1167" href="http://testerhome.com/topics/1347/replies/10544/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="doufuli010" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply18" class="at_floor" data-floor="18">#18楼</a> <a href="../htmlbiji" class="at_user" title="@htmlbiji"><i>@</i>htmlbiji</a> 我试了一下，好像不行，开发说：toast是系统层的，所以内容获取不到</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply20">20楼</a> · <abbr class="timeago" title="2014-12-12T19:37:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10550" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1347/replies/10550/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="htmlbiji" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../doufuli010" class="at_user" title="@doufuli010"><i>@</i>doufuli010</a> <br>
+oschina客户端的登录错误toast就确定被抓到了，可以参考他们的源代码。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply21">21楼</a> · <abbr class="timeago" title="2014-12-13T03:31:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10552" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1347/replies/10552/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="seveniruby" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>写的非常的细致详细. 堪称好贴典范啊.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply22">22楼</a> · <abbr class="timeago" title="2014-12-13T03:32:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10553" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1347/replies/10553/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="seveniruby" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Calabash框架的底层细节, 好像了解的人不错. 整个框架的机制有时间也可以给大家普及下. </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1347#reply23">23楼</a> · <abbr class="timeago" title="2014-12-13T11:57:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10556" data-state="" data-type="Reply" href="1347#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1347/replies/10556/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="htmlbiji" href="1347#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1347#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+改了十几次，边用边补充，有时自己用的时候还回来参考。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @saraben 期待“念念不忘，必有回响”在我身上印证的那一天到来
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1817" title="Calabash+Gearman 实现多手机同步测试机制">Calabash+Gearman 实现多手机同步测试机制</a></li>
+    <li><a href="1803" title="求助：calabash-android 如何 touch fragment 中 textView">求助：calabash-android 如何 touc...</a></li>
+    <li><a href="1600" title="使用 Gearman+Calabash 并行测试手机 APP">使用 Gearman+Calabash 并行测试手机 APP</a></li>
+    <li><a href="1568" title="Ubuntu 14.04 64 位安装 calabash-android 问题汇总">Ubuntu 14.04 64 位安装 calabas...</a></li>
+    <li><a href="1528" title="calabash iOS 新建项目流程">calabash iOS 新建项目流程</a></li>
+    <li><a href="1522" title="Calabash for Mac 在搭环境的小细节...">Calabash for Mac 在搭环境的小细节...</a></li>
+    <li><a href="1520" title="Calabash 模拟多手机同步测试">Calabash 模拟多手机同步测试</a></li>
+    <li><a href="1396" title="如何解决 Calabash-ios &quot;Connection refused &quot;？">如何解决 Calabash-ios &quot;Connecti...</a></li>
+    <li><a href="1384" title="Calabash-ios framework 的安装过程">Calabash-ios framework 的安装过程</a></li>
+    <li><a href="1347" title="使用 calabash 测试开源中国 Android 客户端">使用 calabash 测试开源中国 Android 客户端</a></li>
+    <li><a href="1323" title="calabash-android 测试问题收集">calabash-android 测试问题收集</a></li>
+    <li><a href="1296" title="中文 Win7 下成功安装 calabash-android 步骤">中文 Win7 下成功安装 calabash-andr...</a></li>
+    <li><a href="1180" title="Calabash 的那些坑">Calabash 的那些坑</a></li>
+    <li><a href="1173" title="Calabash 学习经验小结">Calabash 学习经验小结</a></li>
+    <li><a href="1165" title="用原生 Cucumber 跑 Calabash-Android 测试">用原生 Cucumber 跑 Calabash-And...</a></li>
+    <li><a href="1164" title="Calabash 使用经验 - 安装稳定版本">Calabash 使用经验 - 安装稳定版本</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1347#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

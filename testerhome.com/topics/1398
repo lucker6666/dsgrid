@@ -1,0 +1,524 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Appium 中截取 element 图片作为对比，判断对比结果 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../xuxu"><img alt="784" class="uface" src="../user/large_avatar/784.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Appium 中截取 element 图片作为对比，判断对比结果</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="xuxu" href="../xuxu">xuxu</a>
+     · 
+    于<abbr class="timeago" title="2014-09-15T19:23:49+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a> 于<abbr class="timeago" title="2014-09-16T10:18:00+08:00"></abbr>回复
+     · 
+    862次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>哈哈，看了以下两个帖子，综合下捣鼓出了这个对比的功能<br>
+<a href="../ianxiaohanxu" class="at_user" title="@ianxiaohanxu"><i>@</i>ianxiaohanxu</a><br>
+<a href="1389" rel="nofollow" target="_blank">http://testerhome.com/topics/1389</a><br>
+<a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a><br>
+<a href="202" rel="nofollow" target="_blank">http://testerhome.com/topics/202</a></p>
+
+<p>其实在<a href="https://github.com/gb112211/Adb-For-Test" rel="nofollow" target="_blank">https://github.com/gb112211/Adb-For-Test</a> 里面有一个截取element进行对比的方法，但是在使用appium时是无法使用的，因为其用到了uiautomator命令。。。</p>
+
+<p>在appium中截取界面某个element，也就是截取屏幕的部分区域进行对比，在以图片对比结果作为判断依据的时候还是有用的，直接上代码：<br>
+extend.py</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="c">#coding=utf-8</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="n">PATH</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">TEMP_FILE</span> <span class="o">=</span> <span class="n">PATH</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span> <span class="o">+</span> <span class="s">"/temp_screen.png"</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Appium_Extend</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span>
+
+    <span class="k">def</span> <span class="nf">get_screenshot_by_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="c">#先截取整个屏幕，存储至系统临时目录下</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+
+        <span class="c">#获取元素bounds</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s">"x"</span><span class="p">],</span> <span class="n">location</span><span class="p">[</span><span class="s">"y"</span><span class="p">],</span> <span class="n">location</span><span class="p">[</span><span class="s">"x"</span><span class="p">]</span> <span class="o">+</span> <span class="n">size</span><span class="p">[</span><span class="s">"width"</span><span class="p">],</span> <span class="n">location</span><span class="p">[</span><span class="s">"y"</span><span class="p">]</span> <span class="o">+</span> <span class="n">size</span><span class="p">[</span><span class="s">"height"</span><span class="p">])</span>
+
+        <span class="c">#截取图片</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+        <span class="n">newImage</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">newImage</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">get_screenshot_by_custom_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">,</span> <span class="n">end_x</span><span class="p">,</span> <span class="n">end_y</span><span class="p">):</span>
+        <span class="c">#自定义截取范围</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">,</span> <span class="n">end_x</span><span class="p">,</span> <span class="n">end_y</span><span class="p">)</span>
+
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+        <span class="n">newImage</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">newImage</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">dirPath</span><span class="p">,</span> <span class="n">imageName</span><span class="p">,</span> <span class="n">form</span> <span class="o">=</span> <span class="s">"png"</span><span class="p">):</span>
+        <span class="c">#将截屏文件复制到指定目录下</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dirPath</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirPath</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">,</span> <span class="n">PATH</span><span class="p">(</span><span class="n">dirPath</span> <span class="o">+</span> <span class="s">"/"</span> <span class="o">+</span> <span class="n">imageName</span> <span class="o">+</span> <span class="s">"."</span> <span class="o">+</span> <span class="n">form</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">):</span>
+        <span class="c">#加载目标图片供对比用</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+            <span class="n">load</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">load</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">s is not exist"</span> <span class="o">%</span><span class="n">image_path</span><span class="p">)</span>
+
+    <span class="c">#http://testerhome.com/topics/202</span>
+    <span class="k">def</span> <span class="nf">same_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_image</span><span class="p">,</span> <span class="n">percent</span><span class="p">):</span>
+        <span class="c">#对比图片，percent值设为0，则100%相似时返回True，设置的值越大，相差越大</span>
+        <span class="kn">import</span> <span class="nn">math</span>
+        <span class="kn">import</span> <span class="nn">operator</span>
+
+        <span class="n">image1</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">TEMP_FILE</span><span class="p">)</span>
+        <span class="n">image2</span> <span class="o">=</span> <span class="n">load_image</span>
+
+        <span class="n">histogram1</span> <span class="o">=</span> <span class="n">image1</span><span class="o">.</span><span class="n">histogram</span><span class="p">()</span>
+        <span class="n">histogram2</span> <span class="o">=</span> <span class="n">image2</span><span class="o">.</span><span class="n">histogram</span><span class="p">()</span>
+
+        <span class="n">differ</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> \
+                                                         <span class="n">histogram1</span><span class="p">,</span> <span class="n">histogram2</span><span class="p">)))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">histogram1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">differ</span> <span class="o">&lt;=</span> <span class="n">percent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+</pre>
+
+<p>接着跑了个appium脚本简单测试了下：<br>
+extend_test.py</p>
+<pre class="highlight python"><span class="c">#coding=utf-8</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">extend</span> <span class="kn">import</span> <span class="n">Appium_Extend</span>
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+
+<span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="c">#初始化环境</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">"platformName"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"Android"</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">"platformVersion"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"4.3"</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">"deviceName"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"788a6ab5"</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">"appPackage"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"com.android.settings"</span>
+        <span class="n">desired_caps</span><span class="p">[</span><span class="s">"appActivity"</span><span class="p">]</span> <span class="o">=</span> <span class="s">".Settings"</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">"http://127.0.0.1:4723/wd/hub"</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">extend</span> <span class="o">=</span> <span class="n">Appium_Extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">)</span>
+
+        <span class="c">#回到主屏幕</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">press_keycode</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="c">#退出测试</span>
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">test_get_screen_by_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">"com.android.deskclock:id/imageview"</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="o">.</span><span class="n">get_screenshot_by_element</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">write_to_file</span><span class="p">(</span><span class="s">"f:</span><span class="se">\\</span><span class="s">screen"</span><span class="p">,</span> <span class="s">"image"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s">"f:</span><span class="se">\\</span><span class="s">screen</span><span class="se">\\</span><span class="s">image.png"</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_same_as</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">"com.android.deskclock:id/imageview"</span><span class="p">)</span>
+
+        <span class="n">load</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="s">"f:</span><span class="se">\\</span><span class="s">screen</span><span class="se">\\</span><span class="s">image.png"</span><span class="p">)</span>
+        <span class="c">#要求百分百相似</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="o">.</span><span class="n">get_screenshot_by_element</span><span class="p">(</span><span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">same_as</span><span class="p">(</span><span class="n">load</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">()</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">Test</span><span class="p">(</span><span class="s">"test_get_screen_by_element"</span><span class="p">))</span>
+    <span class="n">suite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">Test</span><span class="p">(</span><span class="s">"test_same_as"</span><span class="p">))</span>
+    <span class="c">#执行测试</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suite</span><span class="p">)</span>
+</pre>
+
+<p>这里截取的图片是下面这张图中的时间插件：<br>
+<img src="../photo/2014/4afbc9c5652c44375c70a960b49d2467.png" alt=""><br>
+截取后的图片：<br>
+<img src="../photo/2014/8f6be1f56269e44f2946084e6a299047.png" alt=""></p>
+
+<p>另外批量截图、批量对比就针对需求再做扩展了！</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Appium 中截取 element 图片作为对比，判断对比结果 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1398#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1398#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1398#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1398#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1398#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>6</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1398#reply1">1楼</a> · <abbr class="timeago" title="2014-09-15T20:13:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8619" data-state="" data-type="Reply" href="1398#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1398/replies/8619/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="vigossjjj" href="1398#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>只是纯element的截取比对，同位图比对。不太推荐这种方式，比较好的是整张图任意区域比对，可以事先截取任意subimage之后执行脚步使用opencv比对PIL做部分匹配比对感觉很搓，同尺寸比对还好。还有个问题是你这种方式如果不做element比对 做其它子图比对的话必须要做一个map对应图片与坐标长宽</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1398#reply2">2楼</a> · <abbr class="timeago" title="2014-09-15T20:53:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8620" data-state="" data-type="Reply" href="1398#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1398/replies/8620/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="1398#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我想的是不要两两对比了, 有些时候做兼容性测试, 都是几百款设备, 有时候需要对比一个功能中的某个按钮在上百款设备中是否一致. 所以最好是对图片做特征的hash化, 直接比较hash好了. 每个图片只需要生成一个hash,</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../xuxu"><img alt="784" class="uface" src="../user/large_avatar/784.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxu" href="../xuxu">xuxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1398#reply3">3楼</a> · <abbr class="timeago" title="2014-09-15T23:15:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8622" data-state="" data-type="Reply" href="1398#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="784" href="http://testerhome.com/topics/1398/replies/8622/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="xuxu" href="1398#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 在单独验证某个问题，需要用到图片部分匹配作为判断依据时才会采用该方法，一般会以当前界面的activity、某个element是否存在作为对比依据。采用PIL进行简单的对比还是挺方便的。<br>
+<a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 对不同分辨率做兼容性测试，需要批量对比时，抽取图像特征进行对比，得改天花时间想下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1398#reply4">4楼</a> · <abbr class="timeago" title="2014-09-15T23:54:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8623" data-state="" data-type="Reply" href="1398#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1398/replies/8623/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="1398#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1398#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> PIL主要就是简单粗暴，不过反正不管怎么样，我已经对UI失去兴趣了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1398#reply5">5楼</a> · <abbr class="timeago" title="2014-09-16T10:18:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8626" data-state="" data-type="Reply" href="1398#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1398/replies/8626/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="vigossjjj" href="1398#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1398#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../xuxu" class="at_user" title="@xuxu"><i>@</i>xuxu</a> 我觉得这个还不算真正的部分匹配，你是在activity中自动截取element的图像与事先准备好的element图像做比对。<a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 想听听你对图片比对的思路，怎么样做可以保障合理的roi？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../mggao"><img alt="603" class="uface" src="../user/large_avatar/603.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="高明国" href="../mggao">mggao</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1398#reply6">6楼</a> · <abbr class="timeago" title="2014-09-23T17:27:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8819" data-state="" data-type="Reply" href="1398#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="603" href="http://testerhome.com/topics/1398/replies/8819/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="mggao" href="1398#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我们之前做过ORC，感觉也不靠谱，成功率不能达到100%准确，就都是不靠谱的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1398#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

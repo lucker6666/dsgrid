@@ -1,0 +1,571 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Espresso 试水贴 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lizhenghuan"><img alt="164" class="uface" src="../user/large_avatar/164.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Espresso 试水贴</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="喜力" href="../lizhenghuan">lizhenghuan</a>
+     · 
+    于<abbr class="timeago" title="2013-11-11T21:07:51+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lqz7" href="../lqz7">lqz7</a> 于<abbr class="timeago" title="2015-01-09T18:27:47+08:00"></abbr>回复
+     · 
+    407次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>前几天看了下 Espresso，看了作者了两篇视频介绍。觉得挺有意思，就拿了看一下。</p>
+
+<p>官网地址：<a href="https://code.google.com/p/android-test-kit/wiki/Espresso" rel="nofollow" target="_blank">https://code.google.com/p/android-test-kit/wiki/Espresso</a><br>
+源码： git clone <a href="https://code.google.com/p/android-test-kit/" rel="nofollow" target="_blank">https://code.google.com/p/android-test-kit/</a></p>
+
+<p>独立包路径是 GitHub\android-test-kit\bin\espresso-standalone\espresso-1.0-SNAPSHOT-bundled.jar</p>
+
+<p>还是用的 robotium 的 notepad 的 demo 来尝试，一样的是继承的<code>ActivityInstrumentationTestCase2</code> 测试类。入口类是 espresso，大多数类被定义成final类型的。AndroidManifest里面的instrumentation要改成框架里面的<br>
+GoogleInstrumentationTestRunner。</p>
+<pre class="highlight xml">    <span class="nt">&lt;instrumentation</span>
+        <span class="na">android:name=</span><span class="s">"com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"</span>
+        <span class="na">android:targetPackage=</span><span class="s">"com.example.android.notepad"</span> <span class="nt">/&gt;</span>
+
+</pre><pre class="highlight java">
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">notepad</span><span class="o">.</span><span class="na">test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.example.android.notepad.NotesList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">Espresso</span><span class="o">.</span><span class="na">onView</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">ViewActions</span><span class="o">.</span><span class="na">closeSoftKeyboard</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">ViewActions</span><span class="o">.</span><span class="na">pressMenuKey</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">ViewActions</span><span class="o">.</span><span class="na">click</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">action</span><span class="o">.</span><span class="na">ViewActions</span><span class="o">.</span><span class="na">typeText</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">matcher</span><span class="o">.</span><span class="na">ViewMatchers</span><span class="o">.</span><span class="na">isRoot</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">matcher</span><span class="o">.</span><span class="na">ViewMatchers</span><span class="o">.</span><span class="na">withText</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">apps</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">testing</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">espresso</span><span class="o">.</span><span class="na">matcher</span><span class="o">.</span><span class="na">ViewMatchers</span><span class="o">.</span><span class="na">withId</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.example.android.notepad.R</span><span class="o">;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">android.test.ActivityInstrumentationTestCase2</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NotePadTest</span> <span class="kd">extends</span> <span class="n">ActivityInstrumentationTestCase2</span> <span class="o">{</span>
+
+    <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"unchecked"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">NotePadTest</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">NotesList</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">setUp</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">getActivity</span><span class="o">();</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">setUp</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">testAddNote</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">{</span>  
+        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10000</span><span class="o">);</span>    
+        <span class="n">onView</span><span class="o">(</span><span class="n">isRoot</span><span class="o">()).</span><span class="na">perform</span><span class="o">(</span><span class="n">pressMenuKey</span><span class="o">());</span><span class="c1">//点击菜单键      </span>
+        <span class="n">onView</span><span class="o">(</span><span class="n">withText</span><span class="o">(</span><span class="s">"Add note"</span><span class="o">)).</span><span class="na">perform</span><span class="o">(</span><span class="n">click</span><span class="o">());</span><span class="c1">//点击Add note</span>
+        <span class="n">onView</span><span class="o">(</span><span class="n">withId</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">note</span><span class="o">)).</span><span class="na">perform</span><span class="o">(</span><span class="n">typeText</span><span class="o">(</span><span class="s">"Have a cup of Espresso."</span><span class="o">),</span> <span class="n">closeSoftKeyboard</span><span class="o">());</span> <span class="c1">//输入文本     </span>
+        <span class="n">onView</span><span class="o">(</span><span class="n">isRoot</span><span class="o">()).</span><span class="na">perform</span><span class="o">(</span><span class="n">pressMenuKey</span><span class="o">());</span><span class="c1">//点击菜单键  </span>
+        <span class="n">onView</span><span class="o">(</span><span class="n">withText</span><span class="o">(</span><span class="s">"Save"</span><span class="o">)).</span><span class="na">perform</span><span class="o">(</span><span class="n">click</span><span class="o">());</span><span class="c1">//点击Save  </span>
+        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10000</span><span class="o">);</span>
+    <span class="o">}</span>   
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>    
+        <span class="kd">super</span><span class="o">.</span><span class="na">tearDown</span><span class="o">();</span>   
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+<p>简单的写了点，和 robotium 使用上没有多少区别。里面更多的方法还没有细看，后续继续补充。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Espresso 试水贴 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="195#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="195#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="195#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="195#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="195#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>12</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply1">1楼</a> · <abbr class="timeago" title="2013-11-12T01:07:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="585" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/195/replies/585/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>欢迎喜力</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply2">2楼</a> · <abbr class="timeago" title="2013-11-12T01:30:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="586" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/195/replies/586/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>改了下格式，爪机无力啊。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply3">3楼</a> · <abbr class="timeago" title="2013-11-12T01:36:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="587" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/195/replies/587/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 好晚。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply4">4楼</a> · <abbr class="timeago" title="2013-11-12T01:36:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="588" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/195/replies/588/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>欢迎喜力～我正写你的网站介绍进入我的书呢～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply5">5楼</a> · <abbr class="timeago" title="2013-11-12T01:37:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="589" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/195/replies/589/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="lihuazhang" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 盐水没了，换药呢。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply6">6楼</a> · <abbr class="timeago" title="2013-11-12T10:35:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="599" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/195/replies/599/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 辛苦辛苦</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply7">7楼</a> · <abbr class="timeago" title="2013-11-12T11:45:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="604" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/195/replies/604/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有没有什么方法可以直接在手机上运行测试  不使用adb</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply8">8楼</a> · <abbr class="timeago" title="2013-11-12T13:31:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="607" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/195/replies/607/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="monkey" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 额。。instrumentation通过adb shell am instruments来驱动，不过Espresso从这个尿性来看，如果可以，也应该是这样一个路数</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply9">9楼</a> · <abbr class="timeago" title="2013-11-12T16:58:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="610" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/195/replies/610/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="seveniruby" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> adb shell 这种命令是电脑执行的, 不能在手机上执行..应该是需要startInstrument函数吧, 我这方面没验证, 不知道是否可以.<br>
+<a href="../lizhenghuan" class="at_user" title="@lizhenghuan"><i>@</i>lizhenghuan</a>  你的代码是如何启动运行的那. apk的入口函数如何写, 能给个例子演示下吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../lizhenghuan"><img alt="164" class="uface" src="../user/large_avatar/164.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="喜力" href="../lizhenghuan">lizhenghuan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply10">10楼</a> · <abbr class="timeago" title="2013-11-12T22:35:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="620" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="164" href="http://testerhome.com/topics/195/replies/620/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="lizhenghuan" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  参考sdk自带工具Dev tools</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply11">11楼</a> · <abbr class="timeago" title="2013-11-13T10:05:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="621" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/195/replies/621/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="seveniruby" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="195#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../lizhenghuan" class="at_user" title="@lizhenghuan"><i>@</i>lizhenghuan</a> 我的意思是在app中可以自由的插桩任何app, 所以不能在manifest中写死插桩配置. 采用startinent startactivity和startinstrumentation方式.<br>
+我翻了下sdk中的代码, 也没找到靠谱的例子, 我也没做过验证, 我怀疑google在这套技术背后隐藏了一个更底层的自动化体系.<br>
+求大牛科普</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../lqz7"><img alt="9849ce1ba80a900e4cc1b432411a14d1" class="uface" src="../avatar/9849ce1ba80a900e4cc1b432411a14d1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="lqz7" href="../lqz7">lqz7</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="195#reply12">12楼</a> · <abbr class="timeago" title="2015-01-09T18:27:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11411" data-state="" data-type="Reply" href="195#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2306" href="http://testerhome.com/topics/195/replies/11411/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="lqz7" href="195#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>没有源码的情况下Espresso能测试apk吗<a href="../lizhenghuan" class="at_user" title="@lizhenghuan"><i>@</i>lizhenghuan</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="195#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

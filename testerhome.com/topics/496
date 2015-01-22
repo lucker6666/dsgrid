@@ -1,0 +1,521 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | #Appium 新手常见问题 # 欢迎各位及时补充和持续更新,盖楼吧！ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">#Appium 新手常见问题 # 欢迎各位及时补充和持续更新,盖楼吧！</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+     · 
+    于<abbr class="timeago" title="2014-02-21T13:58:45+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="mingyuwang" href="../mingyuwang">mingyuwang</a> 于<abbr class="timeago" title="2014-06-20T14:04:48+08:00"></abbr>回复
+     · 
+    1375次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>看见TesterHome中好多Appium的新手问题，在这里简单作一些归类和总结，包括一些务实的技巧和方法，希望对新人有帮助，上手Appium开始写代码的时候个人建议好好学习下Selenium，熟练使用Selenium的API对你玩转Appium有相当大（质的飞跃）的帮助！</p>
+
+<p>本帖可以持续补充和持续更新，旨在帮助新人扫除在折腾Appium的时候出现的各种常见入门问题。</p>
+
+<p>友情提醒：<br>
+上手写脚本时，GitHub上Appium源码里面的SampleCode中都是一些非常不错的入门例子。</p>
+<h4>玩转Appium可能需要了解的知识：</h4>
+<ol>
+<li>Python/Java等语言基础(很重要，这是必备的)
+2.安卓/IOS应用的相关基础知识（包括Activity等的基本概念）
+----------- Activity的问题TesterHome里问的人有很多，见下文。
+3.一些SDK包中常用的调试命令和技巧
+(最起码能简单搭建起模拟器什么的，调试真机的时候，别忘了打开USB调试模式。)
+......</li>
+</ol><h4>Appium新手常见问题</h4>
+<p>1.启动脚本的时候，提示apk包Could not make a String，这是在释放stings.json的时候出现的错误，一般是由于APK包损坏导致的，确认一下你的APK包是否损坏，最实在的验证方法是直接将APK扔到手机里点一下，看看会不会提示解压APK包时发生错误。</p>
+
+<p>2.Activity错误中两类比较常见：</p>
+
+<p>一类是包名或者Activity参数直接没有写对，会提示：不存在Activity，建议在写脚本的时候在Activity中写上完整的名字，不要缩写，严谨一些不会错。完整包名类似com.xxx.xxx.Activity。</p>
+
+<p>另外一类是没有写对启动Activity，虽然你写对了Activity，但是你写的不是启动Activity，会报一个"XXX Never XXX"的错误。</p>
+
+<p>包名参数和Activity这两个参数可以在AndroidManifest.xml中清楚的看到</p>
+
+<p>关于如何获取AndroidManifest.xml，可以参考一下apktool的用法，使用起来非常简单</p>
+
+<p><a href="http://code.google.com/p/android-apktool/" rel="nofollow" target="_blank">http://code.google.com/p/android-apktool/</a></p>
+
+<p>包名在这里看:<br>
+&lt;manifest android:versionCode="12" android:versionName="2.6.0.0.0" package="com.xxx.xxx"<br>
+一般位于XML定义的下一行</p>
+
+<p>启动Activity在这里看，带有LAUNCHER关键字<br>
+&lt;activity android:theme="@*android:style/Theme.NoTitleBar" android:label="<a href="http://testerhome.com/string" class="at_user" title="@string"><i>@</i>string</a>/app_name" android:name="com.xxx.xxx.SplashActivity" android:launchMode="singleTop" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation"&gt;<br>
+            &lt;intent-filter&gt;<br>
+                &lt;action android:name="android.intent.action.MAIN" /&gt;<br>
+                &lt;category android:name="android.intent.category.LAUNCHER" /&gt;<br>
+            &lt;/intent-filter&gt;<br>
+        &lt;/activity&gt;</p>
+
+<p>那么，本例中就是com.xxx.xxx.SplashActivity</p>
+
+<p>3.关于如何定位元素的问题</p>
+
+<p>如果作为Appium的玩家，你问出这样的问题，我认为你是Selenium的基础不牢靠。<br>
+id,classname,name,xpath,tagname......，其实很多元素定位的方法都跟DOM有关，如果对Web前端开发熟悉的童鞋上手这个不会有难度，当然了，对于APP来讲，你可以借助一些现成的工具进行嗅探</p>
+
+<p>比如 uiautomatorviewer 不用单独下载，因为你在折腾Appium的时候你肯定会下载SDK，很幸运，这玩意就是在SDK中自带的，所以如果你已经设置了环境变量的话，直接敲命令就可以启动他了。</p>
+
+<p>4.关于如何等待一个元素的出现而不用一些笨拙粗暴的time.sleep()方法</p>
+
+<p>我相信这是一个非常大众化的需求，我们需要等待某一个元素的出现以此来让我们的脚本进入到下一个Step，这个等待方法最好能够设置超时时间，然后找到后迅速callback。我们也很幸运！如果你仔细看Selenium的API你会发现这么一个东西：</p>
+
+<p>from selenium import webdriver<br>
+from selenium.webdriver.common.by import By<br>
+from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0<br>
+from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0</p>
+
+<p>ff = webdriver.Firefox()<br>
+ff.get("http://somedomain/url_that_delays_loading")<br>
+try:<br>
+    element = WebDriverWait(ff, 10).until(EC.presence_of_element_located((By.ID, "myDynamicElement")))<br>
+finally:<br>
+    ff.quit()</p>
+
+<p>原来，我们的webdriver.support.ui中有一个强大的WebDriverWait可以帮助我们完成这个事情。<br>
+他提供了一个极其实用的until方法，until方法可以传入一个条件型的参数，这个条件型参数来自selenium.webdriver.support中的expected_conditions，里面定义了一些__call__可调用的类，比如我们这里常用的<br>
+presence_of_element_located，意思就是等待某一元素出现（被定位到）</p>
+
+<p>更多关于API上的惊喜可以猛戳这里：<a href="http://selenium-python.readthedocs.org/index.html" rel="nofollow" target="_blank">http://selenium-python.readthedocs.org/index.html</a></p>
+
+<p>5.关于Appium For Windows<br>
+不喜欢折腾的童鞋可以选择在Windows端快速入门Appium，Appium For Windows使用起来极其简单，下载完成后直接双击Appium.exe，然后点击LAUNCHER即可。</p>
+
+<p>6.想到了再写吧......</p>
+<h4>可能对你有帮助的一些在线API手册，这里我更多的是提供了Python的例子，其他同理。</h4>
+<p>Selenium Python Bindings <a href="http://selenium-python.readthedocs.org/index.html" rel="nofollow" target="_blank">http://selenium-python.readthedocs.org/index.html</a></p>
+<h4>Python相关的一些知识</h4>
+<p>Python API / Nose / Unittest 官方例子中所用到的东西，很多新人看不懂Setup和TearDown是有原因的，(&gt;_&lt;)</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='#Appium 新手常见问题 # 欢迎各位及时补充和持续更新,盖楼吧！ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="496#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="496#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="496#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="496#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="496#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>9</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply1">1楼</a> · <abbr class="timeago" title="2014-02-21T16:10:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2685" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/496/replies/2685/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>多谢总结. 写的很好</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply2">2楼</a> · <abbr class="timeago" title="2014-02-24T01:13:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2704" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/496/replies/2704/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="oscar" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这样的一定要点赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply3">3楼</a> · <abbr class="timeago" title="2014-02-24T09:41:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2707" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/496/replies/2707/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="496#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a> 感谢支持~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../cy_suncheng"><img alt="703" class="uface" src="../user/large_avatar/703.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="CY" href="../cy_suncheng">cy_suncheng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply4">4楼</a> · <abbr class="timeago" title="2014-04-16T15:36:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3937" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="703" href="http://testerhome.com/topics/496/replies/3937/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="cy_suncheng" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>谢谢分享,很受用</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../yolanda"><img alt="287236dcd39ddb294a4c77c0ffc83bb8" class="uface" src="../avatar/287236dcd39ddb294a4c77c0ffc83bb8.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Yolanda" href="../yolanda">yolanda</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply5">5楼</a> · <abbr class="timeago" title="2014-04-16T17:27:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3939" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="725" href="http://testerhome.com/topics/496/replies/3939/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="yolanda" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>能不能加上安装时候出问题要怎么解决啊，这个才是最入门的啊<img src="../photo/2014/e091f4c633848db2ff0638df8f7b43eb.jpg" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply6">6楼</a> · <abbr class="timeago" title="2014-04-18T22:24:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4039" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/496/replies/4039/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="qddegtya" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="496#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../yolanda" class="at_user" title="@yolanda"><i>@</i>yolanda</a> 这个坛子里找找，我记得有人写过安装系列的教程了~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply7">7楼</a> · <abbr class="timeago" title="2014-04-23T11:14:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4136" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/496/replies/4136/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="qddegtya" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="496#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../cy_suncheng" class="at_user" title="@cy_suncheng"><i>@</i>cy_suncheng</a> 文章最好支持 Fork......哈哈</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../tianwei024"><img alt="1058" class="uface" src="../user/large_avatar/1058.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tianwei" href="../tianwei024">tianwei024</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply8">8楼</a> · <abbr class="timeago" title="2014-06-19T09:15:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5883" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1058" href="http://testerhome.com/topics/496/replies/5883/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="tianwei024" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习学习啦！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../mingyuwang"><img alt="570" class="uface" src="../user/large_avatar/570.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王明雨" href="../mingyuwang">mingyuwang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="496#reply9">9楼</a> · <abbr class="timeago" title="2014-06-20T14:04:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5929" data-state="" data-type="Reply" href="496#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="570" href="http://testerhome.com/topics/496/replies/5929/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="mingyuwang" href="496#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习了···</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="496#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 测试金字塔新解之移动无线应用测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">测试金字塔新解之移动无线应用测试</h1>
+  <div class="info leader">
+    <a class="node" href="node1">资讯点评</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-03-27T00:15:49+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="mengzhongyuan" href="../mengzhongyuan">mengzhongyuan</a> 于<abbr class="timeago" title="2014-03-30T22:53:53+08:00"></abbr>回复
+     · 
+    703次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>本文作者： 伯乐在线 - 伯乐在线读者 。转载请参见文章末尾处的要求。</p>
+
+<p>注：本文来自@ Monkey陳曄曄 的投稿。如果其他朋友也有投稿，请看这里。</p>
+
+<p>在看过吴穹对2014年测试的展望之后，真的对于移动无线测试的未来大有信心。在文章中再次看到了熟悉的“测试金字塔”，该金字塔是分层测试思想的重要钥匙。我自己是移动互联网出身的测试，所以突发奇想从移动无线应用的测试角度重新来审视了下该金字塔并做了扩展，希望对于大家有一定的帮助。</p>
+
+<p>首先我们先来看下经典金字塔，如下图所示：<br><img src="../photo/2014/d1b02d8c1683b8ae7e7d92eaf2606a86.jpg" alt=""></p>
+
+<p>这对于传统互联网的测试而言非常清晰的一个层次结构，但我相信对于很多移动互联网的同学们而言也许就多少有些迷茫，这不单单是因为技术上的实现不同于以前，也有些是名词定义问题。经过我思考之后，发现发现移动互联网的应用测试角度出发可以从该图上拆分出很多的东西，并且图还有些小小的变化，如下图所示：<br><img src="../photo/2014/3a6282768c69869c428f6e5d3ec2ef89.jpg" alt=""><br>
+单从这个图上来看的话的确是比较迷惑的，那么我们接下来就一层一层来剥，以下内容很黄很暴力，大家做好准备了吗？</p>
+
+<p>我们先来说第一层：UI层。UI层顾名思义就是用户看到产品时候所长的样子，从技术实现角度而言，那就是产品的一层皮。那么UI层在移动无线应用的测试中分成哪些主要的部分呢？</p>
+
+<ol>
+<li>用户体验</li>
+<li>控件显示</li>
+<li>功能交互</li>
+<li><p>代码接口</p></li>
+<li><p>用户体验<br>
+移动互联网应用是一款产品，相对其他类型的产品而言，其用户体验已经到达了举足轻重的地步，在我的新书《大话测试——移动互联网应用测试指南》中有单独阐述用户体验的一个章节，有兴趣的朋友可以等出版之后仔细阅读。</p></li>
+</ol><p>现在各个公司也出现了大量的和用户体验相关的岗位，比如“产品体验师”、“产品设计师”、“交互设计师”等，也越来越说明着用户体验对于移动无线应用的重要性。</p>
+
+<p>很多人觉得用户体验好就是一定要画面优美，交互酷炫，界面上没有出现明显的瑕疵就可以了，虽然没有错，但这些仅仅是用户体验的表面一层。我们来看下以下的几个例子。还是那句老话，也许你觉得他们的成功或失败与用户体验关系不大，但其实从移动无线应用能够成功的情况来看，用户量、用户黏性才是最主要的，这些归根结底还是用户体验。在我的书中着实已经吐槽了非常多的应用了，在这里就再吐两个大家都认识的、知名度很高的应用。我们使用无线应用的时候难免碰见网络不好的情况，这也是现在大量测试工程师正头疼的事情（幸好fiddler和Charles能够为我们解决这个问题），但我相信如果我们在网络不太好，却看到以下界面显示的时候，肯定恨不得想摔手机。</p>
+
+<p><img src="../photo/2014/a33bc0890b730e9057389dc563c37565.jpg" alt=""></p>
+
+<p>也许我不说，大家也能够猜得出来是哪家的应用了吧。我几乎每次在餐馆想要使用一些优惠券的时候就会看到这个界面，恨之入骨。难道网络慢弹出个提示就那么难吗？难道为用户考虑一下就那么难吗？你能够告诉我“createorderxxx”这串外星文用户真的认识是什么吗？所谓用户体验好，就是要让用户觉得应用在说“人话”，而不是“火星语”。你采取如下方法都比现在的做法好：</p>
+
+<p>可以选择在用户点击的时候就向服务器做请求，此时并不跳转界面，短时间超时之后给出一个“网络差”的提示<br>
+可以选择进入这个界面，但不要给用户看到“火星文”，短期超时之后再给出一个“网络差”的提示，并自动返回上一页<br>
+说着说着我的火气就上来了，不过还有更可气的了。我们来看下面这个应用的行为。</p>
+
+<p><img src="../photo/2014/77554c8591f9f9f0418957fb09b609eb.jpg" alt=""></p>
+
+<p>硕大的logo，这个是什么场景呢？现在支付宝和“喜士多”、“7-11”等多家便利店合作了，不但方便了大家的购物，同时也减少了零钱和假币的流通，的确是个大好事。便利店网络不好的情况也尤其多，当我选择好了很多商品，最后拿出支付宝，看到这个鸟样，我心里真的千万只草泥马奔过。但此时想想没有关系阿，我作为iOS高大上的用户可以杀进程，于是我熟练的杀掉支付宝的进程再次打开，事实证明我无法改变这个鸟样。我真的很焦虑，我知道支付宝要联网，但它不是一个网游吧，为什么没有网你就不能让我打开呢？我真的觉得让我看到一个进入的界面或者设置一个短时间就超时都比我看着一坨黑色上面有个“菊花”强数百倍吧，于是，我的手机真的被我摔坏了。</p>
+
+<ol>
+<li>控件显示
+现在往往很多测试说测UI了就是拿过来看看界面显示对不对，所谓UI Automation也就是模拟用户的操作，但是真的仅仅只是如此吗？Android的应用界面一切都是以View来构成：
+<img src="../photo/2014/859d46750c758790a446248b675cdecf.jpg" alt="">
+</li>
+</ol><p>请问有多少工程师关心过这些所谓的界面上的控件显示的到底对不对呢？像素值和比例与需求一致吗？我们一般可以通过三步来解决这个的问题。</p>
+
+<p>A． 先验证每个界面显示之后控件是否存在<br>
+B． 再验证这些控件具体的位置、大是否正确<br>
+C． 最后验证整体显示是否正确</p>
+
+<p>其中B可以使用如下所示的这个类来验证：</p>
+
+<p><img src="../photo/2014/b086448b09394f8a0355c6ce41b82548.jpg" alt=""></p>
+
+<p>而C的话我更偏向于自己去写，而不是用MonkeyRunner自带的图片对比方法，其精准度不高，很难判断图片是否真的有细小的差异性，我自己更偏爱用PIL库。iOS的话Xcode也自带了Inspector可做相关验证。</p>
+
+<ol>
+<li><p>功能交互<br>
+手动测试，自动化的话可用框架太多。Robotium，Instrumentation，Appium，这里不多做解释。</p></li>
+<li><p>代码接口<br>
+某些应用往往逻辑很复杂，但界面却很简单明了。其复杂程度体现在它的逻辑和数据场景。这类情况对于测试工程师而言尤其的痛苦，那么自然我们就可以跳过界面层来做功能代码的接口测试。<br><img src="../photo/2014/bcb228e0a94ff6912a0b35abf1485634.jpg" alt=""></p></li>
+</ol><p>接着我们来说下Service层。与传统金字塔描述的Service不同的是，移动互联网的应用同时存在“Service”和“Inner Service”（感谢晋恒温提供这样一个我觉得很不错的新词）这里的Inner Service主要指的是Android基础组建里面也有一个叫Service</p>
+
+<p><img src="../photo/2014/e7a181bb65c14318c0ac0627c8e4b32b.jpg" alt=""></p>
+
+<p>这里提到Inner Service这个概念就是为了和服务器端的Service区别开来。在这个金字塔中Service被虚线所区分开，原因有两个：</p>
+
+<p>Service不再单纯的指后台服务器的Service<br>
+不是所有应用都有Inner Service或者Service<br>
+其中后台的服务Service测试方法已经相对成熟，参考的资料也相对多，而Inner Service的测试相比困难很多，除了监听Service是否正确启动以及反馈之外，还有很多测试细节可挖掘。</p>
+
+<p>最后就是共同的Unit了。其实我们拨开金字塔的上面几层，到Unit test的时候就已经和应用所在的平台的特性关系不大了。Android使用Junit Test，iOS使用Xcode自带的OCunit，WP使用Windows Phone Toolkit Test Framework等。除了编写测试用例的语言不同以外，其用例的设计方法等已经不再去考虑Android、iOS、WP等系统架构或其他特性上的区别了。</p>
+
+<p>我个人是认为移动无线应用的金字塔理念不仅仅适用于功能测试，更多的也适用于压力、性能、自动化甚至安全等测试中。当我们需要加大测试颗粒度的时候，那么借助分层的理念往往能够让我们豁然开朗，找到新的突破口。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='测试金字塔新解之移动无线应用测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="614#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="614#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="614#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="614#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="614#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>13</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply1">1楼</a> · <abbr class="timeago" title="2014-03-27T07:34:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3335" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/614/replies/3335/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qddegtya" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>为MPD做准备！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply2">2楼</a> · <abbr class="timeago" title="2014-03-27T11:15:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3336" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/614/replies/3336/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="mingway_hu" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>当时提inner service时我都没纳过闷来~最近才明白inner service的大概意思~up↑ up↑</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply3">3楼</a> · <abbr class="timeago" title="2014-03-27T11:23:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3339" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/614/replies/3339/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a> inner感觉还是会有歧义, 为什么不直接叫android service那, 一个是后台service, 一个是后端service. 称呼起来的确容易让人混淆.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply4">4楼</a> · <abbr class="timeago" title="2014-03-27T11:32:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3340" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/614/replies/3340/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 嗯 android service 歧义性比较少。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply5">5楼</a> · <abbr class="timeago" title="2014-03-27T22:27:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3366" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/614/replies/3366/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 额。。当初讨论你不在诺。。。应该直接。。我也是愣住了。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply6">6楼</a> · <abbr class="timeago" title="2014-03-27T22:27:15+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3367" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/614/replies/3367/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> 恩恩对的～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply7">7楼</a> · <abbr class="timeago" title="2014-03-28T01:26:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3369" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/614/replies/3369/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="seveniruby" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 我看到了你们的讨论片段了, 当时我没完全理解那个词是什么意思, 所以没提. 不过inner service也是可以的. 我觉得都行. backend service可以指服务器的service . innner service 也可以叫background service. 你已经解释清楚了, 所以问题也不大.</p>
+
+<p>android 的service和boardcast, 可以理解为和普通的功能组件一样, 可以通过intent来启动测试. 也可以编写针对内部的单测用例.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply8">8楼</a> · <abbr class="timeago" title="2014-03-28T13:19:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3373" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/614/replies/3373/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="anikikun" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞！~(≧▽≦)/~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../xingzunxi"><img alt="339" class="uface" src="../user/large_avatar/339.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xingzunxi" href="../xingzunxi">xingzunxi</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply9">9楼</a> · <abbr class="timeago" title="2014-03-28T13:55:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3376" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="339" href="http://testerhome.com/topics/614/replies/3376/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="xingzunxi" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>其实我理解就是黑盒测试，灰盒测试，白盒测试。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply10">10楼</a> · <abbr class="timeago" title="2014-03-28T21:52:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3385" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/614/replies/3385/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="monkey" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../xingzunxi" class="at_user" title="@xingzunxi"><i>@</i>xingzunxi</a> =。=。。所有的都可以这样认为。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../mingway_hu"><img alt="123" class="uface" src="../user/large_avatar/123.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="胡明伟" href="../mingway_hu">mingway_hu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply11">11楼</a> · <abbr class="timeago" title="2014-03-29T00:25:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3390" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="123" href="http://testerhome.com/topics/614/replies/3390/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="mingway_hu" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a>  <a href="614#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a>  <a href="614#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>    </p>
+
+<p>Mobile App层面的叫Front-End Service; Server层面的叫Back-End Service。<br>
+各位大哥，你们觉得如何？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply12">12楼</a> · <abbr class="timeago" title="2014-03-29T01:46:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3391" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/614/replies/3391/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="seveniruby" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../mingway_hu" class="at_user" title="@mingway_hu"><i>@</i>mingway_hu</a>  我觉得一个是backend service 一个 是background service比较好</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../mengzhongyuan"><img alt="0ec89628d55120b481356f65c93570c9" class="uface" src="../avatar/0ec89628d55120b481356f65c93570c9.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="孟中原" href="../mengzhongyuan">mengzhongyuan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="614#reply13">13楼</a> · <abbr class="timeago" title="2014-03-30T22:53:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3401" data-state="" data-type="Reply" href="614#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="657" href="http://testerhome.com/topics/614/replies/3401/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="mengzhongyuan" href="614#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="614#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 老兄 找你有事谈啊   看到请联系我QQ：254776952 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    每个人都会遇到困难, 希望朋友的陪伴能够给你带来新的温暖
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1378" title="《刀塔传奇》之互联网从业人员评测">《刀塔传奇》之互联网从业人员评测</a></li>
+    <li><a href="1370" title="关于测试人员的职业发展">关于测试人员的职业发展</a></li>
+    <li><a href="1217" title="论移动互联网测试还能活（火）多久">论移动互联网测试还能活（火）多久</a></li>
+    <li><a href="1216" title="（转）林应：James Bach 的 Rapid Test 培训总结">（转）林应：James Bach 的 Rapid Te...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="614#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

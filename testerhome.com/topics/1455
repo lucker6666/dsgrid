@@ -1,0 +1,695 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【问题解决】用例执行过程中 app 界面发生切换，desired_caps 中 activity 该如何设置才能满足用例执行过程中 app 在不同界面所需要的、匹配的 activity？ &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【问题解决】用例执行过程中 app 界面发生切换，desired_caps 中 activity 该如何设置才能满足用例执行过程中 app 在不同界面所需要的、匹配的 activity？</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../strayeagle">strayeagle</a>
+     · 
+    于<abbr class="timeago" title="2014-10-08T23:04:07+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="strayeagle" href="../strayeagle">strayeagle</a> 于<abbr class="timeago" title="2014-10-22T09:16:48+08:00"></abbr>回复
+     · 
+    549次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>测试环境：<br>
+安卓，python+appium</p>
+
+<p>问题描述如下：<br>
+我的py文件中目前有5个测试用例，功能分别如下：<br>
+  用例1、完成卸载app操作；<br>
+  用例2、完成app的安装操作；<br>
+  用例3、在用例2的基础上，app启动后界面是登录界面，判断这个登录界面上是否存在一个powerer-by信息；<br>
+  用例4、是个登录操作，在登录界面上输入username/password进行登录操作；<br>
+  用例5、在用例4的基础上，登录进去后，判断app的侧边栏是否有powered-by信息</p>
+
+<p>用例1、用例2，activity使用的是com.xxx.ui.FlowPager<br>
+用例3、用例4，activity使用的是com.xxx.ui.LoginPager<br>
+用例5，activity使用的是com.xxx.ui.MainPager</p>
+
+<p>这5个用例，使用3个不同的activity，而在函数get_desired_capabilities中初始化的appActivity是com.xxx.ui.FlowPager；<br>
+也就是说，我在desired_caps中设置了activity，一些用例执行通过了，执行其他用例的时候，需要别的activity了，也就是前2个用例执行可成功；后面的用例执行就失败了。<br>
+如果我把get_desired_capabilities函数中appActivity修改为用例3~4需要的activity，保留用例3和4，其他用例注释掉，则用例3和4执行是OK的。</p>
+
+<p>用例setup和teardown代码如下;</p>
+<pre class="highlight python">    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># 启动所有的测试桩</span>
+        <span class="n">StubFactory</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c">#初始化driver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">getDriverInfo</span><span class="p">()</span><span class="o">.</span><span class="n">androidDriverInfo</span><span class="p">()</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">============= Begin to test [ "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDoc</span><span class="p">()</span> <span class="o">+</span> <span class="s">" ] ===============</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># 停止所有的测试桩</span>
+        <span class="n">StubFactory</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">============= End to test [ "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDoc</span><span class="p">()</span> <span class="o">+</span> <span class="s">" ] ===============</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+</pre>
+
+<p>driver信息的获取，使用另外一个类，代码片段如下：</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">get_desired_capabilities</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'Android'</span><span class="p">,</span>
+        <span class="s">'platformVersion'</span><span class="p">:</span> <span class="s">'4.3'</span><span class="p">,</span>
+        <span class="s">'deviceName'</span><span class="p">:</span> <span class="s">'Android Emulator'</span><span class="p">,</span>
+        <span class="s">'appPackage'</span> <span class="p">:</span> <span class="s">'com.xxx.phone'</span><span class="p">,</span>
+        <span class="s">'appActivity'</span> <span class="p">:</span> <span class="s">'com.xxx.ui.FlowPager'</span><span class="p">,</span>
+        <span class="s">'app'</span><span class="p">:</span> <span class="n">PATH</span><span class="p">(</span><span class="s">r'../testApp/'</span> <span class="o">+</span> <span class="n">app</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">,</span>
+    <span class="k">return</span> <span class="n">desired_caps</span>
+
+</pre>
+
+<p>测试用例3的代码如下：</p>
+<pre class="highlight python">
+    <span class="k">def</span> <span class="nf">testOutPowerby</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">''' 安卓 --&gt; 登录界面上是否有powerBy测试  '''</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span>
+
+        <span class="c">#点击掉拒绝，以展示UI中的resource-id</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">"com.xxx.phone:id/alert_btn_2x"</span><span class="p">)</span>
+            <span class="n">title</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+        <span class="k">except</span>  <span class="n">NoSuchElementException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span>
+
+        <span class="c">#校验app的登录界面上是否有powered-by信息</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">' 开始检测app的登录界面上是否有powered-by信息 ... </span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+        <span class="n">expect</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">'com.xxx.phone:id/powered_by'</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="s">'</span><span class="se">\n</span><span class="s"> app的登录界面上不存在powered-by信息! </span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+
+</pre>
+
+<p>该用例执行报错：</p>
+<pre class="highlight python"><span class="n">WebDriverException</span><span class="p">:</span> <span class="n">Message</span><span class="p">:</span> <span class="s">u'A new session could not be created. (Original error: com.xxx.phone/com.xxx.ui.FlowPager never started. Current: com.xxx.phone/com.xxx.ui.LoginPager)'</span> 
+</pre>
+
+<p>日志里报错，是说com.xxx.ui.FlowPager没启动，而当前启动的则是com.xxx.ui.LoginPager，是要每次根据用例，去合理的修改appActivity的值吗？该怎么修改才能确保用例能够在不同界面间连贯去执行呢？</p>
+
+<p>请问大家在实际使用中遇到这个情况是如何解决的呢？</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【问题解决】用例执行过程中 app 界面发生切换，desired_caps 中 activity 该如何设置才能满足用例执行过程中 app 在不同界面所需要的、匹配的 activity？ via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1455#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1455#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1455#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1455#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1455#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>13</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply1">1楼</a> · <abbr class="timeago" title="2014-10-10T12:01:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9062" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1455/replies/9062/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这里也看不懂。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply2">2楼</a> · <abbr class="timeago" title="2014-10-13T17:13:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9143" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1455/replies/9143/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="sanlengjingvv" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>虽然看不太明白，貌似是用例互相依赖了吧？<br>
+如果第二个用例必须登录后才能进行，那操作应该从MainPager开始操作，或者driver.start_activity<br>
+一般一个用例结束后driver.quit，第二个用例用新的driver，这样可以清理环境。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply3">3楼</a> · <abbr class="timeago" title="2014-10-13T19:10:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9146" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1455/replies/9146/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="strayeagle" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a>  请问driver不是只要初始化一次嘛？设置一个全局的driver，所有用例都使用这个driver属性信息</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../mongnet"><img alt="727" class="uface" src="../user/large_avatar/727.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../mongnet">mongnet</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply4">4楼</a> · <abbr class="timeago" title="2014-10-13T21:50:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9148" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="727" href="http://testerhome.com/topics/1455/replies/9148/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="mongnet" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> 的意思看看你的setUp  和 tearDown</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply5">5楼</a> · <abbr class="timeago" title="2014-10-14T09:16:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9150" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1455/replies/9150/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="strayeagle" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a> <br>
+我的测试基类代码如下：（TestCaseBase.py）</p>
+<pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="c">#-*- coding:UTF-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">common.stub.StubFactory</span> <span class="kn">import</span> <span class="n">StubFactory</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">common.testCaseBase.getDriver</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="k">class</span> <span class="nc">TestCaseBase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">getDoc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''获取用例 __doc__信息'''</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TestCaseBase</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">shortDescription</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">doc</span>    
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># 启动所有的测试桩,主要是配置文件的解析、路径解析等</span>
+        <span class="n">StubFactory</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c">#初始化driver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">getDriverInfo</span><span class="p">()</span><span class="o">.</span><span class="n">androidDriverInfo</span><span class="p">()</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">============= Begin to test [ "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDoc</span><span class="p">()</span> <span class="o">+</span> <span class="s">" ] ===============</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># 停止所有的测试桩</span>
+        <span class="n">StubFactory</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">============= End to test [ "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDoc</span><span class="p">()</span> <span class="o">+</span> <span class="s">" ] ===============</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+</pre>
+
+<p>对于初始化deriver信息，我调用了另外一个类的信息：<br>
+ 这个类getDriverInfo中的androidDriverInfo方法，如下：</p>
+<pre class="highlight python"><span class="k">class</span> <span class="nc">getDriverInfo</span><span class="p">():</span>
+    <span class="s">'''   获取driver属性信息的类     '''</span>
+
+    <span class="k">def</span> <span class="nf">androidDriverInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''  定义获取driver属性信息的函数--安卓     '''</span>
+
+        <span class="n">desired_caps</span> <span class="o">=</span> <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">get_desired_capabilities</span><span class="p">(</span><span class="s">'Base_2.1.apk'</span><span class="p">)</span>
+        <span class="c">#print desired_caps</span>
+        <span class="c">#del desired_caps['app']</span>
+
+        <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">'http://localhost:4723/wd/hub'</span><span class="p">,</span> <span class="n">desired_caps</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">driver</span>        
+</pre>
+
+<p>而desired_capabilities调用的方法get_desired_capabilities代码如下：</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">get_desired_capabilities</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">desired_caps</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'Android'</span><span class="p">,</span>
+        <span class="s">'platformVersion'</span><span class="p">:</span> <span class="s">'4.3'</span><span class="p">,</span>
+        <span class="s">'deviceName'</span><span class="p">:</span> <span class="s">'Android Emulator'</span><span class="p">,</span>
+        <span class="s">'appPackage'</span> <span class="p">:</span> <span class="s">'com.xxx.phone'</span><span class="p">,</span>
+        <span class="s">'appActivity'</span> <span class="p">:</span> <span class="s">'com.xxx.ui.FlowPager'</span><span class="p">,</span>
+        <span class="s">'app'</span><span class="p">:</span> <span class="n">PATH</span><span class="p">(</span><span class="s">r'../testApp/'</span> <span class="o">+</span> <span class="n">app</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">desired_caps</span>
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply6">6楼</a> · <abbr class="timeago" title="2014-10-15T12:29:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9181" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1455/replies/9181/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="sanlengjingvv" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../strayeagle" class="at_user" title="@strayeagle"><i>@</i>strayeagle</a> <br>
+不会python，你贴的也没说明用例执行过程啊……那这样问吧，按你这样调用getDriverInfo<br>
+1、只有两个用例，都没有UI操作只打印一条日志，可以顺利执行吗？<br>
+2、只有两个用例，第一个用例登录。第二个用例没有UI操作只打印一条日志。执行时依次打开哪几个Activity？<br>
+3、只有一个用例，getDriverInfo后点击MainPager上的元素，错误信息是什么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply7">7楼</a> · <abbr class="timeago" title="2014-10-21T09:10:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9307" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1455/replies/9307/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="sanlengjingvv" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../strayeagle" class="at_user" title="@strayeagle"><i>@</i>strayeagle</a> <br>
+用例3开头加上这个呢？<br>
+driver.start_activity('com.xxx.ui', '.LoginPager')</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply8">8楼</a> · <abbr class="timeago" title="2014-10-21T09:40:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9308" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1455/replies/9308/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="strayeagle" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../sanlengjingvv" class="at_user" title="@sanlengjingvv"><i>@</i>sanlengjingvv</a>  driver方法里面没有start_activity啊，import的时候我是from appium import webdriver，请问你是导入的哪个包啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../sanlengjingvv"><img alt="480" class="uface" src="../user/large_avatar/480.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黑水" href="../sanlengjingvv">sanlengjingvv</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply9">9楼</a> · <abbr class="timeago" title="2014-10-21T10:24:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9314" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="480" href="http://testerhome.com/topics/1455/replies/9314/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="sanlengjingvv" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../strayeagle" class="at_user" title="@strayeagle"><i>@</i>strayeagle</a> 不会python啊，我看源码里有这个，按java说的话这是个方法不是属性</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply10">10楼</a> · <abbr class="timeago" title="2014-10-21T13:47:18+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9331" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1455/replies/9331/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="umbrella1978" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>用例1【app1】是卸载【app2】<br>
+用例2 【app1】安装【app3】<br>
+用例3 【app3】登录？</p>
+<h4></h4>
+<p>是这样的设计吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply11">11楼</a> · <abbr class="timeago" title="2014-10-21T13:52:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9332" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1455/replies/9332/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="strayeagle" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../umbrella1978" class="at_user" title="@umbrella1978"><i>@</i>umbrella1978</a> 用例中是同一个app的：<br>
+用例1是卸载这个app；<br>
+用例2是安装这个app；<br>
+用例3是检查用例2中安装的app登录界面上是否有pwoerer-by信息；<br>
+用例4是登录app，这个登录依赖的是用例2中安装好的app；<br>
+用例5是在用例4成功登录进入主界面的基础上，去检查这个主界面的侧标栏是否有powerer-by信息</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply12">12楼</a> · <abbr class="timeago" title="2014-10-21T14:04:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9333" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1455/replies/9333/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="umbrella1978" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1455#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../strayeagle" class="at_user" title="@strayeagle"><i>@</i>strayeagle</a> 用例3中初始化loginPager的driver，用例是分开的，driver不同无可厚非</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../strayeagle"><img alt="1386" class="uface" src="../user/large_avatar/1386.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../strayeagle">strayeagle</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1455#reply13">13楼</a> · <abbr class="timeago" title="2014-10-22T09:16:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9357" data-state="" data-type="Reply" href="1455#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1386" href="http://testerhome.com/topics/1455/replies/9357/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="strayeagle" href="1455#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>有一些应用，在首次安装后启动会有一个引导页，浏览完引导页后才会跳转到登录或者注册页面，再次启动时根据引导页直接打开登录或登录后的主界面，所以首次安装并启动的Activity和直接打开登录主页面的Activity不一样，需要在desired_caps中增加appWaitActivity，为你想要等待启动的Android Activity名称，即引导activity后面增加期待使用的activity，app界面就可以正常跳转。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @Anikikun: 希望毕业设计顺利按时按量完成，希望上海实习之旅顺利
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1455#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | webviewv36 支持的 Remote Debugging 特性以及与 appium 的关系 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">webviewv36 支持的 Remote Debugging 特性以及与 appium 的关系</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+     · 
+    于<abbr class="timeago" title="2014-12-23T03:14:26+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="yangchengtest" href="../yangchengtest">yangchengtest</a> 于<abbr class="timeago" title="2014-12-23T20:00:34+08:00"></abbr>回复
+     · 
+    518次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>今天晚上花了点时间继续研究了一下appium的源码和相关资料，结合之前群里一直讨论的appium如何支持hybrid页面测试的大话题，输出一个新的折腾结果：webview36支持的Remote Debugging的应用技巧，观点错误之处，还望及时指出，知道的同学也可以继续参与讨论。</p>
+
+<p>注意：本文讨论的是4.4以上的新webview，欢迎有同学另发帖子，讨论selendroid，作为一枚前端开发来说，是希望看到webview逐步进化的，因为这是必然趋势，h5和js在手机上的性能会越来越强劲。</p>
+
+<p>本文主要介绍以下几个内容：<br>
+1. Remote Debugging on Android with Chrome<br>
+2. Appium的android-hybrid.js以及chromedriver.js部分源码分析<br>
+3. chromedriver latest release对hybrid测试的支持参数</p>
+
+<p>demo环境：<br>
+Desktop chrome ver: 39.0.2171.95 (64-bit)<br>
+chromedriver:  2.13.307650<br>
+app：ctrip app<br>
+Android: 4.4.2</p>
+<h4>再次认识一下Hybrid</h4>
+<p>Hybrid的直译为：杂交，当然了，我们忽略他原来的意思，这个词语本身在app开发中非常常见，它代表一种开发模式，即在app端采用原生(native)技术，一般为oc，java等语言 ＋ web页面开发技术(一般为html5，javascript等相关技术)进行融合，在适当的环节采用适当的实现方式，能够使开发效率达到一个满意值，并且产品的交互等各方面表现能够接近原生，国内像携程，大众点评网的app等均采用了这种模式，那么这个时候问题来了，这些非原生技术实现的页面的载体是什么？相信很多同学都知道，是Webview，ok，现在我们知道，很多时候Hybrid的那些页面都是通过这样一种载体进行展示的，暂且不深入讨论webview，webview正在不断进化，这是我们希望看到的。</p>
+
+<p>注意：区分webkit webview和chrome内核的webview</p>
+
+<p>一些周边帖：《chrome mobile emulation 及周边漫谈和相关应用+想法》<br>
+<a href="1697" rel="nofollow" target="_blank">http://testerhome.com/topics/1697</a></p>
+<h4>自动化测试在遭遇Hybrid时的窘境</h4>
+<p>其实，我这里用"窘境"这个词语非常不恰当，因为，当你发现其实这些问题都存在解决方案的时候，你就会发现其实这不算什么，相反，官方支持地很好，而且也正在不断进化。</p>
+<h4>Remote Debugging on Android with Chrome</h4>
+<p><img src="../photo/2014/ab5157e616bccf4419387f4d9593555d.png" alt=""></p>
+
+<p>官方文档及说明：</p>
+
+<p>The way your web content behaves on mobile can be dramatically different from the desktop experience. Remote debugging with Chrome DevTools lets you debug live content on your Android device from your development machine.</p>
+
+<p>使用Chrome的开发者工具能够让你即时调试在设备上运行的页面，他们是：</p>
+
+<p>Debugging websites in browser tabs.</p>
+
+<p>重点来了：Debugging WebViews in native Android apps. 调试在安卓应用里的webviews<br>
+好像是我们想要的......</p>
+
+<p>Screencasting live to your development machine from your Android device. <br>
+令人兴奋的casting特性</p>
+
+<p>Accessing your development server on Android using port forwarding and virtual host mapping.<br>
+端口映射调试模式，暂时不用管。</p>
+
+<p>继续过滤出来我们关注的信息：</p>
+<h4>要求</h4>
+<p>To begin remote debugging, you need:</p>
+
+<p>Chrome 32 or later installed on your development machine.<br>
+Chrome 32 + 以上版本（本机）</p>
+
+<p>A USB cable to connect your Android device.<br>
+USB线</p>
+
+<p>下面两行又是重点，Appium对webview测试支持的部分策略就跟这个有很大联系<br>
+For browser debugging: Android 4.0+ and Chrome for Android.<br>
+For app debugging: Android 4.4+ and a WebView configured for debugging.<br>
+对于应用调试，4.4以上</p>
+
+<p>Note: Remote debugging requires your version of desktop Chrome to be newer than the version of Chrome for Android on your device. For best results, use Chrome Canary (Mac/Windows) or the Chrome Dev channel release (Linux) on desktop.<br>
+推荐安装的桌面版chrome版本</p>
+<h4>打开我们的chrome开发者工具，我们来玩一把。</h4>
+<p>环境准备：<br>
+真机一个，或者模拟器一个，按照上述官方要求的chrome版本一个。<br>
+开启设备的USB调试模式<br>
+安装一个被测apk，这里以携程为例：</p>
+
+<p><img src="../photo/2014/d3ef2b8131a951c95aad4e923eeddeef.png" alt=""></p>
+<h4>在地址栏敲入chrome://inspect</h4>
+<p>我们来到一个干货界面，不出意外，你将看到下面这张图：</p>
+
+<p><img src="../photo/2014/a1807c4f7689ccdbc19bcdbada878a71.png" alt=""></p>
+
+<p>我的模拟器界面：</p>
+
+<p><img src="../photo/2014/394509f773ef1e1b7c1044d373d1e1bb.png" alt=""></p>
+
+<p>当我们在app上进行操作时，开发者工具自动会将嗅探到的webview给我们列出来。<br>
+这个技能可以帮助测试人员自己查看内部元素。</p>
+<h4>我们只需要按下inspect</h4>
+<p><img src="../photo/2014/88e8c586254ff8353afa920f1e76dcfb.png" alt=""></p>
+
+<p>我们看到，webview里加载页面的源码信息以及dom结构已经完全展现在我们面前，而且你可以将鼠标停留在某个dom上，正如你所熟悉的开发者工具，它会帮你在app里面高亮显示出对应的元素。</p>
+
+<p>更多调试技巧可以参考这里：<a href="https://developer.chrome.com/devtools/docs/remote-debugging" rel="nofollow" target="_blank">https://developer.chrome.com/devtools/docs/remote-debugging</a></p>
+<h4>与appium的联系</h4>
+<p>这里，我只讨论安卓端，在appium的源码中，与这个实现有关系的两个源码文件是<a href="https://github.com/appium/appium/blob/master/lib/devices/android/android-hybrid.js" rel="nofollow" target="_blank">https://github.com/appium/appium/blob/master/lib/devices/android/android-hybrid.js</a><br>
+还有一个是<br>
+<a href="https://github.com/appium/appium/blob/master/lib/devices/android/chromedriver.js" rel="nofollow" target="_blank">https://github.com/appium/appium/blob/master/lib/devices/android/chromedriver.js</a></p>
+<h4>我们先来看android-hybrid.js</h4><pre class="highlight javascript"><span class="nx">androidHybrid</span><span class="p">.</span><span class="nx">listWebviews</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s2">"Getting a list of available webviews"</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">webviews</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">var</span> <span class="nx">definedDeviceSocket</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">androidDeviceSocket</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">adb</span><span class="p">.</span><span class="nx">shell</span><span class="p">(</span><span class="s2">"cat /proc/net/unix"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">out</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">out</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">"\n"</span><span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">line</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">line</span> <span class="o">=</span> <span class="nx">line</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+      <span class="kd">var</span> <span class="nx">webviewPid</span> <span class="o">=</span> <span class="nx">line</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/@?webview_devtools_remote_(\d+)/</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">definedDeviceSocket</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">line</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">"@"</span> <span class="o">+</span> <span class="nx">definedDeviceSocket</span><span class="p">)</span> <span class="o">===</span>
+          <span class="nx">line</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">definedDeviceSocket</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">webviewPid</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">webviews</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">WEBVIEW_BASE</span> <span class="o">+</span> <span class="nx">webviewPid</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">webviews</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">CHROMIUM_WIN</span><span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">webviewPid</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// for multiple webviews a list of 'WEBVIEW_&lt;index&gt;' will be returned
+</span>        <span class="c1">// where &lt;index&gt; is zero based (same is in selendroid)
+</span>        <span class="nx">webviews</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">WEBVIEW_BASE</span> <span class="o">+</span> <span class="nx">webviewPid</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+      <span class="p">}</span>
+    <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+    <span class="nx">webviews</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniq</span><span class="p">(</span><span class="nx">webviews</span><span class="p">);</span>
+
+    <span class="c1">//...... 后面代码省略
+</span></pre>
+
+<p>相信很多同学也都看过源码了，client端的get contexts方法对应服务端的这个listWebviews，这个方法非常讨巧，我们清晰地看到，它执行了一条命令，然后利用正则表达式去匹配webview_devtools_remote，见下图：</p>
+<pre class="highlight shell">cat /proc/net/unix
+</pre>
+
+<p><img src="../photo/2014/6b1c1126288a1ef390c84f08cfee4965.png" alt=""></p>
+
+<p>webview_devtools_remote？似曾相识的感觉：<br>
+appium的这个策略正是利用了remote debugging特性。</p>
+
+<p>目前为止，我们只是能够嗅探到webview内部的元素，appium接下来会怎么做？<br>
+我们应该一下子就能够想到webdriver，所以Appium很自然地对其进行了包装：</p>
+<pre class="highlight javascript"><span class="nx">androidHybrid</span><span class="p">.</span><span class="nx">startChromedriverProxy</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s2">"Connecting to chrome-backed webview"</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">chromedriver</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"We already have a chromedriver instance running"</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">setupNewChromeDriver</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ocb</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">chromeArgs</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">port</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">chromeDriverPort</span>
+    <span class="p">,</span> <span class="na">executable</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">chromedriverExecutable</span>
+    <span class="p">,</span> <span class="na">deviceId</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">adb</span><span class="p">.</span><span class="nx">curDeviceId</span>
+    <span class="p">,</span> <span class="na">enablePerformanceLogging</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">enablePerformanceLogging</span>
+    <span class="p">};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">chromedriver</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Chromedriver</span><span class="p">(</span><span class="nx">chromeArgs</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onChromedriverExit</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">rememberProxyState</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">proxyHost</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">chromedriver</span><span class="p">.</span><span class="nx">proxyHost</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">proxyPort</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">chromedriver</span><span class="p">.</span><span class="nx">proxyPort</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">isProxy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">caps</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">chromeOptions</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">androidPackage</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">appPackage</span><span class="p">,</span> <span class="c1">//貌似有戏...
+</span>        <span class="na">androidUseRunningApp</span><span class="p">:</span> <span class="kc">true</span> <span class="c1">//貌似有戏...
+</span>      <span class="p">}</span>
+    <span class="p">};</span>
+</pre>
+
+<p>两个核心参数：</p>
+<pre class="highlight javascript"><span class="nx">chromeOptions</span><span class="err">:</span> <span class="p">{</span>
+        <span class="na">androidPackage</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">appPackage</span><span class="p">,</span> 
+        <span class="na">androidUseRunningApp</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">}</span>
+</pre>
+
+<p>chromedriver官网对这两个参数的解释：</p>
+
+<p>Android-specific Desired Capabilities</p>
+
+<p>The following capabilities are applicable to both Chrome and WebView apps:</p>
+
+<p>androidPackage: The package name of the Chrome or WebView app.<br>
+androidDeviceSerial: (Optional) The device serial number on which to launch the app (See Multiple Devices section below).<br>
+androidUseRunningApp: (Optional) Attach to an already-running app instead of launching the app with a clear data directory.</p>
+
+<p>The following capabilities are only applicable to WebView apps.<br>
+androidActivity: Name of the Activity hosting the WebView.<br>
+androidProcess: (Optional) Process name of the Activity hosting the WebView (as given by ps). If not given, the process name is assumed to be the same as androidPackage.</p>
+<h4>尝试直接使用这几个参数</h4><h4>先开启一个wd/hub模式的chromedriver</h4><pre class="highlight shell">chromedriver --url-base<span class="o">=</span>wd/hub
+</pre>
+<h4>简短demo</h4><pre class="highlight python"><span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">appium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">'chromeOptions'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">'androidPackage'</span><span class="p">:</span> <span class="s">'ctrip.android.view'</span><span class="p">,</span>
+            <span class="s">'androidUseRunningApp'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="s">'androidActivity'</span><span class="p">:</span> <span class="s">'ctrip.android.view.h5.activity.H5Container'</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">hybrid_test_driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="s">"http://127.0.0.1:9515/wd/hub"</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">hybrid_test_driver</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">"div_czb"</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</pre>
+
+<p>注意：这里的androidActivity必须传入，可以用monitor等轻松嗅探到。</p>
+<h4>运行结果</h4>
+<p><img src="../photo/2014/13f3b8506ef38a53d027f09acb88b688.gif" alt=""></p>
+<h4>新webview特性支持表</h4>
+<p><a href="https://developer.chrome.com/multidevice/webview/overview" rel="nofollow" target="_blank">https://developer.chrome.com/multidevice/webview/overview</a></p>
+
+<p><img src="../photo/2014/bd1b1e4ded1692546ca079ca3404c105.png" alt=""></p>
+<h4>说明</h4>
+<p>本文就webview的测试没有讨论全面，比如appium的向下兼容处理（selendroid）策略，我们的本意是希望webview的进化越来越给力，这样方便的就是广大开发者和testing skill研究人员。</p>
+<h4>总结</h4>
+<p>对未来充满无限展望，我们在新webview特性的光环笼罩下，使用chrome dev tools + chromedriver的几个参数就能完成webview内的元素嗅探以及driver操作，我们也希望webview能够继续进化，让那些该死的兼容问题见鬼去吧。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='webviewv36 支持的 Remote Debugging 特性以及与 appium 的关系 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1719#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1719#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1719#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1719#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1719#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>9</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply1">1楼</a> · <abbr class="timeago" title="2014-12-23T08:20:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10769" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1719/replies/10769/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>如果一开始就是用webview的话，其实走的就是 selendroid 的通道了。chrome 这块感觉是给 chrome-based 的webview 用的。Selendroid 使用的是 atom js 注入，来和页面元素交互的。</p>
+<pre class="highlight plaintext">    // current ChromeDriver doesn't handle more than a single web view
+    if (this.isChromedriverContext(name)) {
+      this.startChromedriverProxy(name, next);
+    } else if (this.isChromedriverContext(this.curContext)) {
+      this.suspendChromedriverProxy(next);
+    } else if (this.isProxy) { // e.g. WebView context handled in Selendroid
+      this.proxyTo('wd/hub/session/' + this.proxySessionId + '/context', 'POST', {name: name}, next);
+    }
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply2">2楼</a> · <abbr class="timeago" title="2014-12-23T08:33:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="2" data-id="10770" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>2 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/1719/replies/10770/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="luis" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>👍，chrome主要还是给android上的chrome浏览器以及没特化过的chromium webview。如果特化过还得自己修改点源码自己build个driver。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply3">3楼</a> · <abbr class="timeago" title="2014-12-23T09:17:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10772" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1719/replies/10772/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="qddegtya" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1719#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 是的，其实我文中只讨论了这一种情形~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply4">4楼</a> · <abbr class="timeago" title="2014-12-23T09:18:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10773" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1719/replies/10773/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="qddegtya" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1719#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 没错,webview是个大话题，我暂且没有讨论selendroid</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply5">5楼</a> · <abbr class="timeago" title="2014-12-23T11:14:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10775" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/1719/replies/10775/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="oscar" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很强大，赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply6">6楼</a> · <abbr class="timeago" title="2014-12-23T11:58:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10778" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1719/replies/10778/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="qddegtya" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1719#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a> 欢迎大家补铁~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply7">7楼</a> · <abbr class="timeago" title="2014-12-23T17:42:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="10796" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1719/replies/10796/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="yangchengtest" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞！~目前还看不懂，看上去挺强大的，留个脚印先！~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply8">8楼</a> · <abbr class="timeago" title="2014-12-23T19:31:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10799" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/1719/replies/10799/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="qddegtya" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1719#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../yangchengtest" class="at_user" title="@yangchengtest"><i>@</i>yangchengtest</a> 看不懂说明不是你的问题，是我的问题。。。。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../yangchengtest"><img alt="1706" class="uface" src="../user/large_avatar/1706.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="magicyang" href="../yangchengtest">yangchengtest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1719#reply9">9楼</a> · <abbr class="timeago" title="2014-12-23T20:00:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10801" data-state="" data-type="Reply" href="1719#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1706" href="http://testerhome.com/topics/1719/replies/10801/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="yangchengtest" href="1719#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../qddegtya" class="at_user" title="@qddegtya"><i>@</i>qddegtya</a> ....呵呵，真不是你的问题，暂时还没开始做WEBVIEW这块的内容，完全没有概念。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @luis: 希望项目自动化测试有个好的开始，14年我能hold住场子。。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1719#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

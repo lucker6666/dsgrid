@@ -1,0 +1,376 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Using Dnsmasq for local development on OS X &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Using Dnsmasq for local development on OS X</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2015-01-07T18:00:29+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lihuazhang" href="../lihuazhang">lihuazhang</a> 于<abbr class="timeago" title="2015-01-07T18:50:05+08:00"></abbr>回复
+     · 
+    82次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>亲测，可用。</p>
+
+<p>原帖在这里：<a href="http://passingcuriosity.com/2013/dnsmasq-dev-osx/" rel="nofollow" target="_blank">http://passingcuriosity.com/2013/dnsmasq-dev-osx/</a> 有空在翻译。</p>
+
+<p>Most web developers will be familiar with the process of updating your /etc/hosts file to direct traffic for coolproject.dev to 127.0.0.1. Most will also be familiar with the problems of this approach:</p>
+
+<p>it requires a configuration change every time you add or remove a project; and</p>
+
+<p>it requires administration access to make the change.</p>
+
+<p>Installing a local DNS server like Dnsmasq and configuring your system to use that server can make these configuration changes a thing of the past. In this post, I’ll run through the process of:</p>
+
+<p>Installing Dnsmasq on OS X.</p>
+
+<p>Configuring Dnsmasq to respond to all .dev requests with 127.0.0.1.</p>
+
+<p>Configure OS X to send all .dev requests requests to Dnsmasq.</p>
+
+<p>Before we get started, I should give you a warning: these instructions show you how to install new system software and change your system configuration. Like all such changes, you should not proceed unless you are confident you have understood them and that you can reverse the changes if needed.</p>
+
+<p>Installing Dnsmasq<br>
+To quote the Dnsmasq project home page</p>
+
+<p>Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server […] is targeted at home networks[.]<br>
+There are plenty of ways to install Dnsmasq but my favourite (on OS X) is to use the Homebrew package manager. Installing Homebrew is fairly simple but beyond my scope here.</p>
+
+<p>Once you have Homebrew installed, using it to install Dnsmasq is easy:</p>
+<h4>Update your homebrew installation</h4>
+<p>brew up</p>
+<h4>Install dnsmasq</h4>
+<p>brew install dnsmasq<br>
+The installation process will output several commands that you can use to start Dnsmasq automatically with a default configuration. I used the following commands but you should use whichever commands brew tells you to:</p>
+<h4>Copy the default configuration file.</h4>
+<p>cp $(brew list dnsmasq | grep /dnsmasq.conf.example$) /usr/local/etc/dnsmasq.conf</p>
+<h4>Copy the daemon configuration file into place.</h4>
+<p>sudo cp $(brew list dnsmasq | grep /homebrew.mxcl.dnsmasq.plist$) /Library/LaunchDaemons/</p>
+<h4>Start Dnsmasq automatically.</h4>
+<p>sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist<br>
+Configuring Dnsmasq<br>
+Now that you have Dnsmasq installed and running, it’s time to configure it! The configuration file lives at /usr/local/etc/dnsmasq.conf by default, so open this file in your favourite editor.</p>
+
+<p>One the many, many things that Dnsmasq can do is compare DNS requests against a database of patterns and use these to determine the correct response. I use this functionality to match any request which ends in .dev and send 127.0.0.1 in response. The Dnsmasq configuration directive to do this is very simple:</p>
+
+<p>address=/dev/127.0.0.1<br>
+Insert this into your /usr/local/etc/dnsmasq.conf file (I put it near the example address=/double-click.net/127.0.0.1 entry just to keep them all together) and save the file.</p>
+
+<p>You may need to restart Dnsmasq to get it to recognise this change. Restarting Dnsmasq is the same as any other service running under launchd:</p>
+
+<p>sudo launchctl stop homebrew.mxcl.dnsmasq<br>
+sudo launchctl start homebrew.mxcl.dnsmasq<br>
+You can test Dnsmasq by sending it a DNS query using the dig utility. Pick a name ending in dev and use dig to query your new DNS server:</p>
+
+<p>dig testing.testing.one.two.three.dev <a href="http://testerhome.com/127" class="at_user" title="@127"><i>@</i>127</a>.0.0.1<br>
+You should get back a response something like:</p>
+
+<p>;; ANSWER SECTION:<br>
+testing.testing.one.two.three.dev. 0 IN A   127.0.0.1<br>
+Configuring OS X<br>
+Now that you have a working DNS server you can configure your operating system to use it. There are two approaches to this:</p>
+
+<p>Send all DNS queries to Dnsmasq.</p>
+
+<p>Send only .dev queries to Dnsmasq.</p>
+
+<p>The first approach is easy – just change your DNS settings in System Preferences – but probably won’t work without additional changes to the Dnsmasq configuration.</p>
+
+<p>The second is a bit more tricky, but not much. Most UNIX-like operating systems have a configuration file called /etc/resolv.conf which controls the way DNS queries are performed, including the default server to use for DNS queries (this is the setting that gets set automatically when you connect to a network or change your DNS server/s in System Preferences).</p>
+
+<p>OS X also allows you to configure additional resolvers by creating configuration files in the /etc/resolver/ directory. This directory probably won’t exist on your system, so your first step should be to create it:</p>
+
+<p>sudo mkdir -p /etc/resolver<br>
+Now you should create a new file in this directory for each resolver you want to configure. Each resolver corresponds – roughly and for our purposes – to a top-level domain like our dev. There a number of details you can configure for each resolver but I generally only bother with two:</p>
+
+<p>the name of the resolver (which corresponds to the domain name to be resolved); and<br>
+the DNS server to be used.<br>
+For more information about these files, see the resolver(5) manual page:</p>
+
+<p>man 5 resolver<br>
+Create a new file with the same name as your new top-level domain (I’m using dev, recall) in the /etc/resolver/ directory and add a nameserver to it by running the following commands:</p>
+
+<p>sudo tee /etc/resolver/dev &gt;/dev/null &lt;&lt;EOF<br>
+nameserver 127.0.0.1<br>
+EOF<br>
+Here dev is the top-level domain name that I’ve configured Dnsmasq to respond to and 127.0.0.1 is the IP address of the server to use.</p>
+
+<p>Once you’ve created this file, OS X will automatically read it and you’re done!</p>
+
+<p>Testing<br>
+Testing you new configuration is easy; just use ping check that you can now resolve some DNS names in your new top-level domain:</p>
+<h4>Make sure you haven't broken your DNS.</h4>
+<p>ping -c 1 <a href="http://www.google.com" target="_blank">www.google.com</a></p>
+<h4>Check that .dev names work</h4>
+<p>ping -c 1 this.is.a.test.dev<br>
+ping -c 1 iam.the.walrus.dev<br>
+You should see results that mention the IP address in your Dnsmasq configuration like this:</p>
+
+<p>PING iam.the.walrus.dev (127.0.0.1): 56 data bytes<br>
+You can now just make up new DNS names under .dev whenever you please. Congratulations!</p>
+
+<p>Maybe the next step on your journey should be learning how to do configure Apache virtual hosts automatically based on host names? If this sounds interesting, contact me using the details below and I’ll write that article too.</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Using Dnsmasq for local development on OS X via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1793#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1793#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1793#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1793#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1793#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>2</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1793#reply1">1楼</a> · <abbr class="timeago" title="2015-01-07T18:05:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11263" data-state="" data-type="Reply" href="1793#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1793/replies/11263/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="monkey" href="1793#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>哟。昨天说的劫持么。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1793#reply2">2楼</a> · <abbr class="timeago" title="2015-01-07T18:50:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11264" data-state="" data-type="Reply" href="1793#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1793/replies/11264/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="1793#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1793#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../Monkey" class="at_user" title="@monkey"><i>@</i>monkey</a> 先架dns server</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @yunmu:我希望今年能推荐更多的人到我们阿里团队
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1896" title="你应该学会使用的 5 个 ruby 方法">你应该学会使用的 5 个 ruby 方法</a></li>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+    <li><a href="1838" title="小而美的 ghost driver">小而美的 ghost driver</a></li>
+    <li><a href="1814" title="定制 Gradle 编译时候遇到的坑，慢慢垒">定制 Gradle 编译时候遇到的坑，慢慢垒</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1793#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

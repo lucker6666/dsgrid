@@ -1,0 +1,1448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 通用技术 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 通用技术 节点最新发帖.</description>
+    <item>
+      <title>你应该学会使用的 5 个 ruby 方法</title>
+      <description>&lt;p&gt;今天看到了这篇文章--&lt;a href="https://blog.engineyard.com/2015/five-ruby-methods-you-should-be-using" target="_blank"&gt;Five Ruby Methods You Should Be Using&lt;/a&gt;,感觉收获颇丰，先简单翻译一下先。&lt;/p&gt;
+
+&lt;p&gt;作者写这篇文章的契机是在&lt;a href="http://exercism.io/" target="_blank"&gt;Exercism&lt;/a&gt;上看到了很多ruby代码可以用更好的方式去重构，因此他分享了一些冷门的但是非常有用的ruby方法。&lt;/p&gt;
+&lt;h4&gt;Object#tap&lt;/h4&gt;
+&lt;p&gt;你是否曾发现在某个对象上调用方法时返回值不是你所预期？你想返回这个对象，但是返回的时候又想对这个对象进行一些修改。比方说，你想给hash对象增加1个key value，这时候你需要调用Hash.[]方法，但是你想返回的是整个hash对象，而不是具体的某个value值，因此你需要显示的返回该对象。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_params&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:foo&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'bar'&lt;/span&gt;
+  &lt;span class="n"&gt;params&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;最后一行的那个params显得有些多余了。&lt;/p&gt;
+
+&lt;p&gt;我们可以用&lt;code&gt;Object#tap&lt;/code&gt;方法来优化这个方案。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.ruby-doc.org/core-2.1.5/Object.html#method-i-tap" target="_blank"&gt;tap&lt;/a&gt;方法用起来非常简单,直接在某个对象上调用tap方法，然后就可以在代码块里yielded这个对象，最后这个对象本身会被返回。下面的代码演示了如何使用tap方法来重构刚才的实现。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update_params&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;tap&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="nb"&gt;p&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;p&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:foo&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'bar'&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;有很多地方都可以使用到&lt;code&gt;Object#tap&lt;/code&gt;方法，一般的规律是对那些在对象上调用，希望返回对象，但是却没返回该对象本身的方法都适用。&lt;/p&gt;
+&lt;h4&gt;Array#bsearch&lt;/h4&gt;
+&lt;p&gt;我不清楚你的情况，但我经常在数组里去查找数据。ruby的enumerable模块提供了很多简单好用的方法&lt;code&gt;select, reject, find&lt;/code&gt;。不过当数据源很庞大的时候，我开始对这些查找的性能表示忧桑。&lt;/p&gt;
+
+&lt;p&gt;如果你正在使用ActiveRecord和非NO SQL的数据库，查询的算法复杂度是经过优化了的。但是有时候你需要从数据库里把所有的数据拉出来进行处理，比方说如果你加密了数据库，那就不能好好的写sql做查询了。&lt;/p&gt;
+
+&lt;p&gt;这时候我会冥思苦想以找到一个最小的算法复杂度来筛选数据。如果你不了解算法复杂度，也就是这个O，请阅读&lt;a href="https://justin.abrah.ms/computer-science/big-o-notation-explained.html" target="_blank"&gt; Big-O Notation Explained By A Self-Taught Programmer&lt;/a&gt;或［Big-O Complexity Cheat Sheet](&lt;a href="http://bigocheatsheet.com/" rel="nofollow" target="_blank"&gt;http://bigocheatsheet.com/&lt;/a&gt;)。&lt;/p&gt;
+
+&lt;p&gt;一般来说，算法复杂度越低，程序运行的速度就越快。&lt;code&gt;O(1), O(log n), O(n), O(n log(n)), O(n^2), O(2^n), O(n!)&lt;/code&gt;，在这个例子里，越往右算法复杂度是越高的。所以我们要让我们的算法接近左边的复杂度。&lt;/p&gt;
+
+&lt;p&gt;当我们搜索数组的时候，一般第一个想到的方法便是&lt;code&gt;Enumerable#find&lt;/code&gt;,也就是select方法。不过这个方法会搜索整个数组直到找到预期的结果。如果要找的元素在数组的开始部分，那么搜索的效率倒不会太低，但如果是在数据的末尾，那么搜索时间将是很可观的。find方法的算法复杂度是O(n)。&lt;/p&gt;
+
+&lt;p&gt;更好的办法是使用(Array#bsearch)[&lt;a href="http://www.ruby-doc.org/core-2.1.5/Array.html#method-i-bsearchO(log" rel="nofollow" target="_blank"&gt;http://www.ruby-doc.org/core-2.1.5/Array.html#method-i-bsearchO(log&lt;/a&gt;]方法。该方法的算法复杂度是 n)。你可以查看&lt;a href="http://fluxusfrequency.github.io/blog/2014/01/31/building-a-binary-search/" target="_blank"&gt;Building A Binary Search&lt;/a&gt;这篇文章来该算法的原理。&lt;/p&gt;
+
+&lt;p&gt;下面的代码显示了搜索50000000个数字时不同算法之间的性能差异。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;require 'benchmark'
+
+data = (0..50_000_000)
+
+Benchmark.bm do |x|
+  x.report(:find) { data.find {|number| number &amp;gt; 40_000_000 } }
+  x.report(:bsearch) { data.bsearch {|number| number &amp;gt; 40_000_000 } }
+end
+
+         user       system     total       real
+find     3.020000   0.010000   3.030000   (3.028417)
+bsearch  0.000000   0.000000   0.000000   (0.000006)
+&lt;/pre&gt;
+
+&lt;p&gt;如你所见，&lt;code&gt;bsearch&lt;/code&gt;要快的多。不过要注意的是bsearch要求搜索的数组是排序过的。尽管这个限制bsearch的使用场景，bsearch在显示生活中确实是有用武之地的。比如通过&lt;code&gt;created_at&lt;/code&gt;字段来查找从数据库中取出的数据。&lt;/p&gt;
+&lt;h4&gt;Enumerable#flat_map&lt;/h4&gt;
+&lt;p&gt;考虑这种情况，你有个blog应用，你希望找到上个月有过评论的所有作者，你可以会这样做：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;CommentFinder&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_for_users&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;user_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;posts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;comments&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;author&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;username&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;得到的结果看起来会是这样的&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="o"&gt;[[[&lt;/span&gt;&lt;span class="s1"&gt;'Ben'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'Sam'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'David'&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Keith'&lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;[[]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="kp"&gt;nil&lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="s1"&gt;'Chris'&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;[]]]&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;不过你想得到的是所有作者，这时候你大概会使用&lt;code&gt;flatten&lt;/code&gt;方法。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;CommentFinder&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_for_users&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;user_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;posts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;comments&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;author&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;username&lt;/span&gt;
+      &lt;span class="p"&gt;}.&lt;/span&gt;&lt;span class="nf"&gt;flatten&lt;/span&gt;
+    &lt;span class="p"&gt;}.&lt;/span&gt;&lt;span class="nf"&gt;flatten&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;另一个选择是使用&lt;code&gt;flat_map&lt;/code&gt;方法。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;CommentFinder&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_for_users&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;user_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;posts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;flat_map&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;comments&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;flat_map&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;author&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;username&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这跟使用flatten方法没什么太大的不同，不过看起来会优雅一点，毕竟不需要反复调用flatten了。&lt;/p&gt;
+&lt;h4&gt;Array.new with a Block&lt;/h4&gt;
+&lt;p&gt;想当年我在一个技术训练营，我们的导师Jeff Casimir同志(&lt;a href="http://turing.io/" target="_blank"&gt;Turing School&lt;/a&gt;的创始人)让我们在一小时内写个Battleship游戏。这是极好的进行面向对象编程的练习，我们需要Rules，Players, Games和Boards类。&lt;/p&gt;
+
+&lt;p&gt;创建代表Board的数据结构是一件非常有意思的事情。经过几次迭代我发现下面的方法是初始化8x8格子的最好方式：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Board&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;board&lt;/span&gt;
+    &lt;span class="vi"&gt;@board&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="nb"&gt;Array&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nb"&gt;Array&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s1"&gt;'0'&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;上面的代码是什么意思？当我们调用&lt;code&gt;Array.new&lt;/code&gt;并传入了参数length，1个长度为length的数组将会被创建。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="nb"&gt;Array&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#=&amp;gt; [nil, nil, nil, nil, nil, nil, nil, nil]&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;当你传入一个block，这时候block的返回值会被当成是数组的每个元素。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="nb"&gt;Array&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s1"&gt;'O'&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="c1"&gt;#=&amp;gt; ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;因此，当你向block传入1个具有8个元素的数组时，你会得到8x8个元素的嵌套数组了。&lt;/p&gt;
+
+&lt;p&gt;用Array#new加block的方式可以创建很多有趣和任意嵌套层级的数组。&lt;/p&gt;
+&lt;h4&gt;&amp;lt;=&amp;gt;&lt;/h4&gt;
+&lt;p&gt;这个方法就很常见了。简单来说这方法是判断左值和右值的关系的。如果左值大于右值返回1，相等返回0，否则返回－1。&lt;/p&gt;
+
+&lt;p&gt;实际上&lt;code&gt;Enumerable#sort, Enumerable#max&lt;/code&gt;方法都是基于&amp;lt;=&amp;gt;的。另外如果你定义了&amp;lt;=&amp;gt;，然后再include Comparable，你将免费得到&amp;lt;=, &amp;lt;, &amp;gt;=, &amp;gt;以及between方法。&lt;/p&gt;
+
+&lt;p&gt;这是作者的在现实生活中所用到的例子：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fix_minutes&lt;/span&gt;
+  &lt;span class="k"&gt;until&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;60&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;member?&lt;/span&gt; &lt;span class="n"&gt;minutes&lt;/span&gt;
+    &lt;span class="vi"&gt;@hours&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;60&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;minutes&lt;/span&gt;
+    &lt;span class="vi"&gt;@minutes&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;60&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;60&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;minutes&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="vi"&gt;@hours&lt;/span&gt; &lt;span class="sx"&gt;%= 24
+  self
+end
+
+&lt;/span&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个方法不是很好理解，大概的意思就是如果minutes超过60的话，小时数+1,等于60小时数不变，否则－1。&lt;/p&gt;
+&lt;h4&gt;讨论&lt;/h4&gt;
+&lt;p&gt;会的方法越多写出来的代码可能会更有表现力，边写代码边改进,另外多读rubydoc。&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Mon, 19 Jan 2015 10:40:32 +0800</pubDate>
+      <link>http://testerhome.com/topics/1896</link>
+      <guid>http://testerhome.com/topics/1896</guid>
+    </item>
+    <item>
+      <title>阻止 JS 的冒泡事件</title>
+      <description>&lt;p&gt;&lt;img src="/photo/2015/a6ab3bfdfa577b287a413468e873c4d0.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;原址：&lt;a href="http://andward.github.io/js/jquery/2014/12/29/how-to-stop-event-bubble.html" rel="nofollow" target="_blank"&gt;http://andward.github.io/js/jquery/2014/12/29/how-to-stop-event-bubble.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;用了一段时间google inbox，赶脚mail task的样式很酷炫，于是也模仿着做了一个task管理系统。&lt;br&gt;
+Google task有个behavior是点击页面别处，当前展开的mail就会收起。查了查实现发现这里应该是阻止了js事件的冒泡。&lt;/p&gt;
+
+&lt;p&gt;关于事件冒泡的官方解释：&lt;br&gt;
+After an event triggers on the deepest possible element, it then triggers on parents in nesting order. - 总结一下就是说子元素会逐层往上层查找，直到找到绑定了触发事件的父元素。这儿有个简单的例子：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;div&lt;/span&gt; &lt;span class="kr"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'class1'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;div&lt;/span&gt; &lt;span class="kr"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'class2'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/&lt;/span&gt;&lt;span class="err"&gt;div&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/&lt;/span&gt;&lt;span class="err"&gt;div&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;script&lt;/span&gt; &lt;span class="nx"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'text/javascript'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'.class1'&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;click&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* Act on the event */&lt;/span&gt;
+    &lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;css&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'background'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'red'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/&lt;/span&gt;&lt;span class="err"&gt;script&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;运行代码，如果点击class2的div，整个class1的区域仍然会变红。点击事件从子元素冒泡到了绑定click事件的父元素上。&lt;/p&gt;
+
+&lt;p&gt;js的事件冒泡其实有不少好处，例如可以减少同一事件的重复绑定。如果class1下面有10个div都需要触发同一事件而没有事件冒泡，则我们需要写10次相同的事件函数。。那是多么的坑爹~&lt;/p&gt;
+
+&lt;p&gt;为了实现google task的效果，就需要阻止&amp;lt;code&amp;gt;$(document).click()&amp;lt;/code&amp;gt;事件的冒泡。很多文章都推荐用stopPropagation方法。这个函数可以阻止事件冒泡:&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;click&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// Hide the menus if visible.
+&lt;/span&gt;&lt;span class="p"&gt;});&lt;/span&gt;
+
+&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'.class2'&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;click&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+  &lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;stopPropagation&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;当点击class2时 由于其用了stopPropagation，不会触发到绑定在$(document)的点击事件。js和jquery都支持这个方法。&lt;/p&gt;
+
+&lt;p&gt;然而有些同学对这种强行阻止冒泡的行为表示了担忧。见帖：&lt;a href="http://css-tricks.com/dangers-stopping-event-propagation/" target="_blank"&gt;dangers-stopping-event-propagation&lt;/a&gt;。大意是指这种全局阻止事件冒泡会导致某些lib产生bug(博主举了个boostrap的bug),并推荐一下用法：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'click'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;target&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;closest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'.class2'&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;length&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// do sth
+&lt;/span&gt;  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;大体思路就是检查一下事件绑定的元素以及父元素是不是想要的，不是就触发方法~&lt;/p&gt;
+
+&lt;p&gt;两种方法我试了试在我这里都work~~最后我用了第二种方法^_^&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2015/92387388ffe78796970a9ad3659c1ed4.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>andward</author>
+      <pubDate>Wed, 14 Jan 2015 10:15:53 +0800</pubDate>
+      <link>http://testerhome.com/topics/1860</link>
+      <guid>http://testerhome.com/topics/1860</guid>
+    </item>
+    <item>
+      <title>小而美的 ghost driver</title>
+      <description>&lt;p&gt;做过selenium自动化项目的同学应该都遇到过这样的问题：测试用例太多，运行速度过慢导致团队成员怨声载道。&lt;/p&gt;
+
+&lt;p&gt;于是便有了selenium grid和多线程运行selenium测试用例的方法。这些方法各有利弊这里就不一一列举了。但总的来说，如果浏览器运行的速度足够快，那么多线程并发时的用例执行速度应该是可以满足实际项目需求的。&lt;/p&gt;
+
+&lt;p&gt;再想象一下这样的情景：如果你手头的机器是没有gui的(这是可能的，我以前的几台centos的server根本就没有ui)，如何在这样的headless的机器上运行selenium用例呢？&lt;/p&gt;
+
+&lt;p&gt;答案是可以用selenium自带的&lt;a href="https://code.google.com/p/selenium/wiki/HtmlUnitDriver" target="_blank"&gt;HtmlUnitDriver&lt;/a&gt;。不过可惜的是HtmlUnitDriver对js的支持不是特别完美，所以该方案可行但是不完善，不是特别适合用于真实项目。&lt;/p&gt;
+
+&lt;p&gt;好在现在有了&lt;a href="http://phantomjs.org/" target="_blank"&gt;phantomjs&lt;/a&gt;和ghostdriver，我们可以用ghostdriver来运行selenium测试用例。所有的用例都是在没有gui的浏览器里运行，运行速度可以得到极大的提升。再加上phantomjs是基于webkit的，所以ghostdriver完全可以模拟chrome和safari的行为。&lt;/p&gt;
+
+&lt;p&gt;在我的macbookpro上，chromedriver的表现不是特别令人满意，而我又没有安装firefox和safari driver，所以对于一般的页面(js交互不是特别多的页面)，我都是用ghost driver在调试问题，快速而简便。最主要是没有真实的浏览器弹出来，不会像chromedriver那样经常意外退出造成内存泄漏，也不会像firefox那样运行缓慢。&lt;/p&gt;
+
+&lt;p&gt;下面简单介绍一下ghost driver 与selenium合体的过程。&lt;/p&gt;
+&lt;h4&gt;背景知识&lt;/h4&gt;
+&lt;p&gt;下面的内容要求你已经成功的安装好python的selenim binding。如果你有pip，直接运行 &lt;code&gt;pip install selenium&lt;/code&gt;即可。如果被墙，请使用豆瓣源。&lt;/p&gt;
+
+&lt;p&gt;或者成功的安装好ruby的watir-webdriver。如果你有gem，直接运行 &lt;code&gt;gem install watir-webdriver&lt;/code&gt;即可。如果被墙，请使用&lt;a href="http://ruby.taobao.org" target="_blank"&gt;淘宝源&lt;/a&gt;。&lt;/p&gt;
+&lt;h4&gt;安装ghost driver&lt;/h4&gt;
+&lt;p&gt;ghost driver现在已经跟phantomjs合体，所以安装好最新版本的phantomjs就等于安装好了ghostdriver。&lt;/p&gt;
+
+&lt;p&gt;在&lt;a href="http://phantomjs.org/download.html" target="_blank"&gt;这里&lt;/a&gt;下载对应平台的phantomjs。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;首先解压下载好的zip文件或tar文件(linux only);&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;windows用户将解压过后的得到的phantomjs.exe文件加入系统的PATH中。简单点说如果你使用pyhon，就把phantomjs.exe放到python的安装目录下，ruby用户放到ruby/bin目录下；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;mac和linux用户可以把解压后得到的phantomjs建个软链到/usr/local/bin目录下。&lt;code&gt;ln -s /where/is/phantomjs /usr/local/bin/phantomjs&lt;/code&gt;；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;快速开始&lt;/h4&gt;
+&lt;p&gt;python用户新建itest.py文件然后敲入下面的内容&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;selenium&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;
+
+&lt;span class="n"&gt;dr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PhantomJS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'phantomjs'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://baidu.info'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;current_url&lt;/span&gt;
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;watir-webdriver用户新建文件itest.rb然后敲入下面的内容&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'watir-webdriver'&lt;/span&gt;
+
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Watir&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt; &lt;span class="ss"&gt;:phantomjs&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;goto&lt;/span&gt; &lt;span class="s1"&gt;'www.baidu.com'&lt;/span&gt;
+
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;title&lt;/span&gt;
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;url&lt;/span&gt;
+
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;close&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;讨论&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;ghostdriver尽管对js的支持是不错的，但是如果你的页面上js交互过多的话，ghostdriver是会缴械投降的；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;用ghostdriver+selenium的语法可以做一些不错的爬虫；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;用java用户请使用maven下载java的ghostdriver binding；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;当页面上有flash播放器时，phantom可能会萌萌哒的卡在那里一动不动；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;ghostdriver基于&lt;a href="http://phantomjs.org/" target="_blank"&gt;phantomjs&lt;/a&gt;，phantomjs可以做爬虫，简单的性能测试，ui自动化测试和其他一些工作； &lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;由于没有ui，当测试发生错误的时候调试的工作量就会变大；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;看不到运行的过程，心中惶恐不安怎么办&lt;/h4&gt;
+&lt;p&gt;答案是截图拯救测试人员，截图拯救世界。&lt;/p&gt;
+
+&lt;p&gt;运行到关键的节点或步骤时截个图，即方便了调试又使你的测试拥有足够多的输出,一举两得何乐不为？&lt;/p&gt;
+
+&lt;p&gt;python代码&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;selenium&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;
+
+&lt;span class="n"&gt;dr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PhantomJS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'phantomjs'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://baidu.info'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;current_url&lt;/span&gt;
+
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save_screenshot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'./baidu.png'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;ruby代码&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'watir-webdriver'&lt;/span&gt;
+
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Watir&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt; &lt;span class="ss"&gt;:phantomjs&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;goto&lt;/span&gt; &lt;span class="s1"&gt;'www.baidu.com'&lt;/span&gt;
+
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;title&lt;/span&gt;
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;url&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;driver&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;save_screenshot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'./baidu.jpg'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;close&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Mon, 12 Jan 2015 09:43:06 +0800</pubDate>
+      <link>http://testerhome.com/topics/1838</link>
+      <guid>http://testerhome.com/topics/1838</guid>
+    </item>
+    <item>
+      <title>定制 Gradle 编译时候遇到的坑，慢慢垒</title>
+      <description>&lt;p&gt;我们知道在build.gradle里面可以使用buildTypes针对自己app做一些custom setup，例如同时在同一设备上安装debug和release版本&lt;br&gt;
+简单方便的方法：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="n"&gt;buildTypes&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;debug&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;applicationIdSuffix&lt;/span&gt; &lt;span class="s"&gt;".debug"&lt;/span&gt;
+            &lt;span class="n"&gt;signingConfig&lt;/span&gt; &lt;span class="n"&gt;signingConfigs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;myConfig&lt;/span&gt;
+            &lt;span class="n"&gt;versionNameSuffix&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sc"&gt;'d'&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这里有个坑,如果你的应用有自定义的view或者属性时,需要在资源文件里将命名空间修改如下:&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="nl"&gt;xmlns:&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;"http://schemas.android.com/apk/com.package.name"&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="nl"&gt;xmlns:&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;"http://schemas.android.com/apk/res-auto"&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;就为了上面这一句我那坑爹的程序猿哥们坑了我半个工作日!!我还尝试了去改java包名..一把泪&lt;/p&gt;
+
+&lt;p&gt;另外如果你的应用如果有用到Contentprovider,需要AndroidManifest里面对authorities少许修改下:&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;provider&lt;/span&gt;
+            &lt;span class="nl"&gt;android:&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;".provider.AppContentProvider"&lt;/span&gt;
+            &lt;span class="nl"&gt;android:&lt;/span&gt;&lt;span class="n"&gt;authorities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;"${applicationId}.provider"&lt;/span&gt;
+            &lt;span class="nl"&gt;android:&lt;/span&gt;&lt;span class="n"&gt;multiprocess&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;"false"&lt;/span&gt; &lt;span class="o"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;继续Code里面补上一句,BuildConfig会在你编译的时候读取你build.gradle里面设置的applicationID&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;AUTHORITY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BuildConfig&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;APPLICATION_ID&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;".provider"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;Ok,That's it ! 希望能节省你们宝贵的工作时间!&lt;/p&gt;</description>
+      <author>shenkai600</author>
+      <pubDate>Fri, 09 Jan 2015 16:45:24 +0800</pubDate>
+      <link>http://testerhome.com/topics/1814</link>
+      <guid>http://testerhome.com/topics/1814</guid>
+    </item>
+    <item>
+      <title>Using Dnsmasq for local development on OS X</title>
+      <description>&lt;p&gt;亲测，可用。&lt;/p&gt;
+
+&lt;p&gt;原帖在这里：&lt;a href="http://passingcuriosity.com/2013/dnsmasq-dev-osx/" rel="nofollow" target="_blank"&gt;http://passingcuriosity.com/2013/dnsmasq-dev-osx/&lt;/a&gt; 有空在翻译。&lt;/p&gt;
+
+&lt;p&gt;Most web developers will be familiar with the process of updating your /etc/hosts file to direct traffic for coolproject.dev to 127.0.0.1. Most will also be familiar with the problems of this approach:&lt;/p&gt;
+
+&lt;p&gt;it requires a configuration change every time you add or remove a project; and&lt;/p&gt;
+
+&lt;p&gt;it requires administration access to make the change.&lt;/p&gt;
+
+&lt;p&gt;Installing a local DNS server like Dnsmasq and configuring your system to use that server can make these configuration changes a thing of the past. In this post, I’ll run through the process of:&lt;/p&gt;
+
+&lt;p&gt;Installing Dnsmasq on OS X.&lt;/p&gt;
+
+&lt;p&gt;Configuring Dnsmasq to respond to all .dev requests with 127.0.0.1.&lt;/p&gt;
+
+&lt;p&gt;Configure OS X to send all .dev requests requests to Dnsmasq.&lt;/p&gt;
+
+&lt;p&gt;Before we get started, I should give you a warning: these instructions show you how to install new system software and change your system configuration. Like all such changes, you should not proceed unless you are confident you have understood them and that you can reverse the changes if needed.&lt;/p&gt;
+
+&lt;p&gt;Installing Dnsmasq&lt;br&gt;
+To quote the Dnsmasq project home page&lt;/p&gt;
+
+&lt;p&gt;Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server […] is targeted at home networks[.]&lt;br&gt;
+There are plenty of ways to install Dnsmasq but my favourite (on OS X) is to use the Homebrew package manager. Installing Homebrew is fairly simple but beyond my scope here.&lt;/p&gt;
+
+&lt;p&gt;Once you have Homebrew installed, using it to install Dnsmasq is easy:&lt;/p&gt;
+&lt;h4&gt;Update your homebrew installation&lt;/h4&gt;
+&lt;p&gt;brew up&lt;/p&gt;
+&lt;h4&gt;Install dnsmasq&lt;/h4&gt;
+&lt;p&gt;brew install dnsmasq&lt;br&gt;
+The installation process will output several commands that you can use to start Dnsmasq automatically with a default configuration. I used the following commands but you should use whichever commands brew tells you to:&lt;/p&gt;
+&lt;h4&gt;Copy the default configuration file.&lt;/h4&gt;
+&lt;p&gt;cp $(brew list dnsmasq | grep /dnsmasq.conf.example$) /usr/local/etc/dnsmasq.conf&lt;/p&gt;
+&lt;h4&gt;Copy the daemon configuration file into place.&lt;/h4&gt;
+&lt;p&gt;sudo cp $(brew list dnsmasq | grep /homebrew.mxcl.dnsmasq.plist$) /Library/LaunchDaemons/&lt;/p&gt;
+&lt;h4&gt;Start Dnsmasq automatically.&lt;/h4&gt;
+&lt;p&gt;sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist&lt;br&gt;
+Configuring Dnsmasq&lt;br&gt;
+Now that you have Dnsmasq installed and running, it’s time to configure it! The configuration file lives at /usr/local/etc/dnsmasq.conf by default, so open this file in your favourite editor.&lt;/p&gt;
+
+&lt;p&gt;One the many, many things that Dnsmasq can do is compare DNS requests against a database of patterns and use these to determine the correct response. I use this functionality to match any request which ends in .dev and send 127.0.0.1 in response. The Dnsmasq configuration directive to do this is very simple:&lt;/p&gt;
+
+&lt;p&gt;address=/dev/127.0.0.1&lt;br&gt;
+Insert this into your /usr/local/etc/dnsmasq.conf file (I put it near the example address=/double-click.net/127.0.0.1 entry just to keep them all together) and save the file.&lt;/p&gt;
+
+&lt;p&gt;You may need to restart Dnsmasq to get it to recognise this change. Restarting Dnsmasq is the same as any other service running under launchd:&lt;/p&gt;
+
+&lt;p&gt;sudo launchctl stop homebrew.mxcl.dnsmasq&lt;br&gt;
+sudo launchctl start homebrew.mxcl.dnsmasq&lt;br&gt;
+You can test Dnsmasq by sending it a DNS query using the dig utility. Pick a name ending in dev and use dig to query your new DNS server:&lt;/p&gt;
+
+&lt;p&gt;dig testing.testing.one.two.three.dev &lt;a href="/127" class="at_user" title="@127"&gt;&lt;i&gt;@&lt;/i&gt;127&lt;/a&gt;.0.0.1&lt;br&gt;
+You should get back a response something like:&lt;/p&gt;
+
+&lt;p&gt;;; ANSWER SECTION:&lt;br&gt;
+testing.testing.one.two.three.dev. 0 IN A   127.0.0.1&lt;br&gt;
+Configuring OS X&lt;br&gt;
+Now that you have a working DNS server you can configure your operating system to use it. There are two approaches to this:&lt;/p&gt;
+
+&lt;p&gt;Send all DNS queries to Dnsmasq.&lt;/p&gt;
+
+&lt;p&gt;Send only .dev queries to Dnsmasq.&lt;/p&gt;
+
+&lt;p&gt;The first approach is easy – just change your DNS settings in System Preferences – but probably won’t work without additional changes to the Dnsmasq configuration.&lt;/p&gt;
+
+&lt;p&gt;The second is a bit more tricky, but not much. Most UNIX-like operating systems have a configuration file called /etc/resolv.conf which controls the way DNS queries are performed, including the default server to use for DNS queries (this is the setting that gets set automatically when you connect to a network or change your DNS server/s in System Preferences).&lt;/p&gt;
+
+&lt;p&gt;OS X also allows you to configure additional resolvers by creating configuration files in the /etc/resolver/ directory. This directory probably won’t exist on your system, so your first step should be to create it:&lt;/p&gt;
+
+&lt;p&gt;sudo mkdir -p /etc/resolver&lt;br&gt;
+Now you should create a new file in this directory for each resolver you want to configure. Each resolver corresponds – roughly and for our purposes – to a top-level domain like our dev. There a number of details you can configure for each resolver but I generally only bother with two:&lt;/p&gt;
+
+&lt;p&gt;the name of the resolver (which corresponds to the domain name to be resolved); and&lt;br&gt;
+the DNS server to be used.&lt;br&gt;
+For more information about these files, see the resolver(5) manual page:&lt;/p&gt;
+
+&lt;p&gt;man 5 resolver&lt;br&gt;
+Create a new file with the same name as your new top-level domain (I’m using dev, recall) in the /etc/resolver/ directory and add a nameserver to it by running the following commands:&lt;/p&gt;
+
+&lt;p&gt;sudo tee /etc/resolver/dev &amp;gt;/dev/null &amp;lt;&amp;lt;EOF&lt;br&gt;
+nameserver 127.0.0.1&lt;br&gt;
+EOF&lt;br&gt;
+Here dev is the top-level domain name that I’ve configured Dnsmasq to respond to and 127.0.0.1 is the IP address of the server to use.&lt;/p&gt;
+
+&lt;p&gt;Once you’ve created this file, OS X will automatically read it and you’re done!&lt;/p&gt;
+
+&lt;p&gt;Testing&lt;br&gt;
+Testing you new configuration is easy; just use ping check that you can now resolve some DNS names in your new top-level domain:&lt;/p&gt;
+&lt;h4&gt;Make sure you haven't broken your DNS.&lt;/h4&gt;
+&lt;p&gt;ping -c 1 &lt;a href="http://www.google.com" target="_blank"&gt;www.google.com&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;Check that .dev names work&lt;/h4&gt;
+&lt;p&gt;ping -c 1 this.is.a.test.dev&lt;br&gt;
+ping -c 1 iam.the.walrus.dev&lt;br&gt;
+You should see results that mention the IP address in your Dnsmasq configuration like this:&lt;/p&gt;
+
+&lt;p&gt;PING iam.the.walrus.dev (127.0.0.1): 56 data bytes&lt;br&gt;
+You can now just make up new DNS names under .dev whenever you please. Congratulations!&lt;/p&gt;
+
+&lt;p&gt;Maybe the next step on your journey should be learning how to do configure Apache virtual hosts automatically based on host names? If this sounds interesting, contact me using the details below and I’ll write that article too.&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Wed, 07 Jan 2015 18:00:29 +0800</pubDate>
+      <link>http://testerhome.com/topics/1793</link>
+      <guid>http://testerhome.com/topics/1793</guid>
+    </item>
+    <item>
+      <title>如何学习自动化测试个人经验分享【高手绕路】</title>
+      <description>&lt;p&gt;软件自动化测试的学习步骤【高手绕路】&lt;/p&gt;
+
+&lt;p&gt;大概步骤如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;做好手工测试（了解各种测试的知识）-&amp;gt;  2. 学习编程语言-&amp;gt; 3. 学习Web基础（HTML,HTTP,CSS,DOM,Javascript）或者 学习Winform&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;-&amp;gt; 4. 学习自动化测试工具 -&amp;gt;5. 学习自动化测试框架 -&amp;gt; 6. 实现自动化测试用例 -&amp;gt; 7. 开发自动化测试工具 -&amp;gt;8. 开发自动化测试框架&lt;/p&gt;
+
+&lt;p&gt;自动化测试的最高境界是:  开发测试工具，设计自动化测试框架, 让别人用。&lt;/p&gt;
+
+&lt;p&gt;自动化测试的本质&lt;/p&gt;
+
+&lt;p&gt;自动化测试的本质是：用程序测试程序。 也就是说学习“编程语言”是学习自动化测试的基础。&lt;/p&gt;
+
+&lt;p&gt;很多人问我学自动化测试，应该去学什么自动化工具。 我的回答是，第一步：应该先学习编程语言，以后再去学自动化测试工具&lt;/p&gt;
+
+&lt;p&gt;自动化测试是一定要写代码的， 编程语言水平的高低决定了自动化测试水平的高低, 有了扎实的编程技术，干什么都可以。&lt;/p&gt;
+
+&lt;p&gt;学习编程语言时， 要把自己当做开发人员， 系统地学习各种编程知识。&lt;/p&gt;
+
+&lt;p&gt;自动化测试学习的误区&lt;/p&gt;
+
+&lt;p&gt;很多新手一开始，就学习复杂的自动化测试工具， 我觉得这样是本末倒置了。&lt;/p&gt;
+
+&lt;p&gt;如果不先理解HTTP协议， 就不会理解Jemeter, LoadRunner, Fiddler, SoapUI这些工具的。&lt;/p&gt;
+
+&lt;p&gt;如果不先理解HTML,DOM， 就不会理解Firebug 这种工具的&lt;/p&gt;
+
+&lt;p&gt;如果不先理解Win32 API,  就不会理解Windows 窗体自动化测试的原理的。&lt;/p&gt;
+
+&lt;p&gt;如果自己没有开发过网站， 就不会理解网站的各个方面，测试起来难免有遗漏。&lt;/p&gt;
+
+&lt;p&gt;总之学习自动化测试，需要循序渐进， 把基础打好。&lt;/p&gt;
+
+&lt;p&gt;自动化测试的职位&lt;/p&gt;
+
+&lt;p&gt;自动化测试工程师的职位叫做： （SDET） Software Development Engineer in Test.   专注于自动化测试&lt;/p&gt;
+
+&lt;p&gt;手动测试工程师叫：               （STE）Software test enginer.           专注于手动测试&lt;/p&gt;
+
+&lt;p&gt;在微软有很多SDET的职位，但是没有STE的职位， STE职位一般都是外包给外包公司的,  目前自动化测试还是非常吃香的。&lt;/p&gt;
+
+&lt;p&gt;自动化测试分类&lt;/p&gt;
+
+&lt;p&gt;自动化测试也有非常多的种类， &lt;/p&gt;
+
+&lt;p&gt;对Web UI 的自动化测试程序&lt;br&gt;
+对Windows 窗体UI的自动化测试程序&lt;br&gt;
+API测试， 比如（测试WCF service, Web API 等）&lt;br&gt;
+数据库测试， 比如测试存储过程&lt;br&gt;
+接口测试 (这种只能用自动化测) &lt;br&gt;
+单元测试&lt;br&gt;
+性能测试， 性能测试都需要用到自动化&lt;br&gt;
+Web自动化测试分类&lt;/p&gt;
+
+&lt;p&gt;目前大部分项目都是Web的， 所以我们说的自动化测试，大部分都是针对Web程序的自动化测试， Web自动化测试分两类： &lt;/p&gt;
+
+&lt;p&gt;第一类是：模拟用户真实操作，比如，模拟点击鼠标，键盘输入，等，去操作浏览器上的控件。 (代表框架有selenium-webdriver,   VS Coded UI)&lt;/p&gt;
+
+&lt;p&gt;这类的自动化测试的是通过高级语言(C#, JAVA, Python 等)来调用selenium的一些工具来操作浏览器，帮助我们实行Web UI自动化&lt;/p&gt;
+
+&lt;p&gt;第二类是：模拟HTTP请求。 类似于这种【12306火车票网站自动登录工具】， 这方面的知识，目前市面上资料比较少。 （以后我会出一个系列的教程）&lt;/p&gt;
+
+&lt;p&gt;自动化测试的书籍推荐&lt;/p&gt;
+
+&lt;p&gt;关于软件自动化测试的书，真心不多， 我查过市面上所有关于自动化测试的书，只找到下面这边书， 掌握了这边书，基本上自动化测试就入门了。 &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2015/3871285fbce490697bab232066b58f67.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;自动化测试工具&lt;/p&gt;
+
+&lt;p&gt;测试套件工具： JUnit,  Nunit,  MSTest，  这几个工具功能都一样学起来比较简单。   &lt;/p&gt;
+
+&lt;p&gt;性能测试工具：　JMeter, VSTS 负载测试, LoadRunner(收费)， QTP(收费)&lt;/p&gt;
+
+&lt;p&gt;Web UI 测试框架：WebDriver/Selenium,  VSTS Coded UI, Watri&lt;/p&gt;
+
+&lt;p&gt;Windows UI 测试框架：VSTS Coded UI &lt;/p&gt;
+
+&lt;p&gt;其他工具:   firebug,  Fiddler &lt;/p&gt;</description>
+      <author>testly</author>
+      <pubDate>Mon, 05 Jan 2015 12:42:49 +0800</pubDate>
+      <link>http://testerhome.com/topics/1771</link>
+      <guid>http://testerhome.com/topics/1771</guid>
+    </item>
+    <item>
+      <title>数据分析 R 语言之基础图形绘制入门</title>
+      <description>&lt;p&gt;答应小A的文章, 拖了很久. 所以今天赶紧补上了.&lt;/p&gt;
+&lt;h4&gt;R简介&lt;/h4&gt;
+&lt;p&gt;首先自己去官网下载R和R-Studio, R语言是什么, 我就不科普了. 粗浅的理解就是科学计算+绘图工具&lt;br&gt;
+R-Studio是个简单的IDE. 可用于基础的调试学习.&lt;br&gt;
+RScript可以执行R脚本. 支持参数传递. 自己写的脚本有时候需要放到jenkins去跑, 就需要这个工具.&lt;br&gt;
+R可以直接进入交互命令行. 一般在linux下调试用.&lt;br&gt;
+语法基本还是老式的C风格. R继承自S语言. &lt;/p&gt;
+&lt;h4&gt;读取数据&lt;/h4&gt;
+&lt;p&gt;R语言可以读取大部分的数据格式, 比如数据库, 文件 hadoop的HDFS等.还包括其他的数据分析工具, 比如IBM的SPSS等等.&lt;/p&gt;
+
+&lt;p&gt;R的读取输入的功能基本都在于read.*系列的函数. 最常用的是read.csv和read.table. 因为其他格式数据基本都可以转换到这两个格式上.&lt;br&gt;
+我以Testin网站上公布的他们拥有的所有机型列表数据作为分析演示的数据.&lt;br&gt;
+&lt;img src="/photo/2014/1d02930083974db2ebbefa700ece3de3.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;首先读取数据&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;devices=read.csv("testin_devices.csv")
+&lt;/pre&gt;
+
+&lt;p&gt;此时devices就是一个变量, 他表示一个行列数据, 类似于数据库中的数据表的概念.&lt;br&gt;
+他的devices$品牌 表示品牌这一列的数据&lt;br&gt;
+R语言的运算基于行列运算, 比如devices$count=1 表示把所有的count那一列的数据全部变成1. &lt;br&gt;
+正是这种计算方式导致了R的代码中很少看到for循环和if判断&lt;/p&gt;
+&lt;h4&gt;基础绘图&lt;/h4&gt;
+&lt;p&gt;可以直接使用plot绘图&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;plot(devices$品牌)
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/675de3fc90e6b1ad610fe9847f6246b8.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;数据太多,看不到细节的数据. 把结果输出到一个很大的png图形中&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;png("4.png", width=12000, height=1200)
+plot(devices$品牌)
+dev.off()
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/4441ac13008711091e1795b8839ab38c.png" alt=""&gt;&lt;br&gt;
+这样的结果看起来也很费劲. 所以我们继续优化.&lt;br&gt;
+按照从大到小的顺序进行排列岂不是更好.&lt;/p&gt;
+
+&lt;p&gt;之前使用plot函数的时候, 会自动统计各个品牌的分布情况. 现在是我们要自己去排序&lt;br&gt;
+所以需要自己先计算每个品牌的总设备类型数&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;devices2=aggregate(count~品牌, devices, sum)
+#然后根据count的结果, 进行反向的排序. 也就是高的在前, 低的在后
+devices2 = transform(devices2, 品牌=reorder(品牌, -count))
+#重新绘图
+plot(devices2$品牌, devices2$count)
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/1933714cfb4b4851ada7f82705ba6912.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;只看前二十名&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;devices4=devices3[rev(order(devices3$count))[1:20],]
+plot(devices4$品牌, devices4$count)
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/f31672f19bdcdafa305cf4b3cbf28ece.png" alt=""&gt;&lt;br&gt;
+这个时候会发现默认的plot lines很不人性化, 不够智能. &lt;/p&gt;
+&lt;h4&gt;更好的ggplot绘图体系&lt;/h4&gt;
+&lt;p&gt;这几年新的ggplot2库逐渐普及, 他可以更简单更友好的绘制图形. &lt;br&gt;
+所以我现在基本都使用ggplot2了&lt;br&gt;
+ggplot2有自己的绘图理念, 他认为所有的绘图函数都应该可以通过+连接起来. &lt;br&gt;
+类似于函数式编程或者bash的管道概念.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;#创建数据
+g=ggplot(data=devices4, aes(品牌, count))
+g+geom_bar(stat="identity")
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/94b333ec23fc0b1d5aa09b443c72641b.png" alt=""&gt;&lt;br&gt;
+切换下坐标方式, 实现更好的显示所有的品牌名字&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt; g+geom_bar(stat="identity")+coord_flip()
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/8fe33a5946848cbc68dd9d9445361fd9.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;调整下颜色&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt; g+geom_bar(stat="identity", color="blue", fill="white")+coord_flip()
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/b236755096ffa10e9f5f1bb982f0b19c.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;#标记数字&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;g+geom_bar(stat="identity", color="blue", fill="white")+coord_flip()+geom_text(label=devices4$count, size=3, hjust=1.2)
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/849b80550a25339bf250bde2b8d10f29.png" alt=""&gt;&lt;/p&gt;
+&lt;h4&gt;参考资料&lt;/h4&gt;
+&lt;p&gt;R语言与网站分析&lt;br&gt;
+R数据可视化手册&lt;br&gt;
+R语言实战&lt;/p&gt;
+&lt;h4&gt;待续&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;网络图的画法&lt;/li&gt;
+&lt;li&gt;机器学习算法在测试中的应用&lt;/li&gt;
+&lt;/ol&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Mon, 29 Dec 2014 18:28:10 +0800</pubDate>
+      <link>http://testerhome.com/topics/1741</link>
+      <guid>http://testerhome.com/topics/1741</guid>
+    </item>
+    <item>
+      <title>性能测试需要关注的内存标准是 PSS？VSS?RSS?USS?</title>
+      <description>&lt;p&gt;附上几个内存的含义&lt;br&gt;
+&lt;a href="http://hubingforever.blog.163.com/blog/static/17104057920114411313717/" rel="nofollow" target="_blank"&gt;http://hubingforever.blog.163.com/blog/static/17104057920114411313717/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;今天跟开发讨论这个，差点被洗脑了……开发的意思是，内存这个是系统内核的事情，不应该过多关注这个。&lt;/p&gt;</description>
+      <author>shixue33</author>
+      <pubDate>Fri, 12 Dec 2014 18:41:45 +0800</pubDate>
+      <link>http://testerhome.com/topics/1694</link>
+      <guid>http://testerhome.com/topics/1694</guid>
+    </item>
+    <item>
+      <title>无法全部获取网页内容</title>
+      <description>&lt;p&gt;起因：&lt;br&gt;
+本人负责兼容性模块，众所周知，android这一块的兼容就是去down各种apk，然后看看是否可运行。&lt;br&gt;
+鉴于此，偶想自己写个东西去网上一键down。有需求才有动力，最后摸索出每一个apk都有一个最终网址，找到这个网址，基本上就取得该apk了。&lt;br&gt;
+本来有其他手工方式，可是其一偶懒，其二可以练练手，然后我就打算写一个一键下载的apk，再然后问题来了。。。。&lt;br&gt;
+问题：&lt;br&gt;
+页面无法完全获取&lt;br&gt;
+&lt;img src="/photo/2014/94b085aa52252fdf9a231f620823985e.jpg" alt=""&gt;&lt;br&gt;
+ 红线框住的部分都可以解析出来 &lt;br&gt;
+右边有红线的部分就解析不了了~~~~~·，其实就是&amp;lt;div id="doc"&amp;gt;&amp;lt;/div&amp;gt;这个层里面的东西都没有获取到，求指点&lt;/p&gt;</description>
+      <author>601068603</author>
+      <pubDate>Tue, 09 Dec 2014 13:43:02 +0800</pubDate>
+      <link>http://testerhome.com/topics/1673</link>
+      <guid>http://testerhome.com/topics/1673</guid>
+    </item>
+    <item>
+      <title>U.E.D 企业家能力拓展日丨论 DT 时代的公有云服务可用性</title>
+      <description>&lt;p&gt;各位亲爱的testerhome的伙伴们：&lt;br&gt;
+对于创客们，这是最好的时代，也是最坏的时代。资 本市场的热火朝天，媒体圈的推波助澜让无数创业团队如雨后春笋般涌现；面对如火如荼的竞争，初创企业如何率先抢占市场并持续创新？实现“轻创业”很重要。 云计算作为颠覆传统服务模式的创新典范，通过资源优化配置帮助企业大幅度降低人力及成本的投入，已越来越受到创客们的青睐。&lt;br&gt;
+UCloud作为国内技术与服务最为顶尖的云服务商，此次将云服务带入孔雀机构并联合多家第三方合作伙伴，为园区内数百家初创团队提供价值超五万元的“创业扶持大礼包”，旨在帮助企业实现成长与创新的腾飞。&lt;/p&gt;
+
+&lt;p&gt;活动详情：&lt;/p&gt;
+
+&lt;p&gt;【时间】：2014年12月5日 14:00-18:00&lt;br&gt;
+【地点】：广州市新港中路397号T.I.T创意园创意西路07号别墅贝塔咖啡&lt;br&gt;
+（还没有UCloud账号，请点击这里注册：&lt;a href="http://www.ucloud.cn?sem=testerhome125" rel="nofollow" target="_blank"&gt;http://www.ucloud.cn?sem=testerhome125&lt;/a&gt;）&lt;/p&gt;
+
+&lt;p&gt;活动流程：&lt;br&gt;
+13:30-14:00 签到&lt;br&gt;
+14:00-14:10 主持人开场 铂涛酒店集团IT高级经理 胡黎明&lt;br&gt;
+Session A 14:10-14:50云上的私人顾问服务&lt;br&gt;
+14:10-15:00 UCloud 高级架构师总监 吴磊 《公有云服务可用性的四层保障》&lt;br&gt;
+话题介绍：&lt;br&gt;
+公有云面临更大规模的集群，各种单机环境下小概率的问题变成必然会发生的常见问题，本次分享将讲解公有云如何从点到面，从网络、系统、硬件、基础设施等多个层次，保障公有云的总体可用性高于传统的数据中心。&lt;/p&gt;
+
+&lt;p&gt;Session B 15:00-15:50 一找科技CTO 徐亚波教授《企业级大数据管理、分析及应用》&lt;br&gt;
+话题介绍：&lt;br&gt;
+大数据时代，企业所涉及的各种数据源纷繁复杂，本次分享将会结合案例，梳理企业级大数据所应具备的核心基础设施、涉及的核心数据分析技术以及潜在的大数据应用方向。&lt;/p&gt;
+
+&lt;p&gt;Session C 15:50-16:10 茶歇&lt;br&gt;
+16:10-17:00 UCloud 安全中心总监 方勇《云计算安全的挑战和解决之道》&lt;/p&gt;
+
+&lt;p&gt;话题介绍：&lt;br&gt;
+随着云计算行业的化云成雨，其信息安全问题也逐步成为大家越来越关注的问题之一，我们和大家一起探讨云计算安全面临的挑战和解决之道&lt;/p&gt;
+
+&lt;p&gt;17:00-17:30 抽奖环节、自由交流&lt;br&gt;
+到场即有礼，精美记事本，马克杯，抱枕，土豪金移动电源送不停~~&lt;br&gt;
+主办方：UCloud&lt;br&gt;
+联合主办：珠三角技术沙龙 、CCIC文创孵化中心 、CODING 、GitCafe、多备份&lt;/p&gt;
+
+&lt;p&gt;有关U.E.D（UCloudEntrepreneur Day）：&lt;br&gt;
+U.E.D，UCloud 企业家能力拓展日，2014年已在北京、上海、成都、广州、深圳等地为UCloud平台上的企业家和梦想创业家带来资本、行业、产品、技术等角度的能力拓 展内容，同时邀请游戏、在线教育、PaaS/SaaS、大数据、技术安全等领域的优秀企业家为U.E.D成员分享创业“干货”。&lt;/p&gt;</description>
+      <author>esplendo</author>
+      <pubDate>Fri, 28 Nov 2014 15:06:15 +0800</pubDate>
+      <link>http://testerhome.com/topics/1634</link>
+      <guid>http://testerhome.com/topics/1634</guid>
+    </item>
+    <item>
+      <title>MAC 中，appium inspector 识别到的元素坐标与实际坐标偏差很大，导致无法对识别到的元素进行操作</title>
+      <description>&lt;p&gt;VMware10.1&lt;br&gt;
+MAC10.9.4&lt;br&gt;
+Xcode6.1&lt;br&gt;
+appium 1.3.1&lt;/p&gt;
+
+&lt;p&gt;appium inspector识别到的元素坐标与实际坐标偏差很大，导致无法对识别到的元素进行操作，请问是否有人遇到过类似的问题？&lt;/p&gt;</description>
+      <author>ceiba3933</author>
+      <pubDate>Thu, 27 Nov 2014 14:11:55 +0800</pubDate>
+      <link>http://testerhome.com/topics/1628</link>
+      <guid>http://testerhome.com/topics/1628</guid>
+    </item>
+    <item>
+      <title>PHP 写了个用例管理系统，比较简单，准备在这里发表出来，不知会有人看吗？</title>
+      <description>&lt;p&gt;PHP写了个用例管理系统，比较简单，准备在这里发表出来，不知会有人看吗？要是没人会看，我就不发了，哈哈！&lt;/p&gt;
+
+&lt;p&gt;------------------------------------------------------------华丽的分隔线--------------------------------------------------------------------&lt;br&gt;
+接昨天&lt;br&gt;
+今天把程序整理了一下，原来以为可以直接上附件，后来发现TESTERHOME不能发附件，那我先在这里简单介绍下，然后再贴上百度网盘的链接，大家去下载吧！&lt;br&gt;
+先简单介绍下，本人比较热爱测试，已经在测试行业干了几年了，什么大型的MIS系统、WEB系统、手机端的APP、微信端的应用、等等都做过测试，也用到了一些测试工具，如Selenium，Robotium等，期间也做过一些压力测试，主要用LoadRunner。所以对于测试这块还算了解的比较多，之所以来到TesterHome，是因为在微博上认识了Monkey这哥儿们，当然，他可能不知道我是谁，不过也没关系，我就是一菜鸟，需要多多跟大家学习！&lt;br&gt;
+这个用例系统，其实很早之前就开始写，虽然特别简单，但是中间有各种原因，就扔一边了，这几天事情少，就想起来了，所以就一口气弄完，非常简单的测试用例系统，就是一些数据库的增、删、改、查。不过我觉得万事开头难，要想做些东西出来，都需要不断地坚持，所以，我希望看到这个系统的同学，如果你会一些PHP，那么可以在我这个基础上继续编写，代码中我也基本上给出了注释，不是很难懂，希望能把这个东西扩大一些功能，比如用例的导出，或者其他可以集成的功能。&lt;br&gt;
+我的想法就是大家一起学习，共同进步，在测试这个行业里坚持做，一直到专家级！无论开发、测试、还是产品，只有坚持不懈地做下去，才能成为行业的专家，这样才能得到想要的结果！&lt;/p&gt;
+
+&lt;p&gt;下载链接：&lt;br&gt;
+&lt;a href="http://pan.baidu.com/s/1ntvA26l" rel="nofollow" target="_blank"&gt;http://pan.baidu.com/s/1ntvA26l&lt;/a&gt;&lt;/p&gt;
+
+
+
+&lt;p&gt;使用说明:&lt;/p&gt;
+
+&lt;p&gt;1.数据库文件 testcase.sql (提前创建mysql数据库,并导入此数据)&lt;br&gt;
+2.配置入口文件 index.php (数据相关信息和网站路径)&lt;br&gt;
+3.访问地址 &lt;a href="http://127.0.0.1/" rel="nofollow" target="_blank"&gt;http://127.0.0.1/&lt;/a&gt; (如果放在网站根目录的话)&lt;br&gt;
+4.默认帐号admin 密码admin&lt;/p&gt;
+
+&lt;p&gt;系统截图：&lt;br&gt;
+&lt;img src="/photo/2014/99c4f5a5f929d08f88a1070c7d78ec36.png" alt=""&gt;&lt;br&gt;
+&lt;img src="/photo/2014/26199fdb667639715762b32a9d5e1612.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>bill</author>
+      <pubDate>Wed, 26 Nov 2014 22:55:03 +0800</pubDate>
+      <link>http://testerhome.com/topics/1624</link>
+      <guid>http://testerhome.com/topics/1624</guid>
+    </item>
+    <item>
+      <title>Android  常用工具合集</title>
+      <description>&lt;p&gt;Canhazaxs &lt;a href="https://viaforensics.com/resources/tools/android-forensics-tool/" rel="nofollow" target="_blank"&gt;https://viaforensics.com/resources/tools/android-forensics-tool/&lt;/a&gt;&lt;br&gt;
+AndroChef &lt;a href="http://dj.navexpress.com/androchef.htm" rel="nofollow" target="_blank"&gt;http://dj.navexpress.com/androchef.htm&lt;/a&gt;&lt;br&gt;
+Androguard &lt;a href="https://code.google.com/p/androguard/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/androguard/&lt;/a&gt;&lt;br&gt;
+Android Loadable Kernel Modules &lt;a href="https://github.com/strazzere/android-lkms" rel="nofollow" target="_blank"&gt;https://github.com/strazzere/android-lkms&lt;/a&gt;&lt;br&gt;
+Android SDK &lt;a href="https://developer.android.com/sdk/index.html" rel="nofollow" target="_blank"&gt;https://developer.android.com/sdk/index.html&lt;/a&gt;&lt;br&gt;
+Android4me &lt;a href="https://code.google.com/p/android4me/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/android4me/&lt;/a&gt;&lt;br&gt;
+Android-apktool &lt;a href="https://code.google.com/p/android-apktool/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/android-apktool/&lt;/a&gt;&lt;br&gt;
+Android-forensics &lt;a href="https://github.com/viaforensics/android-forensics" rel="nofollow" target="_blank"&gt;https://github.com/viaforensics/android-forensics&lt;/a&gt;&lt;br&gt;
+Android-random &lt;a href="https://code.google.com/p/android-random/downloads/detail?name=axml2xml.pl" rel="nofollow" target="_blank"&gt;https://code.google.com/p/android-random/downloads/detail?name=axml2xml.pl&lt;/a&gt;&lt;br&gt;
+APK Studio &lt;a href="http://www.vaibhavpandey.com/apkstudio/" rel="nofollow" target="_blank"&gt;http://www.vaibhavpandey.com/apkstudio/&lt;/a&gt;&lt;br&gt;
+ApkAnalyser &lt;a href="https://github.com/sonyxperiadev/ApkAnalyser" rel="nofollow" target="_blank"&gt;https://github.com/sonyxperiadev/ApkAnalyser&lt;/a&gt;&lt;br&gt;
+Apk-extractor &lt;a href="https://code.google.com/p/apk-extractor/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/apk-extractor/&lt;/a&gt;&lt;br&gt;
+Apkinspector &lt;a href="https://code.google.com/p/apkinspector/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/apkinspector/&lt;/a&gt;&lt;br&gt;
+Apk-recovery &lt;a href="https://code.google.com/p/apk-recovery/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/apk-recovery/&lt;/a&gt;&lt;br&gt;
+ART &lt;a href="http://androidcracking.blogspot.jp/2012/04/android-reverse-tools-art.html" rel="nofollow" target="_blank"&gt;http://androidcracking.blogspot.jp/2012/04/android-reverse-tools-art.html&lt;/a&gt;&lt;br&gt;
+Audit tools &lt;a href="https://github.com/wuntee/androidAuditTools" rel="nofollow" target="_blank"&gt;https://github.com/wuntee/androidAuditTools&lt;/a&gt;&lt;br&gt;
+Canhazaxs &lt;a href="https://github.com/jduck/canhazaxs" rel="nofollow" target="_blank"&gt;https://github.com/jduck/canhazaxs&lt;/a&gt;&lt;br&gt;
+Dava &lt;a href="http://www.sable.mcgill.ca/dava/" rel="nofollow" target="_blank"&gt;http://www.sable.mcgill.ca/dava/&lt;/a&gt;&lt;br&gt;
+DDMS &lt;a href="http://developer.android.com/tools/debugging/ddms.html" rel="nofollow" target="_blank"&gt;http://developer.android.com/tools/debugging/ddms.html&lt;/a&gt;&lt;br&gt;
+Decaf-platform &lt;a href="https://code.google.com/p/decaf-platform/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/decaf-platform/&lt;/a&gt;&lt;br&gt;
+DecoJer &lt;a href="http://www.decojer.org/" rel="nofollow" target="_blank"&gt;http://www.decojer.org/&lt;/a&gt;&lt;br&gt;
+Dedexer &lt;a href="http://dedexer.sourceforge.net/" rel="nofollow" target="_blank"&gt;http://dedexer.sourceforge.net/&lt;/a&gt;&lt;br&gt;
+Device Monitor &lt;a href="http://developer.android.com/tools/help/monitor.html" rel="nofollow" target="_blank"&gt;http://developer.android.com/tools/help/monitor.html&lt;/a&gt;&lt;br&gt;
+Dex2jar &lt;a href="https://code.google.com/p/dex2jar/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/dex2jar/&lt;/a&gt;&lt;br&gt;
+Dex-decomplier &lt;a href="https://code.google.com/p/dex-decomplier/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/dex-decomplier/&lt;/a&gt;&lt;br&gt;
+Dexinfo &lt;a href="https://github.com/poliva/dexinfo" rel="nofollow" target="_blank"&gt;https://github.com/poliva/dexinfo&lt;/a&gt;&lt;br&gt;
+Dexter &lt;a href="http://dexter.dexlabs.org/" rel="nofollow" target="_blank"&gt;http://dexter.dexlabs.org/&lt;/a&gt;&lt;br&gt;
+Dexterity &lt;a href="https://github.com/rchiossi/dexterity" rel="nofollow" target="_blank"&gt;https://github.com/rchiossi/dexterity&lt;/a&gt;&lt;br&gt;
+Dextools &lt;a href="https://github.com/cryptax/dextools" rel="nofollow" target="_blank"&gt;https://github.com/cryptax/dextools&lt;/a&gt;&lt;br&gt;
+Drozer &lt;a href="https://www.mwrinfosecurity.com/products/drozer/" rel="nofollow" target="_blank"&gt;https://www.mwrinfosecurity.com/products/drozer/&lt;/a&gt;&lt;br&gt;
+Heimdall &lt;a href="http://glassechidna.com.au/heimdall/" rel="nofollow" target="_blank"&gt;http://glassechidna.com.au/heimdall/&lt;/a&gt;&lt;br&gt;
+Hidex &lt;a href="https://github.com/cryptax/dextools/tree/master/hidex" rel="nofollow" target="_blank"&gt;https://github.com/cryptax/dextools/tree/master/hidex&lt;/a&gt;&lt;br&gt;
+Hooker &lt;a href="https://github.com/AndroidHooker/hooker" rel="nofollow" target="_blank"&gt;https://github.com/AndroidHooker/hooker&lt;/a&gt;&lt;br&gt;
+JAD &lt;a href="http://varaneckas.com/jad/" rel="nofollow" target="_blank"&gt;http://varaneckas.com/jad/&lt;/a&gt;&lt;br&gt;
+JADX &lt;a href="https://github.com/skylot/jadx" rel="nofollow" target="_blank"&gt;https://github.com/skylot/jadx&lt;/a&gt;&lt;br&gt;
+JD-GUI &lt;a href="http://jd.benow.ca/" rel="nofollow" target="_blank"&gt;http://jd.benow.ca/&lt;/a&gt;&lt;br&gt;
+JEB Decompiler &lt;a href="http://www.android-decompiler.com/" rel="nofollow" target="_blank"&gt;http://www.android-decompiler.com/&lt;/a&gt;&lt;br&gt;
+Luyten &lt;a href="https://github.com/deathmarine/Luyten" rel="nofollow" target="_blank"&gt;https://github.com/deathmarine/Luyten&lt;/a&gt;&lt;br&gt;
+Radare &lt;a href="http://rada.re/y/" rel="nofollow" target="_blank"&gt;http://rada.re/y/&lt;/a&gt;&lt;br&gt;
+Redexer &lt;a href="http://www.cs.umd.edu/projects/PL/redexer/" rel="nofollow" target="_blank"&gt;http://www.cs.umd.edu/projects/PL/redexer/&lt;/a&gt;&lt;br&gt;
+Reverse Android &lt;a href="https://github.com/nelhage/reverse-android" rel="nofollow" target="_blank"&gt;https://github.com/nelhage/reverse-android&lt;/a&gt;&lt;br&gt;
+Scalpel &lt;a href="http://repo.xposed.info/module/pl.com.android.scalpel.inject" rel="nofollow" target="_blank"&gt;http://repo.xposed.info/module/pl.com.android.scalpel.inject&lt;/a&gt;&lt;br&gt;
+Smali &lt;a href="https://code.google.com/p/smali/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/smali/&lt;/a&gt;&lt;br&gt;
+Soot &lt;a href="http://www.sable.mcgill.ca/soot/" rel="nofollow" target="_blank"&gt;http://www.sable.mcgill.ca/soot/&lt;/a&gt;&lt;br&gt;
+STAMP &lt;a href="https://sites.google.com/site/stampwebsite/" rel="nofollow" target="_blank"&gt;https://sites.google.com/site/stampwebsite/&lt;/a&gt;&lt;br&gt;
+Systrace &lt;a href="http://developer.android.com/tools/help/systrace.html" rel="nofollow" target="_blank"&gt;http://developer.android.com/tools/help/systrace.html&lt;/a&gt;&lt;br&gt;
+TaintDroid &lt;a href="http://appanalysis.org/" rel="nofollow" target="_blank"&gt;http://appanalysis.org/&lt;/a&gt;&lt;br&gt;
+Traceview &lt;a href="http://developer.android.com/tools/help/traceview.html" rel="nofollow" target="_blank"&gt;http://developer.android.com/tools/help/traceview.html&lt;/a&gt;&lt;br&gt;
+Undx &lt;a href="http://undx.sourceforge.net/" rel="nofollow" target="_blank"&gt;http://undx.sourceforge.net/&lt;/a&gt;&lt;br&gt;
+Xenotix-APK-Decompiler &lt;a href="https://github.com/ajinabraham/Xenotix-APK-Decompiler" rel="nofollow" target="_blank"&gt;https://github.com/ajinabraham/Xenotix-APK-Decompiler&lt;/a&gt;&lt;br&gt;
+XML-apk-parser &lt;a href="https://code.google.com/p/xml-apk-parser/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/xml-apk-parser/&lt;/a&gt;&lt;br&gt;
+ZjDroid &lt;a href="https://github.com/BaiduSecurityLabs/ZjDroid" rel="nofollow" target="_blank"&gt;https://github.com/BaiduSecurityLabs/ZjDroid&lt;/a&gt;&lt;/p&gt;</description>
+      <author>kasi</author>
+      <pubDate>Thu, 20 Nov 2014 11:42:10 +0800</pubDate>
+      <link>http://testerhome.com/topics/1601</link>
+      <guid>http://testerhome.com/topics/1601</guid>
+    </item>
+    <item>
+      <title>【已解决】求助：testlink1.9.7 与 redmine2.6.0 整合问题</title>
+      <description>&lt;p&gt;我查阅了很多资料，issue tracker文件也是按照说明写的，但是整合依然不成功，不知道是为什么。还请各位大虾指教。&lt;/p&gt;
+
+&lt;p&gt;下面是相关配置信息。&lt;/p&gt;
+
+&lt;p&gt;issue tracker代码：&lt;br&gt;
+&amp;lt;issuetracker&amp;gt;&lt;br&gt;
+&amp;lt;apikey&amp;gt;5e538dc08d383359e8a411ce14e18bf9900d9a98&amp;lt;/apikey&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;uribase&amp;gt;&lt;a href="https://localhost:3000/" rel="nofollow" target="_blank"&gt;https://localhost:3000/&lt;/a&gt;&amp;lt;/uribase&amp;gt;&lt;br&gt;
+&amp;lt;uriview&amp;gt;&lt;a href="https://localhost:3000/issues/" rel="nofollow" target="_blank"&gt;https://localhost:3000/issues/&lt;/a&gt;&amp;lt;/uriview&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;projectidentifier&amp;gt;xyz_iphone&amp;lt;/projectidentifier&amp;gt;&lt;br&gt;
+&amp;lt;tracker_id&amp;gt;xyz_iphone&amp;lt;/tracker_id&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;/issuetracker&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;redmine项目信息：&lt;br&gt;
+名称：xyz_iphone      标识：xyz_iphone&lt;/p&gt;
+
+&lt;p&gt;testlink项目信息：&lt;br&gt;
+名称：xyz_iphone      前缀：xyz_iphone                版本标识：xyz_iphone&lt;/p&gt;</description>
+      <author>mhsj183</author>
+      <pubDate>Wed, 19 Nov 2014 16:07:37 +0800</pubDate>
+      <link>http://testerhome.com/topics/1597</link>
+      <guid>http://testerhome.com/topics/1597</guid>
+    </item>
+    <item>
+      <title>一份关于“资料汇总”的汇总</title>
+      <description>&lt;p&gt;觉得有用的话，可以去github关注：&lt;a href="https://github.com/justjavac/awesome-awesomeness-zh_CN" rel="nofollow" target="_blank"&gt;https://github.com/justjavac/awesome-awesomeness-zh_CN&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;一份关于“资料汇总”的汇总。&lt;/p&gt;
+&lt;h4&gt;awesome awesomeness&lt;/h4&gt;
+&lt;p&gt;一份关于“资料汇总”的汇总。&lt;/p&gt;
+&lt;h4&gt;通用&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/justjavac/free-programming-books-zh_CN" target="_blank"&gt;free-programming-books-zh_CN&lt;/a&gt; 免费的计算机编程类中文书籍&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/hacke2/hacke2.github.io/issues/2" target="_blank"&gt;精彩博客集合&lt;/a&gt; hacke2/hacke2.github.io#2&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/geekcompany/ResumeSample" target="_blank"&gt;ResumeSample&lt;/a&gt; 程序员简历模板列表&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/greatghoul/remote-working" target="_blank"&gt;remote-working&lt;/a&gt; 收集整理远程工作相关的资料&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/jptiancai/jptiancai.github.com" target="_blank"&gt;jptiancai.github.com&lt;/a&gt; github pages 静态网站集合&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/Xuanwo/WebsitesForStudents" target="_blank"&gt;WebsitesForStudents&lt;/a&gt; 大学生网站集合&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://gitcafe.com/greatghoul/MineCraftReferences" target="_blank"&gt;MineCraftReferences&lt;/a&gt; 汇总游戏《我的世界》相关的资源&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/nemoTyrant/manong" target="_blank"&gt;manong&lt;/a&gt; 码农周刊整理&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;编程语言&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Android&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href="http://stormzhang.github.io/android/2014/07/07/learn-android-from-rookie/" target="_blank"&gt;Android学习之路&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/Trinea/android-open-project" target="_blank"&gt;android-open-project&lt;/a&gt; Android开源项目分类汇总&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;C/C++&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/sib9/cpp1x-study-resource" target="_blank"&gt;cpp1x-study-resource&lt;/a&gt; C++11 的学习资源&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/GameDevelopmentCollege/Game-Programming-Patterns-CN" target="_blank"&gt;Game-Programming-Patterns-CN&lt;/a&gt; 游戏编程模式中文&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;iOS&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank"&gt;iOSBlogCN&lt;/a&gt; 中文 iOS/Mac 开发博客列表&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/hzlzh/Best-App" target="_blank"&gt;Best-App&lt;/a&gt; 收集&amp;amp;推荐优秀的Apps/硬件/技巧/周边等&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/Lax/iOS-Swift-Demos" target="_blank"&gt;iOS-Swift-Demos&lt;/a&gt; Swift学习资源&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/nixzhu/dev-blog" target="_blank"&gt;dev-blog&lt;/a&gt; 一些 iOS/Web 开发相关的翻译或原创博客文章&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/ipader/SwiftGuide" target="_blank"&gt;SwiftGuide&lt;/a&gt; Swift语言指南&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;javascript&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/justjavac/awesome-firebase" target="_blank"&gt;awesome-firebase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/justjavac/AngularJS-Learning-zh_CN" target="_blank"&gt;AngularJS-Learning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/sergtitov/NodeJS-Learning/blob/master/cn_resource.md" target="_blank"&gt;NodeJS-Learning&lt;/a&gt; Nodejs中文资料导航&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/youyudehexie/node123" target="_blank"&gt;node123&lt;/a&gt; node.js中文资料导航&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="http://segmentfault.com/blog/tmdphp/1190000000749890" target="_blank"&gt;国内开源html5游戏引擎全收录&lt;/a&gt; &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;PHP&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://raw.githubusercontent.com/justjavac/awesome-awesomeness-zh_CN/master/assets/php-mind-map.jpg" target="_blank"&gt;PHP知识结构思维导图&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Python&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/Yixiaohan/codeparkshare" target="_blank"&gt;codeparkshare&lt;/a&gt; Python初学者书籍、视频、资料、社区推荐&lt;/li&gt;
+&lt;li&gt;
+&lt;a href="https://github.com/wklken/stackoverflow-py-top-qa" target="_blank"&gt;stackoverflow-py-top-qa&lt;/a&gt; stackoverflow上Python相关回答整理翻译&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ruby&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href="https://ruby-china.org/wiki" target="_blank"&gt;Ruby 资料&lt;/a&gt; by Ruby China&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;WEB前端&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="http://caifujianghu.com/article/yige-hege-de-qianduan-gongchengshi-bikan-de-shuji.html" target="_blank"&gt;一个合格的前端工程师必看的书籍&lt;/a&gt; &lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="http://knowledge.ecomfe.com/" target="_blank"&gt;前端知识体系&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/JacksonTian/fks" target="_blank"&gt;fks&lt;/a&gt; 前端技能汇总&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/lisposter/frontend-books" target="_blank"&gt;frontend-books&lt;/a&gt; 收集前端方面的书籍&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/foru17/front-end-collect" target="_blank"&gt;front-end-collect&lt;/a&gt; 分享自己长期关注的前端开发相关的优秀网站、博客、以及活跃开发者&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/AlloyTeam/Mars" target="_blank"&gt;Mars&lt;/a&gt; 腾讯移动Web前端知识库&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href="https://github.com/hoosin/mobile-web-favorites" target="_blank"&gt;mobile-web-favorites&lt;/a&gt; 移动前端开发收藏夹&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Sun, 16 Nov 2014 23:18:00 +0800</pubDate>
+      <link>http://testerhome.com/topics/1586</link>
+      <guid>http://testerhome.com/topics/1586</guid>
+    </item>
+    <item>
+      <title>TesterHome 新秀群成员-xiaxin，2014年10月 学习总结</title>
+      <description>&lt;p&gt;因为个人工作当前主要是做web测试,比如电商的ERP系统,所以学习了些web自动化的知识,初衷比较Low,主要是想通过自动化创建一些测试数据,但是UI经常变动,暂时没有太多实际成果.下面是10月的学习总结：&lt;br&gt;
+&lt;strong&gt;一.安装Ubuntu&lt;/strong&gt;&lt;br&gt;
+1. 从 &lt;a href="http://www.ubuntu.com/download/" rel="nofollow" target="_blank"&gt;http://www.ubuntu.com/download/&lt;/a&gt; 下载安装文件&lt;br&gt;
+2.使用UltraISO最新版制作U 盘安装（前提需要有一个U盘）&lt;br&gt;
+3.安装系统（具体操作就不说了，网上有很多教程&lt;br&gt;
+注意：如果是做双系统，千万不要一路默认安装，默认安装的后果就是会把你装个硬盘都格式化了....解决方法就是自己手动分区，这个网上教程里也有，可以找张纸记录下（也可以用手机,我的手机还是比较低端的Nokia,请忽略我吧.....）。恩,是的,我第一次安装就是把硬盘装个格式化了&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;二.环境搭建(Python+Selenium)&lt;/strong&gt;&lt;br&gt;
+1.Python 系统里自带了，无需另外安装&lt;br&gt;
+2.Selenium 通过命令安装（如果当前用户不是超级管理员的话,用sudo命令后,需要输入当前用户密码）&lt;br&gt;
+1).打开终端Terminal&lt;br&gt;
+2).安装pip ,命令： sudo apt-get install python-pip&lt;br&gt;
+3).用pip安装selenium, 命令：sudo pip install selenium&lt;br&gt;
+3.安装IDE (Eclipse +Pydev)&lt;br&gt;
+1).在Ubuntu SoftWare Center 中安装Java7 运行环境&lt;br&gt;
+2).在Eclipse网站下载Linux版tar包,解压后文件夹中有命名为eclipse的文件,双击即可运行&lt;br&gt;
+3).在Eclipse中help-&amp;gt;Eclipse MarketPlace中搜索Pydev并安装&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;三.测试安装是否成功&lt;/strong&gt;&lt;br&gt;
+代码如下：&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="c"&gt;# -*- coding:utf8 -*-&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;selenium&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+
+&lt;span class="n"&gt;dr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Firefox&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c"&gt;# 启动Firefox&lt;/span&gt;
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;maximize_window&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c"&gt;# 窗口最大化&lt;/span&gt;
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://www.baidu.com'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# 打开百度&lt;/span&gt;
+&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# 等待3秒&lt;/span&gt;
+&lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c"&gt;# 关闭Firefox&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;如果自动打开Firefox并且打开了百度,那就说明环境配置成功(当然也可以用谷歌等浏览器,但是需要有相应的驱动才行)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;四.需要具备的一些知识&lt;/strong&gt;&lt;br&gt;
+1.python 我是从廖雪峰老师的网站上学的，地址：&lt;a href="http://www.liaoxuefeng.com/" rel="nofollow" target="_blank"&gt;http://www.liaoxuefeng.com/&lt;/a&gt;&lt;br&gt;
+2.selenium 可以从 &lt;a href="http://selenium-python.readthedocs.org/" rel="nofollow" target="_blank"&gt;http://selenium-python.readthedocs.org/&lt;/a&gt; 学习,或者从乙醇 &lt;a href="http://www.easonhan.info/" rel="nofollow" target="_blank"&gt;http://www.easonhan.info/&lt;/a&gt; 或虫师&lt;a href="http://www.cnblogs.com/fnng/" rel="nofollow" target="_blank"&gt;http://www.cnblogs.com/fnng/&lt;/a&gt; 的博客学习&lt;br&gt;
+3.HTML基础,可以看懂HTML代码,因为定位元素时会用到相关的知识&lt;br&gt;
+4.HTMLTestRunner 用于呈现测试用例的执行结果 &lt;a href="https://pypi.python.org/pypi/HTMLTestRunner" rel="nofollow" target="_blank"&gt;https://pypi.python.org/pypi/HTMLTestRunner&lt;/a&gt; (当前也用不好,就不过多介绍了)&lt;/p&gt;
+
+&lt;p&gt;(10月也折腾了一下黑苹果,就是在非苹果电脑上装苹果系统,教程参考的&lt;a href="http://www.tonymacx86.com" rel="nofollow" target="_blank"&gt;http://www.tonymacx86.com&lt;/a&gt; ,苹果系统确实很棒,很爽的体验了一段时间,估计用的时间长了就回不去了..最后建议需要用苹果系统,而且有经济能力的话,还是购入苹果电脑吧)&lt;/p&gt;
+
+&lt;p&gt;最后,希望以上总结对看贴的人能有点帮助.关于为什么装Ubuntu,是为了多学些Linux相关的知识&lt;/p&gt;</description>
+      <author>xiaxin</author>
+      <pubDate>Sun, 09 Nov 2014 21:03:48 +0800</pubDate>
+      <link>http://testerhome.com/topics/1569</link>
+      <guid>http://testerhome.com/topics/1569</guid>
+    </item>
+    <item>
+      <title>［新秀群作业］从修复 testerhome(rubychina)网站的一个 bug 学习 ruby&amp;rails on ruby</title>
+      <description>&lt;h4&gt;前言&lt;/h4&gt;
+&lt;p&gt;对于一个差点脱离前沿技术人，想要学习ruby，就意味着要放弃熟悉的操作系统windows，熟悉的ide-eclipse，更重要的是要从java这种重量级编译型语言的编程思想强行转换为ruby这种轻量级解释执行语言编程思想。这个过程远比我想象的要难，总是抱着以前以java编程思想，通吃vb，C#的傲慢，虽然js还算可以，但js的编程思想与java也是很像的，经过这次打击让我意识到我掉队了。但仍有一部分经验可以帮助我入手新的技术，这篇文章一方面是警醒自己，另一方面也希望能将这次的学习过程分享给想要学习一门语言的同学。&lt;/p&gt;
+&lt;h4&gt;正文&lt;/h4&gt;
+&lt;p&gt;至于为什么选择ruby，中间的选择过程也费了一些时日，主要是在python和ruby之间比较，放弃python的重要理由是python的语法令我找不到北，还有那每个包下的_init_.py文件，请原谅我思想过于老化，无论如何都接受不了。而ruby，给我感觉就比较优雅易理解，虽然社区和资源不如python。过程曲折，就不赘述了。&lt;/p&gt;
+&lt;h4&gt;看清现状&lt;/h4&gt;
+&lt;p&gt;要学习一门新技术，首先要知道自己会什么，新技术涉及到了什么。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;linux＆shell脚本&lt;/strong&gt; ruby最好还是在linux下学习开发吧，我在windows下虽然也搭建成功了，但装了例如 devkit 我也是醉了。&lt;br&gt;
+ &lt;strong&gt;开发工具&lt;/strong&gt; 工欲善事，必先利器。其实我是被eclipse惯的，实在不想像原来学习java一样，从文本编辑器开始，编译执行。。。我选择了rubymine，是jetbrain出的，基于IntelliJ IDEA。其强大自不必说了。&lt;br&gt;
+&lt;img src="/photo/2014/2efccef2e33a909a97e3dcf32c53a727.png" alt=""&gt;&lt;br&gt;
+对我来说上面这两条满足就够了，至于编程经验什么的，我认为如果没有编程经验，反而还好一些，这样不会被以前的思想干扰。&lt;/p&gt;
+
+&lt;p&gt;看清需要什么之后，就去熟悉他们吧，下载安装blablabla....&lt;/p&gt;
+&lt;h4&gt;学习方法&lt;/h4&gt;
+&lt;p&gt;万事具备之后，就要考虑应该怎么学习ruby，是去买本书？找网络教学视频找资料？。。。无论哪种方法，要选择合适自己的。对于有编程经验的人，我建议先去看语法，练上几个小例子，深层次的不需要太多考虑。然后就实践，无论是自己编写一个小程序还是去修改bug都可以。没有编程经验的人，这里就不好办了，按照通常的做法，需要学习面向对象编程思想、数据结构、网络通信以及其他一些必备的IT技能。当然这里不是说要按部就班的去学，如果对自己有信心可以直接从视频教程、ruby书籍开始学习。&lt;/p&gt;
+
+&lt;p&gt;贴一个ruby的视频教程：&lt;a href="http://edu.51cto.com/lesson/id-10162.html" rel="nofollow" target="_blank"&gt;http://edu.51cto.com/lesson/id-10162.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;我是先去看语法：&lt;a href="http://www.w3cschool.cc/ruby/ruby-tutorial.html" rel="nofollow" target="_blank"&gt;http://www.w3cschool.cc/ruby/ruby-tutorial.html&lt;/a&gt;&lt;br&gt;
+w3cschool的语法虽然有一些已经过时了，但不影响了解ruby，看的过程中就跟着例子上手实践了。花了两天时间～&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;接下来就要选择是做一个小程序？还是找个一个现成的去修改代码修改bug。我选择了后者，原因就是因为在testerhome里玩的时候发现了一个bug。这里请没有框架使用经验的新手不要选择后者，自己先做一些像计算器之类的小程序。因为一般的现成的程序中，会使用一些框架，里面蕴含了框架的思想，如果不理解这个思想是找不到北的。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;bug标题&lt;/strong&gt;：testerhome论坛，社区帖子列表的分页数量不正确&lt;br&gt;
+&lt;strong&gt;bug描述&lt;/strong&gt;：进入“社区”菜单，下方的分页栏，其页数是100，但点击100页后，里面没有数据。这里的分页数量不是根据实际数据生成的，是错误的。&lt;br&gt;
+&lt;strong&gt;截图&lt;/strong&gt;:&lt;br&gt;
+&lt;img src="/photo/2014/d969ce8b1cf321960dd4df1e568f866c.png" alt=""&gt;&lt;/p&gt;
+&lt;h4&gt;修复bug过程&lt;/h4&gt;
+&lt;p&gt;要想修复这个bug，首先要有源码，还要知道论坛的架构。混坛子里的肯定都知道了，源码在&lt;a href="/lihuazhang" class="at_user" title="@lihuazhang"&gt;&lt;i&gt;@&lt;/i&gt;lihuazhang&lt;/a&gt;群主的github中就有，而论坛是使用的rubychina的源码，架构是rails on ruby.&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;a href="http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html" rel="nofollow" target="_blank"&gt;http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;环境搭建什么的就不赘述了，就从bug分析开始吧&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;这个bug的原因不难想象，程序中计算分页的代码有问题。我们要追到这部分代码，就要先去找页面。那接下来就观察一下工程结构
+&lt;img src="/photo/2014/4e28fedca0d47d99b625b9a688d22d5c.png" alt=""&gt;
+接下来就是我的初步猜测&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+&lt;li&gt;app 论坛业务所在&lt;/li&gt;
+&lt;li&gt;bin 忽略，二进制对业务无影响&lt;/li&gt;
+&lt;li&gt;config 一些配置&lt;/li&gt;
+&lt;li&gt;db 数据库相关&lt;/li&gt;
+&lt;li&gt;doc 里面是readme，看一眼有没有有用的，忽略&lt;/li&gt;
+&lt;li&gt;faye_server 不知道是什么，实在找不到的时候才去研究它&lt;/li&gt;
+&lt;li&gt;lib 引用的库，忽略&lt;/li&gt;
+&lt;li&gt;log 日志忽略&lt;/li&gt;
+&lt;li&gt;misc 存放了一些资源,忽略&lt;/li&gt;
+&lt;li&gt;public 里面放了404.html等公用的错误页、跳转页什么的，忽略&lt;/li&gt;
+&lt;li&gt;script 就放了rails文件，忽略&lt;/li&gt;
+&lt;li&gt;spec 不知道什么，rubymine将其颜色设置为灰色，看来是没什么影响忽略&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;有了上面的分析，那么入手点就找到了，我们关注app中的内容，那么就展开看看吧&lt;br&gt;
+&lt;img src="/photo/2014/913626d8cd09d4a8450f70ba95025508.png" alt=""&gt;&lt;br&gt;
+从这个目录结构中，如果对web框架有所熟悉，一定会立刻找到切入点，views文件夹，因为视图就是表现层，说白了就是组织web页面，展开后观察一下［社区列表］这个页面在哪里&lt;br&gt;
+&lt;img src="/photo/2014/5e57a2516e6864cacfc771ffd1fffe14.png" alt=""&gt;&lt;br&gt;
+从中不难看出topics就是页面所在了，展开topics文件夹，找可能页面去观察代码，最终将页面定位到index.html.erb。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;问题页面定位到了，我们就开始观察代码吧&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="highlight html"&gt;&lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"content"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"box box_gray"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;"node_info"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;%= render "topics/node_info", node: @node %&amp;gt;
+    &lt;span class="nt"&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;div&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"topics"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;% if @topics.current_page == 1 %&amp;gt;
+        &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;% cache(@suggest_topics) do %&amp;gt;
+          &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;%= render partial: "topics/topic", collection: @suggest_topics, locals: { suggest: true } %&amp;gt;
+        &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;% end %&amp;gt;
+      &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;% end %&amp;gt;
+      &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;%= render partial: "topics/topic", collection: @topics, locals: { suggest: false } %&amp;gt;
+    &lt;span class="nt"&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    &lt;span class="err"&gt;&amp;lt;&lt;/span&gt;%= will_paginate @topics, inner_window: 2 %&amp;gt;
+
+  &lt;span class="nt"&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+ ......
+&lt;/pre&gt;
+
+&lt;p&gt;注意这一行&lt;code&gt;&amp;lt;%= will_paginate @topics, inner_window: 2 %&amp;gt;&lt;/code&gt;，说的很清楚，will_paginate分页。好了，找到了逻辑处理部分的代码，本来按照我老旧的思路，去找will_paginate方法，结果发现这个方法并不是业务逻辑处理，只是一个rails通用方法，那么谁才是业务逻辑处理呢，如果使用过web框架的就会想到mvc，rails也是如此。好，这时候还记得目录结构吧，上面app目录下有一个controllers文件夹，业务处理就在这里了，从中很容易猜到topics_controller.rb。来看下代码&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="c1"&gt;# coding: utf-8&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TopicsController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+  &lt;span class="n"&gt;load_and_authorize_resource&lt;/span&gt; &lt;span class="ss"&gt;only: &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:new&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:edit&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:create&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:update&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:destroy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                     &lt;span class="ss"&gt;:favorite&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:unfavorite&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:follow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:unfollow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:suggest&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:unsuggest&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+  &lt;span class="n"&gt;caches_action&lt;/span&gt; &lt;span class="ss"&gt;:feed&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:node_feed&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;expires_in: &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;hours&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;
+    &lt;span class="vi"&gt;@suggest_topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;without_hide_nodes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;suggest&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;limit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;suggest_topic_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@suggest_topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;last_actived&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;without_hide_nodes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:_id&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;nin&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;suggest_topic_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#去数据库查询有多少帖子&lt;/span&gt;
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;fields_for_list&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#这部不太明白，但不影响分析&lt;/span&gt;
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;paginate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;page: &lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;per_page: &lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;total_entries: &lt;/span&gt;&lt;span class="mi"&gt;1500&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;#这个方法就是计算分页了，可以从参数看出每页15个帖子，但total_entries这个参数却给了一个固定值1500，那么也就是说分100页。。。。bug就在这里&lt;/span&gt;
+
+    &lt;span class="n"&gt;set_seo_meta&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="no"&gt;Setting&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;app_name&lt;/span&gt;&lt;span class="si"&gt;}#{&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"menu.topics"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="c1"&gt;#代码多，就看上面这部分吧&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;上面代码中的注释就是我对代码的分析。我们继续跟到&lt;code&gt;@topics.paginate&lt;/code&gt;方法中，&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="c1"&gt;# coding: utf-8&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'will_paginate'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'will_paginate/collection'&lt;/span&gt;
+
+&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;Mongoid&lt;/span&gt;
+  &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;WillPaginate&lt;/span&gt;
+    &lt;span class="kp"&gt;extend&lt;/span&gt; &lt;span class="no"&gt;ActiveSupport&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Concern&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;paginate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{})&lt;/span&gt;
+      &lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;base_options&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;
+
+      &lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;WillPaginate&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Collection&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:per_page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;pager&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="c1"&gt;#从这里读到意思是根据传入的分页参数创建一个分页集合然后遍历每页，将每页的帖子展示&lt;/span&gt;
+        &lt;span class="n"&gt;items_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:total_entries&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;count&lt;/span&gt; &lt;span class="c1"&gt;#这块就需要了解ruby的语法了，||类似于三目运算，意思是若`options[:total_entries]!=nil`则`items_count=options[:total_entries]`,若`options[:total_entries]=nil`,则`items_count=self.count',转换为业务说法就是，若传入的总贴数为nil则计算数据库中查询出的帖子数量，这里显然逻辑错误。无论何时都应当使用数据库中查询出的帖子数量&lt;/span&gt;
+        &lt;span class="n"&gt;fill_pager_with&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;skip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:offset&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;limit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:per_page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;items_count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pager&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;问题定位清楚了，就开始想怎么改，已经说过了，无论何时都应当使用数据库中查询出的帖子数量。按照这个思路，我们先以调试模式启动testerhome这个web应用，启动后就可以访问本地调试环境的testerhome了
+&lt;img src="/photo/2014/85daafe25259aed50a66ef4d5d0319ea.png" alt=""&gt;
+在调试之前，我们需要取得管理员权限，具体的方法可以查看&lt;a href="http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html" rel="nofollow" target="_blank"&gt;http://www.cnblogs.com/likeyu/archive/2012/02/25/2367379.html&lt;/a&gt;这位同学写的。
+我们进入&lt;a href="http://localhost:3000/cpanel" rel="nofollow" target="_blank"&gt;http://localhost:3000/cpanel&lt;/a&gt;添加分类和节点，这样才能发帖。
+接下来我们就要动代码了，首先我们在&lt;code&gt;app/controllers/topics_controller.rb&lt;/code&gt;文件中，将代码修改为如下：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="c1"&gt;# coding: utf-8&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TopicsController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+  &lt;span class="n"&gt;load_and_authorize_resource&lt;/span&gt; &lt;span class="ss"&gt;only: &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:new&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:edit&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:create&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:update&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:destroy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                     &lt;span class="ss"&gt;:favorite&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:unfavorite&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:follow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:unfollow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:suggest&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:unsuggest&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+  &lt;span class="n"&gt;caches_action&lt;/span&gt; &lt;span class="ss"&gt;:feed&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:node_feed&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;expires_in: &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;hours&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;
+    &lt;span class="vi"&gt;@suggest_topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;without_hide_nodes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;suggest&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;limit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;suggest_topic_ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@suggest_topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;last_actived&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;without_hide_nodes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:_id&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;nin&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;suggest_topic_ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#去数据库查询有多少帖子&lt;/span&gt;
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;fields_for_list&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#这部不太明白，但不影响分析&lt;/span&gt;
+    &lt;span class="vi"&gt;@topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="vi"&gt;@topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;paginate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;page: &lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;per_page: &lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;#去掉total_entries：1500这个参数，不能写死帖子总数&lt;/span&gt;
+
+    &lt;span class="n"&gt;set_seo_meta&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="no"&gt;Setting&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;app_name&lt;/span&gt;&lt;span class="si"&gt;}#{&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"menu.topics"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="c1"&gt;#代码多，就看上面这部分吧&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;同时要将&lt;code&gt;app/models/mongoid/will_paginate.rb&lt;/code&gt;文件中的代码修改如下：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="c1"&gt;# coding: utf-8&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'will_paginate'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'will_paginate/collection'&lt;/span&gt;
+
+&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;Mongoid&lt;/span&gt;
+  &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;WillPaginate&lt;/span&gt;
+    &lt;span class="kp"&gt;extend&lt;/span&gt; &lt;span class="no"&gt;ActiveSupport&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Concern&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;paginate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{})&lt;/span&gt;
+      &lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;base_options&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;
+
+      &lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;WillPaginate&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Collection&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:per_page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;pager&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="c1"&gt;#从这里读到意思是根据传入的分页参数创建一个分页集合然后遍历每页，将每页的帖子展示&lt;/span&gt;
+        &lt;span class="n"&gt;items_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;count&lt;/span&gt; &lt;span class="c1"&gt;#不需要total_entries参数，我们使用从数据库中查询出的帖子数目&lt;/span&gt;
+        &lt;span class="n"&gt;fill_pager_with&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;skip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:offset&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;limit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:per_page&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;items_count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pager&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;代码修改完成，接着就去浏览器中访问testerhome，进入社区帖子列表，新建16个帖子，因为我们要看出效果，需要至少2页。造完数据后，我们可以看到如下结果&lt;br&gt;
+&lt;img src="/photo/2014/3683feb2d5c36457e2b3b4537df30cee.png" alt=""&gt;&lt;br&gt;
+从中可以看到当前的分页已经正常了，16条数据，分了2页，同时也试试点击第2页，看看是否显示正常。&lt;/p&gt;
+
+&lt;p&gt;至此这个bug就修复了。&lt;/p&gt;
+&lt;h4&gt;最后&lt;/h4&gt;
+&lt;p&gt;之所以想要修复这个bug，是因为我们是testerhome，那么看到bug就不能放过，同时也为社区贡献点东西，只是改完这个没法真实测试，这个需要&lt;a href="/lihuazhang" class="at_user" title="@lihuazhang"&gt;&lt;i&gt;@&lt;/i&gt;lihuazhang&lt;/a&gt;群主帮忙了，话说我这古董技术，到现在对git还不熟。另外，在没有看到rubychina那位仁兄写的rubychina实践之前，不知道管理员怎么进，就去学了mongodb，好不容易学会了，去数据库里看到user里有一个admin，但密码是加密的，咋办，，，只好自己注册了一个用户，然后将这个用户的加密密码替换了admin的密码，结果发现仍然访问不了后台管理，最后才找到那篇文章，豁然开朗。这次解决问题的过程，其中有很多都是靠着经验猜出来的，对与rails框架我还不熟悉，通过这次解决问题已经看清一点论轮廓了。希望能帮助到那些想学习开发的新手，同时也欢迎ruby大神给点建议！&lt;/p&gt;
+
+&lt;p&gt;最后的最后希望，testerhome能越来越好～各位tester事业生活一帆风顺～好不容易有时间写点东西，又有点忙了，请新秀群不要踢我啊 &lt;img src="http://testerhome.com/assets/emojis/scream.png" class="emoji" title=":scream:" alt=""&gt;，我要学的东西还有很多，以后有时间写东西一定会写～ &lt;img src="http://testerhome.com/assets/emojis/smirk.png" class="emoji" title=":smirk:" alt=""&gt;&lt;/p&gt;</description>
+      <author>umbrella1978</author>
+      <pubDate>Wed, 15 Oct 2014 14:11:11 +0800</pubDate>
+      <link>http://testerhome.com/topics/1480</link>
+      <guid>http://testerhome.com/topics/1480</guid>
+    </item>
+    <item>
+      <title>一张图带你了解虚拟机在线迁移技术</title>
+      <description>&lt;p&gt;&lt;img src="/photo/2014/380ace7cf58584f1c2170ad939ece7b9.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>esplendo</author>
+      <pubDate>Wed, 24 Sep 2014 14:34:14 +0800</pubDate>
+      <link>http://testerhome.com/topics/1431</link>
+      <guid>http://testerhome.com/topics/1431</guid>
+    </item>
+    <item>
+      <title>图片部分匹配技术之 openCV 与 javaCV</title>
+      <description>&lt;p&gt;由于之前工作需要研究了图片比对技术，实践过python的PIL感觉达不到我的测试需要，之后研究opencv与javacv(javaCV整合了很多图像影音处理的jar，并且windows、linux、Mac都兼容)，opencv与javacv的安装大家直接google自行解决吧，话不多说直接上代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;java(javaCV)版图片部分匹配代码:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TemplateMatch工具类:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;test&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvCreateImage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvMinMaxLoc&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvReleaseImage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_highgui&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvLoadImage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_imgproc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CV_TM_CCORR_NORMED&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_imgproc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvMatchTemplate&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.googlecode.javacv.cpp.opencv_core&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.googlecode.javacv.cpp.opencv_core.IplImage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TemplateMatch&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;IplImage&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;load&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cvLoadImage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt; 
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;matchTemplate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IplImage&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;matchRes&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;IplImage&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cvCreateImage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvSize&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;width&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;image&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;width&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+                &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;height&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;image&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;height&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt;
+                &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;IPL_DEPTH_32F&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+        &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvZero&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;cvMatchTemplate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;image&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;CV_TM_CCORR_NORMED&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CvPoint&lt;/span&gt; &lt;span class="n"&gt;maxLoc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CvPoint&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CvPoint&lt;/span&gt; &lt;span class="n"&gt;minLoc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;opencv_core&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CvPoint&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;minVal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;];&lt;/span&gt;
+        &lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;maxVal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;];&lt;/span&gt;
+
+        &lt;span class="n"&gt;cvMinMaxLoc&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;minVal&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;maxVal&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;minLoc&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;maxLoc&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;matchRes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;maxVal&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mf"&gt;0.99f&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;cvReleaseImage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;matchRes&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;JavaCVTest测试类:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;test&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;googlecode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;javacv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;opencv_highgui&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cvLoadImage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;JavaCVTest&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"START..."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;TemplateMatch&lt;/span&gt; &lt;span class="n"&gt;tm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TemplateMatch&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;&lt;span class="c1"&gt;//实例化TemplateMatch对象&lt;/span&gt;
+        &lt;span class="n"&gt;tm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;load&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"data/585.png"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;&lt;span class="c1"&gt;//加载带比对图片，注此图片必须小于源图&lt;/span&gt;
+        &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;matchTemplate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cvLoadImage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"data/58home.png"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;&lt;span class="c1"&gt;//校验585.png是否包含于原图58home.png&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;&lt;span class="c1"&gt;//打印匹配结果，boolean&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"match"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"un-match"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"END..."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;python(opencv)版图片部分匹配代码:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="c"&gt;#coding=utf-8&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cv2&lt;/span&gt;  
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;   
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;imgMatcher&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;sourceimg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sourceimg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sourceimg&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;templateimg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;threshold&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0.8&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cv2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;imread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sourceimg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+        &lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cv2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;imread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;templateimg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+        &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cv2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matchTemplate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;cv2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CV_TM_CCOEFF_NORMED&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+        &lt;span class="n"&gt;similarity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cv2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;minMaxLoc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;similarity&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;similarity&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unravel_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argmax&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;__name__&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="s"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;matcher&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;imgMatcher&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"58home.png"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'581.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'582.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'583.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'584.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'585.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'586.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'587.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'588.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'589.png'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;'5810.png'&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;matcher&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;img&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;58home.png:&lt;/strong&gt;&lt;img src="/photo/2014/6c194d2c4ecd12ee722fc04ebe0a9a35.png" alt=""&gt;&lt;br&gt;
+&lt;strong&gt;585.png:&lt;/strong&gt;&lt;img src="/photo/2014/82edccae04cdbb2ba04588cb404a96df.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;目前我运用图片匹配技术在脚本开发过中，为了丰富验证方式，以及正在开发一个脚本录制工具，基于坐标点击+图片验证点插入。希望大家一起探讨运用图片匹配技术，如何更好的开展无线UI兼容测试。&lt;/p&gt;</description>
+      <author>vigossjjj</author>
+      <pubDate>Tue, 16 Sep 2014 11:26:27 +0800</pubDate>
+      <link>http://testerhome.com/topics/1401</link>
+      <guid>http://testerhome.com/topics/1401</guid>
+    </item>
+    <item>
+      <title>Linux MySQL Apache Django 配置</title>
+      <description>&lt;p&gt;&lt;img src="http://andward-blog-picture.qiniudn.com/people_crossing.jpg" alt="image"&gt;&lt;/p&gt;
+
+&lt;p&gt;原帖地址：&lt;a href="http://andward.github.io/python/django/2014/06/24/lmap-setup.html" rel="nofollow" target="_blank"&gt;http://andward.github.io/python/django/2014/06/24/lmap-setup.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;最近workstation备份把home目录清空了，于是重新配了一下Django，发现之前的设置什么的全部都忘光了-__-! 看来必须记一记才行，免得再要重配的时候东找西找。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;安装各种包&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;俺用的是ubuntu，装包什么的最方便了.&lt;/p&gt;
+
+&lt;p&gt;Pip - python的包获取/安装工具，相当好用。django各个版本它都有：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sudo apt-get install python-pip&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Django - 装原来用过的版本。不然的话会有很多兼容的问题（坑）。我用的是1.4.5的版本：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;pip install django==1.4.5&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Apache - 一般都是2.2.1吧：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sudo apt-get install apache2&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;MySQL - 装个server就够了：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sudo apt-get install mysql-server&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;MySQLdb - MySQL跟Django的data layer：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sudo apt-get install python-mysqldb&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Mod_wsgi - 支持Apache模块和python应用的通信组件：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sudo apt-get install libapache2-mod-wsgi&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;建立app&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如果你已经有项目了，直接mv项目到/var/www/下面就行了。如果是新项目，同样到www的目录下新建一个项目：&lt;br&gt;
+&lt;code&gt;django-admin.py startproject your-app&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;配置apache&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;cd去/etc/apache2/site-available/下，把80端口的virtualshost换了。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&amp;lt;VirtualHost *:80&amp;gt;
+
+         ServerAdmin your-app
+         ServerName your-app.com
+
+         DocumentRoot /var/www/your-app
+         &amp;lt;Directory /&amp;gt;
+                 Options FollowSymLinks
+                 AllowOverride None
+         &amp;lt;/Directory&amp;gt;
+         &amp;lt;Directory /var/www/&amp;gt;
+                 Options Indexes FollowSymLinks MultiViews
+                 AllowOverride None
+                 Order allow,deny
+                 allow from all
+         &amp;lt;/Directory&amp;gt;
+
+         ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+         &amp;lt;Directory "/usr/lib/cgi-bin"&amp;gt;
+                 AllowOverride None
+                 Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                 Order allow,deny
+                 Allow from all
+         &amp;lt;/Directory&amp;gt;
+
+         ErrorLog ${APACHE_LOG_DIR}/error.log
+
+         # Possible values include: debug, info, notice, warn, error, crit,
+         # alert, emerg.
+         LogLevel warn
+
+         CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+     Alias /doc/ "/usr/share/doc/"
+     &amp;lt;Directory "/usr/share/doc/"&amp;gt;
+         Options Indexes MultiViews FollowSymLinks
+         AllowOverride None
+         Order deny,allow
+         Deny from all
+         Allow from 127.0.0.0/255.0.0.0 ::1/128
+
+     &amp;lt;/Directory&amp;gt;
+ &amp;lt;/VirtualHost&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;配置wsgi&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在/var/www/下新建一个文件夹叫apache，然后在文件夹里面新建一个叫django.wsgi的文件，加入以下：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt; import os
+ import sys
+ import django.core.handlers.wsgi
+ sys.stdout=sys.stderr
+ sys.path.append(r'/var/www/your-app')
+ os.environ['DJANGO_SETTINGS_MODULE']='settings'
+ application=django.core.handlers.wsgi.WSGIHandler()
+&lt;/pre&gt;
+
+&lt;p&gt;如果你有多个app分支，建议把setting分开成多个配置文件。然后再切到/etc/apache2/下面，在httpd.conf里面加上：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;WSGIScriptAlias / /var/www/apache/django.wsgi
+WSGIScriptAlias / /var/www/apache/django.wsgi
+&lt;/pre&gt;
+
+&lt;p&gt;###配置MySQL&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;mysql -u root -p yourpwd&lt;/code&gt;进入MySQL，建一个新的database&lt;code&gt;create database new_database&lt;/code&gt;。在setting里面加入MySQL信息：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'new_database',
+        'USER': 'root',
+        'PASSWORD': 'your password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;配置settings&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;一些路径的配置：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;INSTALLED_APPS = ('your-app') #加入你的app
+
+DEBUG = True #开debug，如果是prod请设置成False
+TEMPLATE_DEBUG = DEBUG
+
+SITE_URL = '/var/www/your-app'
+
+MEDIA_ROOT = SITE_URL + '/media/'
+
+TEMPLATE_DIRS = (SITE_URL + '/template',)
+
+STATIC_PATH = SITE_URL + "/static/"
+&lt;/pre&gt;
+
+&lt;p&gt;大功告成~&lt;/p&gt;</description>
+      <author>andward</author>
+      <pubDate>Mon, 25 Aug 2014 14:29:15 +0800</pubDate>
+      <link>http://testerhome.com/topics/1305</link>
+      <guid>http://testerhome.com/topics/1305</guid>
+    </item>
+  </channel>
+</rss>

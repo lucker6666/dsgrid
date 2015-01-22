@@ -1,0 +1,316 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 如何检测内存泄漏 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" />
+  </div>
+  <h1 class="entry-title">如何检测内存泄漏</h1>
+  <div class="info leader">
+    <a class="node" href="node15">白盒测试</a>
+     · 
+    匿名
+     · 
+    于<abbr class="timeago" title="2012-10-17T23:10:44+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="T_lcy" href="../T_lcy">T_lcy</a> 于<abbr class="timeago" title="2012-11-28T13:25:41+08:00"></abbr>回复
+     · 
+    761次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>微博上看到了一个关于内存泄漏的话题，大家梳理下内存泄漏的检测方法吧。</p>
+
+<p>左耳朵耗子：用C&#47;C++的程序员，无论是资历有多老，总是一次又一次的和Memory Leak搏斗，搞Memory Leak和钓鱼一样，需要耐心。另，valgrind不难用啊。STFG吧。<br />
+◆<br />
+◆<br />
+@李遵举：后台多进程服务程序rss逐渐增大，过一段时间内存消耗殆尽，后台程序内存泄露，查找这个原因不知如何下手，请问大牛们有没类似的排查经验？有没有对valgrind工具熟悉的？@左耳朵耗子<a href="http://testerhome.com/IT" class="at_user" title="@IT"><i>@</i>IT</a>程序猿 @庄表伟 @赵乐天 @池建强</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='如何检测内存泄漏 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="37#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="37#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="37#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="37#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="37#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>3</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><img alt="Normal" class="uface" src="../assets/avatar/normal-85ccf778012f4e1c31eae0d152183034.png" /></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          匿名
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="37#reply1">1楼</a> · <abbr class="timeago" title="2012-10-17T23:36:09+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="27" data-state="" data-type="Reply" href="37#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1" href="http://testerhome.com/topics/37/replies/27/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" href="37#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>内存泄漏的问题，在百度是遇到最多的，阿里相对少点。与内存泄漏斗争了很久，我总结下常用的一些有效测试方法吧。</p>
+
+<p>1、valgrind，这是非常好用的工具，虽然参数很多，输出结果较多，但是只要认真看下，就很容易发现问题，报告是很详细的，不要被吓倒。valgrind检测的内存泄漏是非常准的，可以精确定位到代码行甚至是变量。valgrind基于valginrd core框架，这是个非常有强大的框架，他的作用不仅仅在于检测内存泄漏的，强烈建议测试新手通读下全部的文档。valgind自己也会有误报和漏报，所有具体场景需要具体分析。报告中一旦出现definitely lost的标记，就表示一定会有内存泄漏，泄漏的字节数也会报告出来，可以根据泄漏的内存大小和请求次数计算出到底是那个变量没有释放。</p>
+
+<p>2、利用pmap+gdb，pmap可以列出特定进程的所有内存分配的地址和大小，通过gdb就可以直接看这些地址属于什么变量，通过统计这些内存地址的大小，就可以很容易的发现问题。利用自动化的gdb调试工具也可以很方便的定位。</p>
+
+<p>3、其他的还包括memprof、商业工具Purify IBM出品，官方宣传说的不错，但是这种不开放的技术，在业界得不到认可，国内大公司一般那都不用，只有人傻钱多的公司在用。</p>
+
+<p>4、利用一些trace工具，比如ptrace，strace之类的工具，这些trace工具会追踪特定的api，只需要统计malloc和free的调用次数就可以简单的发现是否有泄漏，但是无法定位代码行。另外还有一个更高深的工具，SystemTap，这个在国内应用还不多，但是非常厉害，可以方便hook程序的关键逻辑并插入探针。从而可以方便的检测内存泄漏。Systemtap目前还不通用，而且安装复杂，暂时不推荐使用，可以关注下，过几年可能会大规模应用。</p>
+
+<p>valgrind是首选，因为他的设计就是为了解决所有的c++的内存问题。一些valgrind不能简单发现的，我一般会review代码，然后通过gdb自动调试技术来发现问题。通过valgrind+gdb，可以解决所有的内存泄漏。</p>
+
+<p>另外，内存的泄漏也并不完全是没有及时的free，还有可能是其他的原因，比如设计问题等。需要靠一定的开发经验判断。<br />
+要尽量把静态测试和动态测试尽早的加入到持续集成中，以尽早的发现问题，不然一旦代码复杂，追查的成本就会增大。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="http://testerhome.com/%E5%A4%A7%E5%AE%9D-Oscar"><img alt="22f4764260d61d1a77003f97c40578a1" class="uface" src="../avatar/22f4764260d61d1a77003f97c40578a1.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="大宝-Oscar" href="http://testerhome.com/%E5%A4%A7%E5%AE%9D-oscar">大宝-Oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="37#reply2">2楼</a> · <abbr class="timeago" title="2012-10-18T18:32:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="48" data-state="" data-type="Reply" href="37#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="20" href="http://testerhome.com/topics/37/replies/48/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="大宝-Oscar" href="37#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不错，都是 自己写的啊，基本都没用过</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../T_lcy"><img alt="52" class="uface" src="../user/large_avatar/52.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="流年" href="../T_lcy">T_lcy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="37#reply3">3楼</a> · <abbr class="timeago" title="2012-11-28T13:25:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="169" data-state="" data-type="Reply" href="37#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="52" href="http://testerhome.com/topics/37/replies/169/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="T_lcy" href="37#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习了，写的这些工具都没摸过，的确是缺少这方面的关注啊。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @wangyemami: 希望能运用appium编写测试自动化用例，随意自如，在这一方面做的有所成绩哈！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="294" title="Jmeter 的一些东西">Jmeter 的一些东西</a></li>
+    <li><a href="37" title="如何检测内存泄漏">如何检测内存泄漏</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="37#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

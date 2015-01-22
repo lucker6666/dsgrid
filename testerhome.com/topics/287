@@ -1,0 +1,1094 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 使用 RobotFramework 运行 appium 测试用例 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">使用 RobotFramework 运行 appium 测试用例</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="思寒" href="../seveniruby">seveniruby</a>
+     · 
+    于<abbr class="timeago" title="2013-12-13T12:10:24+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="711child" href="../711child">711child</a> 于<abbr class="timeago" title="2014-08-21T19:07:02+08:00"></abbr>回复
+     · 
+    1595次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>Appium支持Webdriver协议.<br>
+RobotFramework也支持Webdriver协议.<br>
+所以是可以用RobotFramework来运行appium测试案例了</p>
+
+<p>我在ppt里面的演示, 也是基于RF的. </p>
+
+<p>但是因为一些特殊的原因, 比如RF会访问一些appium不支持的协议. 比如异步脚本协议.<br>
+appium会默认返回一个503暂未实现的错误, 这样RF的测试用例就无法运行了.</p>
+
+<p>所以解决方法是修改appium的代码. 让协议的返回代码从错误改成200正常.</p>
+
+<p>代码修改如下</p>
+<pre class="highlight plaintext">var notYetImplemented = exports.notYetImplemented = function(req, res) {
+  logger.info("Responding to client that a method is not implemented");
+  res.send(501, {
+    status: status.codes.UnknownError.code
+    , sessionId: getSessionId(req)
+    , value: {
+      message: "Not yet implemented. " +
+               "Please help us: http://appium.io/get-involved.html"
+    }
+  });
+};
+</pre>
+<p>修改为</p>
+<pre class="highlight plaintext">var notYetImplemented = exports.notYetImplemented = function(req, res) {
+  logger.info("Responding to client that a method is not implemented");
+  res.send(501, {
+    status: status.codes.Success.code
+    , sessionId: getSessionId(req)
+    , value: {
+      message: "Not yet implemented. " +
+               "Please help us: http://appium.io/get-involved.html"
+    }
+  });
+};
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='使用 RobotFramework 运行 appium 测试用例 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="287#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="287#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="287#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="287#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="287#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>33</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply1">1楼</a> · <abbr class="timeago" title="2013-12-13T12:12:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1174" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/287/replies/1174/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>能不修改，用 stub 么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply2">2楼</a> · <abbr class="timeago" title="2013-12-13T13:04:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1175" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1175/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 可以考虑写js重载 rf是直接发到了appium 也可以在中间加代理去掉不支持的请求  但这样会导致更新问题  如果不支持的协议某天支持了  你的代理或者js都得更新 我更倾向于让appium返回一个报警而不是错误  从rf里面修改代码也可以</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply3">3楼</a> · <abbr class="timeago" title="2013-12-17T10:05:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1260" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1260/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 你好不知能否share下你用robotframework+appium测试淘宝的txt内容吗，或者不方便的话能否私信，万分感谢，</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply4">4楼</a> · <abbr class="timeago" title="2013-12-17T10:29:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1262" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1262/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> ppt里面都有啊 你遇到什么问题了？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply5">5楼</a> · <abbr class="timeago" title="2013-12-17T10:43:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1263" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1263/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 那个open app的keyword是分享下吗。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply6">6楼</a> · <abbr class="timeago" title="2013-12-17T11:27:53+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1268" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1268/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight plaintext">*** Keywords ***
+open app
+    [Arguments]    ${package}    ${activity}
+    ${capabilities}=    Create Dictionary
+    Set To Dictionary    ${capabilities}    browserName    android
+    Set To Dictionary    ${capabilities}    version    4.1
+    Set To Dictionary    ${capabilities}    platform    linux
+    Set To Dictionary    ${capabilities}    takesScreenshot    false
+    Set To Dictionary    ${capabilities}    javascriptEnabled    false
+    Set To Dictionary    ${capabilities}    app-activity    ${activity}
+    Set To Dictionary    ${capabilities}    app-package    ${package}
+    Log Dictionary    ${capabilities}
+    Close Browser
+    Close All Browsers
+    Set Selenium Timeout    30
+    Open Browser    \    browser=android    remote_url=http://127.0.0.1:4723/wd/hub    desired_capabilities=${capabilities}
+
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply7">7楼</a> · <abbr class="timeago" title="2013-12-17T22:39:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1290" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1290/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="http://testerhome.com/sevenirub" class="at_user" title="@sevenirub"><i>@</i>sevenirub</a> 你好，能问下这个改动是那个appium文件吗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply8">8楼</a> · <abbr class="timeago" title="2013-12-18T09:58:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1293" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1293/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我拿你的例子，自己修改了open app如下，然后修改了appium server下面的response.js文件，但是FR run的时候还是老报错。大神能帮忙看下吗，真是不好意思了，最近问题很多。。。</p>
+
+<p><img src="../photo/e729cc9a188415681589f55df76bb387.png" alt=""></p>
+
+<p><img src="../photo/64d1a0a6c4825c8b0a43026138e3933b.png" alt=""></p>
+
+<p>Appium log:<br><img src="../photo/c5fc78a560d5b934ff94ea8939147c55.png" alt=""></p>
+
+<p>RF错：<br>
+20131218 09:48:28.374 :  INFO : Opening browser 'android' to base url '' through remote server at '<a href="http://127.0.0.1:4723/wd/hub" rel="nofollow" target="_blank">http://127.0.0.1:4723/wd/hub</a>'<br>
+20131218 09:48:37.556 :  FAIL : No browser is open<br>
+20131218 09:48:37.556 :  WARN : Keyword 'Capture Page Screenshot' could not be run on failure: No browser is open<br>
+20131218 09:48:37.557 :  FAIL : WebDriverException: Message: u'The requested resource could not be found, or a request was received using an HTTP method that is not supported by the mapped resource.' </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply9">9楼</a> · <abbr class="timeago" title="2013-12-18T13:46:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1309" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1309/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> ,能否帮忙看下。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply10">10楼</a> · <abbr class="timeago" title="2013-12-18T15:36:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1312" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1312/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 你没有调用open app吗, 没看到你调用.<br>
+另外, 错误里面说, 有个方法selendroid不支持, 你可以先用uiautomator试试, 换个4.1.2以上的虚拟机验证下你的脚本</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply11">11楼</a> · <abbr class="timeago" title="2013-12-18T16:26:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1321" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1321/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我show出来的是opp app的代码，我换了UIautomator是ok的，所以我在找这个selendroid的这个错误是从那个方法抛出来的，看看改了行不行唉真心坑多啊。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply12">12楼</a> · <abbr class="timeago" title="2013-12-18T16:33:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1323" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1323/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> selendroid 不支持跨app, appium官方也在文档里面提了, 说selendroid的api有些行为跟正常的appium有差别, 他们也在吐槽..</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../atm123"><img alt="Ed8e0b0bf291c437cd002e32415d4936" class="uface" src="../avatar/ed8e0b0bf291c437cd002e32415d4936.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="涛涛" href="../atm123">atm123</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply13">13楼</a> · <abbr class="timeago" title="2013-12-23T15:26:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1507" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="245" href="http://testerhome.com/topics/287/replies/1507/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="atm123" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>没看到有ppt能发我一份么，你的rf是安装在mac系统上的么</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply14">14楼</a> · <abbr class="timeago" title="2013-12-23T19:42:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1517" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1517/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply13" class="at_floor" data-floor="13">#13楼</a> <a href="../atm123" class="at_user" title="@atm123"><i>@</i>atm123</a> 我用的是windows, ppt自己在论坛上搜索吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../atm123"><img alt="Ed8e0b0bf291c437cd002e32415d4936" class="uface" src="../avatar/ed8e0b0bf291c437cd002e32415d4936.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="涛涛" href="../atm123">atm123</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply15">15楼</a> · <abbr class="timeago" title="2013-12-24T15:06:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1537" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="245" href="http://testerhome.com/topics/287/replies/1537/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="atm123" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问下selenium中的webdriver怎么导入到ride中，我直接写selenium或者直接路径都不行，library那边还是显示红色。导入webdriver还需要做什么操作么</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply16">16楼</a> · <abbr class="timeago" title="2013-12-25T19:04:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1583" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1583/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../atm123" class="at_user" title="@atm123"><i>@</i>atm123</a> ,如果你selenium2library装好的话，路径直接填这个就行了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply17">17楼</a> · <abbr class="timeago" title="2013-12-25T19:06:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1584" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1584/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> ，目前不改rf的selenium2library支持appium还很困难，各种post不支持</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply18">18楼</a> · <abbr class="timeago" title="2013-12-25T20:30:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1586" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1586/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply17" class="at_floor" data-floor="17">#17楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> appium只支持selenium的子集, 关注他支持的功能就可以了. 其他的也基本用不到.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply19">19楼</a> · <abbr class="timeago" title="2013-12-25T21:06:32+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1590" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1590/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>恩，问题就在于直接调用现成keyword,很多协议不支持。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply20">20楼</a> · <abbr class="timeago" title="2013-12-25T21:15:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1591" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1591/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 举个例子吧,  我不太明白.<br>
+这个协议其实是webdriver的, ruby和python能做的, robot也能做, robot跟python调用本质都是一样的.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply21">21楼</a> · <abbr class="timeago" title="2013-12-25T21:46:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1592" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1592/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>比如说open browser,或者capture page screenshot,背后会转换成多个post请求到device上的service.无论uiautomator或者selendroid都对一些协议不支持，所以rf会fail.....async_script的501的错只是一个例子，还会有更多的status code错，所以改appium的话感觉不太好，毕竟对于appium来说它返回的信息是对的，所以改发出请求源头的rf会比较好。。。。<a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply22">22楼</a> · <abbr class="timeago" title="2013-12-25T21:47:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1593" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1593/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 你不是修改了代码吗, 修改后就没问题了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply23">23楼</a> · <abbr class="timeago" title="2013-12-25T21:52:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1594" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1594/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 那段代码只会uiautomator走到，selendroid不走那段，走的proxy.js,各种status code错。。。我只有屏蔽那些错才会pass,但是怕把正常的错也屏蔽了。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply24">24楼</a> · <abbr class="timeago" title="2013-12-25T21:53:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1595" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1595/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 同样的道理, 你可以修改selendroid的返回值试试. 估计也只是一个地方.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply25">25楼</a> · <abbr class="timeago" title="2013-12-25T21:57:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1596" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/287/replies/1596/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="luis" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 是的不只一个返回值错，所以我才说从源头把没支持的post屏蔽掉。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply26">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply26">26楼</a> · <abbr class="timeago" title="2013-12-25T23:05:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1597" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/287/replies/1597/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="26" data-login="seveniruby" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply25" class="at_floor" data-floor="25">#25楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 修改python的webdriver实现也是可以的,  我以前也试过修改, 但是发现重新部署很麻烦, 所以就干脆修改appium, 因为这个是服务端, 只有一个, 部署还见到那些. 我感觉还是从appium下手比较好.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply27">
+    <div class="pull-left face"><a href="../atm123"><img alt="Ed8e0b0bf291c437cd002e32415d4936" class="uface" src="../avatar/ed8e0b0bf291c437cd002e32415d4936.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="涛涛" href="../atm123">atm123</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply27">27楼</a> · <abbr class="timeago" title="2013-12-26T22:36:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1636" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="245" href="http://testerhome.com/topics/287/replies/1636/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="27" data-login="atm123" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="http://testerhome.com/lius" class="at_user" title="@lius"><i>@</i>lius</a>@seveniruby请问下如果测试的不是web而是手机的程序只用selenium2library也可以么，我看selenium2library里面没有识别设备的webdriver的方法哦</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply28">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply28">28楼</a> · <abbr class="timeago" title="2014-02-14T15:54:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2544" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/287/replies/2544/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="28" data-login="oscar" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>是不是用这个RobotFramework 运行appium用例就可以生成rf 一样好看的报告呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply29">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply29">29楼</a> · <abbr class="timeago" title="2014-02-25T19:14:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2759" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/287/replies/2759/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="29" data-login="oscar" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不错，终于也跑起来了</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply30">
+    <div class="pull-left face"><a href="../jacky"><img alt="212" class="uface" src="../user/large_avatar/212.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jacky">jacky</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply30">30楼</a> · <abbr class="timeago" title="2014-03-10T10:00:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3090" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="212" href="http://testerhome.com/topics/287/replies/3090/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="30" data-login="jacky" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../oscar" class="at_user" title="@oscar"><i>@</i>oscar</a>  Hi,我的安装 上面的keyword,一直提示<br>
+[ WARN ] Keyword 'Capture Page Screenshot' could not be run on failure: No browser is open。<br>
+但是keyword没有‘Capture Page Screenshot ’ ，怎么回事呢？<br>
+谢谢啊.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply31">
+    <div class="pull-left face"><a href="../oscar"><img alt="214" class="uface" src="../user/large_avatar/214.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="dabao" href="../oscar">oscar</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply31">31楼</a> · <abbr class="timeago" title="2014-03-20T20:23:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="3282" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="214" href="http://testerhome.com/topics/287/replies/3282/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="31" data-login="oscar" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply30" class="at_floor" data-floor="30">#30楼</a> <a href="../jacky" class="at_user" title="@jacky"><i>@</i>jacky</a> 按作者一样修改一下response.js</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply32">
+    <div class="pull-left face"><a href="../oneway"><img alt="1109" class="uface" src="../user/large_avatar/1109.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="一路漂泊" href="../oneway">oneway</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply32">32楼</a> · <abbr class="timeago" title="2014-06-20T15:41:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5930" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1109" href="http://testerhome.com/topics/287/replies/5930/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="32" data-login="oneway" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> Create Dictionary 是什么啊？加载的库 还是自己写的关键字？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply33">
+    <div class="pull-left face"><a href="../711child"><img alt="1399" class="uface" src="../user/large_avatar/1399.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../711child">711child</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="287#reply33">33楼</a> · <abbr class="timeago" title="2014-08-21T19:07:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7859" data-state="" data-type="Reply" href="287#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1399" href="http://testerhome.com/topics/287/replies/7859/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="33" data-login="711child" href="287#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="287#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 我的testcase关键字之间传递参数出现问题，能否帮忙看下，谢谢：<br>
+testcase_<br>
+    open app<br>
+    sleep    10s<br>
+    ${driver} =    open app<br>
+    sleep    10s<br>
+    click button    ${driver}<br>
+脚本是这样的：<br>
+def open_app():<br>
+    desired_caps = {}<br>
+    desired_caps['platformName'] = 'Android'<br>
+    desired_caps['platformVersion'] = '4.2'<br>
+    desired_caps['deviceName'] = 'Android Emulator'</p>
+
+<p>desired_caps['appPackage'] = 'com.xxx.xxx'<br>
+    desired_caps['appActivity'] = '.activity.xxxActivity'</p>
+
+<p>driver = webdriver.Remote('<a href="http://localhost:4723/wd/hub" rel="nofollow" target="_blank">http://localhost:4723/wd/hub</a>', desired_caps)<br>
+    sleep(10)<br>
+    return driver<br>
+def click_button(dr):<br>
+    radio_setting = dr.find_element_by_id('com.xxx.xxx:id/radio_setting')<br>
+    radio_setting.click()</p>
+
+<p>执行时，第一步open app 通过，到了click button 报错：error: Failed to start an Appium session, err was: Error: Requested a new session but one was in progress。请问是什么问题呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscarxie: 钱多事少离家近，哈哈哈，太贪心了，有其中2个也行
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1918" title="iOS 运行第二个 case 时报 500 错误">iOS 运行第二个 case 时报 500 错误</a></li>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+    <li><a href="1900" title="Appium 中如何实现自定义的 UiWatcher 类">Appium 中如何实现自定义的 UiWatcher 类</a></li>
+    <li><a href="1888" title="Appium + Selenium Grid2 = Appium Parallel Execution">Appium + Selenium Grid2 = A...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="287#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

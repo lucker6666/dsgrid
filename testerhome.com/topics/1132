@@ -1,0 +1,441 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 【转帖】Appium 滑动问题研究   &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">【转帖】Appium 滑动问题研究  </h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../luis">luis</a>
+     · 
+    于<abbr class="timeago" title="2014-07-11T15:04:54+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="fuyu_nd" href="../fuyu_nd">fuyu_nd</a> 于<abbr class="timeago" title="2015-01-08T16:25:08+08:00"></abbr>回复
+     · 
+    1304次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>无意中瞥到的，总结的不错，举一反三讲解了appium的手势滑动相关的方法，值得我们以后发帖学习！！！<br>
+原文地址：<a href="http://qa.blog.163.com/blog/static/190147002201452031611789/" rel="nofollow" target="_blank">http://qa.blog.163.com/blog/static/190147002201452031611789/</a></p>
+
+<p>一、Appium中，经常会遇到滑动操作，但往往用各种手势操作后还是滑动不了，今天主要讲下如何正确使用appium的手势操作。系统环境为最新的iOS 7.1+ Xcode 5.1<br>
+首先讲下滑动操作的几个基本方法。<br>
+1.swipe操作，主要用于缓慢拖动，代码示例</p>
+<pre class="highlight java"><span class="n">JavascriptExecutor</span> <span class="n">js</span> <span class="o">=</span> <span class="o">(</span><span class="n">JavascriptExecutor</span><span class="o">)</span> <span class="n">driver</span><span class="o">;</span>
+<span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;</span> <span class="n">swipeObject</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;();</span>
+<span class="n">swipeObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"startX"</span><span class="o">,</span> <span class="n">startX</span><span class="o">);</span>
+<span class="n">swipeObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"startY"</span><span class="o">,</span> <span class="n">startY</span><span class="o">);</span>
+<span class="n">swipeObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"endX"</span><span class="o">,</span> <span class="n">endX</span><span class="o">);</span>
+<span class="n">swipebject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"endY"</span><span class="o">,</span> <span class="n">endY</span><span class="o">);</span>
+<span class="n">swipeObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"duration"</span><span class="o">,</span> <span class="n">duration</span><span class="o">);</span>
+<span class="n">swipeObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"element"</span><span class="o">,</span> <span class="n">Double</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(((</span><span class="n">RemoteWebElement</span><span class="o">)</span> <span class="n">element</span><span class="o">).</span><span class="na">getId</span><span class="o">()));</span>
+<span class="n">js</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: swipe"</span><span class="o">,</span> <span class="n">swipeObject</span><span class="o">);</span>
+</pre>
+
+<p>①X,Y可为coordinator，也可以是percent，duration单位为秒<br>
+②可以指定的element，也可以不指定<br>
+③appium mac端有swipe的按钮可以试下</p>
+
+<p>2.flick操作，类似swipe，但没有duration，用于快速滑动，如ViewController的切换，代码示例</p>
+<pre class="highlight java"><span class="n">JavascriptExecutor</span> <span class="n">js</span> <span class="o">=</span> <span class="o">(</span><span class="n">JavascriptExecutor</span><span class="o">)</span> <span class="n">driver</span><span class="o">;</span>
+<span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;</span> <span class="n">flickObject</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;();</span>
+<span class="n">flickObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"startX"</span><span class="o">,</span> <span class="mf">0.8</span><span class="o">);</span>
+<span class="n">flickObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"startY"</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">);</span>
+<span class="n">flickObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"endX"</span><span class="o">,</span> <span class="mf">0.2</span><span class="o">);</span>
+<span class="n">flickObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"endY"</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">);</span>
+<span class="n">flickObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"element"</span><span class="o">,</span> <span class="n">Double</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(((</span><span class="n">RemoteWebElement</span><span class="o">)</span> <span class="n">element</span><span class="o">).</span><span class="na">getId</span><span class="o">()));</span>
+<span class="n">js</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: flick"</span><span class="o">,</span> <span class="n">flickObject</span><span class="o">););</span>
+</pre>
+
+<p>3.scroll操作，专为iOS 7.x而生，官方的解释如下</p>
+
+<p>An unfortunate bug exists in the iOS 7.x Simulator where ScrollViews don't recognize gestures initiated by UIAutomation (which Appium uses under the hood for iOS). To work around this, we have provided access to a different function, scroll, which in many cases allows you to do what you wanted to do with a ScrollView, namely, scroll it!</p>
+
+<p>简而言之，iOS 7的系统ScrollView无法识别手势操作，使用scroll方法可完美替代，代码见例子</p>
+
+<p>二、接下来以三个不同app的引导图为例，分别为看游戏，云阅读和云音乐，演示下不同方法实现的滑动操作<br>
+1.看游戏，引导图以ScrollView引导，只需要使用srcoll方法即可</p>
+<pre class="highlight java"><span class="n">JavascriptExecutor</span> <span class="n">js</span> <span class="o">=</span> <span class="o">(</span><span class="n">JavascriptExecutor</span><span class="o">)</span> <span class="n">driver</span><span class="o">;</span>
+<span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">scrollObject</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+<span class="n">scrollObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"direction"</span><span class="o">,</span> <span class="s">"right"</span><span class="o">);</span>
+<span class="n">js</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: scroll"</span><span class="o">,</span> <span class="n">scrollObject</span>
+</pre>
+
+<p>2.云音乐，引导图以ScrollView引导，分别为4张image<br>
+<img src="../photo/2014/af53641d027f40d52acc5798610b5276.png" alt=""></p>
+
+<p>Inspector中显示如下：<br>
+<img src="../photo/2014/6bfe58e8fe5a90759b38a5ddfcb022f2.png" alt=""></p>
+
+<p>如上所示，如果使用swipe或flick方法是不可以滑动引导图的，而用Scroll的方向模式也不行，这里采用如下方法</p>
+<pre class="highlight java"><span class="n">JavascriptExecutor</span> <span class="n">js</span> <span class="o">=</span> <span class="o">(</span><span class="n">JavascriptExecutor</span><span class="o">)</span> <span class="n">driver</span><span class="o">;</span>
+<span class="n">WebElement</span>  <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="na">findElementByXPath</span><span class="o">(</span><span class="s">"4张image的xpath路径"</span><span class="o">);</span>
+<span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">scrollObject</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+<span class="n">scrollObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"element"</span><span class="o">,</span> <span class="o">((</span><span class="n">RemoteWebElement</span><span class="o">)</span> <span class="n">element</span><span class="o">).</span><span class="na">getId</span><span class="o">());</span>
+<span class="n">js</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="s">"mobile: scroll"</span><span class="o">,</span> <span class="n">scrollObject</span><span class="o">);</span>
+</pre>
+
+<p>3.云阅读，云阅读的引导图并不是存在于ScrollView中，而是专门有一个UIAElement存放，那就只需要用swipe拖动这个UIAElement就好了，如图所示。<br>
+<img src="../photo/2014/9da7c220359080ba0023c3e0462273d9.png" alt=""></p>
+
+<p>代码见swipe方法。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='【转帖】Appium 滑动问题研究   via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1132#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1132#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1132#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1132#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1132#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>6</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../beerbox"><img alt="909" class="uface" src="../user/large_avatar/909.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="西门吹牛" href="../beerbox">beerbox</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1132#reply1">1楼</a> · <abbr class="timeago" title="2014-07-12T21:22:49+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6619" data-state="" data-type="Reply" href="1132#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="909" href="http://testerhome.com/topics/1132/replies/6619/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="beerbox" href="1132#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这篇文章，我在哪里见过。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../532589730"><img alt="155" class="uface" src="../user/large_avatar/155.jpeg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Anson" href="../532589730">532589730</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1132#reply2">2楼</a> · <abbr class="timeago" title="2014-07-13T12:45:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6620" data-state="" data-type="Reply" href="1132#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="155" href="http://testerhome.com/topics/1132/replies/6620/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="532589730" href="1132#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>iOS 7.x无法用SWIPE。<br>
+除非swipe起点是可拖动的物件。<br>
+如果基于截图的app，只能用scroll的方法，swipe用不了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyang" href="../hobbs">hobbs</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1132#reply3">3楼</a> · <abbr class="timeago" title="2014-07-14T13:42:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6630" data-state="" data-type="Reply" href="1132#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1065" href="http://testerhome.com/topics/1132/replies/6630/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="hobbs" href="1132#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我看python-client-master中的readme.md文档中没有scroll这个方法啊，是python就没有吗？python中有没有替代的方法呢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../tianwei024"><img alt="1058" class="uface" src="../user/large_avatar/1058.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="tianwei" href="../tianwei024">tianwei024</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1132#reply4">4楼</a> · <abbr class="timeago" title="2014-07-18T10:06:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6713" data-state="" data-type="Reply" href="1132#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1058" href="http://testerhome.com/topics/1132/replies/6713/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="tianwei024" href="1132#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>学习下。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../ericlovetest"><img alt="88eff2f56067c6960740b6c0f986b3fc" class="uface" src="../avatar/88eff2f56067c6960740b6c0f986b3fc.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="陈晖" href="../ericlovetest">ericlovetest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1132#reply5">5楼</a> · <abbr class="timeago" title="2014-07-24T13:49:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6868" data-state="" data-type="Reply" href="1132#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1295" href="http://testerhome.com/topics/1132/replies/6868/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="ericlovetest" href="1132#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问有没有遇到IOS上滑屏 执行下拉动作时 屏幕一直闪 不能下拉 是怎么回事啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../fuyu_nd"><img alt="0263dcf25f4674b95b9080fe3078f203" class="uface" src="../avatar/0263dcf25f4674b95b9080fe3078f203.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="傅煜" href="../fuyu_nd">fuyu_nd</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1132#reply6">6楼</a> · <abbr class="timeago" title="2015-01-08T16:25:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11313" data-state="" data-type="Reply" href="1132#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2214" href="http://testerhome.com/topics/1132/replies/11313/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="fuyu_nd" href="1132#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问一下，用python语言写的话，要怎么写？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    快来晒出你的星语心愿吧 http://testerhome.com/topics/533
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1132#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android 云测试创建 APP 初始数据 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android 云测试创建 APP 初始数据</h1>
+  <div class="info leader">
+    <a class="node" href="node6">云测服务</a>
+     · 
+    <a data-author="true" data-name="GUO" href="../guo">guo</a>
+     · 
+    于<abbr class="timeago" title="2013-11-11T18:31:06+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="guo" href="../guo">guo</a> 于<abbr class="timeago" title="2013-12-10T10:44:05+08:00"></abbr>回复
+     · 
+    452次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>很多应用测试的时候需要有点初始化数据，我看现在MTC或者Testin上面都没法让你上传自定义的文件，或者需要登录，不好弄登录的脚本之类的问题</p>
+
+<p>我的解决思路是把本地应用的sqllite数据库和SDCard里面的cache文件打个zip，一起打包到apk安装文件里。再从程序运行的时候写到云端测试机上，目前来看可以满足部分测试需求。</p>
+
+<p>SqlLite数据位置在/data/data/<code>packet name</code>/database下面,用root explorer可以copy出来，然后放到Android项目assets下面，这样打apk包的时候这些文件不会被压缩。</p>
+
+<p>下面是用到的部分代码：</p>
+
+<p><strong>还原数据库</strong><br>
+数据库部分代码的来源 <a href="http://gundumw100.iteye.com/blog/1671352" rel="nofollow" target="_blank">http://gundumw100.iteye.com/blog/1671352</a></p>
+<pre class="highlight java">
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.content.res.AssetManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.database.sqlite.SQLiteDatabase</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.database.sqlite.SQLiteException</span><span class="o">;</span>
+
+
+<span class="cm">/**
+ * copy数据库到apk包
+ * 
+ * @author NGJ
+ * 
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataBaseUtil</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Context</span> <span class="n">context</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">dbName</span> <span class="o">=</span><span class="s">"sql.db"</span><span class="o">;</span><span class="c1">// 数据库的名字</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">DATABASE_PATH</span><span class="o">;</span><span class="c1">// 数据库在手机里的路径</span>
+
+    <span class="kd">public</span> <span class="n">DataBaseUtil</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">context</span> <span class="o">=</span> <span class="n">context</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">packageName</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">();</span>
+        <span class="n">DATABASE_PATH</span><span class="o">=</span><span class="s">"/data/data/"</span><span class="o">+</span><span class="n">packageName</span><span class="o">+</span><span class="s">"/databases/"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 判断数据库是否存在
+     * 
+     * @return false or true
+     */</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">checkDataBase</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">SQLiteDatabase</span> <span class="n">db</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">databaseFilename</span> <span class="o">=</span> <span class="n">DATABASE_PATH</span> <span class="o">+</span> <span class="n">dbName</span><span class="o">;</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="n">SQLiteDatabase</span><span class="o">.</span><span class="na">openDatabase</span><span class="o">(</span><span class="n">databaseFilename</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span><span class="n">SQLiteDatabase</span><span class="o">.</span><span class="na">OPEN_READONLY</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">SQLiteException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">db</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">db</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">db</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 复制数据库到手机指定文件夹下
+     * 
+     * @throws IOException
+     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">copyDataBase</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">databaseFilenames</span> <span class="o">=</span> <span class="n">DATABASE_PATH</span> <span class="o">+</span> <span class="n">dbName</span><span class="o">;</span>
+        <span class="n">File</span> <span class="n">dir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">DATABASE_PATH</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">dir</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span><span class="c1">// 判断文件夹是否存在，不存在就新建一个</span>
+            <span class="n">dir</span><span class="o">.</span><span class="na">mkdir</span><span class="o">();</span>
+        <span class="n">FileOutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">databaseFilenames</span><span class="o">);</span><span class="c1">// 得到数据库文件的写入流</span>
+<span class="c1">//      InputStream is = context.getResources().openRawResource(R.raw.kao);// 得到数据库文件的数据流</span>
+        <span class="n">AssetManager</span> <span class="n">assetManager</span> <span class="o">=</span> <span class="n">App</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getContext</span><span class="o">().</span><span class="na">getAssets</span><span class="o">();</span>
+
+        <span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">assetManager</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">dbName</span><span class="o">);</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">8192</span><span class="o">];</span>
+        <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">((</span><span class="n">count</span> <span class="o">=</span> <span class="n">is</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buffer</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">os</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">buffer</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">count</span><span class="o">);</span>
+            <span class="n">os</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">is</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="n">os</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</pre>
+<p><strong>解压zip包</strong></p>
+<pre class="highlight java"><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">unzip</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+
+            <span class="n">AssetManager</span> <span class="n">assetManager</span> <span class="o">=</span> <span class="n">App</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getContext</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">getAssets</span><span class="o">();</span>
+            <span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">assetManager</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="s">"zip文件名"</span><span class="o">);</span>
+            <span class="n">CheckedInputStream</span> <span class="n">csumi</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CheckedInputStream</span><span class="o">(</span><span class="n">is</span><span class="o">,</span> <span class="k">new</span> <span class="n">CRC32</span><span class="o">());</span>
+            <span class="n">ZipInputStream</span> <span class="n">in2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ZipInputStream</span><span class="o">(</span><span class="n">csumi</span><span class="o">);</span>
+            <span class="n">BufferedInputStream</span> <span class="n">bi</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedInputStream</span><span class="o">(</span><span class="n">in2</span><span class="o">);</span>
+
+            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">zip</span><span class="o">.</span><span class="na">ZipEntry</span> <span class="n">ze</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">ze</span> <span class="o">=</span> <span class="n">in2</span><span class="o">.</span><span class="na">getNextEntry</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">String</span> <span class="n">entryName</span> <span class="o">=</span> <span class="n">ze</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+                <span class="n">String</span> <span class="n">decompressDir</span> <span class="o">=</span> <span class="n">SdcardUtils</span>
+                        <span class="o">.</span><span class="na">getSDCardPathWithFileSeparators</span><span class="o">()</span> <span class="o">;</span><span class="c1">//+ "lvtu";</span>
+
+                <span class="k">if</span> <span class="o">(</span><span class="n">ze</span><span class="o">.</span><span class="na">isDirectory</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="c1">// System.out.println("正在创建解压目录 - " + entryName);</span>
+                    <span class="n">File</span> <span class="n">decompressDirFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">decompressDir</span> <span class="o">+</span> <span class="s">"/"</span>
+                            <span class="o">+</span> <span class="n">entryName</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(!</span><span class="n">decompressDirFile</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+                        <span class="n">decompressDirFile</span><span class="o">.</span><span class="na">mkdirs</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="c1">// System.out.println("正在创建解压文件 - " + entryName);</span>
+                    <span class="n">String</span> <span class="n">decompressFile</span> <span class="o">=</span> <span class="n">decompressDir</span> <span class="o">+</span> <span class="s">"/"</span> <span class="o">+</span> <span class="n">entryName</span><span class="o">;</span>
+                    <span class="o">{</span>
+                        <span class="kt">int</span> <span class="n">idxName</span> <span class="o">=</span> <span class="n">decompressFile</span><span class="o">.</span><span class="na">lastIndexOf</span><span class="o">(</span><span class="s">"/"</span><span class="o">);</span>
+                        <span class="n">String</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">decompressFile</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">idxName</span><span class="o">);</span>
+                        <span class="n">File</span> <span class="n">decompDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">dir</span><span class="o">);</span>
+                        <span class="k">if</span> <span class="o">(!</span><span class="n">decompDir</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span>
+                            <span class="n">decompDir</span><span class="o">.</span><span class="na">mkdirs</span><span class="o">();</span>
+                    <span class="o">}</span>
+                    <span class="n">BufferedOutputStream</span> <span class="n">bos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedOutputStream</span><span class="o">(</span>
+                            <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">decompressFile</span><span class="o">));</span>
+                    <span class="kt">byte</span><span class="o">[]</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">1024</span><span class="o">];</span>
+                    <span class="kt">int</span> <span class="n">readCount</span> <span class="o">=</span> <span class="n">bi</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buffer</span><span class="o">);</span>
+                    <span class="k">while</span> <span class="o">(</span><span class="n">readCount</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">bos</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">buffer</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">readCount</span><span class="o">);</span>
+                        <span class="n">readCount</span> <span class="o">=</span> <span class="n">bi</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buffer</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="n">bos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="n">bi</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android 云测试创建 APP 初始数据 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="194#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="194#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="194#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="194#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="194#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>5</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="194#reply1">1楼</a> · <abbr class="timeago" title="2013-11-11T20:03:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="583" data-state="" data-type="Reply" href="194#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/194/replies/583/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="194#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个还原数据库在这里是什么意思，使用的时机是什么时候？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="194#reply2">2楼</a> · <abbr class="timeago" title="2013-11-11T23:26:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="584" data-state="" data-type="Reply" href="194#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/194/replies/584/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="guo" href="194#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="194#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 云测试平台只能上传APK的安装包,如果需要一些初始数据,比如音乐类的需要缓存一些歌曲啥的,可以这样搞上去,相当于安装了一个程序的快照.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Guest"><img alt="2c5e58bfc55333a7abb1ce4f21b3341f" class="uface" src="../avatar/2c5e58bfc55333a7abb1ce4f21b3341f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="huwei" href="../Guest">Guest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="194#reply3">3楼</a> · <abbr class="timeago" title="2013-12-09T17:51:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="969" data-state="" data-type="Reply" href="194#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="215" href="http://testerhome.com/topics/194/replies/969/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="Guest" href="194#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>能把使用场景再介绍的详细点吗？据我所知，云测试都是些安装/卸载，稳定性（monkey），兼容性测试，怎么走到你这个场景上呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="194#reply4">4楼</a> · <abbr class="timeago" title="2013-12-09T19:47:07+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="973" data-state="" data-type="Reply" href="194#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/194/replies/973/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lihuazhang" href="194#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../guo" class="at_user" title="@guo"><i>@</i>guo</a> 快来</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../guo"><img alt="170" class="uface" src="../user/large_avatar/170.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="GUO" href="../guo">guo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="194#reply5">5楼</a> · <abbr class="timeago" title="2013-12-10T10:44:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="986" data-state="" data-type="Reply" href="194#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="170" href="http://testerhome.com/topics/194/replies/986/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="guo" href="194#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="194#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../whuiscool" class="at_user" title="@whuiscool"><i>@</i>whuiscool</a> 哦 其实这个也就是在monkey或者遍历测试的时候有用,好像MTC就有遍历测试.这个主要是在安装的时候,创建点APP的初始数据,避免在点击打开一个列表界面的时候里面都是空的.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @shixue33 我想~~~在深圳找个好工作~~~找个男朋友！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1340" title="【小公司必看】国内 app 云测服务对比">【小公司必看】国内 app 云测服务对比</a></li>
+    <li><a href="1103" title="[Testin 署名计划]  java.lang.ArithmeticException: divide by zero">[Testin 署名计划]  java.lang.Ar...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="194#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

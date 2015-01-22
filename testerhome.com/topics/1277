@@ -1,0 +1,740 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | RestFixture：Web 服务回归测试利器 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">RestFixture：Web 服务回归测试利器</h1>
+  <div class="info leader">
+    <a class="node" href="node2">自动化测试工具</a>
+     · 
+    <a data-author="true" data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+     · 
+    于<abbr class="timeago" title="2014-08-16T13:15:26+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="htmlbiji" href="../htmlbiji">htmlbiji</a> 于<abbr class="timeago" title="2014-08-18T16:21:31+08:00"></abbr>回复
+     · 
+    589次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><strong>摘要：RestFixture是Fitnesse的一个测试REST服务的插件，用于调用标准的http GET/POST等请求方法，并可以用XPath语法和Javascript语法检验http响应。本文介绍安装运行RestFixture的步骤，并给出测试用例示例。</strong></p>
+
+<p>首先普及一下概念，什么是**Fitnesse**，听一听.NET版Cucumber的创始人Aslak Hellesøy谈**Fitnesse**与Cucumber对比：</p>
+
+<blockquote>
+<p>FIT/**Fitnesse**和Cucumber都执行高级语言编写的验收测试。FIT仅识别HTML，Fitnesse则通过提供Wiki语法来简化编写测试的过程。在FIT/Fitnesse当中，所有的测试都以表格的形式呈现。<br><br>
+FitNesse比Cucumber的优势在于Wiki支持。</p>
+</blockquote>
+
+<p>原文链接：<a href="http://www.infoq.com/cn/news/2009/11/interview-cucumber-for-dotnet" rel="nofollow" target="_blank">http://www.infoq.com/cn/news/2009/11/interview-cucumber-for-dotnet</a>  </p>
+<h4>1.几句题外话</h4>
+<p>对于http请求的测试，有几种方式：</p>
+
+<ol>
+<li>浏览器中输入http url，只适用于GET方法</li>
+<li>curl命令手工测试</li>
+<li>junit中直接用java network api调用GET/POST方法</li>
+<li>在自动化测试框架中封装指令，如cucumber, fitnesse, robotframework</li>
+</ol>
+
+<p>上述1、2手工测试，不能用于回归测试；3、4能用于回归测试，但要开发测试脚本代码，维护非常麻烦。</p>
+
+<p>今日回想起两年前浅尝辄止的<a href="http://fitnesse.org" target="_blank">fitnesse</a>，想碰运气看看有没有好的测试插件，结果真找到了用于Restful API测试的插件：<a href="https://github.com/smartrics/RestFixture" target="_blank">RestFixture</a></p>
+<h4>2.Fitnesse 20111026+RestFixture 3.0 ——最佳拍档</h4><h4>2.1 http响应格式是xml的示例</h4>
+<p>废话少说，先上图：<br>
+<img src="http://static.oschina.net/uploads/space/2014/0727/113844_1oZ0_1990460.png" alt="用Xpath语法检查GET响应内容"></p>
+
+<p>上面的测试用例的目的是：<br>
+- 检查 url:  <a href="http://www.w3school.com.cn/example/xmle/note.xml" rel="nofollow" target="_blank">http://www.w3school.com.cn/example/xmle/note.xml</a>  中有一tag<code>&lt;body&gt;</code></p>
+
+<p>并且 tag内容是 </p>
+<pre class="highlight plaintext">Don't forget the meeting!
+</pre>
+
+<p>note.xml的内容：</p>
+<pre class="highlight xml"><span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span> 
+<span class="c">&lt;!--  Copyright w3school.com.cn --&gt;</span> 
+<span class="nt">&lt;note&gt;</span> 
+    <span class="nt">&lt;to&gt;</span>George<span class="nt">&lt;/to&gt;</span> 
+    <span class="nt">&lt;from&gt;</span>John<span class="nt">&lt;/from&gt;</span> 
+    <span class="nt">&lt;heading&gt;</span>Reminder<span class="nt">&lt;/heading&gt;</span> 
+    <span class="nt">&lt;body&gt;</span>Don't forget the meeting!<span class="nt">&lt;/body&gt;</span> 
+<span class="nt">&lt;/note&gt;</span>  
+</pre>
+
+<p><strong>fitnesse 测试用例wiki文本：</strong></p>
+<pre class="highlight plaintext">!define TEST_SYSTEM {slim}
+
+!path D:\fitnesse\fitnesse-20111026\smartrics-RestFixture-3.0\lib\*
+
+| Table:smartrics.rest.fitnesse.fixture.RestFixture | http://www.w3school.com.cn |
+| GET | /example/xmle/note.xml | 200 | Content-Type: text/xml | //body[text()="Don't forget the meeting!"]|
+</pre>
+<h4>2.2 http响应格式是json的示例</h4>
+<p><img src="http://static.oschina.net/uploads/space/2014/0727/144902_fqBJ_1990460.png" alt="用IP获取地址信息"></p>
+
+<p>上面的测试用例的目的是：</p>
+
+<p>调用百度地图Web API，根据IP获取地图地址信息，检查服务响应内容中的status字段必须是0，下面判断语句是javascript表达式：</p>
+<pre class="highlight plaintext">jsonbody.status==0
+</pre>
+
+<p>GET访问的url：</p>
+
+<ul>
+<li><a href="http://api.map.baidu.com/location/ip?ip=202.198.16.3&amp;coor=bd09ll&amp;ak=60IFKTCwlIsSpDcGfkx36L8u" rel="nofollow" target="_blank">http://api.map.baidu.com/location/ip?ip=202.198.16.3&amp;coor=bd09ll&amp;ak=60IFKTCwlIsSpDcGfkx36L8u</a></li>
+</ul>
+
+<p>url返回的内容：</p>
+<pre class="highlight json"><span class="p">{</span><span class="s2">"address"</span><span class="p">:</span><span class="s2">"CN|\u5409\u6797|\u957f\u6625|None|CERNET|1|None"</span><span class="p">,</span><span class="s2">"content"</span><span class="p">:{</span><span class="s2">"address"</span><span class="p">:</span><span class="s2">"\u5409\u6797\u7701\u957f\u6625\u5e02"</span><span class="p">,</span><span class="s2">"address_detail"</span><span class="p">:{</span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"\u957f\u6625\u5e02"</span><span class="p">,</span><span class="s2">"city_code"</span><span class="p">:</span><span class="mi">53</span><span class="p">,</span><span class="s2">"district"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"province"</span><span class="p">:</span><span class="s2">"\u5409\u6797\u7701"</span><span class="p">,</span><span class="s2">"street"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"street_number"</span><span class="p">:</span><span class="s2">""</span><span class="p">},</span><span class="s2">"point"</span><span class="p">:{</span><span class="s2">"x"</span><span class="p">:</span><span class="s2">"125.31364243"</span><span class="p">,</span><span class="s2">"y"</span><span class="p">:</span><span class="s2">"43.89833761"</span><span class="p">}},</span><span class="s2">"status"</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span><span class="w">
+
+</span></pre>
+
+<p>被调用Web API文档：</p>
+
+<ul>
+<li><a href="http://developer.baidu.com/map/wiki/index.php?title=webapi/ip-api#.E6.8E.A5.E5.8F.A3.E7.A4.BA.E4.BE.8B" rel="nofollow" target="_blank">http://developer.baidu.com/map/wiki/index.php?title=webapi/ip-api#.E6.8E.A5.E5.8F.A3.E7.A4.BA.E4.BE.8B</a></li>
+</ul>
+
+<p><strong>fitnesse 测试用例wiki文本：</strong></p>
+<pre class="highlight plaintext">!define TEST_SYSTEM {slim}
+
+!path D:\fitnesse\fitnesse-20111026\smartrics-RestFixture-3.0\lib\*
+
+| Table:smartrics.rest.fitnesse.fixture.RestFixture | http://api.map.baidu.com |
+| GET | /location/ip?ip=202.198.16.3&amp;coor=bd09ll&amp;ak=60IFKTCwlIsSpDcGfkx36L8u | 200 | Content-Type: application/json | jsonbody.status==0 |
+</pre>
+<h4>2.3 用javascript处理json对象</h4>
+<p>我们再来看上面的GET响应文本：</p>
+<pre class="highlight json"><span class="p">{</span><span class="s2">"address"</span><span class="p">:</span><span class="s2">"CN|\u5409\u6797|\u957f\u6625|None|CERNET|1|None"</span><span class="p">,</span><span class="s2">"content"</span><span class="p">:{</span><span class="s2">"address"</span><span class="p">:</span><span class="s2">"\u5409\u6797\u7701\u957f\u6625\u5e02"</span><span class="p">,</span><span class="s2">"address_detail"</span><span class="p">:{</span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"\u957f\u6625\u5e02"</span><span class="p">,</span><span class="s2">"city_code"</span><span class="p">:</span><span class="mi">53</span><span class="p">,</span><span class="s2">"district"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"province"</span><span class="p">:</span><span class="s2">"\u5409\u6797\u7701"</span><span class="p">,</span><span class="s2">"street"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"street_number"</span><span class="p">:</span><span class="s2">""</span><span class="p">},</span><span class="s2">"point"</span><span class="p">:{</span><span class="s2">"x"</span><span class="p">:</span><span class="s2">"125.31364243"</span><span class="p">,</span><span class="s2">"y"</span><span class="p">:</span><span class="s2">"43.89833761"</span><span class="p">}},</span><span class="s2">"status"</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span><span class="w">
+
+</span></pre>
+
+<p><strong>\u5409\u6797|\u957f\u6625</strong>是什么？</p>
+
+<p>按照百度API文档，应该返回这样的：</p>
+<pre class="highlight json"><span class="w"> </span><span class="p">{</span><span class="w">  
+    </span><span class="err">address</span><span class="p">:</span><span class="w"> </span><span class="s2">"CN|吉林|长春|None|CERNET|1|None"</span><span class="p">,</span><span class="w">  
+    </span><span class="err">content</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">  
+    </span><span class="err">address</span><span class="p">:</span><span class="w"> </span><span class="s2">"吉林省长春市"</span><span class="p">,</span><span class="w">  
+    </span><span class="err">address_detail</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">  
+    </span><span class="err">city</span><span class="p">:</span><span class="w"> </span><span class="s2">"长春市"</span><span class="p">,</span><span class="w">  
+    </span><span class="err">city_code</span><span class="p">:</span><span class="w"> </span><span class="mi">53</span><span class="p">,</span><span class="w">  
+    </span><span class="err">district</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">  
+    </span><span class="err">province</span><span class="p">:</span><span class="w"> </span><span class="s2">"吉林省"</span><span class="p">,</span><span class="w">  
+    </span><span class="err">street</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">  
+    </span><span class="err">street_number</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">  
+    </span><span class="p">},</span><span class="w">  
+    </span><span class="err">point</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">       
+    </span><span class="err">x</span><span class="p">:</span><span class="w"> </span><span class="s2">"125.31364243"</span><span class="p">,</span><span class="w">      
+    </span><span class="err">y</span><span class="p">:</span><span class="w"> </span><span class="s2">"43.89833761"</span><span class="w">  
+    </span><span class="p">}</span><span class="w">  
+    </span><span class="p">},</span><span class="w">  
+    </span><span class="err">status</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">  
+</span><span class="p">}</span><span class="w">
+
+</span></pre>
+
+<p>原来**\u5409\u6797|\u957f\u6625**是 <strong>吉林|长春</strong> encodeURI的结果</p>
+
+<p>可以在 Chrome浏览器 &gt; 菜单 &gt; 工具 &gt; JavaScript控制台（Firefox/IE/Opera都有对应的控制台） 中使用 String.replace函数来把\u5409变成"吉"：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0727/181612_9M6h_1990460.png" alt="替换字符串"></p>
+
+<p>下一步在Fitnesse中要见证奇迹了，RestFixture居然支持Javascript语法和全局函数，也可以调用String.replace函数：</p>
+<pre class="highlight plaintext">!define TEST_SYSTEM {slim}
+
+!path D:\fitnesse\fitnesse-20111026\smartrics-RestFixture-3.0\lib\*
+
+| Table:smartrics.rest.fitnesse.fixture.RestFixture | http://api.map.baidu.com |
+| GET | /location/ip?ip=202.198.16.3&amp;coor=bd09ll&amp;ak=60IFKTCwlIsSpDcGfkx36L8u | 200 | Content-Type: application/json | jsonbody.status==0 |
+| let | bodyDecoded | js | response.body.replace(/\\u[\dabcdef]{4}/g, function(word){return String.fromCharCode(parseInt(word.substr(2),16))}) | |
+</pre>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0727/182531_RDLz_1990460.png" alt="body替换后测试结果"></p>
+
+<p>RestFixture变量bodyDecoded的内容是中文化后的json：</p>
+<pre class="highlight json"><span class="p">{</span><span class="s2">"address"</span><span class="p">:</span><span class="s2">"CN|吉林|长春|None|CERNET|1|None"</span><span class="p">,</span><span class="s2">"content"</span><span class="p">:{</span><span class="s2">"address"</span><span class="p">:</span><span class="s2">"吉林省长春市"</span><span class="p">,</span><span class="s2">"address_detail"</span><span class="p">:{</span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"长春市"</span><span class="p">,</span><span class="s2">"city_code"</span><span class="p">:</span><span class="mi">53</span><span class="p">,</span><span class="s2">"district"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"province"</span><span class="p">:</span><span class="s2">"吉林省"</span><span class="p">,</span><span class="s2">"street"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"street_number"</span><span class="p">:</span><span class="s2">""</span><span class="p">},</span><span class="s2">"point"</span><span class="p">:{</span><span class="s2">"x"</span><span class="p">:</span><span class="s2">"125.31364243"</span><span class="p">,</span><span class="s2">"y"</span><span class="p">:</span><span class="s2">"43.89833761"</span><span class="p">}},</span><span class="s2">"status"</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span><span class="w">
+
+</span></pre>
+
+<p>下面，还可以把bodyDecoded作为表达式文本计算，生成一个js对象：</p>
+<pre class="highlight plaintext">| let | printJsonMembers | js | !-
+var jsonObject = eval('a=%bodyDecoded%');
+var str1="";
+function printObject(obj, indent){
+  for(var i in obj){
+    if(typeof obj[i] == "object"){
+      str1+= indent + i+":"+"\n";
+      printObject(obj[i], indent+"\t\t");
+    } else
+      str1+= indent + i +":"+obj[i] + "\n";
+  }
+}
+printObject(jsonObject, "");
+str1-! | |
+</pre>
+
+<p>这里要演示的第二个let行使用了第一个let行定义的变量：**%bodyDecoded%**，显然借鉴了Windows Bat文件的语法。</p>
+
+<p>测试结果：</p>
+<pre class="highlight plaintext">address:CN|吉林|长春|None|CERNET|1|None
+content:
+        address:吉林省长春市
+        address_detail:
+                city:长春市
+                city_code:53
+                district:
+                province:吉林省
+                street:
+                street_number:
+        point:
+                x:125.31364243
+                y:43.89833761
+status:0
+</pre>
+<h4>3.RestFixture参考资料</h4><h4>3.1 RestFixture使用文档</h4>
+<p><a href="https://github.com/downloads/smartrics/RestFixture/RestFixture-3.0.pdf" target="_blank">RestFixture使用文档链接</a></p>
+
+<p><a href="https://cloud.github.com/downloads/smartrics/RestFixture/RestFixture-3.0.pdf" rel="nofollow" target="_blank">https://cloud.github.com/downloads/smartrics/RestFixture/RestFixture-3.0.pdf</a></p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0727/164813_hwuU_1990460.png" alt="RestFixture使用文档片段"></p>
+<h4>3.2 运行环境</h4>
+<p>fitnesse运行环境文件目录：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0727/121131_CpnQ_1990460.png" alt="fitnesse文件目录"><br>
+<img src="http://static.oschina.net/uploads/space/2014/0727/120844_l2qE_1990460.png" alt="restfixture文件目录"></p>
+
+<p>注意：其中的slf4j-simple-1.6.6.jar需要额外下载</p>
+
+<p>启动fitnesse命令：<br>
+<img src="http://static.oschina.net/uploads/space/2014/0727/121341_aZMH_1990460.png" alt="启动fitnesse"></p>
+<pre class="highlight plaintext">D:\fitnesse\fitnesse-20111026&gt;java -jar fitnesse.jar -p 11026
+</pre>
+
+<p><strong>-p 11026</strong> 是让fitnesse网站使用11026端口，因为我要在后面的例子中使用多个fitnesse版本，所以用版本号作为端口。</p>
+<h4>3.3 相关安装包下载地址</h4><h4>RestFixture安装包下载地址：</h4>
+<ul>
+<li> <a href="https://github.com/downloads/smartrics/RestFixture/smartrics-RestFixture-3.0-bin.zip" rel="nofollow" target="_blank">https://github.com/downloads/smartrics/RestFixture/smartrics-RestFixture-3.0-bin.zip</a>
+</li>
+</ul>
+<h4>slf4j-simple-1.6.6.jar下载地址：</h4>
+<ul>
+<li> <a href="http://repo2.maven.org/maven2/org/slf4j/slf4j-simple/1.6.6/slf4j-simple-1.6.6.jar" rel="nofollow" target="_blank">http://repo2.maven.org/maven2/org/slf4j/slf4j-simple/1.6.6/slf4j-simple-1.6.6.jar</a><br>
+<strong>注意：RestFixture安装包中未包含此jar包，但运行时需要。</strong>
+</li>
+</ul>
+<h4>Fitnesse安装包下载地址：</h4>
+<ul>
+<li> <a href="http://fitnesse.org/fitnesse.jar?responder=releaseDownload&amp;release=20111026" rel="nofollow" target="_blank">http://fitnesse.org/fitnesse.jar?responder=releaseDownload&amp;release=20111026</a><br>
+<strong>注意：RestFixture只维护到20111026的Fitnesse版本，所以只能下载与之匹配的Fitnesse安装包。</strong>
+</li>
+</ul>
+<h4>3.4 相关网址</h4>
+<ul>
+<li>Fitnesse 首页：<br>
+
+<ul>
+<li><a href="http://www.fitnesse.org/" rel="nofollow" target="_blank">http://www.fitnesse.org/</a></li>
+</ul>
+</li>
+<li>Fitnesse安装包下载： Fitnesse首页 &gt; Download &gt; release 20111026 &gt; fitnesse.jar</li>
+<li>Fitnesse插件列表： Fitnesse首页 &gt; Plug-ins</li>
+<li>RestFixture首页： Fitnesse首页 &gt; Plug-ins &gt; SLiM Fixtures &gt; RestFixture =&gt;<br>
+
+<ul>
+<li><a href="https://github.com/smartrics/RestFixture" rel="nofollow" target="_blank">https://github.com/smartrics/RestFixture</a></li>
+</ul>
+</li>
+<li>RestFixture安装包下载： RestFixture首页 &gt; Wiki &gt; Live documentation &gt; download &gt; smartrics-RestFixture-3.0-bin.zip</li>
+<li>RestFixture使用文档： RestFixture首页 &gt; Wiki &gt; Live documentation &gt; download &gt; RestFixture-3.0.pdf</li>
+</ul>
+<h4>4.Fitnesse 20140630+RestFixture 3.0 ——水土不服</h4>
+<p>RestFixture在最新版Fitnesse 20140630 的运行结果：<br>
+<img src="http://static.oschina.net/uploads/space/2014/0731/210034_W7ty_1990460.png" alt="最新版Fitnesse的运行结果"></p>
+
+<p>其中的GET行，只有第2、3列正确显示，4、5列显示为HTML文本，看上去十分杂乱，</p>
+
+<p>旧版的Fitnesse是这样显示的：</p>
+
+<p><img src="http://static.oschina.net/uploads/space/2014/0727/113844_1oZ0_1990460.png" alt="用Xpath语法检查GET响应内容"></p>
+
+<p>后续的博客中，我会介绍如何让RestFixture 3.0在Fitnesse 20140630中也能打印出漂亮的测试结果。</p>
+
+<p><a href="http://my.oschina.net/u/1990460/blog/297495" target="_blank">为Fitnesse-20140630定制RestFixture代码</a></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='RestFixture：Web 服务回归测试利器 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1277#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1277#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1277#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1277#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1277#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>11</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply1">1楼</a> · <abbr class="timeago" title="2014-08-16T18:36:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7729" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1277/replies/7729/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个东西也是流行了很久了. 只是国内用的少. 也是个不错的框架.<br>
+不过依赖wiki有点重.</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply2">2楼</a> · <abbr class="timeago" title="2014-08-17T10:01:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7734" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1277/replies/7734/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="htmlbiji" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>wiki就是fitnesse的突出特点，如果看上这个特点，就会选它。<br>
+有人因为python的缩进方式喜欢他，有人正好相反。哈哈！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply3">3楼</a> · <abbr class="timeago" title="2014-08-17T10:03:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7735" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1277/replies/7735/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="htmlbiji" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>testerhome的markdown语法不支持缩进4个空格当代码显示，只支持用一对```显示代码</p>
+
+<p>四个空格后的代码</p>
+<pre class="highlight plaintext">一对```里的代码
+</pre>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply4">4楼</a> · <abbr class="timeago" title="2014-08-18T00:57:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7752" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/1277/replies/7752/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="kevin_xu_v" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>very helpful,之前就在想有没有哪个工具测web service，postman/restclient只是开发人员调试用的工具，对于测试来说最重要的是结果的断言，之前用jmeter去试过，但是断言部分还是没办法解决，可能我指望其能够做功能测试要求太高了，这个工具可以尝试下。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../kevin_xu_v"><img alt="433" class="uface" src="../user/large_avatar/433.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="KevinXu" href="../kevin_xu_v">kevin_xu_v</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply5">5楼</a> · <abbr class="timeago" title="2014-08-18T01:00:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7753" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="433" href="http://testerhome.com/topics/1277/replies/7753/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="kevin_xu_v" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="http://my.oschina.net/fitnessefan" rel="nofollow" target="_blank">http://my.oschina.net/fitnessefan</a> 看来你实在是比较喜欢fitnesse</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../umbrella1978"><img alt="1289" class="uface" src="../user/large_avatar/1289.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="虎卧荒丘" href="../umbrella1978">umbrella1978</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply6">6楼</a> · <abbr class="timeago" title="2014-08-18T10:19:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7757" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1289" href="http://testerhome.com/topics/1277/replies/7757/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="umbrella1978" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>真实要啥来啥~最近正好要测webservice~赞</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply7">7楼</a> · <abbr class="timeago" title="2014-08-18T13:56:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7763" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1277/replies/7763/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="htmlbiji" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这里同道还蛮多的。：）</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../cjtcwyk"><img alt="306" class="uface" src="../user/large_avatar/306.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../cjtcwyk">cjtcwyk</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply8">8楼</a> · <abbr class="timeago" title="2014-08-18T15:13:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7768" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="306" href="http://testerhome.com/topics/1277/replies/7768/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="cjtcwyk" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我用3，在jvm跑速度杠杠的，集成到jenkins也很方便</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply9">9楼</a> · <abbr class="timeago" title="2014-08-18T15:48:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7770" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1277/replies/7770/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="htmlbiji" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1277#reply8" class="at_floor" data-floor="8">#8楼</a> <a href="../cjtcwyk" class="at_user" title="@cjtcwyk"><i>@</i>cjtcwyk</a> <br>
+3是什么？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../cjtcwyk"><img alt="306" class="uface" src="../user/large_avatar/306.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../cjtcwyk">cjtcwyk</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply10">10楼</a> · <abbr class="timeago" title="2014-08-18T15:52:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7772" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="306" href="http://testerhome.com/topics/1277/replies/7772/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="cjtcwyk" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1277#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../htmlbiji" class="at_user" title="@htmlbiji"><i>@</i>htmlbiji</a> <br>
+您列出来的 junit中直接用java network api调用GET/POST方法</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1277#reply11">11楼</a> · <abbr class="timeago" title="2014-08-18T16:21:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7775" data-state="" data-type="Reply" href="1277#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1277/replies/7775/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="htmlbiji" href="1277#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1277#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../cjtcwyk" class="at_user" title="@cjtcwyk"><i>@</i>cjtcwyk</a> <br>
+各有所长</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="deleted">12楼 已删除.</div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    欢迎关注我们的微信账号： 测试圈
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1892" title="JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法)">JUnit4---实践：运行指定类的某些测试方法(可用...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1277#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

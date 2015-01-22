@@ -1,0 +1,338 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Calabash+Gearman 实现多手机同步测试机制 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Calabash+Gearman 实现多手机同步测试机制</h1>
+  <div class="info leader">
+    <a class="node" href="node35">Calabash</a>
+     · 
+    <a data-author="true" data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+     · 
+    于<abbr class="timeago" title="2015-01-09T21:24:57+08:00"></abbr>发布
+     · 
+    89次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><strong>摘要：</strong></p>
+
+<blockquote>
+<p>Calabash-android是支持android的UI自动化测试框架，但不支持多手机同步测试。本文介绍如何利用任务分发系统Gearman的消息同步机制，配合Calabash实现多手机同步测试机制。</p>
+</blockquote>
+<h4>背景介绍</h4>
+<p>Calabash-android是支持android的UI自动化测试框架。<br>
+<a href="http://www.oschina.net/p/calabash-android" rel="nofollow" target="_blank">http://www.oschina.net/p/calabash-android</a></p>
+
+<p>Gearman是一个分发任务的程序框架，可以用在各种场合，与Hadoop相比，Gearman更偏向于任务分发功能。它的 任务分布非常 简单，简单得可以只需要用脚本即可完成。<br>
+<a href="http://www.oschina.net/p/gearman" rel="nofollow" target="_blank">http://www.oschina.net/p/gearman</a><br>
+<img src="http://www.oschina.net/uploads/img/201002/05001154_UcCt.png" alt="gearman"></p>
+<h4>Ubuntu上安装Gearman</h4><pre class="highlight plaintext">    $ sudo apt-get install gearman-job-server
+    $ gearmand -V
+
+    gearmand 1.0.6 - https://bugs.launchpad.net/gearmand 
+
+    $ sudo apt-get install gearman-tools
+    $ gearman -H
+</pre>
+<h4>启动gearman job server，作为后台服务运行:</h4><pre class="highlight plaintext">    $ sudo gearmand -d
+</pre>
+<h4>多手机同步测试举例</h4>
+<p>假设要测试微信的发送消息功能，calabash的测试用例可以按如下方式撰写：</p>
+<h4>AA-send-message-to-BB--role-AA.feature：</h4><pre class="highlight plaintext">    Feature: 微信测试发送消息给好友-角色A
+
+      Scenario: 微信测试发送消息给好友
+        ...打开微信软件，作为帐号A登录，进入与好友B的聊天窗口
+        When I send weixin message "A说，你好！"   # 微信聊天窗口中发送消息
+        And  I send sync message "A说，你好！" to role "BB"
+        Then I see "A说，你好！"  #我能看到自己说的话
+
+        When I wait sync message $AA_sync_1 as role "AA"
+        Then I see $AA_sync_1 #我能看到对方说的话
+        ...
+</pre>
+<h4>AA-send-message-to-BB--role-BB.feature：</h4><pre class="highlight plaintext">    Feature: 微信测试发送消息给好友-角色B
+
+      Scenario: 微信测试发送消息给好友
+        ...打开微信软件，作为帐号B登录，进入与好友A的聊天窗口
+        When I wait sync message $BB_sync_1 as role "BB"
+        Then I see $BB_sync_1  #我能看到对方说的话
+
+        When I send weixin message "B说，你好！"   # 微信聊天窗口中发送消息
+        And  I send sync message "B说，你好！" to role "AA"
+        Then I see "B说，你好！"  #我能看到自己说的话
+        ...
+</pre>
+<h4>命令行终端1中运行AA-send-message-to-BB--role-AA.feature</h4><pre class="highlight plaintext">    $ export ADB_DEVICE_ARG=HTC-G9
+    $ export GEARMAN_JOB_SERVER=localhost
+
+    $ calabash-android run weixin.apk -r features/ features/AA-send-message-to-BB--role-AA.feature
+</pre>
+<h4>命令行终端2中运行AA-send-message-to-BB--role-BB.feature</h4><pre class="highlight plaintext">    $ export ADB_DEVICE_ARG=HWAWEI-P7
+    $ export GEARMAN_JOB_SERVER=localhost
+
+    $ calabash-android run weixin.apk -r features/ features/AA-send-message-to-BB--role-BB.feature
+</pre>
+<h4>calabash中封装gearman命令实现同步机制</h4><h4>sync_step.rb:</h4><pre class="highlight plaintext">    # encoding: utf-8
+    require 'calabash-android/calabash_steps'
+
+    When /^I wait sync message \$([^\$]*) as role "([^\"]*)"$/ do |msg_ev, role|
+      gearman_job_server=ENV["GEARMAN_JOB_SERVER"]
+      fail "环境变量::GEARMAN_JOB_SERVER::未定义！ 设置方法: export GEARMAN_JOB_SERVER=localhost" if ( gearman_job_server == nil)
+      uuid=`uuidgen`.strip  
+      cmd="gearman -h #{gearman_job_server} -t 30000 -w -c 1 -f receiver_#{role} -- tee /tmp/#{role}-#{uuid}; cat /tmp/#{role}-#{uuid}"
+      puts "角色#{role}准备执行命令：#{cmd}"
+
+      message=`#{cmd}`.strip
+      fail "未收到同步消息" if ( message == "" )
+      ENV[msg_ev]=message
+      puts "角色#{role}接收到同步消息: #{ENV[msg_ev]}"
+    end
+
+    When /^I send sync message "([^\"]*)" to role "([^\"]*)"$/ do |msg, role|
+      gearman_job_server=ENV["GEARMAN_JOB_SERVER"]
+      fail "环境变量::GEARMAN_JOB_SERVER::未定义！ 设置方法: export GEARMAN_JOB_SERVER=localhost" if ( gearman_job_server == nil)
+      fail "sync message 为空" if ( msg == "" )
+      cmd="echo '#{msg}' | gearman -h #{gearman_job_server} -t 30000 -f receiver_#{role}"
+      puts "角色#{role}准备执行命令：#{cmd}"
+
+      response=`#{cmd}`.strip
+      fail "发送同步消息失败" if ( response != msg )
+      puts "发送同步消息给角色#{role}: #{msg}"
+    end
+
+    When /^I send sync message \$([^\$]*) to role "([^\"]*)"$/ do |msg_ev, role|
+      gearman_job_server=ENV["GEARMAN_JOB_SERVER"]
+      fail "环境变量::GEARMAN_JOB_SERVER::未定义！ 设置方法: export GEARMAN_JOB_SERVER=localhost" if ( gearman_job_server == nil)
+      msg=ENV[msg_ev]
+      response=`echo "${msg}" | gearman -h #{gearman_job_server} -f receiver_#{role}`
+      fail "发送同步消息失败" if ( response != msg )
+      puts "发送同步消息给角色#{role}: #{msg}"
+    end
+</pre>
+<h4>calabash_steps.rb：</h4><pre class="highlight plaintext">    # encoding: utf-8
+    require 'calabash-android/calabash_steps'
+
+    Then /^I see \$([^\$]*)$/ do |text_ev|
+      text = ENV[text_ev]
+      steps %{
+       Then I see "#{text}"
+      }
+    end    
+</pre>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Calabash+Gearman 实现多手机同步测试机制 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1817#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1817#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1817#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1817#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1817#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscarxie: 钱多事少离家近，哈哈哈，太贪心了，有其中2个也行
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1817" title="Calabash+Gearman 实现多手机同步测试机制">Calabash+Gearman 实现多手机同步测试机制</a></li>
+    <li><a href="1803" title="求助：calabash-android 如何 touch fragment 中 textView">求助：calabash-android 如何 touc...</a></li>
+    <li><a href="1600" title="使用 Gearman+Calabash 并行测试手机 APP">使用 Gearman+Calabash 并行测试手机 APP</a></li>
+    <li><a href="1568" title="Ubuntu 14.04 64 位安装 calabash-android 问题汇总">Ubuntu 14.04 64 位安装 calabas...</a></li>
+    <li><a href="1528" title="calabash iOS 新建项目流程">calabash iOS 新建项目流程</a></li>
+    <li><a href="1522" title="Calabash for Mac 在搭环境的小细节...">Calabash for Mac 在搭环境的小细节...</a></li>
+    <li><a href="1520" title="Calabash 模拟多手机同步测试">Calabash 模拟多手机同步测试</a></li>
+    <li><a href="1396" title="如何解决 Calabash-ios &quot;Connection refused &quot;？">如何解决 Calabash-ios &quot;Connecti...</a></li>
+    <li><a href="1384" title="Calabash-ios framework 的安装过程">Calabash-ios framework 的安装过程</a></li>
+    <li><a href="1347" title="使用 calabash 测试开源中国 Android 客户端">使用 calabash 测试开源中国 Android 客户端</a></li>
+    <li><a href="1323" title="calabash-android 测试问题收集">calabash-android 测试问题收集</a></li>
+    <li><a href="1296" title="中文 Win7 下成功安装 calabash-android 步骤">中文 Win7 下成功安装 calabash-andr...</a></li>
+    <li><a href="1180" title="Calabash 的那些坑">Calabash 的那些坑</a></li>
+    <li><a href="1173" title="Calabash 学习经验小结">Calabash 学习经验小结</a></li>
+    <li><a href="1165" title="用原生 Cucumber 跑 Calabash-Android 测试">用原生 Cucumber 跑 Calabash-And...</a></li>
+    <li><a href="1164" title="Calabash 使用经验 - 安装稳定版本">Calabash 使用经验 - 安装稳定版本</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1817#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

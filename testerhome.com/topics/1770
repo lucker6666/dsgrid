@@ -1,0 +1,665 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 如何在 appium 测试代码中指定 activity 跳转 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../qq89757"><img alt="Ef665b4a95ddfac330fbc3dd1907a51f" class="uface" src="../avatar/ef665b4a95ddfac330fbc3dd1907a51f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">如何在 appium 测试代码中指定 activity 跳转</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="qq89757" href="../qq89757">qq89757</a>
+     · 
+    于<abbr class="timeago" title="2015-01-05T11:19:20+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="squallff" href="../squallff">squallff</a> 于<abbr class="timeago" title="2015-01-12T17:22:01+08:00"></abbr>回复
+     · 
+    169次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>求助：最近遇到在首次启动应用时需要在wait for Activity 勾选下一个欢迎页面 WelcomeActivity，但是非首次登陆时又不需要勾选此项，而是需要勾选LoginwaitActivity，不勾选启动就会报错，这样必须暂停appium，这就失去意义了，也比较麻烦，有没有方法可以在代码里直接指定Activity的跳转呢？求大神指导下，本人mac python环境。</p>
+<pre class="highlight shell">info: Welcome to Appium v1.3.3 <span class="o">(</span>REV 34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78<span class="o">)</span>
+
+info: Appium REST http interface listener started on 127.0.0.1:2222
+info: <span class="o">[</span>debug] Non-default server args: <span class="o">{</span><span class="s2">"app"</span>:<span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span>,<span class="s2">"address"</span>:<span class="s2">"127.0.0.1"</span>,<span class="s2">"port"</span>:2222,<span class="s2">"callbackAddress"</span>:<span class="s2">"127.0.0.1"</span>,<span class="s2">"callbackPort"</span>:2222,<span class="s2">"noReset"</span>:true,<span class="s2">"androidPackage"</span>:<span class="s2">"com.huawei.onebox"</span>,<span class="s2">"androidActivity"</span>:<span class="s2">"com.huawei.onebox.PreparedActivity"</span>,<span class="s2">"deviceName"</span>:<span class="s2">"621d655c"</span>,<span class="s2">"platformName"</span>:<span class="s2">"Android"</span>,<span class="s2">"platformVersion"</span>:<span class="s2">"4.4"</span>,<span class="s2">"automationName"</span>:<span class="s2">"Appium"</span>,<span class="s2">"language"</span>:<span class="s2">"zh_CN"</span>,<span class="s2">"locale"</span>:<span class="s2">"CN"</span>,<span class="s2">"robotAddress"</span>:<span class="s2">"127.0.0.1"</span>,<span class="s2">"robotPort"</span>:2222,<span class="s2">"defaultCommandTimeout"</span>:7200<span class="o">}</span>
+info: Console LogLevel: debug
+
+info: --&gt; GET /wd/hub/status <span class="o">{}</span>
+
+info: <span class="o">[</span>debug] Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}}</span>
+
+info: &lt;-- GET /wd/hub/status 200 7.187 ms - 104 <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}}</span>
+
+info: --&gt; GET /wd/hub/status <span class="o">{}</span>
+
+info: <span class="o">[</span>debug] Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}}</span>
+
+info: &lt;-- GET /wd/hub/status 200 2.170 ms - 104 <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}}</span>
+info: --&gt; GET /wd/hub/sessions <span class="o">{}</span>
+
+info: <span class="o">[</span>debug] Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:[]<span class="o">}</span>
+info: &lt;-- GET /wd/hub/sessions 200 1.907 ms - 23 <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:[]<span class="o">}</span>
+
+info: --&gt; POST /wd/hub/session <span class="o">{</span><span class="s2">"desiredCapabilities"</span>:<span class="o">{</span><span class="s2">"platformName"</span>:<span class="s2">"Android"</span>,<span class="s2">"locale"</span>:<span class="s2">"CN"</span>,<span class="s2">"newCommandTimeout"</span>:<span class="s2">"999999"</span>,<span class="s2">"deviceName"</span>:<span class="s2">"621d655c"</span>,<span class="s2">"platformVersion"</span>:<span class="s2">"4.4"</span>,<span class="s2">"language"</span>:<span class="s2">"zh_CN"</span>,<span class="s2">"automationName"</span>:<span class="s2">"Appium"</span><span class="o">}}</span>
+
+info: Client User-Agent string: Appium <span class="o">(</span>unknown version<span class="o">)</span> CFNetwork/720.0.7 Darwin/14.0.0 <span class="o">(</span>x86_64<span class="o">)</span>
+
+info: <span class="o">[</span>debug] Using <span class="nb">local </span>app from <span class="nb">command </span>line: /Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk
+info: <span class="o">[</span>debug] Creating new appium session a4fbc730-26cd-4f86-a1f7-2f1a61a2254b
+info: Starting android appium
+info: <span class="o">[</span>debug] Using fast reset? <span class="nb">false
+</span>info: <span class="o">[</span>debug] Preparing device <span class="k">for </span>session
+info: <span class="o">[</span>debug] Checking whether app is actually present
+info: <span class="o">[</span>debug] Checking whether adb is present
+
+info: <span class="o">[</span>debug] Using adb from /adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb
+info: <span class="o">[</span>debug] Setting Android Device Language to zh_CN
+info: <span class="o">[</span>debug] Setting Android Device Country to CN
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> shell <span class="s2">"setprop persist.sys.language zh_cn;setprop persist.sys.country CN;"</span>
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> shell <span class="s2">"stop; sleep 2; setprop sys.boot_completed 0; start"</span>
+
+info: <span class="o">[</span>debug] waiting <span class="k">for </span>reboot, this takes time.
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> shell <span class="s2">"getprop sys.boot_completed"</span>
+
+info: Retrieving device
+
+info: <span class="o">[</span>debug] Trying to find a connected android device
+info: <span class="o">[</span>debug] Getting connected devices...
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> devices
+
+info: <span class="o">[</span>debug] 1 device<span class="o">(</span>s<span class="o">)</span> connected
+
+info: Found device 621d655c
+info: <span class="o">[</span>debug] Setting device id to 621d655c
+info: <span class="o">[</span>debug] Waiting <span class="k">for </span>device to be ready and to respond to shell commands <span class="o">(</span>timeout <span class="o">=</span> 5<span class="o">)</span>
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c <span class="nb">wait</span>-for-device
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"echo 'ready'"</span>
+
+info: <span class="o">[</span>debug] Starting logcat capture
+
+info: <span class="o">[</span>debug] Getting device API level
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"getprop ro.build.version.sdk"</span>
+
+info: <span class="o">[</span>debug] Logcat terminated with code 1, signal null
+
+info: <span class="o">[</span>debug] Device is at API Level 19
+
+info: Device API level is: 19
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"getprop persist.sys.language"</span>
+
+info: <span class="o">[</span>debug] Current device language: zh
+
+info: <span class="o">[</span>debug] java -jar <span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-adb/jars/appium_apk_tools.jar"</span> <span class="s2">"stringsFromApk"</span> <span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span> <span class="s2">"/tmp/com.huawei.onebox"</span> zh
+
+info: <span class="o">[</span>debug] No strings.xml <span class="k">for </span>language <span class="s1">'zh'</span>, getting default strings.xml
+
+info: <span class="o">[</span>debug] java -jar <span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-adb/jars/appium_apk_tools.jar"</span> <span class="s2">"stringsFromApk"</span> <span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span> <span class="s2">"/tmp/com.huawei.onebox"</span>
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c push <span class="s2">"/tmp/com.huawei.onebox/strings.json"</span> /data/local/tmp
+
+info: <span class="o">[</span>debug] Checking whether aapt is present
+
+info: <span class="o">[</span>debug] Using aapt from /adt-bundle-mac-x86_64-20131030/sdk/build-tools/android-4.4/aapt
+info: <span class="o">[</span>debug] processFromManifest: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/build-tools/android-4.4/aapt"</span> dump xmltree <span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span> AndroidManifest.xml
+
+info: <span class="o">[</span>debug] Set app process to: com.huawei.onebox
+
+info: <span class="o">[</span>debug] Not uninstalling app since server not started with --full-reset
+info: <span class="o">[</span>debug] Checking app cert <span class="k">for</span> /Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk: java -jar <span class="s2">"/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-adb/jars/verify.jar"</span> <span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span>
+
+info: <span class="o">[</span>debug] App already signed.
+
+info: <span class="o">[</span>debug] Zip-aligning /Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk
+info: <span class="o">[</span>debug] Checking whether zipalign is present
+info: <span class="o">[</span>debug] Using zipalign from /adt-bundle-mac-x86_64-20131030/sdk/tools/zipalign
+
+info: <span class="o">[</span>debug] zipAlignApk: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/tools/zipalign"</span> -f 4 <span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span> <span class="s2">"/var/folders/6d/_9nw53151rvc52dvxngh76vr0000gn/T/appium11505-26629-14zygwy.tmp"</span>
+
+info: <span class="o">[</span>debug] MD5 <span class="k">for </span>app is 2aa655fd2f3e5dafbb5747400fe36638
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"ls /data/local/tmp/2aa655fd2f3e5dafbb5747400fe36638.apk"</span>
+
+info: <span class="o">[</span>debug] Getting install status <span class="k">for </span>com.huawei.onebox
+
+info: <span class="o">[</span>debug] Getting device API level
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"getprop ro.build.version.sdk"</span>
+
+info: <span class="o">[</span>debug] Device is at API Level 19
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"pm list packages -3 com.huawei.onebox"</span>
+
+info: <span class="o">[</span>debug] App is not installed
+
+info: Installing App
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"mkdir -p /data/local/tmp/"</span>
+
+info: <span class="o">[</span>debug] Removing any old apks
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"ls /data/local/tmp/*.apk"</span>
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell rm <span class="s2">"/data/local/tmp/5cecf0458e39766fa8f83ed3c98af2ce.apk"</span>
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c push <span class="s2">"/Users/apple/Downloads/AUTO_APK/OneBox_Android_v1_9_3_53_2_20141212.apk"</span> /data/local/tmp/2aa655fd2f3e5dafbb5747400fe36638.apk
+
+info: --&gt; GET /wd/hub/status <span class="o">{}</span>
+
+info: <span class="o">[</span>debug] Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"a4fbc730-26cd-4f86-a1f7-2f1a61a2254b"</span><span class="o">}</span>
+info: &lt;-- GET /wd/hub/status 200 1.331 ms - 155 <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}</span>,<span class="s2">"sessionId"</span>:<span class="s2">"a4fbc730-26cd-4f86-a1f7-2f1a61a2254b"</span><span class="o">}</span>
+
+info: <span class="o">[</span>debug] Uninstalling com.huawei.onebox
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"am force-stop com.huawei.onebox"</span>
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c uninstall com.huawei.onebox
+
+info: <span class="o">[</span>debug] App was not uninstalled, maybe it wasn<span class="s1">'t on device?
+
+info: [debug] executing: "/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb" -s 621d655c shell "pm install -r /data/local/tmp/2aa655fd2f3e5dafbb5747400fe36638.apk"
+
+info: [debug] Forwarding system:4724 to device:4724
+
+info: [debug] executing: "/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb" -s 621d655c forward tcp:4724 tcp:4724
+
+info: [debug] Pushing appium bootstrap to device...
+info: [debug] executing: "/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb" -s 621d655c push "/Applications/Appium.app/Contents/Resources/node_modules/appium/build/android_bootstrap/AppiumBootstrap.jar" /data/local/tmp/
+
+info: [debug] Pushing settings apk to device...
+
+info: [debug] executing: "/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb" -s 621d655c install "/Applications/Appium.app/Contents/Resources/node_modules/appium/build/settings_apk/settings_apk-debug.apk"
+
+info: [debug] Pushing unlock helper app to device...
+
+info: [debug] executing: "/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb" -s 621d655c install "/Applications/Appium.app/Contents/Resources/node_modules/appium/build/unlock_apk/unlock_apk-debug.apk"
+
+info: Starting App
+
+info: [debug] Attempting to kill all '</span>uiautomator<span class="s1">' processes
+info: [debug] Getting all processes with '</span>uiautomator<span class="s1">'
+info: [debug] executing: "/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb" -s 621d655c shell "ps '</span>uiautomator<span class="s1">'"
+
+info: [debug] No matching processes found
+
+info: [debug] Running bootstrap
+info: [debug] spawning: /adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb -s 621d655c shell uiautomator runtest AppiumBootstrap.jar -c io.appium.android.bootstrap.Bootstrap
+
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: numtests=1
+
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: stream=
+info: [debug] [UIAUTOMATOR STDOUT] io.appium.android.bootstrap.Bootstrap:
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: id=UiAutomatorTestRunner
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: test=testRunServer
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: class=io.appium.android.bootstrap.Bootstrap
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: current=1
+info: [debug] [UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: 1
+
+info: [debug] [BOOTSTRAP] [debug] Socket opened on port 4724
+info: [debug] [BOOTSTRAP] [debug] Appium Socket Server Ready
+info: [debug] [BOOTSTRAP] [debug] Loading json...
+info: [debug] Waking up device if it'</span>s not alive
+info: <span class="o">[</span>debug] Pushing <span class="nb">command </span>to appium work queue: <span class="o">[</span><span class="s2">"wake"</span>,<span class="o">{}]</span>
+
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] json loading complete.
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Registered crash watchers.
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Client connected
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got data from client: <span class="o">{</span><span class="s2">"cmd"</span>:<span class="s2">"action"</span>,<span class="s2">"action"</span>:<span class="s2">"wake"</span>,<span class="s2">"params"</span>:<span class="o">{}}</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>of <span class="nb">type </span>ACTION
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>action: wake
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Returning result: <span class="o">{</span><span class="s2">"value"</span>:true,<span class="s2">"status"</span>:0<span class="o">}</span>
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window"</span>
+
+info: <span class="o">[</span>debug] Screen already unlocked, continuing.
+
+info: <span class="o">[</span>debug] Pushing <span class="nb">command </span>to appium work queue: <span class="o">[</span><span class="s2">"getDataDir"</span>,<span class="o">{}]</span>
+
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got data from client: <span class="o">{</span><span class="s2">"cmd"</span>:<span class="s2">"action"</span>,<span class="s2">"action"</span>:<span class="s2">"getDataDir"</span>,<span class="s2">"params"</span>:<span class="o">{}}</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>of <span class="nb">type </span>ACTION
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>action: getDataDir
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Returning result: <span class="o">{</span><span class="s2">"value"</span>:<span class="s2">"</span><span class="se">\/</span><span class="s2">data</span><span class="se">\/</span><span class="s2">local</span><span class="se">\/</span><span class="s2">tmp"</span>,<span class="s2">"status"</span>:0<span class="o">}</span>
+info: <span class="o">[</span>debug] dataDir <span class="nb">set </span>to: /data/local/tmp
+info: <span class="o">[</span>debug] Pushing <span class="nb">command </span>to appium work queue: <span class="o">[</span><span class="s2">"compressedLayoutHierarchy"</span>,<span class="o">{</span><span class="s2">"compressLayout"</span>:false<span class="o">}]</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got data from client: <span class="o">{</span><span class="s2">"cmd"</span>:<span class="s2">"action"</span>,<span class="s2">"action"</span>:<span class="s2">"compressedLayoutHierarchy"</span>,<span class="s2">"params"</span>:<span class="o">{</span><span class="s2">"compressLayout"</span>:false<span class="o">}}</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>of <span class="nb">type </span>ACTION
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>action: compressedLayoutHierarchy
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Returning result: <span class="o">{</span><span class="s2">"value"</span>:false,<span class="s2">"status"</span>:0<span class="o">}</span>
+info: <span class="o">[</span>debug] Getting device API level
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"getprop ro.build.version.sdk"</span>
+
+info: <span class="o">[</span>debug] Device is at API Level 19
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"am start -S -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -f 0x10200000 -n com.huawei.onebox/com.huawei.onebox.PreparedActivity"</span>
+
+info: <span class="o">[</span>debug] Waiting <span class="k">for </span>pkg <span class="s2">"com.huawei.onebox"</span> and activity <span class="s2">"com.huawei.onebox.PreparedActivity"</span> to be focused
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Getting focused package and activity
+
+info: <span class="o">[</span>debug] executing: <span class="s2">"/adt-bundle-mac-x86_64-20131030/sdk/platform-tools/adb"</span> -s 621d655c shell <span class="s2">"dumpsys window windows"</span>
+
+info: <span class="o">[</span>debug] Stopping logcat capture
+
+info: <span class="o">[</span>debug] Logcat already stopped
+
+error: com.huawei.onebox/.PreparedActivity never started. Current: com.huawei.onebox/.WelcomeActivity
+
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got data from client: <span class="o">{</span><span class="s2">"cmd"</span>:<span class="s2">"shutdown"</span><span class="o">}</span>
+info: <span class="o">[</span>debug] Sent shutdown <span class="nb">command</span>, waiting <span class="k">for </span>UiAutomator to stop...
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Got <span class="nb">command </span>of <span class="nb">type </span>SHUTDOWN
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Returning result: <span class="o">{</span><span class="s2">"value"</span>:<span class="s2">"OK, shutting down"</span>,<span class="s2">"status"</span>:0<span class="o">}</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>BOOTSTRAP] <span class="o">[</span>debug] Closed client connection
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nv">numtests</span><span class="o">=</span>1
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nv">stream</span><span class="o">=</span>.
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nv">id</span><span class="o">=</span>UiAutomatorTestRunner
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nb">test</span><span class="o">=</span>testRunServer
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nv">class</span><span class="o">=</span>io.appium.android.bootstrap.Bootstrap
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nv">current</span><span class="o">=</span>1
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: 0
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS: <span class="nv">stream</span><span class="o">=</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] Test results <span class="k">for </span><span class="nv">WatcherResultPrinter</span><span class="o">=</span>.
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] Time: 21.918
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] OK <span class="o">(</span>1 <span class="nb">test</span><span class="o">)</span>
+info: <span class="o">[</span>debug] <span class="o">[</span>UIAUTOMATOR STDOUT] INSTRUMENTATION_STATUS_CODE: -1
+
+error: Failed to start an Appium session, err was: Error: com.huawei.onebox/.PreparedActivity never started. Current: com.huawei.onebox/.WelcomeActivity
+
+info: <span class="o">[</span>debug] UiAutomator shut down normally
+info: <span class="o">[</span>debug] Cleaning up android objects
+info: <span class="o">[</span>debug] Cleaning up appium session
+info: <span class="o">[</span>debug] Error: com.huawei.onebox/.PreparedActivity never started. Current: com.huawei.onebox/.WelcomeActivity
+    at null.&lt;anonymous&gt; <span class="o">(</span>/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-adb/lib/adb.js:1323:12<span class="o">)</span>
+    at null.&lt;anonymous&gt; <span class="o">(</span>/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-adb/lib/adb.js:1267:7<span class="o">)</span>
+    at null.&lt;anonymous&gt; <span class="o">(</span>/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-adb/lib/adb.js:172:9<span class="o">)</span>
+    at ChildProcess.exithandler <span class="o">(</span>child_process.js:646:7<span class="o">)</span>
+    at ChildProcess.emit <span class="o">(</span>events.js:98:17<span class="o">)</span>
+    at maybeClose <span class="o">(</span>child_process.js:756:16<span class="o">)</span>
+    at Socket.&lt;anonymous&gt; <span class="o">(</span>child_process.js:969:11<span class="o">)</span>
+    at Socket.emit <span class="o">(</span>events.js:95:17<span class="o">)</span>
+    at Pipe.close <span class="o">(</span>net.js:465:12<span class="o">)</span>
+info: <span class="o">[</span>debug] Responding to client with error: <span class="o">{</span><span class="s2">"status"</span>:33,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"message"</span>:<span class="s2">"A new session could not be created. (Original error: com.huawei.onebox/.PreparedActivity never started. Current: com.huawei.onebox/.WelcomeActivity)"</span>,<span class="s2">"origValue"</span>:<span class="s2">"com.huawei.onebox/.PreparedActivity never started. Current: com.huawei.onebox/.WelcomeActivity"</span><span class="o">}</span>,<span class="s2">"sessionId"</span>:null<span class="o">}</span>
+
+info: &lt;-- POST /wd/hub/session 500 41441.729 ms - 310 
+
+info: --&gt; GET /wd/hub/status <span class="o">{}</span>
+
+info: <span class="o">[</span>debug] Responding to client with success: <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}}</span>
+info: &lt;-- GET /wd/hub/status 200 1.697 ms - 104 <span class="o">{</span><span class="s2">"status"</span>:0,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"build"</span>:<span class="o">{</span><span class="s2">"version"</span>:<span class="s2">"1.3.3"</span>,<span class="s2">"revision"</span>:<span class="s2">"34e21b01b87d4e3959e1c97c0a8d0b1a610bdc78"</span><span class="o">}}}</span>
+</pre>
+
+<p>这里是没有勾选wait for Activity 里的 WelcomeActivity 启动时的appium日志信息，但是手机是被启动了，停在欢迎页面，日志报错，也获取不了属性，不能继续操作</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='如何在 appium 测试代码中指定 activity 跳转 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1770#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1770#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1770#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1770#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1770#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>3</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1770#reply1">1楼</a> · <abbr class="timeago" title="2015-01-05T11:39:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11114" data-state="" data-type="Reply" href="1770#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1770/replies/11114/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1770#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>发帖的时候，遵守下发帖的规矩，好吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../qq89757"><img alt="Ef665b4a95ddfac330fbc3dd1907a51f" class="uface" src="../avatar/ef665b4a95ddfac330fbc3dd1907a51f.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="qq89757" href="../qq89757">qq89757</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1770#reply2">2楼</a> · <abbr class="timeago" title="2015-01-05T11:42:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11115" data-state="" data-type="Reply" href="1770#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2194" href="http://testerhome.com/topics/1770/replies/11115/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="qq89757" href="1770#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>本人第一次发帖，要是没有遵守到规则的也请大家海涵！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../squallff"><img alt="Bbc01098f5266d088f1ee1239ce467df" class="uface" src="../avatar/bbc01098f5266d088f1ee1239ce467df.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="leonhart" href="../squallff">squallff</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1770#reply3">3楼</a> · <abbr class="timeago" title="2015-01-12T17:22:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11523" data-state="" data-type="Reply" href="1770#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2180" href="http://testerhome.com/topics/1770/replies/11523/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="squallff" href="1770#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>眼都花了。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    欢迎关注我们的微信账号： 测试圈
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1770#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

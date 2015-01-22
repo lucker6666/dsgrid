@@ -1,0 +1,528 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Android 应用性能测试方案一之 log 分析 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Android 应用性能测试方案一之 log 分析</h1>
+  <div class="info leader">
+    <a class="node" href="node32">移动性能测试</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-02-27T00:38:17+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="jakewendao" href="../jakewendao">jakewendao</a> 于<abbr class="timeago" title="2014-02-28T17:04:06+08:00"></abbr>回复
+     · 
+    1501次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>今天我主要来说下过年时候自己做的一些性能测试，由于时间紧迫，所以最终选择了全部从log方面入手，从而最终达到一气呵成的效果。</p>
+
+<p>分别有这样几个大项：<br><strong>1. Android应用启动消耗时间</strong><br>
+   我们分别在Activity的生命周期方法内添加<code>Log.e(tag,message)</code>，如下效果：</p>
+<pre class="highlight java">    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+           <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+           <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"AppStartTime"</span><span class="o">,</span><span class="s">"AppOnCreate"</span><span class="o">);</span>
+           <span class="o">...</span>
+<span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">onResume</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onResume</span><span class="o">();</span>
+           <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"AppStartTime"</span><span class="o">,</span><span class="s">"AppOnResume"</span><span class="o">);</span>
+           <span class="o">...</span>
+<span class="o">}</span> 
+</pre>
+<p>，这里的<code>tag</code>我们使用<code>AppStartTime</code>，那么我们需要在应用启动之后在command内输入：</p>
+
+<p><code>adb logcat -v time -v threadtime *:E | grep ActivityStartTime&gt;StartTimeFile.txt</code></p>
+
+<p><strong>2.  cpu和内存消耗</strong><br>
+在command中输入如下命令：</p>
+
+<p><code>adb shell top -n 400 | grep &lt;your package name&gt;Cpu_MemoryFile.txt</code></p>
+
+<p><strong>3. GC</strong><br>
+在command中输入如下命令：</p>
+
+<p><code>adb logcat -v time -v threadtime *:D | grep GC&gt;GCFile.txt</code></p>
+
+<p>这里需要注意的是，GC分析的时候需要关注三个值。</p>
+
+<ul>
+<li>average_GC_Freed</li>
+<li>average_GC_per</li>
+<li>average_GC_time</li>
+</ul><p><strong>4. 网络流量</strong><br>
+在被测应用中增加一个获取所有应用的网络流量的service，添加一个<code>getAppTrafficList( )</code>方法，代码如下：</p>
+<pre class="highlight java">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getAppTrafficList</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">PackageManager</span> <span class="n">pm</span> <span class="o">=</span> <span class="n">getPackageManager</span><span class="o">();</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">PackageInfo</span><span class="o">&gt;</span> <span class="n">pinfos</span> <span class="o">=</span> <span class="n">pm</span>
+                <span class="o">.</span><span class="na">getInstalledPackages</span><span class="o">(</span><span class="n">PackageManager</span><span class="o">.</span><span class="na">GET_UNINSTALLED_PACKAGES</span>
+                        <span class="o">|</span> <span class="n">PackageManager</span><span class="o">.</span><span class="na">GET_PERMISSIONS</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">PackageInfo</span> <span class="n">info</span> <span class="o">:</span> <span class="n">pinfos</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span><span class="o">[]</span> <span class="n">premissions</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="na">requestedPermissions</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">premissions</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">premissions</span><span class="o">.</span><span class="na">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">premission</span> <span class="o">:</span> <span class="n">premissions</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="s">"android.permission.INTERNET"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">premission</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="kt">int</span> <span class="n">uId</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="na">applicationInfo</span><span class="o">.</span><span class="na">uid</span><span class="o">;</span>
+                        <span class="kt">long</span> <span class="n">rx</span> <span class="o">=</span> <span class="n">TrafficStats</span><span class="o">.</span><span class="na">getUidRxBytes</span><span class="o">(</span><span class="n">uId</span><span class="o">);</span>
+                        <span class="kt">long</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">TrafficStats</span><span class="o">.</span><span class="na">getUidTxBytes</span><span class="o">(</span><span class="n">uId</span><span class="o">);</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="n">rx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">tx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">"网络流量"</span><span class="o">,</span><span class="n">info</span><span class="o">.</span><span class="na">applicationInfo</span><span class="o">.</span><span class="na">loadLabel</span><span class="o">(</span><span class="n">pm</span><span class="o">)+</span><span class="n">Formatter</span><span class="o">.</span><span class="na">formatFileSize</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">rx</span><span class="o">+</span><span class="n">tx</span><span class="o">)</span>
+                        <span class="o">}</span>
+
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</pre>
+<p>如果还要其他数据，那么全部可以按照以上的方法去获取。然后我们来看如何使用python一次性分析这些文件从而直接获取report。<br>
+首先引入第三方绘制pdf的模块：</p>
+<pre class="highlight ruby"><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="n">from</span> <span class="n">reportlab</span><span class="p">.</span><span class="nf">graphics</span><span class="p">.</span><span class="nf">shapes</span> <span class="n">import</span> <span class="o">*</span>
+<span class="n">from</span> <span class="n">reportlab</span><span class="p">.</span><span class="nf">graphics</span><span class="p">.</span><span class="nf">charts</span><span class="p">.</span><span class="nf">lineplots</span> <span class="n">import</span> <span class="no">LinePlot</span>
+<span class="n">from</span> <span class="n">reportlab</span><span class="p">.</span><span class="nf">graphics</span><span class="p">.</span><span class="nf">charts</span><span class="p">.</span><span class="nf">textlabels</span> <span class="n">import</span> <span class="no">Label</span>
+<span class="n">from</span> <span class="n">reportlab</span><span class="p">.</span><span class="nf">graphics</span> <span class="n">import</span> <span class="n">renderPDF</span>
+</pre>
+<p>然后我们需要一个读文件的方法：</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">FileRead</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">number_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">number</span> <span class="o">=</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">number_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_list</span><span class="p">,</span><span class="n">number_list</span>
+</pre>
+<p>接着我们需要一个制作pdf的方法：</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">MakePDF</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="nb">list</span><span class="p">,</span><span class="n">reportname</span><span class="p">,</span><span class="n">pdfname</span><span class="p">):</span>
+    <span class="n">drawing</span> <span class="o">=</span> <span class="n">Drawing</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">lp</span> <span class="o">=</span> <span class="n">LinePlot</span><span class="p">()</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">125</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">300</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="nb">list</span><span class="p">)]</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="n">okeColor</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">blue</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="n">okeColor</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">red</span>
+    <span class="n">lp</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="n">okeColor</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">green</span>
+
+    <span class="n">drawing</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lp</span><span class="p">)</span>
+    <span class="n">drawing</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span> <span class="n">reportname</span><span class="p">,</span><span class="n">fontSize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span><span class="n">fillColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">))</span>
+
+    <span class="n">renderPDF</span><span class="o">.</span><span class="n">drawToFile</span><span class="p">(</span><span class="n">drawing</span><span class="p">,</span><span class="n">pdfname</span><span class="p">,</span><span class="n">reportname</span><span class="p">)</span>
+<span class="c">#这里的times和list两个参数都是list，是时间和监控获取的数据一一对应的关系</span>
+</pre>
+<p>这些我们都有了之后，我们来看下分析AppStartTime的方法：</p>
+<pre class="highlight python"><span class="k">def</span> <span class="nf">analysisStartFile</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="n">totalcount</span> <span class="o">=</span><span class="mi">0</span>
+    <span class="n">totaltime</span> <span class="o">=</span><span class="mi">0</span>
+    <span class="n">time_list</span> <span class="o">=</span><span class="p">[]</span>
+    <span class="n">totalcount_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="s">'AppStartTime'</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">totalcount</span> <span class="o">=</span><span class="n">totalcount</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">totalcount_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">totalcount</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">totaltime</span><span class="o">=</span><span class="n">totaltime</span><span class="o">+</span><span class="nb">float</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span>
+                <span class="n">time_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:]))</span>
+    <span class="k">return</span> <span class="n">totalcount_list</span><span class="p">,</span><span class="s">'</span><span class="si">%.2</span><span class="s">f'</span><span class="o">%</span><span class="nb">float</span><span class="p">(</span><span class="n">totaltime</span><span class="o">/</span><span class="n">totalcount</span><span class="p">),</span><span class="n">time_list</span>
+</pre>
+<p>所有的分析数据的思维都是使用split（）方法分隔空格之后做分析。因为读取文件之后是将所有的数据存在list中，但是当我们去用的时候由于空格在其中就变得非常的麻烦，那么我们可以先使用split将空格去掉，然后使用if key in list的方法进行过滤再做分析。</p>
+
+<p>最后在main（）方法中基本就是如下的顺序执行方法：</p>
+<pre class="highlight python"><span class="k">if</span> <span class="n">__name__</span><span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="nb">list</span><span class="mi">1</span><span class="p">,</span><span class="nb">list</span><span class="mi">2</span> <span class="o">=</span> <span class="n">FileRead</span><span class="p">(</span><span class="o">&lt;</span><span class="n">your</span> <span class="nb">file</span> <span class="n">path</span><span class="o">&gt;</span><span class="p">)</span>
+    <span class="k">print</span> <span class="nb">list</span><span class="mi">1</span><span class="p">,</span><span class="nb">list</span><span class="mi">2</span>
+
+        <span class="nb">list</span><span class="n">_count</span><span class="p">,</span><span class="n">average_start_time</span><span class="p">,</span><span class="n">time_list</span> <span class="o">=</span> <span class="n">analysisStartFile</span><span class="p">(</span><span class="nb">list</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">MakePDF</span><span class="p">(</span><span class="nb">list</span><span class="n">_count</span><span class="p">,</span><span class="n">time_list</span><span class="p">,</span><span class="s">'average time:'</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">average_start_time</span><span class="p">)</span><span class="o">+</span><span class="s">'s'</span><span class="p">,</span><span class="s">"启动性能报告.pdf"</span><span class="p">)</span>
+
+</pre>
+<p>最终我们就能够批量的生成如下图的报告了。<br><img src="../photo/2014/0924814e397fb50be3e888f30c25bed7.png" alt=""></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Android 应用性能测试方案一之 log 分析 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="529#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="529#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="529#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="529#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="529#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply1">1楼</a> · <abbr class="timeago" title="2014-02-27T01:51:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2824" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/529/replies/2824/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="vigossjjj" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>activityManager取的启动时间怎么样？是不是不够精确呢？我目前是这么做的 内存是抓的dumpsys meminfo 流量读的traffic…求解释…？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply2">2楼</a> · <abbr class="timeago" title="2014-02-27T09:43:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2825" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/529/replies/2825/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>adb logcat -v time -v threadtime *:E | grep ActivityStartTime&gt;StartTimeFile.txt</p>
+
+<p>这个 ActivityStartTime 是不是应该是 AppStartTime</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply3">3楼</a> · <abbr class="timeago" title="2014-02-27T10:07:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2828" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/529/replies/2828/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="monkey" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="529#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 对的。。我今天早上看到也发现了这个bug。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply4">4楼</a> · <abbr class="timeago" title="2014-02-27T10:15:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2829" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/529/replies/2829/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="529#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> activityManager其实是这样的，获取时间是可以的额。但是一般启动应用要注意一点。就是从我们测试得角度更要关注应用本身真正得启动时间。你可以试试看，人肉打开应用，应用从启动－－&gt;loading--&gt;真正得出现引导界面－－&gt;启动完成。然后在启动完成得那一刻你看看activityManager打出来得log时间是不是匹配。如果匹配那么自然是最接近用户看到得。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply5">5楼</a> · <abbr class="timeago" title="2014-02-27T10:17:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2830" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/529/replies/2830/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="monkey" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="529#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> dumpsys比top得数据更细，我主要是偷懒，为了方便分析先用top了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply6">6楼</a> · <abbr class="timeago" title="2014-02-27T10:17:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2831" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/529/replies/2831/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="monkey" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="529#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a> 流量你读traffice具体是？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../jakewendao"><img alt="120" class="uface" src="../user/large_avatar/120.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="文刀曰京木似水" href="../jakewendao">jakewendao</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="529#reply7">7楼</a> · <abbr class="timeago" title="2014-02-28T17:04:06+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="2892" data-state="" data-type="Reply" href="529#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="120" href="http://testerhome.com/topics/529/replies/2892/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="jakewendao" href="529#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>cool！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscarxie: 钱多事少离家近，哈哈哈，太贪心了，有其中2个也行
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1831" title="如何选用 seed 的值？">如何选用 seed 的值？</a></li>
+    <li><a href="1734" title="基于变化取性能响应时间尝试">基于变化取性能响应时间尝试</a></li>
+    <li><a href="1591" title="性能测试专题卡斯访谈录">性能测试专题卡斯访谈录</a></li>
+    <li><a href="846" title="Android 应用性能自动化测试工具初探（二）">Android 应用性能自动化测试工具初探（二）</a></li>
+    <li><a href="833" title="Android 应用性能自动化测试工具初探（一） jenkins+monkeyrunner+jfreechart">Android 应用性能自动化测试工具初探（一） je...</a></li>
+    <li><a href="651" title="xcode5.1 下面安装 reportlab 的问题">xcode5.1 下面安装 reportlab 的问题</a></li>
+    <li><a href="637" title="python 之 Android 通用性能开源工具 0.000001 版">python 之 Android 通用性能开源工具 0...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="529#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

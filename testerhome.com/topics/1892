@@ -1,0 +1,356 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法) &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../neven7"><img alt="Faf8afa9ecf804e845515c90a413b3d8" class="uface" src="../avatar/faf8afa9ecf804e845515c90a413b3d8.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法)</h1>
+  <div class="info leader">
+    <a class="node" href="node2">自动化测试工具</a>
+     · 
+    <a data-author="true" data-name="" href="../neven7">neven7</a>
+     · 
+    于<abbr class="timeago" title="2015-01-18T11:53:31+08:00"></abbr>发布
+     · 
+    76次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>一.需求（小组内接口自动化由junit4 cases+方法重试[<a href="http://testerhome.com/Retry" class="at_user" title="@Retry"><i>@</i>Retry</a>]+HttpClient[调接口，获取数据，jackson反序列化为java对象]+线程池[并发执行用例]+数据库连接池[获取测试账号，账号存在mysql中]组成，由ant生成junit报告）<br>
+最近，小组内有人提出了，是否能单独运行某些失败的cases，因为在eclipse中只能运行一个类的全部cases或某个cases； 不能指定跑单个类某些方法或多个类的某些方法。juint4中有<a href="http://testerhome.com/RunWith" class="at_user" title="@RunWith"><i>@</i>RunWith</a>(Suite.class) 和 <a href="http://testerhome.com/Suite" class="at_user" title="@Suite"><i>@</i>Suite</a>.SuiteClasses({A.class, B.class}) 聚合类A和B；但是不能指定某些方法。<br>
+在Ant执行Junit中有个formatter(结果的类型type:xml, plain, brief or failure)，其中type=failure,  collects all failing testXXX() methods and creates a new TestCase which delegates only these failing methods. 我尝试了，执行ant ***.xml报错为substring空指针，查看源码FailureRecorder.java; 该文件就是用来创建新的测试类（聚合失败cases），但是用Junit3(继承TestCase),并有bug，不能用：</p>
+<pre class="highlight java"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">TestInfos</span> <span class="kd">implements</span> <span class="n">Comparable</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">className</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">methodName</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="n">TestInfos</span><span class="o">(</span><span class="n">Test</span> <span class="n">test</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">className</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">();</span>
+            <span class="n">String</span> <span class="n">_methodName</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">methodName</span> <span class="o">=</span> <span class="n">_methodName</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">_methodName</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="mi">40</span><span class="o">));</span>
+        <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+
+</pre>
+
+<p>TestInfos带参构造函数TestInfos(Test test)中<br>
+_methodName.substring(0, _methodName.indexOf(40)) // ( 的 ASCII码：40<br>
+_methodName并没有‘（’导致空指针。<br>
+二.方案<br>
+使用注解<br>
+<a href="http://testerhome.com/SuiteClassesMethods" class="at_user" title="@SuiteClassesMethods"><i>@</i>SuiteClassesMethods</a>；指定<br>
+Class&lt;?&gt;[]  className 类名<br>
+int[] methodsNumPerClass(); 每个类对应的方法数量<br>
+String[] methodsName() 方法名<br>
+实现代码如下：<br>
+SuiteClassesMethods.java</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">weibo</span><span class="o">.</span><span class="na">failmethods</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+
+<span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+<span class="nd">@Target</span><span class="o">({</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">})</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">SuiteClassesMethods</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]</span>  <span class="n">className</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">methodsNumPerClass</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="n">methodsName</span><span class="o">();</span>
+<span class="o">}</span>
+</pre>
+
+<p>FailMethodsTest.java</p>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">weibo</span><span class="o">.</span><span class="na">failmethods</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.LinkedHashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.junit.runner.JUnitCore</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.Request</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.runner.Result</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.weibo.cases.hugang.AccountUpdatePrivacyCommentTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.weibo.cases.hugang.AttitudeRemindTest</span><span class="o">;</span>
+
+<span class="cm">/**
+ * @author hugang
+ */</span>
+<span class="nd">@SuiteClassesMethods</span><span class="o">(</span><span class="n">className</span> <span class="o">=</span> <span class="o">{</span> <span class="n">AccountUpdatePrivacyCommentTest</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+        <span class="n">AttitudeRemindTest</span><span class="o">.</span><span class="na">class</span> <span class="o">},</span> <span class="n">methodsNumPerClass</span> <span class="o">=</span> <span class="o">{</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span> <span class="o">},</span> <span class="n">methodsName</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="s">"testAllNonAttentionByComment"</span><span class="o">,</span> <span class="s">"testFriendAllAttByComment"</span><span class="o">,</span>
+        <span class="s">"testAttitudeSomeOneQunStatusPushCount2"</span> <span class="o">})</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FailMethodsTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+        <span class="n">Class</span><span class="o">&lt;</span><span class="n">FailMethodsTest</span><span class="o">&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">FailMethodsTest</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+        <span class="n">SuiteClassesMethods</span> <span class="n">scm</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">SuiteClassesMethods</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+        <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">className</span> <span class="o">=</span> <span class="n">scm</span><span class="o">.</span><span class="na">className</span><span class="o">();</span>
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">methodsNumPerClass</span> <span class="o">=</span> <span class="n">scm</span><span class="o">.</span><span class="na">methodsNumPerClass</span><span class="o">();</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">methodsName</span> <span class="o">=</span> <span class="n">scm</span><span class="o">.</span><span class="na">methodsName</span><span class="o">();</span>
+
+        <span class="c1">// 根据注解 传的方法，与每个测试类对应</span>
+        <span class="n">Map</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">myClassMethodMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedHashMap</span><span class="o">();</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">listMethodsName</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;();</span>
+
+        <span class="c1">// k游标，遍历methodsName</span>
+        <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="c1">// 外层for循环，表示类个数</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">className</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">temp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="c1">// 内层for循环，为每个类赋方法</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="n">methodsNumPerClass</span><span class="o">[</span><span class="n">i</span><span class="o">];</span> <span class="n">m</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="n">temp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">methodsName</span><span class="o">[</span><span class="n">k</span><span class="o">]);</span>
+                <span class="n">k</span><span class="o">++;</span>
+            <span class="o">}</span>
+            <span class="n">listMethodsName</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">temp</span><span class="o">);</span>
+            <span class="n">myClassMethodMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">className</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">listMethodsName</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+
+        <span class="o">}</span>
+
+        <span class="n">JUnitCore</span> <span class="n">junitRunner</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JUnitCore</span><span class="o">();</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span> <span class="n">methodsResult</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;();</span>
+        <span class="c1">// 运行测试方法</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">entry</span> <span class="o">:</span> <span class="n">myClassMethodMap</span><span class="o">.</span><span class="na">entrySet</span><span class="o">()){</span>
+            <span class="n">Class</span> <span class="n">testClass</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">();</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">failMethod</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">failMethod</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
+                <span class="n">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="na">method</span><span class="o">(</span><span class="n">testClass</span><span class="o">,</span> <span class="n">failMethod</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+                <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">junitRunner</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+                <span class="n">methodsResult</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+    <span class="c1">// 将错误集记录到file中</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"/Users/hugang/Desktop/failMethod.txt"</span><span class="o">);</span>
+            <span class="n">FileOutputStream</span> <span class="n">fop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">methodsResult</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">j</span><span class="o">++){</span>
+                <span class="kt">byte</span><span class="o">[]</span> <span class="n">fail</span> <span class="o">=</span> <span class="n">methodsResult</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">).</span><span class="na">getFailures</span><span class="o">().</span><span class="na">toString</span><span class="o">().</span><span class="na">getBytes</span><span class="o">();</span>
+                <span class="n">fop</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">fail</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="n">fop</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+            <span class="n">fop</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+</pre>
+
+<p>结果：<br>
+<img src="../photo/2015/1d8b43aa4261bda75c3294b020a8ae79.jpg" alt=""></p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法) via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1892#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1892#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1892#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1892#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1892#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @z7039585: 想换个好工作 找个妹纸~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1892" title="JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法)">JUnit4---实践：运行指定类的某些测试方法(可用...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1892#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

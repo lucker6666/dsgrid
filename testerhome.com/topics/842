@@ -1,0 +1,362 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 创建 Robotium 测试工程 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">创建 Robotium 测试工程</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="plus" href="../zouaiyong">zouaiyong</a>
+     · 
+    于<abbr class="timeago" title="2014-05-12T13:46:40+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="zouaiyong" href="../zouaiyong">zouaiyong</a> 于<abbr class="timeago" title="2014-11-11T19:24:08+08:00"></abbr>回复
+     · 
+    1298次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>前面学习了instrumentation框架，现在来学习robotium了解怎么使用不就是一个晚上的事吗，robotium也是基于Instrumentation框架的。一般用于app的功能性测试，不能跨app一次只能运行一个app。<br>
+好了下面就开始新建robotium工程。首先我们要去官网下载robotium jar包，下载最新的就好了。这里是下载地址：<a href="https://code.google.com/p/robotium/wiki/Downloads?tm=2" rel="nofollow" target="_blank">https://code.google.com/p/robotium/wiki/Downloads?tm=2</a>，下载完了后就该导入到测试工程里了。<br>
+       1.跟之前的instrumentation一样的建立个测试工程，继承ActivityInstrumentationTestCase2.工程建立好后，右键点击测试工程，选择build path——&gt;configure build path 如图<img src="../photo/2014/bfb8d44711d15b6db943e297a2a9b858.jpg" alt=""><br>
+在弹出的对话框里的libraries里选择add external jars里添加我们之前下载的robotium jar包，这就导入好了robotium jar包了。<img src="../photo/2014/08f347ba3f099b5054de9776de2649b4.jpg" alt=""><br>
+我们在点击order and export选项，在这里面勾选robotium jar包。<img src="../photo/2014/1a0d50bf9f62aa178661f8ae2ffe59b5.jpg" alt=""><br>
+然后点击ok，这样我们就可以开始写代码了。<br>
+       2.这里还是用之前的那个app，这是一个很简单的app，由于之前的那个instrumentation工程大家都不知道app是什么样的，这里就贴个图，主界面是这样的<img src="../photo/2014/74a3bcc7b0b4778dcf775f24341d62ea.jpg" alt="">点击左边的button上面的Hello World！会变成Beautiful Girl<img src="../photo/2014/d39fc6e64e4a4f301e89920b77fd59a5.jpg" alt=""><br>
+点击右边的跳转会跳转到另一个界面，如图<img src="../photo/2014/1d93d5d46a98ba257d091bdc04bbb9de.jpg" alt=""><br>
+就是这么一个app。同样我们要在manifest.xml文件里加上instrumentation这个标签，因为robotium也是继承的这个类。跟上一个工程一样，<img src="../photo/2014/7dc2219c4d826bb390c4d8bc528ada54.jpg" alt=""><br>
+然后就开始写代码了，robotium的调用很简单，用solo这个类去调用，我们这里同时加入了上一篇文章instrumentation的方法，首先是声明我们会用到的控件和activity，这里我要用到instrumentation里面assertEquals这个方法去断言textview，所以要定义textview1、activity这两个变量。<img src="../photo/2014/4fe59d87fdf9a647ed4c62784c65984a.jpg" alt=""><br>
+然后是在默认的setUp()这个方法里去获取我们的控件和avitivity这些获取的方法必须写在setUp()这个方法里，因为setUp()这个方法是在执行每个case前都会执行的重置app把app还原的方法，tearDown()这个方法是在执行完每个case后都会执行的清空app数据的方法。所以这些获取控件的方法必须要定义在setUp()这个方法里让执行每个case前重新去获取。<img src="../photo/2014/b7d71d7e61b1ad0d91213153622fe2ff.jpg" alt=""><br>
+下面就可以开始写我们想要测试的case了，用robotium里面的solo这个方法去调用这些方法，这些方法可以去看robotium的源码，了解了robotium里的这些方法就随便调用就是了，我现在也一直在看，下面我会发出一个我在github上看到的一位大神对robotium源码全部注释了的链接，大家可以去下载看看。<img src="../photo/2014/1141570d0d8b2889de9ef83623f03c24.jpg" alt=""><br>
+好了，这就是一个简单的用robotium工具实现的测试case，这里只是告诉了大家怎么去用robotium工具，没有去讲解robotium的源码是怎么实现这些操作的，大家可以去深入的了解robotium源码，这样对robotium里定义的方法都熟悉了调用起来也就方便了。Robotium的源码注释链接：<a href="https://github.com/bobotiger2/robotium" rel="nofollow" target="_blank">https://github.com/bobotiger2/robotium</a></p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='创建 Robotium 测试工程 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="842#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="842#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="842#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="842#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="842#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>5</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../qkth"><img alt="278f368bd9259efb44246dad9b71b727" class="uface" src="../avatar/278f368bd9259efb44246dad9b71b727.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="晴空" href="../qkth">qkth</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="842#reply1">1楼</a> · <abbr class="timeago" title="2014-05-15T22:06:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="4883" data-state="" data-type="Reply" href="842#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="867" href="http://testerhome.com/topics/842/replies/4883/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="qkth" href="842#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>现在 虽然 我不会 ， 但是 将来 我肯定就会了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../75281920"><img alt="428" class="uface" src="../user/large_avatar/428.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="雾山" href="../75281920">75281920</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="842#reply2">2楼</a> · <abbr class="timeago" title="2014-05-22T11:50:19+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5100" data-state="" data-type="Reply" href="842#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="428" href="http://testerhome.com/topics/842/replies/5100/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="75281920" href="842#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>最近也在使用robotium，赞一个</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../chenjunhupo"><img alt="Da4bc6a7008632a61143f09de756e526" class="uface" src="../avatar/da4bc6a7008632a61143f09de756e526.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="俊俊陈" href="../chenjunhupo">chenjunhupo</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="842#reply3">3楼</a> · <abbr class="timeago" title="2014-05-27T17:15:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5272" data-state="" data-type="Reply" href="842#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="883" href="http://testerhome.com/topics/842/replies/5272/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="chenjunhupo" href="842#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>赞一个，正在学习中</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../ftvbftvbq"><img alt="845" class="uface" src="../user/large_avatar/845.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ftvbftvbq" href="../ftvbftvbq">ftvbftvbq</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="842#reply4">4楼</a> · <abbr class="timeago" title="2014-08-29T17:04:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8162" data-state="" data-type="Reply" href="842#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="845" href="http://testerhome.com/topics/842/replies/8162/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="ftvbftvbq" href="842#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../zouaiyong" class="at_user" title="@zouaiyong"><i>@</i>zouaiyong</a> 请问下，有没有办法或则思路，在一个测试类中可以支持不同ACTIVITY的验证？比如：一个ACTIVITY，按钮点击后，INTENT会传回来SECONDACTIVITY的数值。有什么思路或办法吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../zouaiyong"><img alt="507" class="uface" src="../user/large_avatar/507.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="plus" href="../zouaiyong">zouaiyong</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="842#reply5">5楼</a> · <abbr class="timeago" title="2014-11-11T19:24:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9777" data-state="" data-type="Reply" href="842#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="507" href="http://testerhome.com/topics/842/replies/9777/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="zouaiyong" href="842#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="842#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../ftvbftvbq" class="at_user" title="@ftvbftvbq"><i>@</i>ftvbftvbq</a>  不是太明白你的意思，点击完button后，你可以去判断是不是secondActivity的类呀</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @meiyu 有希望，有爱的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="842#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

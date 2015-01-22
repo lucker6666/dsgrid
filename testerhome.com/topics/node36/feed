@@ -1,0 +1,1017 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 新手区 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 新手区 节点最新发帖.</description>
+    <item>
+      <title>selendroid 初学碰到的问题</title>
+      <description>&lt;p&gt;我按照官方的例子修改了一下代码，然后就一直运行出错：&lt;br&gt;
+代码：&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;selenium&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;
+
+&lt;span class="c"&gt;########################################################################&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FindElementTest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;unittest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="s"&gt;"""打开 apk 找到"""&lt;/span&gt;
+    &lt;span class="c"&gt;#----------------------------------------------------------------------&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;setUp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="s"&gt;""""""&lt;/span&gt;
+        &lt;span class="n"&gt;desired_capabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s"&gt;'aut'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s"&gt;'com.example.bebb:1.9.1'&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Remote&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="n"&gt;desired_capabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;desired_capabilities&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;implicitly_wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c"&gt;#全局定义超时，处理find_element_by 等操作超时均为30s&lt;/span&gt;
+    &lt;span class="c"&gt;#----------------------------------------------------------------------&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_find_element_by_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="s"&gt;""""""&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'and-activity://com.example.bebb.PlashScreen'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c"&gt;#print '11'&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"and-activity://PlashScreen"&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;current_url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;current_url&lt;/span&gt;
+
+        &lt;span class="n"&gt;closeWebView&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_element_by_class_name&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'android.widget.ImageView'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;closeWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;click&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;tap&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="p"&gt;)],&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="c"&gt;#----------------------------------------------------------------------&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;tearDown&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="s"&gt;"""tearDown"""&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;__name__&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="s"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;unittest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;报错：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;E
+&lt;span class="o"&gt;======================================================================&lt;/span&gt;
+ERROR: test_find_element_by_id &lt;span class="o"&gt;(&lt;/span&gt;__main__.FindElementTest&lt;span class="o"&gt;)&lt;/span&gt;
+----------------------------------------------------------------------
+Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
+  File &lt;span class="s2"&gt;"d:&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;&lt;span class="s2"&gt;ython&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;&lt;span class="s2"&gt;y_workspace&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;elendroid&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;elendroid_ceb01.py"&lt;/span&gt;, line 12, &lt;span class="k"&gt;in &lt;/span&gt;setUp
+    &lt;span class="nv"&gt;desired_capabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;desired_capabilities
+  File &lt;span class="s2"&gt;"D:&lt;/span&gt;&lt;span class="se"&gt;\P&lt;/span&gt;&lt;span class="s2"&gt;rogram File&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;&lt;span class="s2"&gt;ython&lt;/span&gt;&lt;span class="se"&gt;\l&lt;/span&gt;&lt;span class="s2"&gt;ib&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;ite-packages&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;elenium&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver&lt;/span&gt;&lt;span class="se"&gt;\r&lt;/span&gt;&lt;span class="s2"&gt;emote&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver.py"&lt;/span&gt;, line 73, &lt;span class="k"&gt;in &lt;/span&gt;__init__
+    self.start_session&lt;span class="o"&gt;(&lt;/span&gt;desired_capabilities, browser_profile&lt;span class="o"&gt;)&lt;/span&gt;
+  File &lt;span class="s2"&gt;"D:&lt;/span&gt;&lt;span class="se"&gt;\P&lt;/span&gt;&lt;span class="s2"&gt;rogram File&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;&lt;span class="s2"&gt;ython&lt;/span&gt;&lt;span class="se"&gt;\l&lt;/span&gt;&lt;span class="s2"&gt;ib&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;ite-packages&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;elenium&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver&lt;/span&gt;&lt;span class="se"&gt;\r&lt;/span&gt;&lt;span class="s2"&gt;emote&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver.py"&lt;/span&gt;, line 121, &lt;span class="k"&gt;in &lt;/span&gt;start_session
+    &lt;span class="s1"&gt;'desiredCapabilities'&lt;/span&gt;: desired_capabilities,
+  File &lt;span class="s2"&gt;"D:&lt;/span&gt;&lt;span class="se"&gt;\P&lt;/span&gt;&lt;span class="s2"&gt;rogram File&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;&lt;span class="s2"&gt;ython&lt;/span&gt;&lt;span class="se"&gt;\l&lt;/span&gt;&lt;span class="s2"&gt;ib&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;ite-packages&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;elenium&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver&lt;/span&gt;&lt;span class="se"&gt;\r&lt;/span&gt;&lt;span class="s2"&gt;emote&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver.py"&lt;/span&gt;, line 173, &lt;span class="k"&gt;in &lt;/span&gt;execute
+    self.error_handler.check_response&lt;span class="o"&gt;(&lt;/span&gt;response&lt;span class="o"&gt;)&lt;/span&gt;
+  File &lt;span class="s2"&gt;"D:&lt;/span&gt;&lt;span class="se"&gt;\P&lt;/span&gt;&lt;span class="s2"&gt;rogram File&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;&lt;span class="s2"&gt;ython&lt;/span&gt;&lt;span class="se"&gt;\l&lt;/span&gt;&lt;span class="s2"&gt;ib&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;ite-packages&lt;/span&gt;&lt;span class="se"&gt;\s&lt;/span&gt;&lt;span class="s2"&gt;elenium&lt;/span&gt;&lt;span class="se"&gt;\w&lt;/span&gt;&lt;span class="s2"&gt;ebdriver&lt;/span&gt;&lt;span class="se"&gt;\r&lt;/span&gt;&lt;span class="s2"&gt;emote&lt;/span&gt;&lt;span class="se"&gt;\e&lt;/span&gt;&lt;span class="s2"&gt;rrorhandler.py"&lt;/span&gt;, line 166, &lt;span class="k"&gt;in &lt;/span&gt;check_response
+    raise exception_class&lt;span class="o"&gt;(&lt;/span&gt;message, screen, stacktrace&lt;span class="o"&gt;)&lt;/span&gt;
+WebDriverException: Message: Error starting Selendroid session
+io.selendroid.exceptions.SessionNotCreatedException: Error starting Selendroid session
+
+    at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession&lt;span class="o"&gt;(&lt;/span&gt;SelendroidStandaloneDriver.java:277&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.selendroid.server.handler.CreateSessionHandler.handle&lt;span class="o"&gt;(&lt;/span&gt;CreateSessionHandler.java:44&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.selendroid.server.SelendroidServlet.handleRequest&lt;span class="o"&gt;(&lt;/span&gt;SelendroidServlet.java:143&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.selendroid.server.BaseServlet.handleHttpRequest&lt;span class="o"&gt;(&lt;/span&gt;BaseServlet.java:67&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.selendroid.server.http.ServerHandler.channelRead&lt;span class="o"&gt;(&lt;/span&gt;ServerHandler.java:53&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:333&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:319&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.handler.traffic.AbstractTrafficShapingHandler.channelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractTrafficShapingHandler.java:223&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:333&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:319&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.handler.codec.MessageToMessageDecoder.channelRead&lt;span class="o"&gt;(&lt;/span&gt;MessageToMessageDecoder.java:103&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:333&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:319&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.handler.codec.ByteToMessageDecoder.channelRead&lt;span class="o"&gt;(&lt;/span&gt;ByteToMessageDecoder.java:163&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.CombinedChannelDuplexHandler.channelRead&lt;span class="o"&gt;(&lt;/span&gt;CombinedChannelDuplexHandler.java:148&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:333&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead&lt;span class="o"&gt;(&lt;/span&gt;AbstractChannelHandlerContext.java:319&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.DefaultChannelPipeline.fireChannelRead&lt;span class="o"&gt;(&lt;/span&gt;DefaultChannelPipeline.java:787&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.nio.AbstractNioByteChannel&lt;span class="nv"&gt;$NioByteUnsafe&lt;/span&gt;.read&lt;span class="o"&gt;(&lt;/span&gt;AbstractNioByteChannel.java:125&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.nio.NioEventLoop.processSelectedKey&lt;span class="o"&gt;(&lt;/span&gt;NioEventLoop.java:511&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized&lt;span class="o"&gt;(&lt;/span&gt;NioEventLoop.java:468&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.nio.NioEventLoop.processSelectedKeys&lt;span class="o"&gt;(&lt;/span&gt;NioEventLoop.java:382&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.channel.nio.NioEventLoop.run&lt;span class="o"&gt;(&lt;/span&gt;NioEventLoop.java:354&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.util.concurrent.SingleThreadEventExecutor&lt;span class="nv"&gt;$2&lt;/span&gt;.run&lt;span class="o"&gt;(&lt;/span&gt;SingleThreadEventExecutor.java:116&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.netty.util.concurrent.DefaultThreadFactory&lt;span class="nv"&gt;$DefaultRunnableDecorator&lt;/span&gt;.run&lt;span class="o"&gt;(&lt;/span&gt;DefaultThreadFactory.java:137&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at java.lang.Thread.run&lt;span class="o"&gt;(&lt;/span&gt;Unknown Source&lt;span class="o"&gt;)&lt;/span&gt;
+
+Caused by: io.selendroid.exceptions.SessionNotCreatedException: The requested application under &lt;span class="nb"&gt;test &lt;/span&gt;is not configured &lt;span class="k"&gt;in &lt;/span&gt;selendroid server.
+
+    at io.selendroid.server.model.SelendroidStandaloneDriver.getAndroidApp&lt;span class="o"&gt;(&lt;/span&gt;SelendroidStandaloneDriver.java:361&lt;span class="o"&gt;)&lt;/span&gt;
+
+    at io.selendroid.server.model.SelendroidStandaloneDriver.createNewTestSession&lt;span class="o"&gt;(&lt;/span&gt;SelendroidStandaloneDriver.java:192&lt;span class="o"&gt;)&lt;/span&gt;
+
+    ... 25 more
+
+
+
+
+----------------------------------------------------------------------
+Ran 1 &lt;span class="nb"&gt;test &lt;/span&gt;&lt;span class="k"&gt;in &lt;/span&gt;4.537s
+
+FAILED &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;errors&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;我看的是说这部分不对：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;self.driver&lt;span class="o"&gt;=&lt;/span&gt;webdriver.Remote&lt;span class="o"&gt;(&lt;/span&gt;
+            &lt;span class="nv"&gt;desired_capabilities&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;desired_capabilities
+        &lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;但是就是不知道为什么不对，我用原代码就可以通过，原代码里边测试的apk就是selendroid-test-app-0.12.0.apk。&lt;/p&gt;</description>
+      <author>face_south</author>
+      <pubDate>Thu, 15 Jan 2015 11:41:55 +0800</pubDate>
+      <link>http://testerhome.com/topics/1872</link>
+      <guid>http://testerhome.com/topics/1872</guid>
+    </item>
+    <item>
+      <title>webdriver 查找页面元素等待的方法</title>
+      <description>&lt;p&gt;以下代码为 封装的等待在页面查找元素的方法 ，适用于webdriver 以及appium  ；在我的项目中目前没有发现BUG  如有纰漏 请大拿指正，及时修改&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="cm"&gt;/**
+     * 
+     * @param uiSelector
+     * @param waitTime
+     *            秒
+     * @param bool  true  表示必须在当前视图可见（宽值&amp;gt;0）  false找到但不一定可见
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;waitThenGetElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SelectorType&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+            &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;t1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+            &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;UiSelector:&lt;/span&gt;
+                    &lt;span class="n"&gt;element&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="n"&gt;AndroidDriver&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;findElementByAndroidUIAutomator&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;xPath:&lt;/span&gt;
+                        &lt;span class="n"&gt;element&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElements&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;xpath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+                        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;CSS:&lt;/span&gt;
+                        &lt;span class="n"&gt;element&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElements&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cssSelector&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+                        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"waitThenGetElementappear类型错误"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="o"&gt;}&lt;/span&gt;
+
+                    &lt;span class="n"&gt;TryForWaitReturn&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tryForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;);;&lt;/span&gt;
+                    &lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getT&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+                    &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getEl&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Throwable&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;catchForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="o"&gt;}&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;finally&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++;&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="c1"&gt;// Assert.assertNotNull(element);&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="cm"&gt;/**
+     * tryForWait 方法返回类型
+     * @author xian_crazy QQ：330126160
+     * @version 2014年11月25日  上午10:07:10
+     * @see
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TryForWaitReturn&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+     &lt;span class="kd"&gt;private&lt;/span&gt;    &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+     &lt;span class="kd"&gt;private&lt;/span&gt;    &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;getT&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setT&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;t&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;getEl&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setEl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;el&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+
+
+    &lt;span class="cm"&gt;/**
+     * 判断页面元素是否在当前视图显示
+     * @see
+     * @param element
+     * @param t
+     * @param bool
+     * @param i
+     * @param waitTime
+     * @return
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;TryForWaitReturn&lt;/span&gt; &lt;span class="n"&gt;tryForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSize&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getWidth&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSize&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getHeight&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+        &lt;span class="n"&gt;TryForWaitReturn&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TryForWaitReturn&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+
+
+        &lt;span class="c1"&gt;//元素宽度大于零 并且 bool=true 既元素在要在当前视图显示&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="c1"&gt;// this.pt(" get it！");&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="c1"&gt;//元素宽度大于或者等于零 并且 bool=false 既元素不一定在当前视图显示&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+            &lt;span class="c1"&gt;// this.pt(" get it！");&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"找到元素但未在当前视图显示"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="c1"&gt;//t=false时，说明元素定位到，则打印以下信息&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;" get its H&amp;amp;&amp;amp;W :"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;  &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;"&amp;amp;&amp;amp;"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;" get its point :"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLocation&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getX&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;"&amp;amp;&amp;amp;"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLocation&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getY&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setT&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setEl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="c1"&gt;//t=true时，说明元素找到但w=0，但 bool=true需要等待其在当前视图显示出来,如果超时则认为未找到&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;catchForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;  
+                &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setT&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setEl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * 
+     * @see
+     * @param i
+     * @param waitTime
+     * @param isfindel   true 表示已经找到元素  false 表示没有找到元素
+     * @return
+     */&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;catchForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isfindel&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"等待"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;"秒……"&lt;/span&gt; &lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;print&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;print&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;" "&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;isfindel&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+                &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s"&gt;"秒后，定位失败"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s"&gt;"秒后，已经找到，但其宽度为0"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;print&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;" "&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;threadSleep&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/**
+     * 
+     * @param uiSelector
+     *            选择器结果为List
+     * @param waitTime
+     *            秒
+     * @waitElement_S_appear appear说明当前元素在当前页面通过选择器可以找到
+     * @param bool  true 表示元素的宽大于0  false 表示存在元素但是不一定在当前视图
+     */&lt;/span&gt;
+
+
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;waitThenGetElement_S&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SelectorType&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+            &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;t1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+                    &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;UiSelector:&lt;/span&gt;
+                    &lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="n"&gt;AndroidDriver&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;findElementsByAndroidUIAutomator&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;xPath:&lt;/span&gt;
+
+                        &lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dr&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElements&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;xpath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strSelector&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+
+                        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+                        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pt&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"waitThenElement_S_appear类型错误"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="o"&gt;}&lt;/span&gt;
+
+                    &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="n"&gt;TryForWaitReturn&lt;/span&gt; &lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tryForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;bool&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;);;&lt;/span&gt;
+                    &lt;span class="n"&gt;t1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;ret&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getT&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Throwable&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;catchForWait&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;waitTime&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                    &lt;span class="o"&gt;}&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;finally&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++;&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;   
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;</description>
+      <author>crazy</author>
+      <pubDate>Sun, 11 Jan 2015 10:59:19 +0800</pubDate>
+      <link>http://testerhome.com/topics/1828</link>
+      <guid>http://testerhome.com/topics/1828</guid>
+    </item>
+    <item>
+      <title>java 运行机制和环境搭建--学习 java 归纳（1）</title>
+      <description>&lt;p&gt;俗话说，工欲善其事必先利其器。想学习自动化必先学编程。&lt;br&gt;
+            两个月前接触appium自动化框架，一个月前开始懂得这个道理，现在终于忙完了，有时间开始系统的学习，因为有学过java，所以接下来一段时间就开始java的学习吧。希望有想学java的跟我一起学习讨论，希望大神路过指导批评，文笔水平真心有限，请见谅。&lt;br&gt;
+            首先略过java的历史背景介绍。直接开始正题。&lt;br&gt;
+            看一下java的程序的运行机制&lt;br&gt;
+            &lt;img src="/photo/2015/6b7facdfe66566650044a1b6c32567c0.png" alt=""&gt;&lt;br&gt;
+            .java文件是java程序的后缀的文件，就像word文档的后缀名是.doc一样。java程序人能读得懂，但是机器只认识二进制编码，所以javac.exe就是用来将java程序编译成机器能读懂的二进制文件，也就是.class文件。然后再用java.exe这个工具在Java Virtual Machine（JVM），即java虚拟机上运行，然后就能看到你想要的结果。以下是在JVM的运行机制图:&lt;br&gt;
+            &lt;img src="/photo/2015/9ce4eeb51603b40dd341a40772a145f8.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;上面的javac.exe，java.exe，JVM这些工具都集成在Java开发包里，即JDK（Java Development Kit）。JDK里面又包含了Java开发工具和运行环境JRE（Java Runtime Environment），JVM虚拟机就是在JRE里面。&lt;br&gt;
+            JDK安装包自个百度一下，一搜一大堆，在windows下是个.exe文件，跟QQ一样，一直下一步下一步就行。&lt;br&gt;
+            安装完后，打开JDK的包。会发现如下文件：&lt;br&gt;
+           &lt;img src="/photo/2015/23b083b7daac4a8b7df5cfb5809f0c69.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;因为bin文件夹里包含了所有的工具，要执行java程序，必须要跑到bin文件夹所在的路径下，打开cmd命令执行。会特别的麻烦，所以我们需要配置环境，在任何目录下都可以执行java程序。&lt;br&gt;
+            首先打开计算机→属性→高级系统设置→高级→环境变量。主要配置三个环境变量：&lt;br&gt;
+            java_home:去哪里找JDK安装的路径，如果是默认安装，可配置（C:\Java\jdk1.7.0）（假设我的jdk是1.7.0版本）&lt;br&gt;
+            path:去哪里找编译或运行等工具(必须设置)，配置（%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;）&lt;br&gt;
+            classpath:去哪里找需要运行的class文件(java5开始可不设置)，配置（.;%JAVA_HOME%\lib;%JAVA_HOME%\lib\tools.jar（注意最前面有一点））&lt;br&gt;
+           配置好后，无论是在cmd下，还是直接用工具，比如Eclipse，Editplus等都可以开始进行java程序编写，想想还有点小激动呢。看个最简单的程序。&lt;br&gt;
+          &lt;img src="/photo/2015/c0e7ea5fce5647f382a03f70c6b83e7e.png" alt=""&gt;&lt;br&gt;
+            你得到最后的结果肯定是 “I Rule！”&lt;br&gt;
+            每个字符具体的分析，以后我先学习了再一一归纳。&lt;br&gt;
+            先到这里。我先去学习下面的去了。&lt;/p&gt;</description>
+      <author>woshizh</author>
+      <pubDate>Fri, 09 Jan 2015 22:01:47 +0800</pubDate>
+      <link>http://testerhome.com/topics/1818</link>
+      <guid>http://testerhome.com/topics/1818</guid>
+    </item>
+    <item>
+      <title>使用反射实现 webdriver page 类 </title>
+      <description>&lt;p&gt;这个类的目的是为了简化page类的实例化，只需要定义public page成员变量 然后再 启动driver后 通过反射实例化page  后面可以直接点出page实例&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;crazy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;seleiumTools&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.lang.reflect.Field&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;crazy.tools.Dbtool&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="cm"&gt;/**
+ * @author xian_crazy QQ：330126160
+ * @version 2014年12月5日  下午1:43:29
+ * @see
+ */&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PageFactory&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Dbtool&lt;/span&gt; &lt;span class="n"&gt;dbtool&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;PageFactory&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Dbtool&lt;/span&gt; &lt;span class="n"&gt;dbtool&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;dbtool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dbtool&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageFactory&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;pageFactory&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+        &lt;span class="cm"&gt;/**
+         * 通过反射自动循环实例化所有public 页面
+         */&lt;/span&gt;
+        &lt;span class="n"&gt;Field&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getClass&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getFields&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;set&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+                        &lt;span class="n"&gt;Class&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;forName&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;getType&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getName&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt;
+                                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getConstructor&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebDriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Dbtool&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInstance&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dbtool&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+
+            &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// TODO Auto-generated catch block&lt;/span&gt;
+                &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;printStackTrace&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;具体项目中继承改类&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;yly.web.Page.LoginPage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;yly.web.Page.MainMenuPage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;crazy.seleiumTools.PageFactory&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;crazy.tools.Dbtool&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="cm"&gt;/**
+ * @author xian_crazy QQ：330126160
+ * @version 2014年11月13日 上午9:19:46
+ * @see
+ */&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PageF&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;PageFactory&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;MainMenuPage&lt;/span&gt; &lt;span class="n"&gt;mainMenuPage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;LoginPage&lt;/span&gt; &lt;span class="n"&gt;loginpage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;PageF&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Dbtool&lt;/span&gt; &lt;span class="n"&gt;dbtool&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dbtool&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;最后实例化一次PageF  就可以直接点出自己的page了&lt;/p&gt;</description>
+      <author>crazy</author>
+      <pubDate>Wed, 31 Dec 2014 17:02:44 +0800</pubDate>
+      <link>http://testerhome.com/topics/1748</link>
+      <guid>http://testerhome.com/topics/1748</guid>
+    </item>
+    <item>
+      <title>关于从零开始开展 QA 工作的建议：</title>
+      <description>&lt;p&gt;&lt;strong&gt;关于开展QA工作的建议&lt;/strong&gt;&lt;br&gt;
+    结合我有限的经历，和对QA工作的浅显认识，阐述一下我对该项工作开展一些思路和建议，我尚不能提出完整的解决方案，只能针对一些点抛砖引玉，以下看法源于我过去从事不同工作岗位获得的经验汇集而成，生命诚可贵，时间价更高，奈何诸多原因，对每一次经历的岗位可能理解都不深入，因此可能与真理相差十万八千里，如果有明显纰漏的地方，权当我抛出一个论点，供大家讨论。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;准备开展QA活动：&lt;/strong&gt;  &lt;/p&gt;
+
+&lt;p&gt;无论从公司获取某些项目招标资质或是从自身持续发展，开展QA工作，以及进行如CMMI等认证的活动都是很有必要的，这一点需要得到全员的认同，特别是高层、产品经理、研发经理的认同及支持。基于我个人的经验总结，开展类似工作的阻力基本集中在高层的坚持不够、项目经理的重视程度不够、研发经理的配合度上，其他诸如测试部、售后客服、运维对此的配合程度相对高很多。究其原因在于除了各职能岗位对QA工作的认知不同外，更重要在于QA从业者本身的能力及素养。&lt;/p&gt;
+
+&lt;p&gt;一个好的QA能够影响团队，逐步让团队中的成员认同QA活动，而不是持续被团队排斥。BUT HOW TO DO？QA应该是提供解决方案的参谋，而不是简单的第三方监督。我认为，大多数人应该都不喜欢被人监督着做事，也不会喜欢被人指使着做事，我了解到的QA，很容易或者已经成为了“事儿妈”这种角色（这是不正常的现象，应该是我了解的对象还不多，或者没有接触到QA活动开展成功的团队）；&lt;/p&gt;
+
+&lt;p&gt;如果一开始定位QA活动是监督，检查的范畴，稍有不慎，势必导致上文所述的结局，无益于项目进行，可能仅仅有益于出几个漂亮的报告给老板或者投资人看！&lt;br&gt;
+    QA活动应该有独立的责任人去负责开展，如果兼职，一旦工作冲突，QA活动势必会优先级降低，一次降低，次次降低，QA活动也就流于形式，最后不了了之!&lt;br&gt;
+&lt;strong&gt;SO：一旦准备开展QA相关活动，我建议做以下几件事:&lt;br&gt;
+ 高层对全员明确QA活动的开展决心----提高到战略层&lt;br&gt;
+ 选择一个中长期进行的项目----短期项目还不够热身&lt;br&gt;
+ 选择一个“别人乐于”与他沟通的人，且善于整理琐碎事务，确有坚持不懈的毅力的人负责QA活动的组织和推进 ----太强势了不太好，因为QA应该是参谋，而不是军长！&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;初期开展QA活动：&lt;/strong&gt;&lt;br&gt;
+       一旦确定要做一件事，剩下的就是怎么做了，如果还有“关键干系人”质疑开展的合理性，那么先达成一致在继续后面的工作。&lt;/p&gt;
+
+&lt;p&gt;一个已经有所沉淀的团队，要引入新的游戏规则，新的玩儿法，必然有人不适应甚至抵触。何况，经验表明，QA活动的开展初期，还是在给团队增加工作量，更是不受大家待见！&lt;/p&gt;
+
+&lt;p&gt;据说在制造业界，ERP风起云涌的时候，不但没有救活一些公司，甚至差点被玩儿死了，后来专家分析，这些极度不适应的公司之所以没有折腾好，是犯了拿来主义，硬着陆的错误。QA活动开展个人认为与这相似，如果一开始就上来一套完整的制度方案，方案要么是拿来的，要么是屁股决定脑袋拍出来的，得不到团队的支持不说，很可能会严重干扰到项目原来的进度和节奏。&lt;br&gt;
+我建议的方案是从细枝末节做起，逐步渗透，高调的启动，低调的介入。&lt;/p&gt;
+
+&lt;p&gt;比如以下几个点（很多工作我们已经在开展了，后面要做的就是例行，习惯！）：&lt;br&gt;
+ 每次关键会议是否有人记录，针对会议决议，在下一次节点会议进行review是否履行决议，未决决议是否有专人跟进（只是跟进，不是要他解决）&lt;br&gt;
+ 需求变更、设计变更做一下根因分析，比如：这个字段为什么要设置为String，为什么不限制长度，为什么要设为主KEY，…为嘛要更改需求，客户的真实意图是这样吗，他到底是要一匹跑的更快的马，还是更快的到达目的地……；总之，如果行文阐述不清除你的变更理由，说明你还没有想清楚，没想清楚就会随意，随意做出的决策，只能呵呵了！&lt;br&gt;
+ 关键变更是否知会到变更干系人了，为嘛不让他给你复述一遍呢？磨刀不误砍柴工，这个时间绝对不能省！&lt;br&gt;
+ 关键文档按规范更新到指定目的地，行文的时候，相关附件有明确的指向，明确的版本号；文件命名是否明义，他人是否可以见名知意，你自己三个月后能看明白吗？&lt;br&gt;
+ 你写的文档中形容词多吗，你怎么保证你的形容词，别人和你理解的是一样的？&lt;br&gt;
+ 代码注释写了吗，日志打了吗？注释和日志不仅仅是注释记录这个类 这个方法，还有一个作用就是梳理自己的思路，也就是说，你想清楚了吗？&lt;br&gt;
+ &lt;strong&gt;最重要的，有人跟进以上活动是否开展吗？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;当然还有很多其他的工作需要做，但是，多了就没有重点了，多了就“不容易改变”了，因此需要QA关键干系人共同决议几个短期目标，坚持做下去！另外就是QA岗位本身的责任人，得坚持，我始终相信一个道理：&lt;br&gt;
+&lt;strong&gt;你坚持做一件事，坚持到大家都感动的时候，神仙都会来帮你！&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;QA活动不是一个人的事，不是QA岗位的私事&lt;/strong&gt;，需要有一个专家团队协助支撑他的工作，在初期开展活动的时候，专家团队可以是砖家团队，亦即不一定是某一个细分领域的专家，但一定是能了解该领域基本术语及基础的人。基于当前实际，专家都在各个团队的核心岗位，忙于处理项目本身的各项事务，一开始就将他们纳入到QA支撑活动中意义不大；可以再砖家团队无法拿出预案或者预案未决时，让专家参与决策即可！&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;SO:开展QA活动初期，我的建议如下：&lt;br&gt;
+ QA活动干系人确定3个月短期目标，各个部门节点的细分目标不超过6个&lt;br&gt;
+ 指定专人负责跟进各个目标的达成情况并每周公布&lt;br&gt;
+ 目标需要有导向性，必须与绩效挂钩，并取得高层的认可&lt;br&gt;
+ 组成“砖”家团队，负责支持统计QA活动的开展情况及评审&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;后期QA活动开展：坚持，在坚持！&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;最后，提个问题，什么是QA?,引用最近一部电影中的话，QA 无处不在！我的理解是，QA是一类活动的总称，一切可以触发软件质量改进的活动，都是QA活动的范畴，身居QA岗位的人做的就是发掘那些可以触发软件质量改进的活动，并分析活动是否可持续开展，总结并推广活动！&lt;/p&gt;</description>
+      <author>crazy</author>
+      <pubDate>Wed, 31 Dec 2014 10:06:26 +0800</pubDate>
+      <link>http://testerhome.com/topics/1747</link>
+      <guid>http://testerhome.com/topics/1747</guid>
+    </item>
+    <item>
+      <title>求教如何让 genymotion 模拟器执行 python 的指定操作？</title>
+      <description>&lt;p&gt;本人APP测试小白一枚，请问如何让genymotion模拟器执行python的指定操作？&lt;br&gt;
+我的eclipse上已经集成了genymotion的东西了，但是不知道二者现在没联系，不能执行python脚本，求大神帮助~谢谢!&lt;br&gt;
+&lt;img src="/photo/2014/c820c24844ee4f342065dfb67928d052.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>houi_ok</author>
+      <pubDate>Fri, 12 Dec 2014 17:28:17 +0800</pubDate>
+      <link>http://testerhome.com/topics/1691</link>
+      <guid>http://testerhome.com/topics/1691</guid>
+    </item>
+    <item>
+      <title>新手报到</title>
+      <description>&lt;p&gt;本人2月份毕业，混迹于北京~8月开始第一份工作：测试开发工程师（移动客户端方向）。在我还搞不清楚黑盒，白盒，灰盒测试的区别时，就已经入了移动端测试的大门。但是，我决定努力学习各种测试知识~~&lt;/p&gt;
+
+&lt;p&gt;我所在公司为创业型公司，目前也只有我一直负责移动端方面的测试~~大家也很忙碌，所以一切只能靠百度，百度，百度。。。昨天无意中发现这个论坛~~非常开心~所以来报个到~~~&lt;/p&gt;
+
+&lt;p&gt;说说我的背景吧。。。C,C++什么的就不提了，大一学的，早原原本本的还给了学校~~~JAVA什么的没系统学过，倒是学了一点Android和iOS开发，不是很精通~~马马虎虎做过几个小应用。。。代码能力也不强。所以说，其实背景就是一张白纸。。。&lt;/p&gt;
+
+&lt;p&gt;因为搞不清什么性能测试，单元测试等等所有测试，第一步，就是上亚马逊买书了。。。搜了各种关键字，发现市面上关于移动测试的书真是一个手都能数过来，目前统统收入囊中了：ios测试指南，android应用测试与调试方法，大话移动App测试。。。&lt;/p&gt;
+
+&lt;p&gt;接着，说一下从八月至今在公司都干了什么~~先自学了Python，然后学着使用了Monkey, MonkeyRunner, 接着Robotium。。。自己写了几个自动化的case~~期间还根据别人写的接口自动化测试的demo，写了所有接口测试的case。。。因为不用动脑子，自己也懵懵懂懂~~~接着部门老大就说，april46，ios怎么样了。。。然后就接到指令，开始研究ios自动化。。开始装虚拟机，mac os，xcode，公司网络不给力。。。研究了UIAutomation，Hierarchyviewer for ios, iQuery。。。最近再看appium，发现好麻烦~~~准备跃跃欲试的放弃。。。&lt;/p&gt;
+
+&lt;p&gt;在这条路上还是个新手，而且公司也没有资深员工给予指导，自己在这条路上摸爬滚打~~~ 希望可以越做越好。&lt;/p&gt;</description>
+      <author>april46</author>
+      <pubDate>Wed, 22 Oct 2014 13:14:50 +0800</pubDate>
+      <link>http://testerhome.com/topics/1510</link>
+      <guid>http://testerhome.com/topics/1510</guid>
+    </item>
+    <item>
+      <title>TesterHome 新秀群成员-xiang2743，2014年9月 学习总结 1</title>
+      <description>&lt;p&gt;&lt;strong&gt;环境&lt;/strong&gt;：&lt;br&gt;
+    appium 版本：1.2.1&lt;br&gt;
+    系统            ：android 4.4.2&lt;br&gt;
+    设备            ：Android Emulator（Intel HAXM）      &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：&lt;br&gt;
+ ------之前一直采用robotium 对公司的产品进行UI 的自动化测试。发觉robotium真心不错，测试应用和被测应用作为同一个进程的两个不同线程，测试线程能够访问被测应用的属性并进行设置，如setText等。做了以下工作：&lt;/p&gt;
+
+&lt;p&gt;------a) 我在solo类的基础上进行了简单的封装，采用面向对象的思想，加入操作后截图和延时等待的机制&lt;br&gt;
+------b) 结合jenkins 进行用例的管理以及junit报告的展示，通过bat脚本进行控制，对失败用例进行重跑(网易公司的Orange框架也实现了这个功能：&lt;a href="http://qa.blog.163.com/blog/static/19014700220126254558638/" rel="nofollow" target="_blank"&gt;http://qa.blog.163.com/blog/static/19014700220126254558638/&lt;/a&gt;)&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;:main
+
+    &lt;span class="nb"&gt;set &lt;/span&gt;&lt;span class="nv"&gt;className&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;%1
+    &lt;span class="nb"&gt;set &lt;/span&gt;&lt;span class="nv"&gt;functionName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;%2
+
+    &lt;span class="nb"&gt;set&lt;/span&gt; /a &lt;span class="nv"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;b+1
+    &lt;span class="nb"&gt;echo&lt;/span&gt; %b%
+    adb shell am instrument -e class %className%#%functionName% -w packageName/com.zutubi.android.junitreport.JUnitReportTestRunner
+    adb pull /data/data/com.eg.android.packageName/files/junit-report.xml ./%functionName%.xml
+
+    findstr &lt;span class="s2"&gt;"AssertionFailedError"&lt;/span&gt; %functionName%.xml &amp;gt; nul &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"try it again"&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nb"&gt;set &lt;/span&gt;&lt;span class="nv"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0
+
+    &lt;span class="k"&gt;if&lt;/span&gt; %b%&lt;span class="o"&gt;==&lt;/span&gt;0 &lt;span class="o"&gt;(&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"testcase is ok"&lt;/span&gt;
+        goto :eof
+    &lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; %b%&lt;span class="o"&gt;==&lt;/span&gt;3 &lt;span class="o"&gt;(&lt;/span&gt;
+            goto :eof
+        &lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;
+            goto :main
+        &lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;-----但robotium 的硬伤在于不能跨进程测试，而且如果没有被测试应用的签名，可能会有些用例（涉及到签名校验）无法验证。&lt;br&gt;
+ -----随着公司对产品安全性要求的提高，产品在签名这一块有了更多的校验，这样会导致更多的用例无法校验。因此考虑其它的测试框架&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;appium的学习&lt;/strong&gt;&lt;br&gt;
+----a) Appium是基于UIAutomator框架实现的&lt;br&gt;
+----b) Appium测试进程与目标应用进程是分开的&lt;br&gt;
+----c) 对webview的测试&lt;/p&gt;
+&lt;pre class="highlight java"&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;Set&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;contextNames&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getContextHandles&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+ &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt;  &lt;span class="n"&gt;contextName&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;contextNames&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt; 
+    &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contextName&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt; 
+ &lt;span class="o"&gt;}&lt;/span&gt; 
+ &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;context&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"WEBVIEW"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;----d) 判断页面元素是否存在&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;elementExist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;By&lt;/span&gt; &lt;span class="n"&gt;Locator&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Locator&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;openqa&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;selenium&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;NoSuchElementException&lt;/span&gt; &lt;span class="n"&gt;ex&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;----e) 滑动手势&lt;/p&gt;
+&lt;pre class="highlight java"&gt;      &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;TouchAction&lt;/span&gt; &lt;span class="n"&gt;gesture&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TouchAction&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;press&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;startX&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stratY&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+          &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;moveTo&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;startX&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stratY&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+          &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;moveTo&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;startX&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stratY&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+          &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;moveTo&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;startX&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stratY&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;release&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="n"&gt;gesture&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;perform&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;待完成的问题(路过的大侠，请指教一下)&lt;/strong&gt;&lt;br&gt;&lt;br&gt;
+1、应用的遍历测试。难点在于有些点击操作不会发生跳转，有些会，还没搞明白，要怎么处理&lt;br&gt;
+2、设置DesiredCapabilities时，如果有apps，会识情况重装应用（即使已经安装好了），到底什么情况会重装应用，还没搞明白&lt;br&gt;
+3、设置DesiredCapabilities时，如果没有apps，从日志来看，也不会清理目标机器上目标应用的运行环境，因为没有看到pm clear&lt;/p&gt;</description>
+      <author>xiang2743</author>
+      <pubDate>Sat, 11 Oct 2014 11:15:54 +0800</pubDate>
+      <link>http://testerhome.com/topics/1467</link>
+      <guid>http://testerhome.com/topics/1467</guid>
+    </item>
+    <item>
+      <title>TesterHome 新秀群成员-carter，2014年9月 学习总结</title>
+      <description>&lt;p&gt;上个月主要做了下面几件事（可能有部分跟移动方面不相关）&lt;br&gt;
+1、目前在国内手工测试还是必不可少，但是实际上覆盖到的面不是特别全，更多的是纯手工黑盒不看代码。缺乏准确性。&lt;br&gt;
+目前我用的是diff，但说实话在业务级别，用diff来看很耗时间，要查看不同业务层面模块的diff，然后人工分析其关系链。&lt;br&gt;
+所以想找一个能够快速定位功能点的工具；&lt;br&gt;
+a、思路：基于diff和业务调用关系图（函数级别的东西），能够生成函数调用关系图，将diff部分全部标出来。&lt;br&gt;
+从后端代码直接到前端CGI层，有可能的话还想将前端JS部分的也能映射起来（只是个想法）。这样可以直接映射到功能点。测试会更准确，在持续快速迭代下面辅助测试。&lt;br&gt;
+b、我公司是C++代码为主，互联网电商业务形态，所以上月主要看了下C++下面的工具；一种是编译时注入钩子，调用时来生成。一种是静态分析代码。cflow这工具是静态分析代码，生成C++函数级别的调用关系，可以基于makefile生成函数调用关系（赞）。感觉可以将cflow+diff结合起来，然后生成关系图的形式来映射起来。这样转测的代码，可以直接扫描一遍，输出从后端到CGI层面的所有变更点（或者全量的函数到CGI功能入口的映射关系），可以更直观的指导测试用例的设计。&lt;/p&gt;
+
+&lt;p&gt;2、由于目前开始接触移动端测试，所以开始学习移动端的知识；&lt;br&gt;
+a、了解一下android的基本体系结构。比较浅，后续会根据官网的教程来走一遍。&lt;br&gt;
+b、自动化方面主要看了下monekeyrunner，了解其原理，同时做了一个小daemon来尝试自动化。&lt;br&gt;
+这个东东主要是基于坐标。然后调用api来跑。感觉如果可以用xml来封装坐标、动作、结果等，将业务key抽象出来，做成框架形式应该可以更方便一些。&lt;/p&gt;
+
+&lt;p&gt;下月计划：&lt;br&gt;
+1、根据android官网的应用编写教程来走一遍，&lt;br&gt;
+2、开始了解appium&lt;/p&gt;</description>
+      <author>carterzhang</author>
+      <pubDate>Fri, 10 Oct 2014 11:30:37 +0800</pubDate>
+      <link>http://testerhome.com/topics/1461</link>
+      <guid>http://testerhome.com/topics/1461</guid>
+    </item>
+    <item>
+      <title>获取手机信息</title>
+      <description>&lt;p&gt;appium + Python&lt;br&gt;
+ 有接口或方法获取安卓手机的型号和cup等信息吗？或者用其他方法怎么获取&lt;/p&gt;</description>
+      <author>240385033</author>
+      <pubDate>Sat, 27 Sep 2014 12:04:17 +0800</pubDate>
+      <link>http://testerhome.com/topics/1442</link>
+      <guid>http://testerhome.com/topics/1442</guid>
+    </item>
+    <item>
+      <title>【已解决】请问大家，脚本报错，Activity used to start app doesn't exist or canno t be launched</title>
+      <description>&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;selenium&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;
+
+&lt;span class="n"&gt;PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abspath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;__file__&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;desired_caps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'deviceName'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'2013022'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'platformName'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'Android'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'browserName'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;''&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'version'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'4.2'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'app'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;r'C:&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="s"&gt;Users&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="s"&gt;mazhigang&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="s"&gt;Desktop&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="s"&gt;AndroidStorm.apk'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'appPackage'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'com.storm.smart'&lt;/span&gt;
+&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'appActivity'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'.StormApplication'&lt;/span&gt;
+
+&lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Remote&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://localhost:4723/wd/hub'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;desired_caps&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这是报错：&lt;br&gt;
+selenium.common.exceptions.WebDriverException: Message: u"A new session could no&lt;br&gt;
+t be created. (Original error: Activity used to start app doesn't exist or canno&lt;br&gt;
+t be launched! Make sure it exists and is a launchable activity)"&lt;/p&gt;
+
+&lt;p&gt;运行这个脚本已经能自动安装应用了，然后包这个错误。&lt;/p&gt;</description>
+      <author>test_skp</author>
+      <pubDate>Mon, 01 Sep 2014 16:29:45 +0800</pubDate>
+      <link>http://testerhome.com/topics/1345</link>
+      <guid>http://testerhome.com/topics/1345</guid>
+    </item>
+    <item>
+      <title>在 OSX10.9 上安装 Appium</title>
+      <description>&lt;p&gt;我是新手一枚，今天尝试在Mac安装Appium，遇到一点麻烦。经过一阵搜索，在诸多前辈Blog中找到了答案。简单记录于Evernote中，如果哪位遇到Mac上安装的问题，可以拿去参考。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://app.yinxiang.com/shard/s33/sh/f4c88206-fe86-4eaf-abcc-4735b1a721ae/a9067bfc031c41c3bbb729bd7992747a" target="_blank"&gt;原文地址: Install appium on Mac OS X 10.9.4&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;第一步：安装node.js。首先下载node.js OS X安装包并安装：&lt;a href="http://nodejs.org/dist/v0.10.31/node-v0.10.31.pkg" rel="nofollow" target="_blank"&gt;http://nodejs.org/dist/v0.10.31/node-v0.10.31.pkg&lt;/a&gt;&lt;br&gt;
+第二步：因为安装时使用了root权限，所以在成功安装后必须修改一些文件的属性才能继续安装Appium。具体如下：&lt;br&gt;
+2.1 Change the owner of node:&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;  &lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/lib
+  &lt;span class="nv"&gt;$ &lt;/span&gt;sudo chown -R &amp;lt;username&amp;gt; node_modules
+&lt;/pre&gt;
+
+&lt;p&gt;2.2 Find &lt;strong&gt;npm&lt;/strong&gt; and change its owner:&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;  &lt;span class="nv"&gt;$ &lt;/span&gt;which npm
+  &lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/bin
+  &lt;span class="nv"&gt;$ &lt;/span&gt;sudo chown -R &amp;lt;username&amp;gt; npm
+&lt;/pre&gt;
+
+&lt;p&gt;第三步：安装Appium：&lt;code&gt;$ npm install -g appium&lt;/code&gt;&lt;br&gt;
+第四步：检查Appium是否安装成功：&lt;code&gt;$ appium -v&lt;/code&gt;&lt;br&gt;
+第五步：检查IOS和Android环境配置：&lt;code&gt;$ appium-doctor&lt;/code&gt;&lt;br&gt;
+第六步：&lt;code&gt;$ appium &amp;amp;&lt;/code&gt; to start appium. Open browser to access &lt;a href="http://0.0.0.0:4723/" rel="nofollow" target="_blank"&gt;http://0.0.0.0:4723/&lt;/a&gt; to check if the text &lt;em&gt;That URL did not map to a valid JSONWP resource&lt;/em&gt; is displayed.&lt;/p&gt;
+
+&lt;p&gt;References:&lt;br&gt;
+   &lt;a href="http://blog.csdn.net/wirelessqa/article/details/29188665" target="_blank"&gt;appium踩过的坑&lt;/a&gt;&lt;br&gt;
+   &lt;a href="http://han.guokai.blog.163.com/blog/static/136718271201301183938165/" target="_blank"&gt;Mac OS 上设置 JAVA_HOME&lt;/a&gt;&lt;/p&gt;</description>
+      <author>pandapeng</author>
+      <pubDate>Fri, 29 Aug 2014 00:29:08 +0800</pubDate>
+      <link>http://testerhome.com/topics/1330</link>
+      <guid>http://testerhome.com/topics/1330</guid>
+    </item>
+    <item>
+      <title>求助：使用 RFS 运行 case 成功，但运行过程中出现 Exception</title>
+      <description>&lt;p&gt;这种情况不是每一次都会出现，是偶现的。前辈们帮忙看看啊&lt;img src="/photo/2014/11335f0010061134704bcbf6f8ff0565.png" alt=""&gt;&lt;/p&gt;</description>
+      <author>jingledeng</author>
+      <pubDate>Wed, 13 Aug 2014 17:58:56 +0800</pubDate>
+      <link>http://testerhome.com/topics/1265</link>
+      <guid>http://testerhome.com/topics/1265</guid>
+    </item>
+    <item>
+      <title>[端口被占用]appium 无法启动</title>
+      <description>&lt;p&gt;Mac系统，用appium客户端启动 无法启动测试   然后点击诊断报错：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;error: uncaughtException: listen EADDRINUSE &lt;span class="nv"&gt;date&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Wed Jul 30 2014 17:33:26 GMT+0800 &lt;span class="o"&gt;(&lt;/span&gt;CST&lt;span class="o"&gt;)&lt;/span&gt;, &lt;span class="nv"&gt;pid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;12310, &lt;span class="nv"&gt;uid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;501, &lt;span class="nv"&gt;gid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;20, &lt;span class="nv"&gt;cwd&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium, &lt;span class="nv"&gt;execPath&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node/bin/node, &lt;span class="nv"&gt;version&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;v0.10.29, &lt;span class="nv"&gt;argv&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node/bin/node, /Applications/Appium.app/Contents/Resources/node_modules/appium/bin/appium-doctor.js, --port, 4722], &lt;span class="nv"&gt;rss&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;38752256, &lt;span class="nv"&gt;heapTotal&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;30119424, &lt;span class="nv"&gt;heapUsed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;10046472, &lt;span class="nv"&gt;loadavg&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;1.53662109375, 1.6171875, 1.666015625], &lt;span class="nv"&gt;uptime&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;23645, &lt;span class="nv"&gt;trace&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;&lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;11, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;net.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;errnoException, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;904, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;null, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;14, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;net.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Server._listen2, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1042, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;_listen2, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;10, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;net.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;listen, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1064, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;null, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;5, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;net.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Server.listen, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1138, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;listen, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;9, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/socket.io/lib/index.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Server.listen.Server.attach, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;213, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;listen.Server.attach, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;17, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/socket.io/lib/index.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;new Server, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;51, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;null, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;41, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/socket.io/lib/index.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Function.Server, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;39, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Server, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;24, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/lib/doctor/common.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Log.startBroadcast, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;66, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;startBroadcast, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;9, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/bin/appium-doctor.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;105, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;null, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;, &lt;span class="nv"&gt;column&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;26, &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;module.js, &lt;span class="k"&gt;function&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Module._compile, &lt;span class="nv"&gt;line&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;456, &lt;span class="nv"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;_compile, &lt;span class="nv"&gt;native&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;, &lt;span class="nv"&gt;stack&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;Error: listen EADDRINUSE,     at errnoException &lt;span class="o"&gt;(&lt;/span&gt;net.js:904:11&lt;span class="o"&gt;)&lt;/span&gt;,     at Server._listen2 &lt;span class="o"&gt;(&lt;/span&gt;net.js:1042:14&lt;span class="o"&gt;)&lt;/span&gt;,     at listen &lt;span class="o"&gt;(&lt;/span&gt;net.js:1064:10&lt;span class="o"&gt;)&lt;/span&gt;,     at Server.listen &lt;span class="o"&gt;(&lt;/span&gt;net.js:1138:5&lt;span class="o"&gt;)&lt;/span&gt;,     at Server.listen.Server.attach &lt;span class="o"&gt;(&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/socket.io/lib/index.js:213:9&lt;span class="o"&gt;)&lt;/span&gt;,     at new Server &lt;span class="o"&gt;(&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/socket.io/lib/index.js:51:17&lt;span class="o"&gt;)&lt;/span&gt;,     at Function.Server &lt;span class="o"&gt;(&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/socket.io/lib/index.js:39:41&lt;span class="o"&gt;)&lt;/span&gt;,     at Log.startBroadcast &lt;span class="o"&gt;(&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/lib/doctor/common.js:66:24&lt;span class="o"&gt;)&lt;/span&gt;,     at Object.&amp;lt;anonymous&amp;gt; &lt;span class="o"&gt;(&lt;/span&gt;/Applications/Appium.app/Contents/Resources/node_modules/appium/bin/appium-doctor.js:105:9&lt;span class="o"&gt;)&lt;/span&gt;,     at Module._compile &lt;span class="o"&gt;(&lt;/span&gt;module.js:456:26&lt;span class="o"&gt;)]&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;用命令行启动：也是报错：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;error: Couldn&lt;span class="s1"&gt;'t start Appium REST http interface listener. Requested port is already in use. Please make sure there'&lt;/span&gt;s no other instance of Appium running already.
+&lt;/pre&gt;
+
+&lt;p&gt;求助&lt;/p&gt;
+
+&lt;p&gt;我是管理员，我想说同学，你这样的日志都看不懂么？另外发帖请遵守规则！&lt;/p&gt;</description>
+      <author>kkself</author>
+      <pubDate>Wed, 30 Jul 2014 17:35:12 +0800</pubDate>
+      <link>http://testerhome.com/topics/1198</link>
+      <guid>http://testerhome.com/topics/1198</guid>
+    </item>
+    <item>
+      <title>求助：使用 AppiumDriver 报错 java.lang.NoSuchMethodError: org.openqa.selenium.remote.ErrorHandler.&lt;init&gt;(Lorg/openqa/selenium/remote/ErrorCodes;Z)V</title>
+      <description>&lt;p&gt;代码：&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newlight&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appiumDemo&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;io.appium.java_client.AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.io.File&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.net.URL&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.List&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.After&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.Before&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.Test&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.By&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.Capabilities&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebElement&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.interactions.HasTouchScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.interactions.TouchScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.CapabilityType&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.RemoteTouchScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.RemoteWebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CopyOfAndroidContactsTest&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;AppiumDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Before&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setUp&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;classpathRoot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getProperty&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"user.dir"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;appDir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;classpathRoot&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"apps/ContactManager"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;appDir&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"ContactManager.apk"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt; &lt;span class="n"&gt;capabilities&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"device"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"Android"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;BROWSER_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"4.4"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PLATFORM&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"WINDOWS"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"app"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getAbsolutePath&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"app-package"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+                &lt;span class="s"&gt;"com.example.android.contactmanager"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"app-activity"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;".ContactManager"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;AppiumDriver&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"http://127.0.0.1:4723/wd/hub"&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Test&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;addContact&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Add Contact"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;el&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;textFieldsList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElements&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tagName&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"textfield"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;textFieldsList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Some Name"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;textFieldsList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Some@example.com"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Save"&lt;/span&gt;&lt;span class="o"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;运行结果如下：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;823
+723
+java.lang.NoSuchMethodError: org.openqa.selenium.remote.ErrorHandler.&amp;lt;init&amp;gt;(Lorg/openqa/selenium/remote/ErrorCodes;Z)V
+    at io.appium.java_client.AppiumDriver.&amp;lt;clinit&amp;gt;(AppiumDriver.java:37)
+    at org.newlight.appiumDemo.CopyOfAndroidContactsTest.setUp(CopyOfAndroidContactsTest.java:41)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+    at java.lang.reflect.Method.invoke(Unknown Source)
+    at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+    at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+    at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+    at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
+    at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+    at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+    at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+    at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+    at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+    at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+    at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+    at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+    at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+    at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+    at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+
+&lt;/pre&gt;
+
+&lt;p&gt;报错语句为：          AppiumDriver dr = new AppiumDriver(new URL("&lt;a href="http://127.0.0.1:4723/wd/hub" rel="nofollow" target="_blank"&gt;http://127.0.0.1:4723/wd/hub&lt;/a&gt;"), capabilities);&lt;/p&gt;
+
+&lt;p&gt;引入的包有：&lt;br&gt;
+&lt;img src="/photo/2014/65ae96332a7db59aa67612c02dbd2e38.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;测试机器：&lt;br&gt;
+模拟器：安卓4.4&lt;br&gt;
+真机：安卓4.4&lt;/p&gt;
+
+&lt;p&gt;而，使用webdriver是正常的:&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newlight&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appiumDemo&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.io.File&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.net.URL&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.List&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.After&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.Before&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.Test&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.By&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.Capabilities&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebElement&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.interactions.HasTouchScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.interactions.TouchScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.CapabilityType&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.RemoteTouchScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.remote.RemoteWebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AndroidContactsTest&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Before&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setUp&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// set up appium&lt;/span&gt;
+        &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;classpathRoot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getProperty&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"user.dir"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;appDir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;classpathRoot&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"apps/ContactManager"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;appDir&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"ContactManager.apk"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt; &lt;span class="n"&gt;capabilities&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"device"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"Android"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;BROWSER_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;""&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"4.4"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CapabilityType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PLATFORM&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"WINDOWS"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"app"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getAbsolutePath&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"app-package"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+                &lt;span class="s"&gt;"com.example.android.contactmanager"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCapability&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"app-activity"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;".ContactManager"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;SwipeableWebDriver&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"http://127.0.0.1:4723/wd/hub"&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;capabilities&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Test&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;addContact&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Add Contact"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;el&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;textFieldsList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElements&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;
+                &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tagName&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"textfield"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;textFieldsList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Some Name"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;textFieldsList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Some@example.com"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Save"&lt;/span&gt;&lt;span class="o"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SwipeableWebDriver&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;RemoteWebDriver&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt;
+            &lt;span class="n"&gt;HasTouchScreen&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;RemoteTouchScreen&lt;/span&gt; &lt;span class="n"&gt;touch&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;SwipeableWebDriver&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;URL&lt;/span&gt; &lt;span class="n"&gt;remoteAddress&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+                &lt;span class="n"&gt;Capabilities&lt;/span&gt; &lt;span class="n"&gt;desiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;remoteAddress&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;desiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;touch&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;RemoteTouchScreen&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getExecuteMethod&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;TouchScreen&lt;/span&gt; &lt;span class="n"&gt;getTouch&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;touch&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;</description>
+      <author>liqing380</author>
+      <pubDate>Wed, 23 Jul 2014 16:01:07 +0800</pubDate>
+      <link>http://testerhome.com/topics/1163</link>
+      <guid>http://testerhome.com/topics/1163</guid>
+    </item>
+    <item>
+      <title>能正规地发个帖子么？</title>
+      <description>&lt;ul&gt;
+&lt;li&gt;支持 Markdown 格式, &lt;strong&gt;粗体&lt;/strong&gt;、~~删除线~~、&lt;code&gt;单行代码&lt;/code&gt;
+&lt;/li&gt;
+&lt;li&gt;支持表情，见 Emoji cheat sheet&lt;/li&gt;
+&lt;li&gt;按“M”键查看更多 帮助。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;我不知道各位发帖的时候，有没有看到右边的发帖说明。我看到很多帖子，里面贴代码的直接贴文本，&lt;br&gt;
+贴日志的直接贴图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/2014/75c8302cdadc0da8294c77c8e8340b33.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;希望大家为人为己，能正规化发帖。作为测试，每一个帖子都像一个单子一样，你发怎样的帖，我就知道你测试做的怎样。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Tue, 24 Jun 2014 21:10:37 +0800</pubDate>
+      <link>http://testerhome.com/topics/1055</link>
+      <guid>http://testerhome.com/topics/1055</guid>
+    </item>
+    <item>
+      <title>应该怎么样更好的测试移动设备和服务器 socket 连接的稳定性？</title>
+      <description>&lt;p&gt;最近项目新增加了功能需要使用socket连接，客户端是android设备，服务器是用java，都是我们自己开发的，但是有时候连接不太稳定，经常出现一些比如一端掉线了另一端无响应的问题，导致应用崩溃，调试起来很麻烦，因为我们没有测试人员，我也不太懂测试的流程所以想请教大家应该如何测试socket连接的稳定性，谢谢&lt;/p&gt;</description>
+      <author>fghnn</author>
+      <pubDate>Tue, 24 Jun 2014 15:58:00 +0800</pubDate>
+      <link>http://testerhome.com/topics/1054</link>
+      <guid>http://testerhome.com/topics/1054</guid>
+    </item>
+    <item>
+      <title>appium 运行报错，求大神帮忙</title>
+      <description>&lt;p&gt;在windows 7 系统上，正确安装appium 和启动模拟器后运行程序，出现以下错误：&lt;br&gt;
+org.openqa.selenium.SessionNotCreatedException: A new session could not be created. (Original error: Error locating the app: ENOENT, stat 'D:\workspace\vip001\apps\temaihui\temaihui.apk') (WARNING: The server did not provide any stacktrace information)&lt;br&gt;
+Command duration or timeout: 128 milliseconds&lt;br&gt;
+Build info: version: '2.40.0', revision: '4c5c0568b004f67810ee41c459549aa4b09c651e', time: '2014-02-19 11:13:01'&lt;br&gt;
+System info: host: 'wangshuzhen-PC', ip: '192.168.39.180', os.name: 'Windows 7', os.arch: 'amd64', os.version: '6.1', java.version: '1.6.0_43'&lt;br&gt;
+Driver info: com.vip.appium.vip001.AppTest$SwipeableWebDriver&lt;br&gt;
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)&lt;br&gt;
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)&lt;br&gt;
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)&lt;br&gt;
+    at java.lang.reflect.Constructor.newInstance(Unknown Source)&lt;br&gt;
+    at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:193)&lt;br&gt;
+    at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:145)&lt;br&gt;
+    at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:573)&lt;br&gt;
+    at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:218)&lt;br&gt;
+    at org.openqa.selenium.remote.RemoteWebDriver.&amp;lt;init&amp;gt;(RemoteWebDriver.java:113)&lt;br&gt;
+    at org.openqa.selenium.remote.RemoteWebDriver.&amp;lt;init&amp;gt;(RemoteWebDriver.java:131)&lt;br&gt;
+    at com.vip.appium.vip001.AppTest$SwipeableWebDriver.&amp;lt;init&amp;gt;(AppTest.java:160)&lt;br&gt;
+    at com.vip.appium.vip001.AppTest.setUp(AppTest.java:39)&lt;br&gt;
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&lt;br&gt;
+    at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)&lt;br&gt;
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)&lt;br&gt;
+    at java.lang.reflect.Method.invoke(Unknown Source)&lt;br&gt;
+    at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)&lt;br&gt;
+    at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)&lt;br&gt;
+    at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)&lt;br&gt;
+    at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)&lt;br&gt;
+    at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)&lt;br&gt;
+    at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)&lt;br&gt;
+    at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)&lt;br&gt;
+    at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)&lt;br&gt;
+    at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)&lt;br&gt;
+    at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)&lt;br&gt;
+    at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)&lt;br&gt;
+    at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)&lt;br&gt;
+    at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)&lt;br&gt;
+    at org.junit.runners.ParentRunner.run(ParentRunner.java:309)&lt;br&gt;
+    at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)&lt;br&gt;
+    at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)&lt;br&gt;
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)&lt;br&gt;
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)&lt;br&gt;
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)&lt;br&gt;
+    at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)&lt;br&gt;
+求问这个到底是什么原因引起的？谢谢！&lt;/p&gt;</description>
+      <author>susan198967</author>
+      <pubDate>Tue, 08 Apr 2014 16:39:48 +0800</pubDate>
+      <link>http://testerhome.com/topics/667</link>
+      <guid>http://testerhome.com/topics/667</guid>
+    </item>
+  </channel>
+</rss>

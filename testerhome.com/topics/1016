@@ -1,0 +1,784 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 测试 tv 盒子 App 的几个问题 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">测试 tv 盒子 App 的几个问题</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="剪烛" href="../shixue33">shixue33</a>
+     · 
+    于<abbr class="timeago" title="2014-06-17T01:41:32+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="shixue33" href="../shixue33">shixue33</a> 于<abbr class="timeago" title="2014-07-19T01:37:27+08:00"></abbr>回复
+     · 
+    616次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>1 TV盒子类的设备很大一部分都不能连USB线，或者只有能插U盘的USB口，这样好像就没办法用adb连接设备，来发送测试命令了……<br>
+有想到两个可能的解决方法，一个是另外写一个app，用来调起测试。再一个是远程adb，可是那样需要设备root，还需要在设备上输入命令行，感觉更加复杂了……</p>
+
+<p>2 盒子类的app跟手机类的app一个很大的特点是通过方向键控制焦点，我们想有一个功能点希望焦点从一个功能块移动到另外一个功能块时，能够验证是正确的。<br>
+类似下面的这张图，好像无法获取焦点框所在的View(solo.getCurrentActivity().getCurrentFocus()获取的是整个的ViewGroup），从来根本不知道焦点是不是在正确的位置<br><img src="../photo/2014/14a1bfb7924b41b0ca8aba3f067d0313.jpg" alt=""><br>
+另外，对于焦点移动这样的测试，不知道大家有没有什么好的经验。<br>
+目前我做了的，一个是通过最后的结果是否达到预期来判断，但是这个明显很弱，有时候焦点到达了错误的位置，也仍然有正确的结果 。<br>
+还有一个是类似压力测试(我不知道这个算不算，姑且这么说吧），在不同界面，随机发送方向键，或者在分段加载的列表中让焦点经过每一个功能块。</p>
+
+<p>3 我目前测试的应用是一个视屏类的应用，播放视频是使用的是系统的播放器，然后我发现Robotium的截图无法截到播放的画面。当控制隐藏了之后截图，就是完全一片黑。<br>
+之后我试着用adb shell  /system/bin/screencap -p 命令截图，效果也是一样的。<br>
+不知道大家有没有遇到过类似的。或者给个方向看看有没有其他方法</p>
+
+<p>4 Robotium的主动获取toast的问题……额……估计无解……</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='测试 tv 盒子 App 的几个问题 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1016#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1016#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1016#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1016#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1016#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>22</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply1">1楼</a> · <abbr class="timeago" title="2014-06-17T10:56:14+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5799" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1016/replies/5799/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="http://www.testin.cn%E4%B8%8A%E4%B9%9F%E6%8F%90%E4%BE%9B%E4%BA%86%E5%85%B3%E4%BA%8Etv%E5%92%8C%E7%9B%92%E5%AD%90%E7%9A%84%E6%B5%8B%E8%AF%95%E4%BD%93%E7%B3%BB%E3%80%82%E4%B9%9F%E6%98%AF%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87adb%E6%9D%A5%E4%BA%A4%E4%BA%92%E7%9A%84%E3%80%82">www.testin.cn上也提供了关于tv和盒子的测试体系。也是可以通过adb来交互的。</a><br>
+截图那个好像是有个方法可以解决， 听说过。<br>
+对盒子不太了解飘过。</p>
+
+<p>你什么时候去的小米啊。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply2">2楼</a> · <abbr class="timeago" title="2014-06-17T13:43:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5818" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1016/replies/5818/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> testin 的测试体系介绍下？</p>
+
+<p><a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> </p>
+
+<p>第一个问题： 一般都会提供 adbd 服务。 如果不提供自己用串口打开，测试盒子，是不允许使用eng版本或者root版本的。</p>
+
+<p>第二个问题： 焦点获得的地方可以点进去，看看是不是正确呗</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply3">3楼</a> · <abbr class="timeago" title="2014-06-17T13:44:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5819" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1016/replies/5819/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>下次分享，我来介绍testin的测试体系。上面的免费资源很多，普通的测试工程师是可以用起来的。  <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../hoozheng"><img alt="58c54ffa2a1317c9c7c12597694dfdf9" class="uface" src="../avatar/58c54ffa2a1317c9c7c12597694dfdf9.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="何政" href="../hoozheng">hoozheng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply4">4楼</a> · <abbr class="timeago" title="2014-06-17T14:18:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5821" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1090" href="http://testerhome.com/topics/1016/replies/5821/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="hoozheng" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>1，adb connect ip地址，就可以adb devices看到serial number了格式：IP：5555<br>
+2，这个可以用uiautomator吧，或者我们的工具，AndroidRobot 4.3版本(迈测(上海)信息科技有限公司)<br>
+3，视频确实不行的，通过adb是抓不到屏幕的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply5">5楼</a> · <abbr class="timeago" title="2014-06-17T15:02:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5825" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1016/replies/5825/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="lihuazhang" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../hoozheng" class="at_user" title="@hoozheng"><i>@</i>hoozheng</a> 何总。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../niweyzhuce"><img alt="691" class="uface" src="../user/large_avatar/691.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="neil" href="../niweyzhuce">niweyzhuce</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply6">6楼</a> · <abbr class="timeago" title="2014-06-17T15:50:10+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5828" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="691" href="http://testerhome.com/topics/1016/replies/5828/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="niweyzhuce" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>第一个问题有两个办法。<br>
+1）串口连接。 打开xshell 或者 putty，协议选择 Serial<br>
+2） adb tcp连接。例： adb connect &lt;ip-of-device&gt;:5555</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../keen_lau"><img alt="66d7f364ea08ccab937ace8b6f9a4d18" class="uface" src="../avatar/66d7f364ea08ccab937ace8b6f9a4d18.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="keen" href="../keen_lau">keen_lau</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply7">7楼</a> · <abbr class="timeago" title="2014-06-17T22:30:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5838" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="163" href="http://testerhome.com/topics/1016/replies/5838/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="keen_lau" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我表示视频播放页面，使用robotium自带的截图方法，是黑屏的；但是我用screencap是有画面的；<br>
+因为robotium的截图方法是view的方法截屏，视频是自绘控件，用view截图的方式截不到</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../keen_lau"><img alt="66d7f364ea08ccab937ace8b6f9a4d18" class="uface" src="../avatar/66d7f364ea08ccab937ace8b6f9a4d18.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="keen" href="../keen_lau">keen_lau</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply8">8楼</a> · <abbr class="timeago" title="2014-06-18T00:12:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5839" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="163" href="http://testerhome.com/topics/1016/replies/5839/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="keen_lau" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>可以考虑pc端截图</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply9">9楼</a> · <abbr class="timeago" title="2014-06-18T16:04:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5854" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1016/replies/5854/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="shixue33" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+(^o^)/~  我没有在小米，只是举个栗子，举个栗子。<br>
+我们做的是视频类的App，现在用来调试自动化的就是小米盒子。<br>
+期待itestin的分享。我从很早的时候开始用testin来做手机端适配的测试，但是现在开始做TV以后，好像在testin上没有找到TV盒子的解决方法</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply10">10楼</a> · <abbr class="timeago" title="2014-06-18T16:06:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5855" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1016/replies/5855/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="shixue33" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> = =~现在其实是这样做的，但是如果结果所有的功能块enter进去都是进的同一个Activity，就没法知道到底是不是到了正确的位置了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply11">11楼</a> · <abbr class="timeago" title="2014-06-18T16:07:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5856" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1016/replies/5856/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="shixue33" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../keen_lau" class="at_user" title="@keen_lau"><i>@</i>keen_lau</a> 我PC端用screencap也是截不到播放的画面的。真的没法呃。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply12">12楼</a> · <abbr class="timeago" title="2014-06-18T21:31:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5873" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1016/replies/5873/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="seveniruby" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 不过目前tv盒子也不是太多，所以自己买齐也是可以的。testin也是最近刚上的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply13">13楼</a> · <abbr class="timeago" title="2014-06-18T23:50:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5882" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1016/replies/5882/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="lihuazhang" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 按坐标吧。 tv 盒子的布局一般都是定死的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../keen_lau"><img alt="66d7f364ea08ccab937ace8b6f9a4d18" class="uface" src="../avatar/66d7f364ea08ccab937ace8b6f9a4d18.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="keen" href="../keen_lau">keen_lau</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply14">14楼</a> · <abbr class="timeago" title="2014-06-20T11:48:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5921" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="163" href="http://testerhome.com/topics/1016/replies/5921/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="keen_lau" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply11" class="at_floor" data-floor="11">#11楼</a> <a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a>  你是什么视频软件，感觉你们是做多屏播放的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply15">15楼</a> · <abbr class="timeago" title="2014-06-20T12:48:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5924" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1016/replies/5924/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="lihuazhang" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../shixue33" class="at_user" title="@shixue33"><i>@</i>shixue33</a> 157546818 来加这个群吧~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../oatsuper"><img alt="Ad290f7d65aa17a062cef6c5768d9a40" class="uface" src="../avatar/ad290f7d65aa17a062cef6c5768d9a40.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../oatsuper">oatsuper</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply16">16楼</a> · <abbr class="timeago" title="2014-06-21T21:29:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5948" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1114" href="http://testerhome.com/topics/1016/replies/5948/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="oatsuper" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>android 上视频类的应用，视频播放时，使用android上的截屏工具仅能capture到OSD层的数据，关于视频层数据需要从芯片厂商的framebuffer或者和显示相关的底层buffer获得；例如目前的Smart TV的显示输出通过Onebyone或者Lvds，那么芯片厂商可以获得LVDS raw data 转出YUV或者Jpeg，png图片了；</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply17">17楼</a> · <abbr class="timeago" title="2014-06-21T21:52:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5951" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1016/replies/5951/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="lihuazhang" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply16" class="at_floor" data-floor="16">#16楼</a> <a href="../oatsuper" class="at_user" title="@oatsuper"><i>@</i>oatsuper</a> 厂家或者播放器那边开后门即可吧？ 一般开发为了自己测试，都会留后门的。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../oatsuper"><img alt="Ad290f7d65aa17a062cef6c5768d9a40" class="uface" src="../avatar/ad290f7d65aa17a062cef6c5768d9a40.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../oatsuper">oatsuper</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply18">18楼</a> · <abbr class="timeago" title="2014-06-21T22:34:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5952" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1114" href="http://testerhome.com/topics/1016/replies/5952/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="oatsuper" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>一般是需要和芯片厂商明确改需求，要不然整体release给做产品的终端公司的code里是没有类似后门的的吧；播放器端的代码应该不行的，需要芯片厂商给出类似的二进制工具，代码里通过jni或者shell命令来运行获得OSD层和Video层的都正常显示的截屏</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../keen_lau"><img alt="66d7f364ea08ccab937ace8b6f9a4d18" class="uface" src="../avatar/66d7f364ea08ccab937ace8b6f9a4d18.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="keen" href="../keen_lau">keen_lau</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply19">19楼</a> · <abbr class="timeago" title="2014-06-27T13:25:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6232" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="163" href="http://testerhome.com/topics/1016/replies/6232/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="keen_lau" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>用DDMS能截到有画面的图片吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="deleted">20楼 已删除.</div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply21">21楼</a> · <abbr class="timeago" title="2014-06-27T17:48:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6242" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1016/replies/6242/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="shixue33" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply19" class="at_floor" data-floor="19">#19楼</a> <a href="../keen_lau" class="at_user" title="@keen_lau"><i>@</i>keen_lau</a> hi~keen 我尝试了，跟其他截屏结果是一样的，视频画面是黑的<img src="../photo/2014/7702f50726de8ed3396c17f8ad309bcf.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../keen_lau"><img alt="66d7f364ea08ccab937ace8b6f9a4d18" class="uface" src="../avatar/66d7f364ea08ccab937ace8b6f9a4d18.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="keen" href="../keen_lau">keen_lau</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply22">22楼</a> · <abbr class="timeago" title="2014-07-18T18:50:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6723" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="163" href="http://testerhome.com/topics/1016/replies/6723/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="keen_lau" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>前段时间试了我们自己的应用，也是黑屏，此题无解</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../shixue33"><img alt="609" class="uface" src="../user/large_avatar/609.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="剪烛" href="../shixue33">shixue33</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1016#reply23">23楼</a> · <abbr class="timeago" title="2014-07-19T01:37:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6728" data-state="" data-type="Reply" href="1016#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="609" href="http://testerhome.com/topics/1016/replies/6728/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="shixue33" href="1016#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1016#reply22" class="at_floor" data-floor="22">#22楼</a> <a href="../keen_lau" class="at_user" title="@keen_lau"><i>@</i>keen_lau</a> 嗯，只能容忍了。- -不过也无所谓了，TV视频应用环境严峻了，我们项目被砍了。应该短期内不做这个了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @Anikikun: 希望毕业设计顺利按时按量完成，希望上海实习之旅顺利
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1898" title="在运行测试时遇到 Test run failed: Instrumentation run failed due to &#39;Process crashed.&#39;，有人遇到过吗，求解答">在运行测试时遇到 Test run failed: I...</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+    <li><a href="1826" title=" 史上最简单 Robotium 跨进程操作实践——基于 ADB 框架"> 史上最简单 Robotium 跨进程操作实践——基于...</a></li>
+    <li><a href="1786" title="robotium 在同一个布局里面，第一个控件可以访问，第二个空间却不能访问">robotium 在同一个布局里面，第一个控件可以访问...</a></li>
+    <li><a href="1783" title="怎么触发多个层级嵌套下的最底层控件(id 一样时)，且没有源码">怎么触发多个层级嵌套下的最底层控件(id 一样时)，且...</a></li>
+    <li><a href="1746" title="ROBOTIUM 实现简单的图像识别。~">ROBOTIUM 实现简单的图像识别。~</a></li>
+    <li><a href="1745" title="请问如何访问 listviewinscrollview 这个控件">请问如何访问 listviewinscrollview...</a></li>
+    <li><a href="1722" title="有没有大神在 ROBOTIUM 上做过图片相似度对比的内容？请教一下啊？">有没有大神在 ROBOTIUM 上做过图片相似度对比的...</a></li>
+    <li><a href="1715" title="使用 robotium 执行测试用例时提示 &#39;java.lang.ClassNotFoundException&#39;">使用 robotium 执行测试用例时提示 &#39;java...</a></li>
+    <li><a href="1714" title="求教，ROBOTIUM 下的 GETWEBELEMENTS 方法的使用~多谢！">求教，ROBOTIUM 下的 GETWEBELEMEN...</a></li>
+    <li><a href="1705" title="robotium 怎么获取多层布局嵌套下的控件呢？">robotium 怎么获取多层布局嵌套下的控件呢？</a></li>
+    <li><a href="1701" title="Robotium 专题（五）：Robotium 升级到 5.1 后的一些改进">Robotium 专题（五）：Robotium 升级到...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1016#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

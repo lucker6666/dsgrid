@@ -1,0 +1,1257 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 如何在 iOS 真机运行 Appium &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">如何在 iOS 真机运行 Appium</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2014-09-10T21:18:24+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a> 于<abbr class="timeago" title="2014-11-17T17:57:50+08:00"></abbr>回复
+     · 
+    2195次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>更新下：</h4>
+<p>使用 gui 启动的 appium 1.2.2 也会有这个问题，所以你要把 deviceconsole 复制到 /Applications/Appium.app/Contents/Resources/node_modules/appium/build/deviceconsole 下面。你自己的路径可能和我不一样，切记。</p>
+
+<p>同意如果这个问题不解决， iOS 上的 真机 inspector 也打不开。</p>
+
+<p><img src="../photo/2014/97d49fe378dda4b6cd26f34da21d708d.jpg" alt=""></p>
+
+<p>英文好的同学请移步官方文档 <a href="https://github.com/appium/appium/blob/master/docs/en/appium-setup/real-devices.md" target="_blank">real-devices</a>，<br>
+推荐自己边看边试验。</p>
+<h4>首先 Appium 支持 iOS 真机</h4><h4>以下条件必须满足：</h4>
+<ul>
+<li>苹果开发者账号和开发者证书</li>
+<li>苹果设备，确保这个设备已经被配置为开发机器。<a href="https://developer.apple.com/library/ios/recipes/xcode_help-devices_organizer/articles/provision_device_for_development-generic.html" target="_blank">怎么配置？</a>
+</li>
+<li>签名过的 .ipa 文件或者源代码</li>
+<li>A Mac with Xcode and the Xcode Command Line Developer Tools，有 xcode和xcode command line 的
+苹果系统。别来问我，windows 怎么测试 iOS 应用。</li>
+</ul>
+<h4>Provisioning Profile</h4>
+<p>再次强调真机需要有效的开发分发证书和开发的 Provisioning Profile。<br>
+你的应用需要签名。Appium 会参试使用 Fruitstrap 安装应用。<br>
+但是使用 xcode 安装到真机会方便很多。</p>
+
+<p>拓展： <a href="http://blog.csdn.net/joosonmao/article/details/21172835" target="_blank">什么是 Provisioning Profile？</a></p>
+<h4>运行</h4>
+<p>要指定真机运行有两种方式：</p>
+
+<ul>
+<li><p>appium 启动的时候，指定 udid 和 app bundle <code>appium -U &lt;udid&gt; --app &lt;path or bundle&gt;</code></p></li>
+<li>
+<p>或者在脚本里指定两个 desired capability</p>
+<pre class="highlight python"><span class="n">desired_capabilities</span><span class="o">=</span><span class="p">{</span>
+            <span class="s">'app'</span><span class="p">:</span><span class="s">'com.xxx.iphone'</span><span class="p">,</span>
+            <span class="s">'udid'</span><span class="p">:</span><span class="s">'70643e56c1b0f3c3132c44c87e433a48b5531ee6'</span><span class="p">,</span>
+            <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'iOS'</span><span class="p">,</span>
+            <span class="s">'deviceName'</span><span class="p">:</span> <span class="s">'iPhone'</span>
+        <span class="p">})</span></pre>
+</li>
+</ul>
+
+<p>注意： 如果设备中未安装 app 可以指定 ipa 地址，如果安装了，<br>
+则指定 bundle ID。</p>
+
+<p>所以对于第一种情况，代码可以这样写：</p>
+<pre class="highlight python">        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span>
+            <span class="n">command_executor</span><span class="o">=</span><span class="s">'http://127.0.0.1:4723/wd/hub'</span><span class="p">,</span>
+            <span class="n">desired_capabilities</span><span class="o">=</span><span class="p">{</span>
+                <span class="s">'deviceName'</span><span class="p">:</span><span class="s">''</span><span class="p">,</span>
+                <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'iOS'</span><span class="p">,</span>
+            <span class="p">})</span>
+</pre>
+
+<p>对于第二种情况，代码可以这样写：</p>
+<pre class="highlight python">        <span class="n">app</span> <span class="o">=</span> <span class="s">"io.appium.TestApp"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span>
+            <span class="n">command_executor</span><span class="o">=</span><span class="s">'http://127.0.0.1:4723/wd/hub'</span><span class="p">,</span>
+            <span class="n">desired_capabilities</span><span class="o">=</span><span class="p">{</span>
+                <span class="s">'deviceName'</span><span class="p">:</span><span class="s">''</span><span class="p">,</span>
+                <span class="s">'platformName'</span><span class="p">:</span> <span class="s">'iOS'</span><span class="p">,</span>
+                <span class="s">'app'</span><span class="p">:</span> <span class="n">app</span><span class="p">,</span>
+                <span class="s">'udid'</span><span class="p">:</span> <span class="s">'cc6bcd6a94aeb8490924dd05c5b318bfbfafb3bb'</span>
+            <span class="p">})</span>
+</pre>
+<h4>调试的思路</h4>
+<ul>
+<li>确保 UDID 的正确，是真机的 UDID。(20+ 字符串)</li>
+<li>确保在模拟器上已经能运行无误了。</li>
+<li>直接使用 Instruments 看看是否能在真机上运行。有些情况连 xcode 的 instruments 都不能在真机上调试，那更别谈 appium 了</li>
+<li>确保运行 appium 用例前， instruments 没有启动过。看看有没有 instruments 的进程。</li>
+</ul>
+<h4>目前 1.2.2 的坑</h4>
+<p>目前 appium 1.2.2 上运行 iOS 真机测试的话，可能会遇到如下的错误：</p>
+<pre class="highlight shell">info: <span class="o">[</span>debug] Starting iOS device log capture via deviceconsole
+error: iOS log capture failed: spawn ENOENT
+info: <span class="o">[</span>debug] Cleaning up appium session
+error: Failed to start an Appium session, err was: Error: spawn ENOENT
+info: <span class="o">[</span>debug] Error: spawn ENOENT
+    at errnoException <span class="o">(</span>child_process.js:1000:11<span class="o">)</span>
+    at Process.ChildProcess._handle.onexit <span class="o">(</span>child_process.js:791:34<span class="o">)</span>
+info: <span class="o">[</span>debug] Responding to client with error: <span class="o">{</span><span class="s2">"status"</span>:33,<span class="s2">"value"</span>:<span class="o">{</span><span class="s2">"message"</span>:<span class="s2">"A new session could not be created. (Original  error: spawn ENOENT)"</span>,<span class="s2">"code"</span>:<span class="s2">"ENOENT"</span>,<span class="s2">"errno"</span>:<span class="s2">"ENOENT"</span>,<span class="s2">"syscall"</span>:<span class="s2">"spawn"</span>,<span class="s2">"origValue"</span>:<span class="s2">"spawn ENOENT"</span><span class="o">}</span>,<span class="s2">"sessionId"</span>:null<span class="o">}</span>
+info: &lt;-- POST /wd/hub/session 500 1780.745 ms - 197
+</pre>
+
+<p>这是因为在 /usr/local/lib/node_modules/appium/build/deviceconsole/ 下面缺失了 deviceconsole。已经有 <a href="https://github.com/appium/appium/issues/3503" target="_blank">bug</a> 追踪了。</p>
+
+<p>解决方法如下：</p>
+
+<ul>
+<li>到该目录底下 <code>cd /usr/local/lib/node_modules/appium/build/deviceconsole/</code>
+</li>
+<li>打开这个deviceconsole project。 <code>open deviceconsole.xcodeproj</code>
+</li>
+<li>重新 build 一把。把 build 出来的 deviceconsole，复制到 <code>/usr/local/lib/node_modules/appium/build/deviceconsole/</code>去。</li>
+<li>然后重新运行 Appium</li>
+</ul>
+
+<p>注意： deviceName 就算为空也一定要，代码写死的。。。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='如何在 iOS 真机运行 Appium via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1377#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1377#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1377#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1377#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1377#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>33</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../wangcityboy"><img alt="1372" class="uface" src="../user/large_avatar/1372.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="云飞凌风" href="../wangcityboy">wangcityboy</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply1">1楼</a> · <abbr class="timeago" title="2014-09-11T11:23:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8493" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1372" href="http://testerhome.com/topics/1377/replies/8493/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="wangcityboy" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>很赞，这个问题困扰了我很多天，终于解决了。<br>
+另外，我想请教一下，appium 中用java语言，下拉刷新视图以及多手势的问题，你也发一个帖子吧。我弄了好多天都没得出结果。有什么办法没有？估计很多人都有这样的疑问。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../xujuan418974188"><img alt="1548" class="uface" src="../user/large_avatar/1548.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xujuan" href="../xujuan418974188">xujuan418974188</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply2">2楼</a> · <abbr class="timeago" title="2014-09-11T11:46:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8496" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1548" href="http://testerhome.com/topics/1377/replies/8496/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="xujuan418974188" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>太棒了，这个问题搞了一天没搞出来 ，楼主是大神，崇拜你～～～么么哒～～～～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../xujuan418974188"><img alt="1548" class="uface" src="../user/large_avatar/1548.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xujuan" href="../xujuan418974188">xujuan418974188</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply3">3楼</a> · <abbr class="timeago" title="2014-09-11T18:01:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8518" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1548" href="http://testerhome.com/topics/1377/replies/8518/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="xujuan418974188" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>启动inspector  的时候 一定要设备那个ForceDevice ,否则 会弹 出个报错信息<br>
+<img src="../photo/2014/20d42f80c15ad105d035e5f241a0b294.png" alt=""></p>
+
+<p>这个名字可以随便选 ，我用ipod ,选 Iphone也是没有问题的。 <br>
+感谢楼主。 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../scarlett"><img alt="1260" class="uface" src="../user/large_avatar/1260.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="hy" href="../scarlett">scarlett</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply4">4楼</a> · <abbr class="timeago" title="2014-09-16T11:42:21+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8631" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1260" href="http://testerhome.com/topics/1377/replies/8631/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="scarlett" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>请问：<br>
+IOS上运行robotframework+appium自动化测试，在RIDE上的参数配置Open App ，需要那几个必填的参数设置，比如${APP},${BUNDLEID},${UDID},等等，谢谢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply5">5楼</a> · <abbr class="timeago" title="2014-09-17T16:03:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8686" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8686/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我按照这个思路改了，还是报<img src="../photo/2014/2b68feefb4e595e5183fa6d62b025af3.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply6">6楼</a> · <abbr class="timeago" title="2014-09-17T16:04:33+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8687" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8687/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>在我本机下找不到cd /usr/local/lib/node_modules/appium/build/deviceconsole/这个文件<br>
+我用的是MAC系统 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply7">7楼</a> · <abbr class="timeago" title="2014-09-17T16:04:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8688" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8688/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>求楼主解答</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply8">8楼</a> · <abbr class="timeago" title="2014-09-17T16:36:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8690" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/8690/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../xuxiujin" class="at_user" title="@xuxiujin"><i>@</i>xuxiujin</a> 请把问题描述清楚</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../young"><img alt="666" class="uface" src="../user/large_avatar/666.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="王阳" href="../young">young</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply9">9楼</a> · <abbr class="timeago" title="2014-09-17T16:37:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8691" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="666" href="http://testerhome.com/topics/1377/replies/8691/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="young" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>没有mac  不幸福</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply10">10楼</a> · <abbr class="timeago" title="2014-09-22T10:51:57+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8774" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8774/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>error: iOS log capture failed: spawn ENOENT</p>
+
+<p>info: &lt;-- POST /wd/hub/session 500 2882.143 ms - 197 <br>
+info: [debug] Not setting device type since we're connected to a device<br>
+info: [debug] Creating iDevice object with udid 4880fb6f9866658d651ede8ea883c49ad1d71297<br>
+info: [debug] Couldn't find ideviceinstaller, trying built-in at /Applications/Appium.app/Contents/Resources/node_modules/appium/build/libimobiledevice-macosx/ideviceinstaller<br>
+info: [debug] Checking app install status using: /Applications/Appium.app/Contents/Resources/node_modules/appium/build/fruitstrap/fruitstrap isInstalled --id 4880fb6f9866658d651ede8ea883c49ad1d71297 --bundle com.hipalsports.hipal</p>
+
+<p>error: Failed to start an Appium session, err was: Error: spawn ENOENT<br>
+提示我这个错误！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply11">11楼</a> · <abbr class="timeago" title="2014-09-22T11:08:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8775" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8775/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><img src="../photo/2014/d123ac111f9c7e418c6b948a5d7a1c43.png" alt=""><br>
+我的设置是这个</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply12">12楼</a> · <abbr class="timeago" title="2014-09-22T11:09:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8776" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8776/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>error: iOS log capture failed: spawn ENOENT</p>
+
+<p>info: [debug] Dynamic bootstrap code:<br>
+info: [debug] Dynamic bootstrap path:<br>
+info: [debug] Reusing dynamic bootstrap:<br>
+info: [debug] Not setting iOS and app preferences since we're on a real device<br>
+info: [debug] Starting iOS device log capture via deviceconsole<br>
+info: [debug] Cleaning up appium session<br>
+info: [debug] Error: spawn ENOENT<br>
+    at errnoException (child_process.js:1001:11)<br>
+    at Process.ChildProcess._handle.onexit (child_process.js:792:34)<br>
+info: [debug] Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: spawn ENOENT)","code":"ENOENT","errno":"ENOENT","syscall":"spawn","origValue":"spawn ENOENT"},"sessionId":null}<br>
+info: &lt;-- POST /wd/hub/session 500 145.563 ms - 197 <br>
+info: [debug] Not setting device type since we're connected to a device<br>
+info: [debug] Creating iDevice object with udid 962f806a6657c8f031222b297fa4d700619d49af<br>
+info: [debug] Couldn't find ideviceinstaller, trying built-in at /Applications/Appium.app/Contents/Resources/node_modules/appium/build/libimobiledevice-macosx/ideviceinstaller<br>
+info: [debug] Checking app install status using: /Applications/Appium.app/Contents/Resources/node_modules/appium/build/fruitstrap/fruitstrap isInstalled --id 962f806a6657c8f031222b297fa4d700619d49af --bundle com.hipalsports.hipal</p>
+
+<p>error: Failed to start an Appium session, err was: Error: spawn ENOENT</p>
+
+<p>以上错误是我连iphone时的报错！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply13">13楼</a> · <abbr class="timeago" title="2014-09-22T13:44:31+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8778" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/8778/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>提示的已经非常清楚了：</p>
+
+<p>Couldn't find ideviceinstaller, trying built-in at /Applications/Appium.app/Contents/Resources/node_modules/appium/build/libimobiledevice-macosx/ideviceinstaller</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply14">14楼</a> · <abbr class="timeago" title="2014-09-22T15:17:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8784" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8784/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个要怎么built呀？我查了这个路径是有这个文件 的呀<img src="../photo/2014/6fad5f64caa70fcf150124f362d8df9f.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply15">15楼</a> · <abbr class="timeago" title="2014-09-22T15:20:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8785" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8785/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主这个和你上面描述的是一个问题吗？求解呀，我用的是MAC，想用录制的方式录IOS!谢谢了！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply16">16楼</a> · <abbr class="timeago" title="2014-09-22T20:36:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8801" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/8801/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply15" class="at_floor" data-floor="15">#15楼</a> <a href="../xuxiujin" class="at_user" title="@xuxiujin"><i>@</i>xuxiujin</a> 那你用 <code>/Applications/Appium.app/Contents/Resources/node_modules/appium/build/fruitstrap/fruitstrap isInstalled --id 4880fb6f9866658d651ede8ea883c49ad1d71297 --bundle com.hipalsports.hipal<br>
+</code> 在命令行运行看看。 你想用录制的方式录制 iOS， 那就录制啊。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply17">17楼</a> · <abbr class="timeago" title="2014-09-24T10:56:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8835" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8835/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>info: --&gt; POST /wd/hub/session {"desiredCapabilities":{"platformName":"iOS","platformVersion":"7.1","newCommandTimeout":"999999","automationName":"Appium","deviceName":"iPhone Retina (4-inch 64-bit)"}}</p>
+
+<p>info: [debug] App is an iOS bundle, will attempt to run as pre-existing</p>
+
+<p>info: [debug] Creating new appium session ef17f59f-ece8-46f4-ad67-8ccdc89b514b</p>
+
+<p>info: [debug] Removing any remaining instruments sockets</p>
+
+<p>info: [debug] Cleaned up instruments socket /tmp/instruments_sock</p>
+
+<p>info: [debug] Setting Xcode folder</p>
+
+<p>info: [debug] Setting Xcode version</p>
+
+<p>info: [debug] Setting iOS SDK Version</p>
+
+<p>info: [debug] iOS SDK Version set to 7.1</p>
+
+<p>info: [debug] Detecting automation tracetemplate</p>
+
+<p>info: [debug] Not auto-detecting udid, running on sim</p>
+
+<p>info: [debug] Localizable.strings is not currently supported when using real devices.<br>
+info: [debug] Not setting locale because we're using a real device<br>
+info: [debug] Creating instruments</p>
+
+<p>info: [debug] Preparing uiauto bootstrap<br>
+info: [debug] Dynamic bootstrap dir:<br>
+info: [debug] Dynamic env:</p>
+
+<p>error: iOS log capture failed: spawn ENOENT</p>
+
+<p>info: [debug] Dynamic bootstrap code:<br>
+info: [debug] Dynamic bootstrap path:<br>
+info: [debug] Reusing dynamic bootstrap:<br>
+info: [debug] Not setting iOS and app preferences since we're on a real device<br>
+info: [debug] Starting iOS device log capture via deviceconsole<br>
+info: [debug] Cleaning up appium session<br>
+info: [debug] Error: spawn ENOENT<br>
+    at errnoException (child_process.js:1001:11)<br>
+    at Process.ChildProcess._handle.onexit (child_process.js:792:34)<br>
+info: [debug] Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: spawn ENOENT)","code":"ENOENT","errno":"ENOENT","syscall":"spawn","origValue":"spawn ENOENT"},"sessionId":null}<br>
+info: &lt;-- POST /wd/hub/session 500 147.450 ms - 197 <br>
+info: [debug] Not setting device type since we're connected to a device</p>
+
+<p>error: Failed to start an Appium session, err was: Error: spawn ENOENT</p>
+
+<p>info: [debug] Creating iDevice object with udid 4880fb6f9866658d651ede8ea883c49ad1d71297<br>
+info: [debug] Couldn't find ideviceinstaller, trying built-in at /Volumes/Appium/Appium.app/Contents/Resources/node_modules/appium/build/libimobiledevice-macosx/ideviceinstaller<br>
+info: [debug] Checking app install status using: /Volumes/Appium/Appium.app/Contents/Resources/node_modules/appium/build/fruitstrap/fruitstrap isInstalled --id 4880fb6f9866658d651ede8ea883c49ad1d71297 --bundle com.hipalsports.hipal</p>
+
+<p>info: [debug] App is installed.</p>
+
+<p>info: [debug] fullReset not requested. No need to install.<br>
+info: [debug] Starting command proxy.</p>
+
+<p>info: [debug] Instruments socket server started at /tmp/instruments_sock<br>
+info: [debug] Starting instruments</p>
+
+<p>info: [debug] Instruments is at: /Applications/Xcode 5.1.app/Contents/Developer/usr/bin/instruments<br>
+info: Launching instruments<br>
+info: [debug] Attempting to run app on real device with UDID 4880fb6f9866658d651ede8ea883c49ad1d71297<br>
+info: [debug] Spawning instruments with command: /Applications/Xcode 5.1.app/Contents/Developer/usr/bin/instruments -t /Applications/Xcode 5.1.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.bundle/Contents/Resources/Automation.tracetemplate -D /tmp/appium-instruments/instrumentscli0.trace -w 4880fb6f9866658d651ede8ea883c49ad1d71297 com.hipalsports.hipal -e UIASCRIPT /Users/hipal/Library/Application Support/appium/bootstrap/bootstrap-286b5f87607290ee.js -e UIARESULTSPATH /tmp/appium-instruments<br>
+info: [debug] And extra without-delay env: {}<br>
+info: [debug] And launch timeouts (in ms): {"global":90000}</p>
+
+<p>info: --&gt; GET /wd/hub/status {}</p>
+
+<p>info: [debug] Responding to client with success: {"status":0,"value":{"build":{"version":"1.2.2","revision":"cf6ff5939ddc6b4d45fcbabfbfe13c950e0058c4"}}}</p>
+
+<p>运行时提示了我以上错误，按照你的方法直接在命令行中运行<br>
+JackdeMac-mini:~ hipal$ /Volumes/Appium/Appium.app/Contents/Resources/node_modules/appium/build/fruitstrap/fruitstrap isInstalled --id 4880fb6f9866658d651ede8ea883c49ad1d71297 --bundle com.hipalsports.hipal<br>
+[....] Waiting for iOS device to be connected<br>
+found device id<br>
+[  0%] Found device (4880fb6f9866658d651ede8ea883c49ad1d71297), beginning check</p>
+
+<p>App is installed!<br>
+[100%] Check completed com.hipalsports.hipal<br>
+JackdeMac-mini:~ hipal$<br><br>
+安装应该是成功的了！但是还是报错<br>
+Could not start a new session</p>
+
+<p>Be sure the Appium server is running with an application opened by using the "App Path" parameter in Appium.app (along with package and activity for Android) or by connecting with selenium client and supplying this in the desired capabilities object.</p>
+
+<p>弄了几天了这个问题！依然找不到出路！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply18">18楼</a> · <abbr class="timeago" title="2014-09-24T10:56:34+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8836" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8836/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主这个问题你有遇到过吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply19">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply19">19楼</a> · <abbr class="timeago" title="2014-09-24T11:04:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8838" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/8838/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="19" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><img src="../photo/2014/bc972305c355a7e56c83915f0df2a463.png" alt=""><br>
+这里的server address需要设置吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply20">
+    <div class="pull-left face"><a href="../terryuki"><img alt="725240c3f8d9d1d34b28f7153165279c" class="uface" src="../avatar/725240c3f8d9d1d34b28f7153165279c.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Terry Zhang" href="../terryuki">terryuki</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply20">20楼</a> · <abbr class="timeago" title="2014-09-24T16:13:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8854" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="382" href="http://testerhome.com/topics/1377/replies/8854/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="20" data-login="terryuki" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>好文，解决了我的困扰，谢谢。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply21">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply21">21楼</a> · <abbr class="timeago" title="2014-10-11T17:50:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9111" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/9111/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="21" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>感谢楼主，问题弄了好多天终于解决了这个报错的问题，但是又有一个新问题，运行点inspector 后appium就自动退出去了！手机可以正常启动了，这个又是什么问题引起的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply22">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply22">22楼</a> · <abbr class="timeago" title="2014-10-12T06:50:43+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9112" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/9112/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="22" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply21" class="at_floor" data-floor="21">#21楼</a> <a href="../xuxiujin" class="at_user" title="@xuxiujin"><i>@</i>xuxiujin</a> 啥问题都不描述，我怎么知道。。。 别让我猜。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply23">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply23">23楼</a> · <abbr class="timeago" title="2014-10-12T12:16:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9114" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/9114/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="23" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>appium 1.2.2 运行正常没有报错，点inspector 后record 的 界面出现了一下然后appium就异常关闭！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply24">
+    <div class="pull-left face"><a href="../ghlangbaobao"><img alt="Bbaa68d6cadb403bd49730291718ada4" class="uface" src="../avatar/bbaa68d6cadb403bd49730291718ada4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小狼宝宝" href="../ghlangbaobao">ghlangbaobao</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply24">24楼</a> · <abbr class="timeago" title="2014-10-12T14:58:05+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9115" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1696" href="http://testerhome.com/topics/1377/replies/9115/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="24" data-login="ghlangbaobao" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> Appium可以控制iOS内置的app么或其他从AppStore中下载的app？如果可以，是不是随便一个开发账号和证书就可以了？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply25">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply25">25楼</a> · <abbr class="timeago" title="2014-10-12T19:55:25+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9116" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/9116/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="25" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply24" class="at_floor" data-floor="24">#24楼</a> <a href="../ghlangbaobao" class="at_user" title="@ghlangbaobao"><i>@</i>ghlangbaobao</a> 当然不可以。 只有自己使用开发证书分发的才能。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply26">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply26">26楼</a> · <abbr class="timeago" title="2014-10-12T19:55:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9117" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/9117/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="26" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply23" class="at_floor" data-floor="23">#23楼</a> <a href="../xuxiujin" class="at_user" title="@xuxiujin"><i>@</i>xuxiujin</a> 没有日志我帮不了你。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply27">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply27">27楼</a> · <abbr class="timeago" title="2014-10-13T20:15:45+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9147" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/9147/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="27" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 连接真机测试时提示这个<br>
+info: <br>
+[IOS_SYSLOG_ROW ] Oct 13 20:05:19 jing lockdownd[52] &lt;Notice&gt;: 00241000 spawn_service_agent: Could not look up service in the map</p>
+
+<p>info: [IOS_SYSLOG_ROW ] Oct 13 20:05:19 jing lockdownd[52] &lt;Notice&gt;: 00241000 spawn_and_handle_checkin: Could not spawn the com.apple.instruments.remoteserver service agent:InvalidService</p>
+
+<p>info: [debug] [INST STDERR] 2014-10-13 20:05:18.903 instruments[2640:707] Failed to start Instruments daemon for 'iOS' on 'jing (v7.1.2)' (The service is invalid.)</p>
+
+<p>info: [IOS_SYSLOG_ROW ] Oct 13 20:05:19 jing lockdownd[52] &lt;Notice&gt;: 00241000 spawn_service_agent: Could not look up service in the map</p>
+
+<p>info: [debug] [INST STDERR] 2014-10-13 20:05:18.907 instruments[2640:707] Device 'Build Version 11D257, iPhone ID 2ad744c4d85acfe21415edcad3fd78a9009d12c4' is not setup as a development device.  Use Xcode to setup.</p>
+
+<p>info: [IOS_SYSLOG_ROW ] Oct 13 20:05:19 jing lockdownd[52] &lt;Notice&gt;: 00241000 spawn_and_handle_checkin: Could not spawn the com.apple.instruments.server service agent:InvalidService</p>
+
+<p>info: [debug] [INSTSERVER] Instruments exited with code 253</p>
+
+<p>info: [debug] Killall instruments</p>
+
+<p>info: [debug] Instruments crashed on startup<br>
+info: [debug] We exceeded the number of retries allowed for instruments to successfully start; failing launch<br>
+info: [debug] Stopping iOS log capture<br>
+info: [debug] Killing the simulator process</p>
+
+<p>info: [debug] Killing any other simulator daemons</p>
+
+<p>info: [debug] Cleaning app state.</p>
+
+<p>info: [debug] No folders found to remove</p>
+
+<p>error: Failed to start an Appium session, err was: Error: Instruments crashed on startup</p>
+
+<p>info: [debug] Cleaning up appium session<br>
+info: [debug] Error: Instruments crashed on startup<br>
+    at Instruments.onInstrumentsExit (/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-instruments/lib/instruments.js:344:31)<br>
+    at null.&lt;anonymous&gt; (/Applications/Appium.app/Contents/Resources/node_modules/appium/node_modules/appium-instruments/lib/instruments.js:281:12)<br>
+    at ChildProcess.emit (events.js:98:17)<br>
+    at Process.ChildProcess._handle.onexit (child_process.js:810:12)<br>
+info: [debug] Responding to client with error: {"status":33,"value":{"message":"A new session could not be created. (Original error: Instruments crashed on startup)","origValue":"Instruments crashed on startup"},"sessionId":null}<br>
+info: &lt;-- POST /wd/hub/session 500 25220.812 ms - 182 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply28">
+    <div class="pull-left face"><a href="../240385033"><img alt="1642" class="uface" src="../user/large_avatar/1642.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小虾米" href="../240385033">240385033</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply28">28楼</a> · <abbr class="timeago" title="2014-10-20T15:38:03+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9287" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1642" href="http://testerhome.com/topics/1377/replies/9287/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="28" data-login="240385033" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>楼主，我的问题是当我点inspector会弹出那个报错框，但是真机会启动程序，就是那个 录制界面不出来</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply29">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply29">29楼</a> · <abbr class="timeago" title="2014-10-20T16:27:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9289" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1377/replies/9289/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="29" data-login="lihuazhang" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply28" class="at_floor" data-floor="28">#28楼</a> <a href="../240385033" class="at_user" title="@240385033"><i>@</i>240385033</a> 哪个啊？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply30">
+    <div class="pull-left face"><a href="../240385033"><img alt="1642" class="uface" src="../user/large_avatar/1642.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小虾米" href="../240385033">240385033</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply30">30楼</a> · <abbr class="timeago" title="2014-10-20T18:20:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9292" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1642" href="http://testerhome.com/topics/1377/replies/9292/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="30" data-login="240385033" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a>   ios真机运行点inspector会报<img src="../photo/2014/d869b296948f27091ed656bd3587a168.png" alt=""><br>
+错误，但是手机上的程序启动了，也不会出<img src="../photo/2014/fb32f62596f8111ecada0dbd91c607f7.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply31">
+    <div class="pull-left face"><a href="../luanshuhan"><img alt="D242e6877ac6ad10507243f53e89c1e3" class="uface" src="../avatar/d242e6877ac6ad10507243f53e89c1e3.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luanshuhan">luanshuhan</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply31">31楼</a> · <abbr class="timeago" title="2014-11-04T13:47:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9634" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1848" href="http://testerhome.com/topics/1377/replies/9634/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="31" data-login="luanshuhan" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply27" class="at_floor" data-floor="27">#27楼</a> <a href="../xuxiujin" class="at_user" title="@xuxiujin"><i>@</i>xuxiujin</a> 请问一下你点inspector无法启动的那个第一个问题是怎么解决的啊？是通过那个命令行吗？ </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply32">
+    <div class="pull-left face"><a href="../lynncc"><img alt="8bc8577b776b592b618eb96aecb4f5ba" class="uface" src="../avatar/8bc8577b776b592b618eb96aecb4f5ba.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../lynncc">lynncc</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply32">32楼</a> · <abbr class="timeago" title="2014-11-07T13:07:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9724" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1821" href="http://testerhome.com/topics/1377/replies/9724/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="32" data-login="lynncc" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1377#reply30" class="at_floor" data-floor="30">#30楼</a>我也遇到同样问题，inspector无法启动。你解决了吗？怎么解决的？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply33">
+    <div class="pull-left face"><a href="../xuxiujin"><img alt="1591" class="uface" src="../user/large_avatar/1591.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxiujin" href="../xuxiujin">xuxiujin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1377#reply33">33楼</a> · <abbr class="timeago" title="2014-11-17T17:57:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9875" data-state="" data-type="Reply" href="1377#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1591" href="http://testerhome.com/topics/1377/replies/9875/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="33" data-login="xuxiujin" href="1377#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 我是直接跳回了1.2.0的版本就可以了，用1.2.3的版本老是连不上，解决的方法是因为之前放的是测试包，但是bundleID却是正式环境下的，所以匹配不上就报错了，后来找到原因了替换一下就可以了！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @shixue33 我想~~~在深圳找个好工作~~~找个男朋友！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1377#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

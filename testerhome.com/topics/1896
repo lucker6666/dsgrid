@@ -1,0 +1,396 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 你应该学会使用的 5 个 ruby 方法 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../easonhan007"><img alt="221" class="uface" src="../user/large_avatar/221.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">你应该学会使用的 5 个 ruby 方法</h1>
+  <div class="info leader">
+    <a class="node" href="node25">通用技术</a>
+     · 
+    <a data-author="true" data-name="乙醇" href="../easonhan007">easonhan007</a>
+     · 
+    于<abbr class="timeago" title="2015-01-19T10:40:32+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lihuazhang" href="../lihuazhang">lihuazhang</a> 于<abbr class="timeago" title="2015-01-19T10:43:29+08:00"></abbr>回复
+     · 
+    113次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>今天看到了这篇文章--<a href="https://blog.engineyard.com/2015/five-ruby-methods-you-should-be-using" target="_blank">Five Ruby Methods You Should Be Using</a>,感觉收获颇丰，先简单翻译一下先。</p>
+
+<p>作者写这篇文章的契机是在<a href="http://exercism.io/" target="_blank">Exercism</a>上看到了很多ruby代码可以用更好的方式去重构，因此他分享了一些冷门的但是非常有用的ruby方法。</p>
+<h4>Object#tap</h4>
+<p>你是否曾发现在某个对象上调用方法时返回值不是你所预期？你想返回这个对象，但是返回的时候又想对这个对象进行一些修改。比方说，你想给hash对象增加1个key value，这时候你需要调用Hash.[]方法，但是你想返回的是整个hash对象，而不是具体的某个value值，因此你需要显示的返回该对象。</p>
+<pre class="highlight ruby"><span class="k">def</span> <span class="nf">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+  <span class="n">params</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'bar'</span>
+  <span class="n">params</span>
+<span class="k">end</span>
+</pre>
+
+<p>最后一行的那个params显得有些多余了。</p>
+
+<p>我们可以用<code>Object#tap</code>方法来优化这个方案。</p>
+
+<p><a href="http://www.ruby-doc.org/core-2.1.5/Object.html#method-i-tap" target="_blank">tap</a>方法用起来非常简单,直接在某个对象上调用tap方法，然后就可以在代码块里yielded这个对象，最后这个对象本身会被返回。下面的代码演示了如何使用tap方法来重构刚才的实现。</p>
+<pre class="highlight ruby"><span class="k">def</span> <span class="nf">update_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+  <span class="n">params</span><span class="p">.</span><span class="nf">tap</span> <span class="p">{</span><span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="nb">p</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">'bar'</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre>
+
+<p>有很多地方都可以使用到<code>Object#tap</code>方法，一般的规律是对那些在对象上调用，希望返回对象，但是却没返回该对象本身的方法都适用。</p>
+<h4>Array#bsearch</h4>
+<p>我不清楚你的情况，但我经常在数组里去查找数据。ruby的enumerable模块提供了很多简单好用的方法<code>select, reject, find</code>。不过当数据源很庞大的时候，我开始对这些查找的性能表示忧桑。</p>
+
+<p>如果你正在使用ActiveRecord和非NO SQL的数据库，查询的算法复杂度是经过优化了的。但是有时候你需要从数据库里把所有的数据拉出来进行处理，比方说如果你加密了数据库，那就不能好好的写sql做查询了。</p>
+
+<p>这时候我会冥思苦想以找到一个最小的算法复杂度来筛选数据。如果你不了解算法复杂度，也就是这个O，请阅读<a href="https://justin.abrah.ms/computer-science/big-o-notation-explained.html" target="_blank"> Big-O Notation Explained By A Self-Taught Programmer</a>或［Big-O Complexity Cheat Sheet](<a href="http://bigocheatsheet.com/" rel="nofollow" target="_blank">http://bigocheatsheet.com/</a>)。</p>
+
+<p>一般来说，算法复杂度越低，程序运行的速度就越快。<code>O(1), O(log n), O(n), O(n log(n)), O(n^2), O(2^n), O(n!)</code>，在这个例子里，越往右算法复杂度是越高的。所以我们要让我们的算法接近左边的复杂度。</p>
+
+<p>当我们搜索数组的时候，一般第一个想到的方法便是<code>Enumerable#find</code>,也就是select方法。不过这个方法会搜索整个数组直到找到预期的结果。如果要找的元素在数组的开始部分，那么搜索的效率倒不会太低，但如果是在数据的末尾，那么搜索时间将是很可观的。find方法的算法复杂度是O(n)。</p>
+
+<p>更好的办法是使用(Array#bsearch)[<a href="http://www.ruby-doc.org/core-2.1.5/Array.html#method-i-bsearchO(log" rel="nofollow" target="_blank">http://www.ruby-doc.org/core-2.1.5/Array.html#method-i-bsearchO(log</a>]方法。该方法的算法复杂度是 n)。你可以查看<a href="http://fluxusfrequency.github.io/blog/2014/01/31/building-a-binary-search/" target="_blank">Building A Binary Search</a>这篇文章来该算法的原理。</p>
+
+<p>下面的代码显示了搜索50000000个数字时不同算法之间的性能差异。</p>
+<pre class="highlight plaintext">require 'benchmark'
+
+data = (0..50_000_000)
+
+Benchmark.bm do |x|
+  x.report(:find) { data.find {|number| number &gt; 40_000_000 } }
+  x.report(:bsearch) { data.bsearch {|number| number &gt; 40_000_000 } }
+end
+
+         user       system     total       real
+find     3.020000   0.010000   3.030000   (3.028417)
+bsearch  0.000000   0.000000   0.000000   (0.000006)
+</pre>
+
+<p>如你所见，<code>bsearch</code>要快的多。不过要注意的是bsearch要求搜索的数组是排序过的。尽管这个限制bsearch的使用场景，bsearch在显示生活中确实是有用武之地的。比如通过<code>created_at</code>字段来查找从数据库中取出的数据。</p>
+<h4>Enumerable#flat_map</h4>
+<p>考虑这种情况，你有个blog应用，你希望找到上个月有过评论的所有作者，你可以会这样做：</p>
+<pre class="highlight ruby"><span class="k">module</span> <span class="nn">CommentFinder</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_for_users</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">user_ids</span><span class="p">)</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">post</span><span class="o">|</span>
+      <span class="n">post</span><span class="p">.</span><span class="nf">comments</span><span class="p">.</span><span class="nf">map</span> <span class="o">|</span><span class="n">comment</span><span class="o">|</span>
+        <span class="n">comment</span><span class="p">.</span><span class="nf">author</span><span class="p">.</span><span class="nf">username</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+
+<p>得到的结果看起来会是这样的</p>
+<pre class="highlight ruby"><span class="o">[[[</span><span class="s1">'Ben'</span><span class="p">,</span> <span class="s1">'Sam'</span><span class="p">,</span> <span class="s1">'David'</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="s1">'Keith'</span><span class="o">]]</span><span class="p">,</span> <span class="o">[[]</span><span class="p">,</span> <span class="o">[</span><span class="kp">nil</span><span class="o">]]</span><span class="p">,</span> <span class="o">[[</span><span class="s1">'Chris'</span><span class="o">]</span><span class="p">,</span> <span class="o">[]]]</span>
+</pre>
+
+<p>不过你想得到的是所有作者，这时候你大概会使用<code>flatten</code>方法。</p>
+<pre class="highlight ruby"><span class="k">module</span> <span class="nn">CommentFinder</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_for_users</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">user_ids</span><span class="p">)</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">post</span><span class="o">|</span>
+      <span class="n">post</span><span class="p">.</span><span class="nf">comments</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">comment</span><span class="o">|</span>
+        <span class="n">comment</span><span class="p">.</span><span class="nf">author</span><span class="p">.</span><span class="nf">username</span>
+      <span class="p">}.</span><span class="nf">flatten</span>
+    <span class="p">}.</span><span class="nf">flatten</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+
+<p>另一个选择是使用<code>flat_map</code>方法。</p>
+<pre class="highlight ruby"><span class="k">module</span> <span class="nn">CommentFinder</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_for_users</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">user_ids</span><span class="p">)</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">flat_map</span> <span class="p">{</span> <span class="o">|</span><span class="n">post</span><span class="o">|</span>
+      <span class="n">post</span><span class="p">.</span><span class="nf">comments</span><span class="p">.</span><span class="nf">flat_map</span> <span class="p">{</span> <span class="o">|</span><span class="n">comment</span><span class="o">|</span>
+        <span class="n">comment</span><span class="p">.</span><span class="nf">author</span><span class="p">.</span><span class="nf">username</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+
+<p>这跟使用flatten方法没什么太大的不同，不过看起来会优雅一点，毕竟不需要反复调用flatten了。</p>
+<h4>Array.new with a Block</h4>
+<p>想当年我在一个技术训练营，我们的导师Jeff Casimir同志(<a href="http://turing.io/" target="_blank">Turing School</a>的创始人)让我们在一小时内写个Battleship游戏。这是极好的进行面向对象编程的练习，我们需要Rules，Players, Games和Boards类。</p>
+
+<p>创建代表Board的数据结构是一件非常有意思的事情。经过几次迭代我发现下面的方法是初始化8x8格子的最好方式：</p>
+<pre class="highlight ruby"><span class="k">class</span> <span class="nc">Board</span>
+  <span class="k">def</span> <span class="nf">board</span>
+    <span class="vi">@board</span> <span class="o">||=</span> <span class="nb">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'0'</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+
+<p>上面的代码是什么意思？当我们调用<code>Array.new</code>并传入了参数length，1个长度为length的数组将会被创建。</p>
+<pre class="highlight ruby"><span class="nb">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1">#=&gt; [nil, nil, nil, nil, nil, nil, nil, nil]</span>
+</pre>
+
+<p>当你传入一个block，这时候block的返回值会被当成是数组的每个元素。</p>
+<pre class="highlight ruby"><span class="nb">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'O'</span> <span class="p">}</span>
+<span class="c1">#=&gt; ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']</span>
+</pre>
+
+<p>因此，当你向block传入1个具有8个元素的数组时，你会得到8x8个元素的嵌套数组了。</p>
+
+<p>用Array#new加block的方式可以创建很多有趣和任意嵌套层级的数组。</p>
+<h4>&lt;=&gt;</h4>
+<p>这个方法就很常见了。简单来说这方法是判断左值和右值的关系的。如果左值大于右值返回1，相等返回0，否则返回－1。</p>
+
+<p>实际上<code>Enumerable#sort, Enumerable#max</code>方法都是基于&lt;=&gt;的。另外如果你定义了&lt;=&gt;，然后再include Comparable，你将免费得到&lt;=, &lt;, &gt;=, &gt;以及between方法。</p>
+
+<p>这是作者的在现实生活中所用到的例子：</p>
+<pre class="highlight ruby"><span class="k">def</span> <span class="nf">fix_minutes</span>
+  <span class="k">until</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="mi">60</span><span class="p">).</span><span class="nf">member?</span> <span class="n">minutes</span>
+    <span class="vi">@hours</span> <span class="o">-=</span> <span class="mi">60</span> <span class="o">&lt;=&gt;</span> <span class="n">minutes</span>
+    <span class="vi">@minutes</span> <span class="o">+=</span> <span class="mi">60</span> <span class="o">*</span> <span class="p">(</span><span class="mi">60</span> <span class="o">&lt;=&gt;</span> <span class="n">minutes</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="vi">@hours</span> <span class="sx">%= 24
+  self
+end
+
+</span></pre>
+
+<p>这个方法不是很好理解，大概的意思就是如果minutes超过60的话，小时数+1,等于60小时数不变，否则－1。</p>
+<h4>讨论</h4>
+<p>会的方法越多写出来的代码可能会更有表现力，边写代码边改进,另外多读rubydoc。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='你应该学会使用的 5 个 ruby 方法 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1896#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1896#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1896#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1896#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1896#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>1</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1896#reply1">1楼</a> · <abbr class="timeago" title="2015-01-19T10:43:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11769" data-state="" data-type="Reply" href="1896#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1896/replies/11769/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1896#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个我看过</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    帮忙推广 TesterHome 吧！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1896" title="你应该学会使用的 5 个 ruby 方法">你应该学会使用的 5 个 ruby 方法</a></li>
+    <li><a href="1860" title="阻止 JS 的冒泡事件">阻止 JS 的冒泡事件</a></li>
+    <li><a href="1838" title="小而美的 ghost driver">小而美的 ghost driver</a></li>
+    <li><a href="1814" title="定制 Gradle 编译时候遇到的坑，慢慢垒">定制 Gradle 编译时候遇到的坑，慢慢垒</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1896#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

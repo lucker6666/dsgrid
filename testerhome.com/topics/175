@@ -1,0 +1,374 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Ten tips for writing better Cucumber steps &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Ten tips for writing better Cucumber steps</h1>
+  <div class="info leader">
+    <a class="node" href="node16">自动化测试</a>
+     · 
+    <a data-author="true" data-name="恒温" href="../lihuazhang">lihuazhang</a>
+     · 
+    于<abbr class="timeago" title="2013-11-04T13:33:25+08:00"></abbr>发布
+     · 
+    287次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>原文：<a href="http://coryschires.com/ten-tips-for-writing-better-cucumber-steps/" rel="nofollow" target="_blank">http://coryschires.com/ten-tips-for-writing-better-cucumber-steps/</a></p>
+<h4>灵活使用单复数</h4>
+<p>紧接着在以 <code>s</code> 结尾的复数后面加一个<code>?</code>，比如</p>
+<pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^the users? should receive an email$/</span> <span class="k">do</span>
+<span class="c1"># ...</span>
+<span class="k">end</span>
+</pre>
+<p>这个 <code>?</code> 其实就是正则表达式的问号，可以表示重复前面内容的0次或一次，也就要么不出现，要么出现一次。所以上面的例子可以匹配 <code>user</code> 和 <code>users</code>。</p>
+<h4>使用不必被捕获的元组，可以使 steps 读起来更自然</h4>
+<p>在元组前面加 <code>?:</code>， 比如： <code>(?:some text)</code>。 匹配 some text, 但不捕获匹配的文本，也不给此分组分配组号。这表示这个括号里的东西不会被当作参数传递给你的 <code>step definition</code>。 比如</p>
+<pre class="highlight ruby"><span class="no">And</span> <span class="sr">/^once the files? (?:have|has) finished processing$/</span> <span class="k">do</span>
+<span class="c1"># ...</span>
+<span class="k">end</span>
+</pre>
+<p>这可以匹配：</p>
+<pre class="highlight plaintext">once the file have finished processing (不合理)
+once the files have finished processing
+once the file has finished processing
+once the files has finished processing (不合理)
+</pre>
+<p>或者</p>
+<pre class="highlight ruby"><span class="no">When</span> <span class="sr">/^(?:I|they) create a profile$/</span> <span class="k">do</span>
+<span class="c1"># ...</span>
+<span class="k">end</span>
+</pre>
+<p>这可以匹配：</p>
+<pre class="highlight plaintext">I create a profile
+they create a profile
+</pre><h4>捕获一个选择性的元组来合并 step definition</h4>
+<p>我们常常会用到 <code>是</code> 或者 <code>不是</code> 的判断。 比如</p>
+<pre class="highlight plaintext">I should see the message
+I should not see the message
+</pre>
+<p>那其实我们可以把 not 做为一个供选择的元组，合并这两个 step。比如：</p>
+<pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^I should( not)? see the following columns: "([^"]*)"$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">negate</span><span class="p">,</span> <span class="n">columns</span><span class="o">|</span>
+  <span class="n">within</span><span class="p">(</span><span class="s1">'table thead tr'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">columns</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">', '</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">column</span><span class="o">|</span>
+      <span class="n">negate</span> <span class="p">?</span> <span class="n">page</span><span class="p">.</span><span class="nf">should_not</span><span class="p">(</span><span class="n">have_content</span><span class="p">(</span><span class="n">column</span><span class="p">))</span> <span class="p">:</span> <span class="n">page</span><span class="p">.</span><span class="nf">should</span><span class="p">(</span><span class="n">have_content</span><span class="p">(</span><span class="n">column</span><span class="p">))</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre><h4>不要把所有的要匹配的短语都用括号括起来</h4>
+<p>常常看到这样的 step：</p>
+<pre class="highlight ruby"><span class="no">Given</span> <span class="n">I</span> <span class="n">have</span> <span class="s2">"potatoes"</span> <span class="k">in</span> <span class="n">my</span> <span class="n">cart</span>
+</pre>
+<p>这个括号很形象直观，突出了 potatoes 是我要传递的参数。但是：</p>
+<pre class="highlight ruby"><span class="no">Given</span> <span class="n">I</span> <span class="n">have</span> <span class="s2">"7"</span> <span class="n">items</span> <span class="k">in</span> <span class="n">my</span> <span class="n">cart</span>
+</pre>
+<p>这样就很糟糕了。数字类型的还是建议不需要用括号括起来。</p>
+<h4>使用 <code>transforms</code> 写出更加聪明干净的正则表达式</h4>
+<p>对于数字的处理，我们一般会这样：</p>
+<pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^I have (\d+) items? in my cart$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">item_count</span><span class="o">|</span>
+  <span class="n">item_count</span><span class="p">.</span><span class="nf">to_i</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre>
+<p>Cucumber 把任何东西当成字符串传递。所以你必须谨记，在传递数字并进行比较的时候，要用 <code>to_i</code>。</p>
+
+<p>但是，自己来转就会很容易忘记。所以 Cucumber 提供了  <code>Transform</code>。</p>
+<pre class="highlight ruby"><span class="no">CAPTURE_A_NUMBER</span> <span class="o">=</span> <span class="no">Transform</span> <span class="sr">/^\d+$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">number</span><span class="o">|</span>
+  <span class="n">number</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="k">end</span>
+</pre><pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^I have (</span><span class="si">#{</span><span class="no">CAPTURE_A_NUMBER</span><span class="si">}</span><span class="sr">) items? in my cart$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">item_count</span><span class="o">|</span>
+  <span class="n">item_count</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre>
+<p>这样我们就不用主动的调用 <code>to_i</code> 方法，而且因为 <code>CAPTURE_A_NUMBER</code>  的抽离，我们也更好维护这段匹配。</p>
+<h4>定义方法来压缩 step definition</h4>
+<p>去冗的一个方法就是把重复的步骤或者重复的定义变成一个方法。比如，得到当前用户：</p>
+<pre class="highlight ruby"><span class="k">def</span> <span class="nf">current_user</span>
+  <span class="no">User</span><span class="p">.</span><span class="nf">find_by_email</span><span class="p">(</span><span class="s1">'current_user@example.com'</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+<p>或者把有想通逻辑的步骤包装起来。比如：</p>
+<pre class="highlight ruby"><span class="k">def</span> <span class="nf">within_lightbox</span><span class="p">(</span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="nb">sleep</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span> <span class="p">)</span>
+  <span class="nb">sleep</span><span class="p">(</span><span class="n">opts</span><span class="o">[</span><span class="ss">:sleep</span><span class="o">]</span><span class="p">)</span>
+  <span class="n">within_frame</span><span class="p">(</span><span class="s2">"prettyPhotoIframe"</span><span class="p">)</span> <span class="p">{</span> <span class="k">yield</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre>
+<p>这样我们的 step 定义就可以干净优美：</p>
+<pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^some stuff should be visible in the lightbox$/</span> <span class="k">do</span>
+  <span class="n">within_lightbox</span> <span class="p">{</span> <span class="n">page</span><span class="p">.</span><span class="nf">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Some Stuff'</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre>
+<p>我们可以把这些方法加入到 <code>features/support/[whatever].rb</code>  里去， cucumber 在运行的时候，会把这些方法读入到它的 <code>world</code> 中去。</p>
+
+<p>当然，有得必有失，你封装了逻辑，也就使得步骤不是那么直观了，想要明白它在做什么，就必须到你定义的方法里去找。所以利弊要自己权衡。</p>
+<h4>在 step 里面使用 step</h4>
+<p>比如：</p>
+<pre class="highlight ruby">
+<span class="no">When</span> <span class="sr">/^the request for an expedited decision should be canceled$/</span> <span class="k">do</span>
+  <span class="n">manuscript</span><span class="p">.</span><span class="nf">should_not</span> <span class="n">be_expedited</span>
+  <span class="n">step</span> <span class="sx">%{"#{current_user.email}" should receive an email with subject "Expedited decision request canceled"}</span>
+<span class="k">end</span>
+
+</pre>
+<p>但也不要乱用，比如：</p>
+<pre class="highlight ruby"><span class="no">When</span> <span class="sr">/^I update the email template to read "([^"]*)"$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">text</span><span class="o">|</span>
+  <span class="n">fill_in</span><span class="p">(</span><span class="s2">"email_template[text], with: text)
+  click_button("</span><span class="no">Save</span> <span class="n">changes</span> <span class="n">and</span> <span class="n">close</span><span class="s2">")
+  # Rather than...
+  # step %{I fill in "</span><span class="n">email_template</span><span class="o">[</span><span class="n">text</span><span class="o">]</span><span class="s2">" with "</span><span class="c1">#{text}"}</span>
+  <span class="c1"># step %{I press "Save changes and close"}</span>
+<span class="k">end</span>
+</pre><h4>不需要一定要使用 <code>^</code> 或者 <code>$</code> 来匹配</h4>
+<p>通常我们会这样写：</p>
+<pre class="highlight ruby"><span class="no">Given</span> <span class="sr">/^I am an admin user$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">item_count</span><span class="o">|</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</pre>
+<p>我们使用<code>^</code> 或者 <code>$</code> 来固定我们要匹配的东西。上面的例子就是完全匹配 <code>I am an admin user</code>， 多一个少一个都不行。大多数情况下，这样很好。但是：</p>
+<pre class="highlight ruby"><span class="no">Then</span> <span class="sr">/^wait (\d+) seconds/</span> <span class="k">do</span> <span class="o">|</span><span class="n">seconds</span><span class="o">|</span>
+  <span class="nb">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">.</span><span class="nf">to_i</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+<p>有时候，其实不必要固定结尾。这样，上面的语句就可以匹配：</p>
+<pre class="highlight plaintext">Then wait 2 seconds for the revenue statistics to finish loading
+Then wait 5 seconds while the document is converted
+</pre><h4>尽量使用 table 来包含你的数据</h4>
+<p>一旦，测试数据很大，就请使用 table，否则等待你的就是重复的步骤。</p>
+<pre class="highlight ruby"><span class="no">Given</span> <span class="s2">"Frankie's Hams"</span> <span class="n">are</span> <span class="n">selling</span> <span class="k">for</span> <span class="vg">$25</span><span class="p">:</span>
+<span class="no">And</span> <span class="n">the</span> <span class="n">following</span> <span class="n">orders</span> <span class="n">have</span> <span class="n">been</span> <span class="ss">placed:
+</span><span class="o">|</span> <span class="n">buyer</span> <span class="n">email</span>      <span class="o">|</span> <span class="n">quantity</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">eddy</span><span class="vi">@example</span><span class="p">.</span><span class="nf">com</span> <span class="o">|</span> <span class="mi">3</span>        <span class="o">|</span>
+<span class="o">|</span> <span class="n">matt</span><span class="vi">@example</span><span class="p">.</span><span class="nf">com</span> <span class="o">|</span> <span class="mi">2</span>        <span class="o">|</span>
+</pre><h4>使用小技巧可以，但是不要得不偿失</h4>
+<p>Cucumber 有很多小技巧，但是请记住，你去掉了重复，就必然增加了复杂。比如</p>
+<pre class="highlight ruby"><span class="no">Given</span> <span class="sr">/^(?:I|they) have opened (?:a|an) ([^\s]+) invitation$/</span> <span class="k">do</span> <span class="o">|</span><span class="n">invitation_type</span><span class="o">|</span>
+<span class="n">invitation</span> <span class="o">=</span> <span class="no">Factory</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">invitation_type</span><span class="si">}</span><span class="s2">_invitation"</span><span class="p">.</span><span class="nf">to_sym</span><span class="p">,</span> <span class="ss">recipient: </span><span class="n">current_user</span><span class="p">,</span> <span class="ss">to: </span><span class="n">current_user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span>
+<span class="n">reset_mailer</span>
+<span class="nb">eval</span> <span class="s2">"ApplicationMailer.invite_</span><span class="si">#{</span><span class="n">invitation_type</span><span class="si">}</span><span class="s2">(invitation).deliver"</span>
+<span class="n">open_email</span><span class="p">(</span><span class="n">current_user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+<p>上面的语句可以匹配：</p>
+<pre class="highlight ruby"><span class="no">Given</span> <span class="n">I</span> <span class="n">have</span> <span class="n">opened</span> <span class="n">a</span> <span class="n">reviewer</span> <span class="n">invitation</span>
+<span class="no">Given</span> <span class="n">I</span> <span class="n">have</span> <span class="n">opened</span> <span class="n">an</span> <span class="n">editor</span> <span class="n">invitation</span>
+</pre>
+<p>但是这个表达式实在过于复杂，理解起来也很困难，不如拆开成两个更好。</p>
+
+<p>这篇文章写的不错，在我在公司项目实践中都运用到了。不过不得不说一句，测试工具再好，也需要开发的配合。如果代码本身就复杂或者重复实现，那你也没办法。</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Ten tips for writing better Cucumber steps via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="175#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="175#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="175#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="175#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="175#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div class="no_result">
+      暂无回复。
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @chuyaoyao 希望父母身体健康，攒钱涨工资把父母接到身边照顾
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1823" title="还没被玩坏的 robobrowser(8)——robobrowser 的实现原理">还没被玩坏的 robobrowser(8)——robo...</a></li>
+    <li><a href="1822" title="还没被玩坏的 robobrowser(7)——表单操作">还没被玩坏的 robobrowser(7)——表单操作</a></li>
+    <li><a href="1821" title="还没被玩坏的 robobrowser(6)——follow_link">还没被玩坏的 robobrowser(6)——foll...</a></li>
+    <li><a href="1820" title="还没被玩坏的 robobrowser(5)——Beautiful Soup 的过滤器">还没被玩坏的 robobrowser(5)——Beau...</a></li>
+    <li><a href="1819" title="还没被玩坏的 robobrowser(4)——从页面上抓取感兴趣的内容">还没被玩坏的 robobrowser(4)——从页面上...</a></li>
+    <li><a href="1813" title="还没被玩坏的 robobrowser(3)——简单的 spider">还没被玩坏的 robobrowser(3)——简单的 ...</a></li>
+    <li><a href="1812" title="robobrowser（简单好用的爬虫和 webtest 库）系列教程汇总贴">robobrowser（简单好用的爬虫和 webtes...</a></li>
+    <li><a href="1801" title="还没被玩坏的 robobrowser(2)——安装及快速开始">还没被玩坏的 robobrowser(2)——安装及快速开始</a></li>
+    <li><a href="1800" title="还没被玩坏的 robobrowser(1)-简介">还没被玩坏的 robobrowser(1)-简介</a></li>
+    <li><a href="396" title="有什么可以抓取 iOS 模拟器网络数据的方法没？">有什么可以抓取 iOS 模拟器网络数据的方法没？</a></li>
+    <li><a href="380" title="老问题了， 控件明明可以看见，却不能点击。">老问题了， 控件明明可以看见，却不能点击。</a></li>
+    <li><a href="268" title="appium selendroid 下遇到的问题">appium selendroid 下遇到的问题</a></li>
+    <li><a href="232" title="接口测试方法">接口测试方法</a></li>
+    <li><a href="186" title="灵异事件之二 (重新整理)">灵异事件之二 (重新整理)</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="175#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

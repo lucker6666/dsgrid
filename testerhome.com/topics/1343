@@ -1,0 +1,528 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 以测试集方式运行测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">以测试集方式运行测试</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="zhangyang" href="../hobbs">hobbs</a>
+     · 
+    于<abbr class="timeago" title="2014-09-01T14:51:54+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xuxu" href="../xuxu">xuxu</a> 于<abbr class="timeago" title="2014-09-03T16:43:12+08:00"></abbr>回复
+     · 
+    617次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>我上一篇文章介绍了我的搭建appium手机自动化测试环境（ios）的经验。环境搭建好了就可以编写具体的测试业务脚本了。当脚本编写完成当时候，我们一般会得到多个脚本，而我们要运行一次完整等测试需要将每个脚本都运行一次。如果单独的一个一个的去执行脚本是很不方便的。最好是能通过只运行一个脚本，就将所有业务测试脚本都运行一遍。测试集正好解决了这个问题。<br>
+具体的实现方式是，我们通过新建一个测试集并将若干具体的业务测试脚本加入到测试集中。然后通过运行包含该测试集的脚本来运行整个测试，这样我们就可以达到只运行一个脚本来运行整个自动化回归测试的目的。</p>
+
+<p>好，下面就以实际的例子来给读者简单介绍一下具体如何以测试集方式运行整个测试。<br>
+1.首先，我们需要编写单独的测试业务脚本，例如模块1我们写了一个test01.py脚本，脚本中的测试类名称为Module1_cls；模块2我们写了test02.py脚本，测试类名称为Module2_cls；模块3写了个test03.py脚本，测试类名称为Module3.cls（具体appium的python测试脚本的内容格式和编写方法，请自行参考appium的官方文档，有中文版）。这样就得到三个单独的业务测试脚本<br>
+test01.py<br><br>
+test02.py<br>
+test03.py<br>
+然后我们新建一个main.py，最终我们要实现的是通过运行main.py脚本来实现3个具体测试业务脚本的执行。<br>
+请看具体实现代码：</p>
+<pre class="highlight python"><span class="c"># -*- coding:utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">selenium</span>
+<span class="kn">import</span> <span class="nn">unittest</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">HTMLTestRunner</span>
+
+<span class="kn">from</span> <span class="nn">test01</span> <span class="kn">import</span> <span class="n">Module1_cls</span>
+<span class="kn">from</span> <span class="nn">test02</span> <span class="kn">import</span> <span class="n">Module2_cls</span>
+<span class="kn">from</span> <span class="nn">test03</span> <span class="kn">import</span> <span class="n">Module3_cls</span>
+
+<span class="k">def</span> <span class="nf">suit_run</span><span class="p">():</span>
+
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="s">"/Users/hobbs/Desktop/ios-auto-test/reports/report01.html"</span><span class="p">,</span><span class="s">"wb"</span><span class="p">)</span>
+    <span class="n">suit</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">()</span>
+    <span class="n">suit</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">Module1_cls</span><span class="p">))</span>
+    <span class="n">suit</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">Module2_cls</span><span class="p">))</span>
+    <span class="n">suit</span><span class="o">.</span><span class="n">addTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">defaultTestLoader</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">Module3_cls</span><span class="p">))</span>
+
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">HTMLTestRunner</span><span class="o">.</span><span class="n">HTMLTestRunner</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">fp</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s">"report_of_xxx"</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s">"hobbs report"</span><span class="p">)</span>
+    <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suit</span><span class="p">)</span>
+
+<span class="n">suit_run</span><span class="p">()</span>
+</pre>
+
+<p>如上代码所示，我们需要通过 from ...... import ......语句将相关业务测试脚本中的测试类引入，这里说一下采用代码中的写法需要test01.py,test02.py,test03.py脚本与main.py脚本在同一个文件夹下或者上述三个脚本所在路径已经添加到python搜索路径中，具体到添加方式是在python命令行交互模式下通过sys.path.append('your_path')语句添加，当然执行这个语句之前别忘了 import sys。跑偏了继续说测试集。。。<br>
+上面的代码中suit_ run()函数的作用就是新建一个测试报告文件和测试集并运行，代码中通过测试集的addTest() 函数来添加具体的测试脚本中的各测试类。添加完成后运行该测试集就可以实现一次性连续运行多个业务脚本的目的。<br>
+其中runner.run(suit)语句就是运行测试集的语句，测试集运行的过程中会不断将测试的结果写入定义的report01.html文件中，最后当测试集运行完成后，各个业务测试脚本的执行结果就都写入到report01.html文件里了，我们通过查看该文件可以了解本次测试执行的结果。</p>
+
+<p>ps：后面我会向大家介绍一下我的持续集成方面的一些实践经验，找时间整理下，这个算是做个小铺垫吧~</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='以测试集方式运行测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1343#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1343#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1343#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1343#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1343#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>11</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply1">1楼</a> · <abbr class="timeago" title="2014-09-01T20:38:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8241" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1343/replies/8241/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>不过我觉得最好的方式不应该是硬编码. 这样不够灵活</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyang" href="../hobbs">hobbs</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply2">2楼</a> · <abbr class="timeago" title="2014-09-01T21:28:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8243" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1065" href="http://testerhome.com/topics/1343/replies/8243/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="hobbs" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1343#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 之前在具体弄这个的时候，想的是以一个list形式来将各个测试脚本的名字存在一个外部txt文件中（这样改起来方便一点），然后在函数中通过while或者for循环语句来addTest（）就好了，但是我不知道怎么解决引入脚本的问题，即不知道怎么动态的from。。。import。。。思寒大神有什么好方法没？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../luis"><img alt="213" class="uface" src="../user/large_avatar/213.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../luis">luis</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply3">3楼</a> · <abbr class="timeago" title="2014-09-02T07:19:28+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8246" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="213" href="http://testerhome.com/topics/1343/replies/8246/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="luis" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../hobbs" class="at_user" title="@hobbs"><i>@</i>hobbs</a> 放xml会好点，引入个XML module处理下就好！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyang" href="../hobbs">hobbs</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply4">4楼</a> · <abbr class="timeago" title="2014-09-02T09:35:30+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8250" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1065" href="http://testerhome.com/topics/1343/replies/8250/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="hobbs" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1343#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../luis" class="at_user" title="@luis"><i>@</i>luis</a> 好的，找时间按你这思路研究一下：）</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../cy_suncheng"><img alt="703" class="uface" src="../user/large_avatar/703.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="CY" href="../cy_suncheng">cy_suncheng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply5">5楼</a> · <abbr class="timeago" title="2014-09-02T11:05:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8258" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="703" href="http://testerhome.com/topics/1343/replies/8258/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="cy_suncheng" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我写的python 也是这样硬编码，改起来确实比较麻烦，如果能像TestNG那样，直接XML就最好了，不过还在研究</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply6">6楼</a> · <abbr class="timeago" title="2014-09-02T14:33:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8267" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1343/replies/8267/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="vigossjjj" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这是我在项目中定义的xml，当作testsuite，之后程序读取这个文件动态加载各个模块，这样应该比较灵活<img src="../photo/2014/9e48dfb4d011400d94e0c0c03f23e291.png" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../jacky"><img alt="212" class="uface" src="../user/large_avatar/212.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../jacky">jacky</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply7">7楼</a> · <abbr class="timeago" title="2014-09-02T16:47:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8283" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="212" href="http://testerhome.com/topics/1343/replies/8283/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="jacky" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1343#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../vigossjjj" class="at_user" title="@vigossjjj"><i>@</i>vigossjjj</a>  testcase 节点的值是Python文件名吧？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyang" href="../hobbs">hobbs</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply8">8楼</a> · <abbr class="timeago" title="2014-09-02T16:52:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8284" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1065" href="http://testerhome.com/topics/1343/replies/8284/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="hobbs" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1343#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../jacky" class="at_user" title="@jacky"><i>@</i>jacky</a> 我看着更像类名，而且貌似是java</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply9">9楼</a> · <abbr class="timeago" title="2014-09-02T17:58:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8287" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1343/replies/8287/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="vigossjjj" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1343#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../jacky" class="at_user" title="@jacky"><i>@</i>jacky</a> <a href="../hobbs" class="at_user" title="@hobbs"><i>@</i>hobbs</a> 可以，我这个demo xml是我们android的是包+testclass（Robotium） iOS的也一样只不过指的是python包+模块（Appium）。这只是一个demo，看你们自己怎么去定义了。思想就是xml动态加载</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../xuxu"><img alt="784" class="uface" src="../user/large_avatar/784.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="xuxu" href="../xuxu">xuxu</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply10">10楼</a> · <abbr class="timeago" title="2014-09-03T16:43:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8319" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="784" href="http://testerhome.com/topics/1343/replies/8319/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="xuxu" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../hobbs" class="at_user" title="@hobbs"><i>@</i>hobbs</a> 介绍下python+appium+jenkins吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../hobbs"><img alt="1065" class="uface" src="../user/large_avatar/1065.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="zhangyang" href="../hobbs">hobbs</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1343#reply11">11楼</a> · <abbr class="timeago" title="2014-09-03T16:47:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8320" data-state="" data-type="Reply" href="1343#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1065" href="http://testerhome.com/topics/1343/replies/8320/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="hobbs" href="1343#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1343#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../xuxu" class="at_user" title="@xuxu"><i>@</i>xuxu</a> 虽然jenkins很好很强大，但是我在mac上并没有用jenkins做持续集成，不过介绍下是可以的，呵呵~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscar: 每个人都有每个人的追求和生活方式；我们可以什么都没有，没房、没车、没脑瓜，但是我们得有做人的尊严。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1343#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | [Share]如何在命令行中运行 UIAutomation &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">[Share]如何在命令行中运行 UIAutomation</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+     · 
+    于<abbr class="timeago" title="2014-09-24T16:21:42+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="xiaomayi0323" href="../xiaomayi0323">xiaomayi0323</a> 于<abbr class="timeago" title="2014-12-10T16:11:08+08:00"></abbr>回复
+     · 
+    847次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <h4>基本介绍</h4>
+<p>有时候我们需要更快捷的运行UIAutomation，下面就给大家分享一下在Command Line中运行UIAutomation的方法</p>
+<pre class="highlight plaintext">instruments -w deviceID -t defaultTemplateFilePath targetAppName -e UIASCRIPT scriptFilePath -e UIARESULTSPATH resultsFolderPath
+</pre>
+
+<p>各参数释义：</p>
+
+<ul>
+<li>deviceID：就是通常说的UDID，一个40位的设备唯一识别码，可以在Xcode--organizer中的devices中找到（注意：最新的Xcode6已经把devices从organizer中分离了出来）</li>
+<li><strong>defaultTemplateFilePath：Automation的默认模板文件路径，如果你使用的是Xcode5，其路径在“/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.bundle/Contents/Resources/Automation.tracetemplate”,如果你已经升级到了Xcode6，则其路径就变成了“/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.xrplugin/Contents/Resources/Automation.tracetemplate”。</strong></li>
+<li>targetAppName：应用的名称，也就是应用的Bundle Identifier，在Xcode General中可以看到</li>
+<li>scriptFilePath：需要执行的脚本路径</li>
+<li>resultsFolderPath：需要输出的结果路径</li>
+</ul>
+<h4>实践</h4><h4>如果你使用的是Xcode5</h4>
+<p>模拟器（在模拟器上运行不需要UDID，但是需要将targetAppName替换成具体的模拟器的沙盒应用程序，在Xcode5下模拟器的沙盒应用程序位于 /Users/Your_UserName/Library/Application Support/iPhone Simulator/Simulator_Version/Applications中）</p>
+<pre class="highlight plaintext">instruments -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.xrplugin/Contents/Resources/Automation.tracetemplate "/Users/kingson/Library/Application Support/iPhone Simulator/7.1/Applications/C28DDC1B-810E-43BD-A0E7-C16A680D8E15/Testapp.app" -e UIASCRIPT /Users/kingson/PycharmProjects/ynm3k/robot4ios/util/logtree.js -e UIARESULTSPATH /Users/kingson/UIAutomationResult
+</pre>
+
+<p>真机</p>
+<pre class="highlight plaintext">instruments -w ae04ee552548410bad958135304cd519******** -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.bundle/Contents/Resources/Automation.tracetemplate Testapp -e UIASCRIPT /Users/kingson/PycharmProjects/ynm3k/robot4ios/util/logtree.js -e UIARESULTSPATH /Users/kingson/UIAutomationResult
+</pre>
+<h4>如果你使用的是Xcode6</h4>
+<p>模拟器（注意：在Xcode6中，模拟器的沙盒应用程序位置变成了 /Users/Your_UserName/Library/Developer/CoreSimulator/Devices/Simulator_UDID/data/Containers/Bundle/Application中）</p>
+<pre class="highlight plaintext">instruments -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.xrplugin/Contents/Resources/Automation.tracetemplate "/Users/kingson/Library/Developer/CoreSimulator/Devices/E48D90E6-8313-4318-8064-48B16462AD8E/data/Containers/Bundle/Application/35A7348C-059D-42BA-86F4-ADFFD76DC182/Testapp.app" -e UIASCRIPT /Users/kingson/PycharmProjects/ynm3k/robot4ios/util/logtree.js -e UIARESULTSPATH /Users/kingson/UIAutomationResult
+</pre>
+
+<p>真机</p>
+<pre class="highlight plaintext">instruments -w ae04ee552548410bad958135304cd519******** -t /Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/PlugIns/AutomationInstrument.xrplugin/Contents/Resources/Automation.tracetemplate Testapp -e UIASCRIPT /Users/kingson/PycharmProjects/ynm3k/robot4ios/util/logtree.js -e UIARESULTSPATH /Users/kingson/UIAutomationResult
+</pre>
+<h4>其他注意点&amp;问题</h4>
+<ul>
+<li>运行时需要关闭设备的密码验证，否则会提示：device locked</li>
+<li>如果指定目录，就会在指定目录中生成一个Run 1的文件，其中是一些运行的截图以及Plist文件以及在当前目录下生成一个instrumentscli.trace文件，如果没有指定输出结果路径或者指定的路径不存在，默认只会在当前目录生成一个instrumentscli.trace文件</li>
+</ul>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='[Share]如何在命令行中运行 UIAutomation via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1432#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1432#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1432#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1432#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1432#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>7</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../vigossjjj"><img alt="209" class="uface" src="../user/large_avatar/209.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="vigossjjj" href="../vigossjjj">vigossjjj</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply1">1楼</a> · <abbr class="timeago" title="2014-09-24T23:18:26+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8866" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="209" href="http://testerhome.com/topics/1432/replies/8866/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="vigossjjj" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>nice！尤其xcode6的执行变更很有用！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply2">2楼</a> · <abbr class="timeago" title="2014-09-25T10:25:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="8867" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1432/replies/8867/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <pre class="highlight shell">
+➜  ~  instruments -s devices
+Known Devices:
+lihua的MacBook Air <span class="o">[</span>DD126F87-5B14-55FA-9045-CBC6064F5299]
+Resizable iPad <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>4858F598-29D2-4E53-9E36-53747C480D1A]
+Resizable iPhone <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>E71308F7-2B81-450F-9FB1-0B48FC0D8507]
+iPad 2 <span class="o">(</span>7.0.3 Simulator<span class="o">)</span> <span class="o">[</span>E8E8A927-7475-4E64-8616-1782E67B1873]
+iPad 2 <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>28D3DCB1-60EA-4777-A558-D7F55867F737]
+iPad Air <span class="o">(</span>7.0.3 Simulator<span class="o">)</span> <span class="o">[</span>AFB4A797-AC8B-44D9-956A-28309FD43011]
+iPad Air <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>16E78C88-0E58-4A21-97B1-C9F2E7761166]
+iPad Retina <span class="o">(</span>7.0.3 Simulator<span class="o">)</span> <span class="o">[</span>C83CB313-BB13-48B8-A989-F3FA765D77F5]
+iPad Retina <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>C29FE5F2-A4FE-45E2-A8A0-DC96782639B8]
+iPhone 4s <span class="o">(</span>7.0.3 Simulator<span class="o">)</span> <span class="o">[</span>5525F839-57C4-4643-AB9D-8336AA23F21E]
+iPhone 4s <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>BF94BA47-9EF2-49BD-ACB6-359381A09408]
+iPhone 5 <span class="o">(</span>7.0.3 Simulator<span class="o">)</span> <span class="o">[</span>4A1B0D01-A5EC-414F-8140-C1ABF2E46E80]
+iPhone 5 <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>83FD5F96-AC57-41B1-A34D-1223E4DF33CF]
+iPhone 5s <span class="o">(</span>7.0.3 Simulator<span class="o">)</span> <span class="o">[</span>531C27F2-0683-4EB9-9089-153AE59EEE62]
+iPhone 5s <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>0BB7D2C7-11A6-4629-8EE4-5CC19BD9AD3A]
+iPhone 6 <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>176E7205-CE5A-44CF-ACC0-B7A37A6A513F]
+iPhone 6 Plus <span class="o">(</span>8.0 Simulator<span class="o">)</span> <span class="o">[</span>2D04C98E-230F-4CF2-9DA8-6911F7372EE5]
+
+</pre>
+
+<p>加一个命令</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply3">3楼</a> · <abbr class="timeago" title="2014-11-18T18:16:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="1" data-id="9897" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>1 人喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/1432/replies/9897/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="davidyang" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个命令行针对xcode6.1版本需要优化了吗？<br>
+我执行的结果是不管模拟器还是真机都需要加instruments -w  xxxxxxx －t xxxxxx这样 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply4">4楼</a> · <abbr class="timeago" title="2014-11-18T18:50:38+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9898" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1432/replies/9898/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="xiaomayi0323" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1432#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../davidyang" class="at_user" title="@davidyang"><i>@</i>davidyang</a> <br>
+6.1相比较6.0或6.0.1有什么具体变化吗？我没有具体关注过UIAutomation在6.1的表现。<br>
+如果是模拟器是不需要加-w xxxxxxx的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply5">5楼</a> · <abbr class="timeago" title="2014-12-10T14:44:39+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10458" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/1432/replies/10458/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="davidyang" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1432#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply6">6楼</a> · <abbr class="timeago" title="2014-12-10T14:45:51+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10459" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/1432/replies/10459/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="davidyang" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1432#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../xiaomayi0323" class="at_user" title="@xiaomayi0323"><i>@</i>xiaomayi0323</a> 6.1中模拟器上运行也是要加-w xxxxxxx， 这个试过很多次，如果不加会出错的，所以只能加上了，当然如果有更好的方法，欢迎回帖吧</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../xiaomayi0323"><img alt="E7ffbe0f04e5cedac6b9ae6bb2dcfe56" class="uface" src="../avatar/e7ffbe0f04e5cedac6b9ae6bb2dcfe56.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="唐僧之妈" href="../xiaomayi0323">xiaomayi0323</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1432#reply7">7楼</a> · <abbr class="timeago" title="2014-12-10T16:11:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10475" data-state="" data-type="Reply" href="1432#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="191" href="http://testerhome.com/topics/1432/replies/10475/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="xiaomayi0323" href="1432#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1432#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../davidyang" class="at_user" title="@davidyang"><i>@</i>davidyang</a> 非常感谢，我没有在6.1上通过命令行运行过模拟器，可能是因为现在模拟器也加上了Identifier，所以运行时也要加上-w xxxxxxx</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @rabbit 希望能够过上每天除了工作还有生活的日子~~惬意。。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1432#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

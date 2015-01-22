@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TesterHome 社区 前端测试 节点</title>
+    <link>http://testerhome.com/</link>
+    <description>TesterHome 社区 前端测试 节点最新发帖.</description>
+    <item>
+      <title>还没被玩坏的 robobrowser(8)——robobrowser 的实现原理</title>
+      <description>&lt;h4&gt;背景&lt;/h4&gt;
+&lt;p&gt;学习使用工具实际上不难，不过我们应该通过阅读工具源码来提升自己的水平。&lt;/p&gt;
+
+&lt;p&gt;多读代码，读好代码。很不错，robobrowser的代码简单易懂，值得学习。&lt;/p&gt;
+&lt;h4&gt;预备知识&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/jmcarp/robobrowser" target="_blank"&gt;源码地址&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;一起其实是从&lt;a href="https://github.com/jmcarp/robobrowser/blob/master/robobrowser/browser.py" target="_blank"&gt;browser.py&lt;/a&gt;开始的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;要点&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;RoboState类里，页面上内容的抓取和处理实际上委托给了BeautifulSoup。RoboState类的_parsed对象实际上就是BeautifulSoup的实例；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;RoboState类中保存了每个请求的响应内容——response.content； &lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;RoboBrowser类里，发送请求的方法实际上委托给了requests类——session;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;RoboBrowser类里比较复杂就是保存每次访问的状态，以及实现back和forward功能。其主要思想是把所有的访问历史都放在内存里，然后通过游标去访问；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;每次页面发生变化，也就是open和submit_form之后都会调用_update_state方法去更新当前状态；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;流程梳理&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;RoboBrowser()实例化的时候，会new 1个requests的session用于发送http请求,同时初始化游标为－1并且当前的status列表初始化为空;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;RoboBrowser.open(url)方法调用时，session对象会访问具体的url，然后更新游标和status列表。基本思想是往status列表里append 1个新new出来的RoboState对象；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;RoboBrowser.find()方法调用时，使用当前游标处的state对象的_parsed对象的find方法去抓取页面内容，实际上就是BeautifulSoup的find方法；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;讨论&lt;/h4&gt;
+&lt;p&gt;从robobrowser的代码里我们可以看出来，对于测试框架或者具体的业务来说，发明轮子实际上是不太可取的。用最好的第三方库去做它们最擅长的事情才是王道。robobrowser里请求的发送归requests负责，页面的解析由BeautifulSoup去管理，相得益彰。&lt;/p&gt;
+
+&lt;p&gt;另外RoboBrowser类中使用了委托模式，请求的发送委托给requests对象，页面解析委托给BeautifulSoup对象。&lt;/p&gt;
+&lt;h4&gt;写在最后&lt;/h4&gt;
+&lt;p&gt;新人往往纠结于读什么代码可以让自己进步。robobrowser的源码很适合新人去读，相信读过之后会很有收获。&lt;/p&gt;
+
+&lt;p&gt;本教程旨在抛砖引玉，错误的地方还请多多指正。&lt;/p&gt;
+
+&lt;p&gt;全文完。&lt;/p&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Sat, 10 Jan 2015 09:59:46 +0800</pubDate>
+      <link>http://testerhome.com/topics/1823</link>
+      <guid>http://testerhome.com/topics/1823</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(7)——表单操作</title>
+      <description>&lt;h4&gt;背景&lt;/h4&gt;
+&lt;p&gt;有一些站点是需要登录之后才能抓取内容的，另外做web测试的时候登录是家常便饭。&lt;/p&gt;
+
+&lt;p&gt;这一节里我们就以登陆testerhome为例，讲解一下robobrowser中form的操作。&lt;/p&gt;
+&lt;h4&gt;预备知识&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;code&gt;get_form&lt;/code&gt;方法用来抓取form;&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;submit_form&lt;/code&gt;方法用来提交表单;&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;form[name].value=&lt;/code&gt;方法用来给文本框赋值，也就是说往文本框里写内容;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;代码&lt;/h4&gt;&lt;pre class="highlight python"&gt;&lt;span class="c"&gt;#coding: utf-8&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'http://testerhome.com/account/sign_in/'&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取登陆表单&lt;/span&gt;
+&lt;span class="n"&gt;login_form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_form&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;action&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'/account/sign_in'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;login_form&lt;/span&gt;
+
+&lt;span class="c"&gt;# 输入用户名和密码&lt;/span&gt;
+&lt;span class="n"&gt;login_form&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'user[login]'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'your account'&lt;/span&gt;
+&lt;span class="n"&gt;login_form&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'user[password]'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'your password'&lt;/span&gt;
+
+&lt;span class="c"&gt;# 提交表单&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;submit_form&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;login_form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# 打印登陆成功的信息&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.alert.alert-success'&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节: 完结篇：阅读robobrowser的源码&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Sat, 10 Jan 2015 09:57:52 +0800</pubDate>
+      <link>http://testerhome.com/topics/1822</link>
+      <guid>http://testerhome.com/topics/1822</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(6)——follow_link</title>
+      <description>&lt;h4&gt;背景&lt;/h4&gt;
+&lt;p&gt;在做spider的时候，我们经常会有点击链接的需求。&lt;/p&gt;
+
+&lt;p&gt;考虑这样的一个简单spider：获取qq.com主页上的**今日话题**中的内容。&lt;/p&gt;
+
+&lt;p&gt;一般思路是先去qq.com首页上找到**今日话题**的链接，然后点击这个链接到内容页面，最后抓取里面的内容就好了。&lt;/p&gt;
+
+&lt;p&gt;这一节里我们就要实现这个功能。&lt;/p&gt;
+&lt;h4&gt;预备知识&lt;/h4&gt;
+&lt;p&gt;robobrowser的&lt;code&gt;follow_link&lt;/code&gt;方法可以点击链接并自动完成跳转。&lt;/p&gt;
+&lt;h4&gt;代码&lt;/h4&gt;&lt;pre class="highlight python"&gt;
+&lt;span class="c"&gt;#coding: utf-8&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'http://www.qq.com/'&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取今日话题这个link&lt;/span&gt;
+  &lt;span class="n"&gt;today_top&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'todaytop'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;  
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;today_top&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'href'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+  &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;follow_link&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;today_top&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# 这个时候已经跳转到了今日话题的具体页面了&lt;/span&gt;
+
+&lt;span class="c"&gt;# 打印标题&lt;/span&gt;
+  &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.hd h1'&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;'*************************************'&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;'*************************************'&lt;/span&gt;
+
+&lt;span class="c"&gt;# 打印正文内容&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'articleContent'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;/pre&gt;
+&lt;h4&gt;讨论&lt;/h4&gt;
+&lt;p&gt;注意一下&lt;code&gt;follow_link&lt;/code&gt;的用法。一般来说都是用&lt;code&gt;find/select/find_all&lt;/code&gt;方法过滤出相应的链接，然后调用&lt;code&gt;b.follow_link(link)&lt;/code&gt;的方式去点击该链接。&lt;/p&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节: 提交表单&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Sat, 10 Jan 2015 09:56:08 +0800</pubDate>
+      <link>http://testerhome.com/topics/1821</link>
+      <guid>http://testerhome.com/topics/1821</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(5)——Beautiful Soup 的过滤器</title>
+      <description>&lt;h4&gt;背景&lt;/h4&gt;
+&lt;p&gt;本节的知识还是属于Beautiful Soup的内容。&lt;/p&gt;
+
+&lt;p&gt;Beautiful Soup的find和find_all方法非常强大，他们支持下面一些类型的过滤器。&lt;/p&gt;
+&lt;h4&gt;字符串&lt;/h4&gt;
+&lt;p&gt;最简单的过滤器是字符串.在搜索方法中传入一个字符串参数,Beautiful Soup会查找与字符串完整匹配的内容,下面的例子用于查找文档中所有的&lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt;标签:&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'b'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;正则表达式&lt;/h4&gt;
+&lt;p&gt;如果传入正则表达式作为参数,Beautiful Soup会通过正则表达式的 match() 来匹配内容.下面例子中找出所有以b开头的标签,这表示&lt;code&gt;&amp;lt;body&amp;gt;&lt;/code&gt;和&lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt;标签都应该被找到:&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"^b"&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+      &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;下面代码找出所有名字中包含”t”的标签:&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"t"&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+      &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;列表&lt;/h4&gt;
+&lt;p&gt;如果传入列表参数,Beautiful Soup会将与列表中任一元素匹配的内容返回.下面代码找到文档中所有&lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt;标签和&lt;code&gt;&amp;lt;b&amp;gt;&lt;/code&gt;标签:&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s"&gt;"a"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"b"&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;True&lt;/h4&gt;
+&lt;p&gt;True 可以匹配任何值,下面代码查找到所有的tag,但是不会返回字符串节点&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;h4&gt;方法&lt;/h4&gt;
+&lt;p&gt;如果没有合适过滤器,那么还可以定义一个方法,方法只接受一个元素参数 ,如果这个方法返回 True 表示当前元素匹配并且被找到,如果不是则反回 False&lt;/p&gt;
+
+&lt;p&gt;下面方法校验了当前元素,如果包含 class 属性却不包含 id 属性,那么将返回 True:&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;has_class_but_no_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;has_attr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'class'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;has_attr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'id'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;将这个方法作为参数传入 find_all() 方法,将得到所有&amp;lt;p&amp;gt;标签:&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;has_class_but_no_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节：点击链接&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Sat, 10 Jan 2015 09:54:41 +0800</pubDate>
+      <link>http://testerhome.com/topics/1820</link>
+      <guid>http://testerhome.com/topics/1820</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(4)——从页面上抓取感兴趣的内容</title>
+      <description>&lt;h4&gt;背景&lt;/h4&gt;
+&lt;p&gt;本节的知识实际上是属于Beautiful Soup的内容。&lt;/p&gt;
+
+&lt;p&gt;robobrowser支持Beautiful Soup，一般来说通过下面3个方法获取页面上感兴趣的内容&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;find&lt;/li&gt;
+&lt;li&gt;find_all&lt;/li&gt;
+&lt;li&gt;select&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这一节主要通过一些例子来讲解这几个方法&lt;/p&gt;
+&lt;h4&gt;预备知识&lt;/h4&gt;
+&lt;p&gt;一般来说学习Beautiful Soup是需要了解过滤器这个概念的。不过为了让大家能够容易理解，这里暂时屏蔽过滤器的知识，感兴趣的同学可以去官网学习一下。&lt;/p&gt;
+&lt;h4&gt;通过例子学习&lt;/h4&gt;
+&lt;p&gt;这一节里我们的例子还是&lt;a href="http://itest.info/courses/2python" rel="nofollow" target="_blank"&gt;http://itest.info/courses/2python&lt;/a&gt;， selenium自动化测试班这个页面。&lt;/p&gt;
+&lt;h4&gt;find方法&lt;/h4&gt;
+&lt;p&gt;find方法是返回页面上符合条件的第1个元素。&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="c"&gt;#coding: utf-8&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'http://itest.info/courses/2'&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# 通过tag name抓取&lt;/span&gt;
+
+&lt;span class="c"&gt;#&amp;lt;title&amp;gt;重定向科技&amp;lt;/title&amp;gt;&lt;/span&gt;
+  &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'title'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 通过属性(attribute)抓取&lt;/span&gt;
+
+&lt;span class="c"&gt;# &amp;lt;img id="logo-header" src="/assets/logo-0648b8fb283a9802457da74f0c157b12.png" /&amp;gt;&lt;/span&gt;
+  &lt;span class="n"&gt;img&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'logo-header'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'src'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c"&gt;# &amp;lt;a href="/courses/4"&amp;gt;android测试工具自制班&amp;lt;/a&amp;gt;&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'/courses/4'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# &amp;lt;li class="active"&amp;gt;python selenium自动化测试班&amp;lt;/li&amp;gt;&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;class_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'active'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'python'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+
+&lt;/pre&gt;
+&lt;h4&gt;find_all方法&lt;/h4&gt;
+&lt;p&gt;find_all方法的用法跟find基本相同，但是find_all会返回所有符合条件的tag的集合(ResultSet)。&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="c"&gt;#coding: utf-8&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'http://itest.info/courses/2'&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;#页面上所有的a&lt;/span&gt;
+  &lt;span class="n"&gt;all_links&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'a'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;all_links&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 页面上所有class是container的div&lt;/span&gt;
+    &lt;span class="n"&gt;divs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;class_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;'container'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;divs&lt;/span&gt;
+
+&lt;span class="c"&gt;# limit 参数控制返回的元素个数&lt;/span&gt;
+
+&lt;span class="c"&gt;# 页面上前2个p&lt;/span&gt;
+    &lt;span class="n"&gt;first_two_p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'p'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;limit&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;first_two_p&lt;/span&gt;
+
+&lt;span class="c"&gt;# 如果第1个参数是列表则返回相匹配的集合&lt;/span&gt;
+
+&lt;span class="c"&gt;# 页面上所有的meta和title&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s"&gt;'meta'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'img'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;/pre&gt;
+&lt;h4&gt;select方法&lt;/h4&gt;
+&lt;p&gt;select方法是我最喜欢的方法，该方法支持css选择器(可惜不是全部)，返回的是list。&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="c"&gt;#coding: utf-8&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'http://itest.info/courses/2'&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;#页面上所有的a&lt;/span&gt;
+  &lt;span class="n"&gt;all_links&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'a'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;all_links&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 页面上所有class是container的div&lt;/span&gt;
+    &lt;span class="n"&gt;divs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.container'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;divs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;/pre&gt;
+&lt;h4&gt;其他技巧&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;找到页面上所有具有id属性的元素&lt;code&gt;b.find_all(id=True)&lt;/code&gt;
+&lt;/li&gt;
+&lt;li&gt;不递归查找元素。也就是说只在&amp;lt;html&amp;gt;&amp;lt;/html&amp;gt;的直接子后代中查找&lt;code&gt;b.find('p', recursive=False)&lt;/code&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节：Beautiful Soup的过滤器&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Sat, 10 Jan 2015 09:52:02 +0800</pubDate>
+      <link>http://testerhome.com/topics/1819</link>
+      <guid>http://testerhome.com/topics/1819</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(3)——简单的 spider</title>
+      <description>&lt;h4&gt;背景&lt;/h4&gt;
+&lt;p&gt;做一个简单的spider用来获取&lt;a href="" target="_blank"&gt;python selenium实战教程&lt;/a&gt;的一些基本信息。因为python selenium每年滚动开课，所以做这样一个爬虫随时更新最新的开课信息是很有必要的。&lt;/p&gt;
+&lt;h4&gt;预备知识&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;python语法，不会python的同学建议通过&lt;a href="http://v.163.com/special/Khan/computer.html" target="_blank"&gt;这个视频&lt;/a&gt;学习；&lt;/li&gt;
+&lt;li&gt;安装好robobrowser，没有安装的同学参考&lt;a href="http://www.easonhan.info/robobrowser/2015/01/08/robobrowser-02-install/" target="_blank"&gt;这里&lt;/a&gt;；&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;任务分解&lt;/h4&gt;
+&lt;p&gt;这个简单的spider任务可以进行进一步的分解：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;访问&lt;a href="http://itest.info/courses/2" target="_blank"&gt;python selenium自动化测试班&lt;/a&gt;页面；&lt;/li&gt;
+&lt;li&gt;获取这个班的名称-- &lt;strong&gt;python selenium自动化测试班;&lt;/strong&gt;
+&lt;/li&gt;
+&lt;li&gt;获取这个班的描述-- &lt;strong&gt;独一无二的超低价培训-口碑之选;&lt;/strong&gt;
+&lt;/li&gt;
+&lt;li&gt;获取开班的时间-- &lt;strong&gt;第五期报名截止2015年1月17日，开课时间1月17日;&lt;/strong&gt;
+&lt;/li&gt;
+&lt;li&gt;获取报名方式-- &lt;strong&gt;课程咨询请联系QQ：12079456;&lt;/strong&gt;
+&lt;/li&gt;
+&lt;li&gt;获取selenium进阶群的群号-- &lt;strong&gt;技术交流+selenium 进阶群：189116036;&lt;/strong&gt;
+&lt;/li&gt;
+&lt;li&gt;获取授课老师信息-- &lt;strong&gt;虫师;&lt;/strong&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;正式开始&lt;/h4&gt;&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="c"&gt;# 访问python selenium自动化测试班的页面&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'http://itest.info/courses/2'&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取这个班的名称--python selenium自动化测试班&lt;/span&gt;
+&lt;span class="n"&gt;class_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.headline h2'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;class_name&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取这个班的描述--独一无二的超低价培训-口碑之选&lt;/span&gt;
+&lt;span class="n"&gt;class_desc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.tag-box'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;class_desc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取开班的时间--**第五期报名截止2015年1月17日，开课时间1月17日&lt;/span&gt;
+&lt;span class="n"&gt;class_time&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'h4'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;class_time&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取授课老师信息--虫师&lt;/span&gt;
+&lt;span class="n"&gt;teacher&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.thumbnail-style h3'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;teacher&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取报名方式--**课程咨询请联系QQ：12079456&lt;/span&gt;
+&lt;span class="n"&gt;qq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'QQ'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;qq&lt;/span&gt;
+
+&lt;span class="c"&gt;# 获取selenium进阶群的群号--**技术交流+selenium 进阶群：189116036&lt;/span&gt;
+&lt;span class="n"&gt;qq_group&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="s"&gt;+selenium'&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;qq_group&lt;/span&gt;
+
+&lt;/pre&gt;
+&lt;h4&gt;简单讲解&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;code&gt;b = RoboBrowser(history=True) b.open(url)&lt;/code&gt;用来创建browser和打开url，没什么新意，记住就好了；&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;b.select()&lt;/code&gt;方法可以接受css选择器，返回页面上所有符合条件的元素的集合，也就是说返回的是list，可以进行迭代；&lt;/li&gt;
+&lt;li&gt;
+&lt;code&gt;b.find()&lt;/code&gt;的用法在&lt;a href="http://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html#find-all" target="_blank"&gt;这里&lt;/a&gt;，只返回1个精确的结果；&lt;/li&gt;
+&lt;li&gt;注意，find和select方法返回的均是Beautiful Soup的tag对象或对象集合；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果你对上面的例子不甚理解那也没什么关系，后面几节会按照场景进行分析讲解。&lt;/p&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节：robobrowser抓取网页内容&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Fri, 09 Jan 2015 13:38:46 +0800</pubDate>
+      <link>http://testerhome.com/topics/1813</link>
+      <guid>http://testerhome.com/topics/1813</guid>
+    </item>
+    <item>
+      <title>robobrowser（简单好用的爬虫和 webtest 库）系列教程汇总贴</title>
+      <description>&lt;p&gt;robobrowser是一个不错的python实现的spider和web test库，有点像简化版的phantomjs。robobrowser的源码非常适合新手阅读，所以在这里抛砖引玉，不自量力撰写教程若干，希望对大家有所裨益。&lt;/p&gt;
+
+&lt;p&gt;在这里汇总一下&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1800" target="_blank"&gt;还没被玩坏的 robobrowser(1)-简介&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1801" target="_blank"&gt;还没被玩坏的 robobrowser(2)——安装及快速开始&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1813" target="_blank"&gt;还没被玩坏的 robobrowser(3)——简单的 spider&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1819" target="_blank"&gt;还没被玩坏的robobrowser(4)——从页面上抓取感兴趣的内容&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1820" target="_blank"&gt;还没被玩坏的 robobrowser(5)——Beautiful Soup 的过滤器&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1821" target="_blank"&gt;还没被玩坏的 robobrowser(6)——follow_link&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1822" target="_blank"&gt;还没被玩坏的 robobrowser(7)——表单操作&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;li&gt;&lt;h4&gt;&lt;a href="http://testerhome.com/topics/1823" target="_blank"&gt;还没被玩坏的 robobrowser(8)——robobrowser 的实现原理&lt;/a&gt;&lt;/h4&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;全文完&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Fri, 09 Jan 2015 13:35:06 +0800</pubDate>
+      <link>http://testerhome.com/topics/1812</link>
+      <guid>http://testerhome.com/topics/1812</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(2)——安装及快速开始</title>
+      <description>&lt;h4&gt;安装robobrowser&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;注意:这里假设你知道如何使用pip安装python的库的知识，如果你不了解这一块的话，点&lt;a href="http://www.easonhan.info/python/2013/12/07/active-python-install-selenium/" target="_blank"&gt;这里&lt;/a&gt;获取帮助。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;强烈推荐使用pip安装。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;pip install robobrowser -i http://pypi.douban.com/simple/
+
+&lt;/pre&gt;
+
+&lt;p&gt;这里用上了豆瓣源，原因你懂得。&lt;/p&gt;
+&lt;h4&gt;快速开始&lt;/h4&gt;
+&lt;p&gt;新建1个start.py文本文件，然后敲入下面的代码&lt;/p&gt;
+&lt;pre class="highlight python"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;robobrowser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;
+
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RoboBrowser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;history&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'http://itest.info/courses/2'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'.headline h2'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;span class="n"&gt;infos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;'h4'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;info&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;infos&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;在命令行里运行&lt;code&gt;python start.py&lt;/code&gt;，然后看一下结果,如果报错请自行耐心分析原因。&lt;/p&gt;
+&lt;h4&gt;查看文档&lt;/h4&gt;
+&lt;p&gt;robobrowser自带一点点文档，聊胜于无，凑合看吧。&lt;/p&gt;
+
+&lt;p&gt;在命令行里运行&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;python -m pydoc -p 1234
+&lt;/pre&gt;
+
+&lt;p&gt;如果运行成功的话，就从浏览器中访问&lt;a href="http://localhost:1234/robobrowser.htmlbrowser%E8%BF%99%E4%B8%AA%E7%B1%BB%E5%B0%B1%E5%A5%BD%E4%BA%86%E3%80%82" rel="nofollow" target="_blank"&gt;http://localhost:1234/robobrowser.htmlbrowser这个类就好了。&lt;/a&gt;。主要看一下&lt;/p&gt;
+&lt;h4&gt;相关知识&lt;/h4&gt;
+&lt;p&gt;&lt;a href="http://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html" target="_blank"&gt;Beautiful Soup&lt;/a&gt;将让你受益匪浅，强烈建议阅读。&lt;/p&gt;
+
+&lt;p&gt;文本版权归乙醇所有，欢迎转载，但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节：基于robobrowser的简单的爬虫&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Thu, 08 Jan 2015 14:02:22 +0800</pubDate>
+      <link>http://testerhome.com/topics/1801</link>
+      <guid>http://testerhome.com/topics/1801</guid>
+    </item>
+    <item>
+      <title>还没被玩坏的 robobrowser(1)-简介</title>
+      <description>&lt;p&gt;今天偶然发现了一个很有意思的python库——robobrowser。简单的看了一下，觉得这个东东作为轻量的爬虫还是很适合的。另外这个做一些简单的web测试也未尝不可。&lt;/p&gt;
+
+&lt;p&gt;好了，那么问题来了。&lt;/p&gt;
+&lt;h4&gt;什么是&lt;a href="https://github.com/jmcarp/robobrowser" target="_blank"&gt;robobrowser&lt;/a&gt;
+&lt;/h4&gt;
+&lt;p&gt;官方的给出的答案是：RoboBrowser: Your friendly neighborhood web scraper。原谅我这一生不羁放纵不爱读书，真心不知道怎么用博大精深的汉语来翻译这句话，有知道的同学还请告诉一下。&lt;/p&gt;
+
+&lt;p&gt;简单来说robobrowser是一个浏览器，没有界面的浏览器。用纯python实现，运行在内存里。robobrowser可以打开网页，点击链接和按钮并且提交表单。嗯，听上去就弱爆了是吧。功能确实不多，但是如果是做爬虫和简单的web测试的话，这些功能实际上是够用了的。&lt;/p&gt;
+&lt;h4&gt;robobrowser能做什么呢&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;爬虫&lt;/li&gt;
+&lt;li&gt;简单的web测试&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;robobrowser好用吗&lt;/h4&gt;
+&lt;p&gt;简单的试用了一下，用起来很方便。而且由于是纯python写的，安装起来也很简单。总之是居家旅行的常备物什。&lt;/p&gt;
+&lt;h4&gt;robobrowser好学吗&lt;/h4&gt;
+&lt;p&gt;语法很自然，学起来很容易。另外robobrowser其实是建立在&lt;a href="http://docs.python-requests.org/en/latest/" target="_blank"&gt;requests&lt;/a&gt;和&lt;a href="http://www.crummy.com/software/BeautifulSoup/" target="_blank"&gt;BeautifulSoup&lt;/a&gt;之上的，站在巨人的肩膀上，robobrowser自然是容易被人们接受的。 &lt;/p&gt;
+&lt;h4&gt;requests和BeautifulSoup是做什么用的&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;requests可以简单的认为是发http请求用的&lt;/li&gt;
+&lt;li&gt;BeautifulSoup可以简单的理解为解析html文档的&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;本文版权属乙醇所有，欢迎转载但请标明出处。&lt;/p&gt;
+
+&lt;p&gt;下一节：安装robobrowser以及快速开始&lt;/p&gt;</description>
+      <author>easonhan007</author>
+      <pubDate>Thu, 08 Jan 2015 14:01:34 +0800</pubDate>
+      <link>http://testerhome.com/topics/1800</link>
+      <guid>http://testerhome.com/topics/1800</guid>
+    </item>
+    <item>
+      <title>有什么可以抓取 iOS 模拟器网络数据的方法没？</title>
+      <description>&lt;p&gt;不会只能tcpdump抓包，然后自己分析吧&lt;br&gt;
+有没有什么现成的接口？&lt;/p&gt;</description>
+      <author>guo</author>
+      <pubDate>Mon, 13 Jan 2014 11:21:30 +0800</pubDate>
+      <link>http://testerhome.com/topics/396</link>
+      <guid>http://testerhome.com/topics/396</guid>
+    </item>
+    <item>
+      <title>老问题了， 控件明明可以看见，却不能点击。</title>
+      <description>&lt;p&gt;请尝试 &lt;a href="https://aelp.smartsparrow.com/learn/open/ad6bca3c4a9b4955bbb78b8f378752bc" rel="nofollow" target="_blank"&gt;https://aelp.smartsparrow.com/learn/open/ad6bca3c4a9b4955bbb78b8f378752bc&lt;/a&gt; 这个链接&lt;br&gt;
+然后选择 a 到 d 所有的选项 然后 点击 next button&lt;br&gt;
+在第二页 会出现三个tab页的东西，是包含在一个iframe 里面。&lt;br&gt;
+我能验证到 第一个tab页里面的内容，却取不到 tab 的title。 而且 也无法点击 后面两个tab。&lt;/p&gt;
+
+&lt;p&gt;谁能给点意见？ 谢谢啦&lt;/p&gt;
+
+&lt;p&gt;ps: 肯定不是 我没有进入iframe导致的。 xpath 也没有问题。 &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/photo/c07e65b07ae2db1d3b21ef5557dc18a3.jpg" alt=""&gt;&lt;br&gt;&lt;img src="/photo/e2c9191f282461cba00449a498a6afa7.jpg" alt=""&gt;&lt;br&gt;&lt;img src="/photo/c7ee78d306d6e838b7b344affb6e229f.jpg" alt=""&gt;&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;smartsparrow&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;automation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;viewer&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.JavascriptExecutor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.Keys&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebElement&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.interactions.Actions&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.support.FindBy&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.support.How&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.smartsparrow.automation.utils.PageHelper&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;DecisionScreenWithFeedback&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;InchCaseMaker&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;DecisionScreenWithFeedback&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//iframe[@id = 'iframe_infoSim']"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tabView']//li[1]/a"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;   
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;firstOptionTab&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tabView']//li[2]/a"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;secondOptionTab&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tabView']//li[3]/a"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;thirdOptionTab&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tabView']//li[4]/a"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;FourthOptionTab&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tab-content']//p[1]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;othersTabDescription&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tab-content']//ul/li[1]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;othersOptionOne&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tab-content']//ul/li[2]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;othersOptionTwo&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'tab-content']//ul/li[3]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;othersOptionThree&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getTabTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;tabNumber&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;tabs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;firstOptionTab&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;secondOptionTab&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;thirdOptionTab&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;FourthOptionTab&lt;/span&gt;&lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;tabName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tabs&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tabNumber&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;tabName&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getOthersTabDes&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;othersTabDescription&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getOthersOption&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;lineNumber&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;othersOptionOne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;othersOptionTwo&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;othersOptionThree&lt;/span&gt;&lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lineNumber&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;option&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;changeTab&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;tabNumber&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;tabs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;firstOptionTab&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;secondOptionTab&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;thirdOptionTab&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;FourthOptionTab&lt;/span&gt;&lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;tabs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++)&lt;/span&gt;
+        &lt;span class="o"&gt;{&lt;/span&gt;   
+            &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tabs&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;isDisplayed&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;tabs&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tabNumber&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="c1"&gt;//      new Actions(driver).moveToElement(tabs[tabNumber]).click().perform();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+
+
+
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;smartsparrow&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;automation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;viewer&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;junit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Assert&lt;/span&gt;&lt;span class="o"&gt;.*;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.After&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.Before&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.junit.Test&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.JavascriptExecutor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.firefox.FirefoxDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.smartsparrow.automation.pages.viewer.BasicDecisionScreen&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.smartsparrow.automation.pages.viewer.DecisionScreenWithFeedback&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.smartsparrow.automation.pages.viewer.InchFeedbackPanel&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.smartsparrow.automation.utils.PageHelper&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;InchCaseMakerTest&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Before&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setUp&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;FirefoxDriver&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@After&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;tearDown&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+&lt;span class="c1"&gt;//      driver.quit();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@Test&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testInchCaseMakerLesson&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;BasicDecisionScreen&lt;/span&gt; &lt;span class="n"&gt;lesson&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;BasicDecisionScreen&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitBasicDecisionMakerPageAppear&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOption&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;optionOne&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOptionDescription&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;FIRST_LINE&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"This is option one."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOption&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;optionTwo&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOptionDescription&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SECOND_LINE&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"This is option two."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOption&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;optionThree&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOptionDescription&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;THIRD_LINE&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"This is option three."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOption&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;optionFour&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addOptionDescription&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;FORTH_LINE&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"This is option four."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;DecisionScreenWithFeedback&lt;/span&gt; &lt;span class="n"&gt;feedbackpage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;lesson&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;clickNextToFeedbackPage&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;feedbackpage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;changeTab&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SECOND_LINE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;  
+
+&lt;span class="c1"&gt;//      DecisionScreenWithFeedback feedbackpage = lesson.clickNextToFeedbackPage();&lt;/span&gt;
+&lt;span class="c1"&gt;//      PageHelper.waitFeedbackDecisionScreenPageAppear(driver);&lt;/span&gt;
+&lt;span class="c1"&gt;//      assertTrue(feedbackpage.getHeader().equals("Decision Info Header"));&lt;/span&gt;
+
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;&lt;pre class="highlight java"&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;smartsparrow&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;automation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pages&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;viewer&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.Keys&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebElement&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.interactions.Actions&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.support.FindBy&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.support.How&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.smartsparrow.automation.utils.PageHelper&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BasicDecisionScreen&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;InchCaseMaker&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;BasicDecisionScreen&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="c1"&gt;//driver.get(PageHelper.inchUrl);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInch&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'form-inline']/span[1]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;studentPrompt&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//input"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;studentOptionArea&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'answersContainer']//thead//th[1]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;answerViewTableSelectionHead&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'answersContainer']//thead//th[2]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;answerViewTableExplanationHead&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][1]/td[@class = 'decision']"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;firstAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][1]/td[@class = 'answer']//textarea"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;firstAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][1]/td[@class = 'delete']//i"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;firstAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][2]/td[@class = 'decision']"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;secondAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][2]/td[@class = 'answer']//textarea"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;secondAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][2]/td[@class = 'delete']//i"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;secondAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][3]/td[@class = 'decision']"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;thirdAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][3]/td[@class = 'answer']//textarea"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;thirdAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][3]/td[@class = 'delete']//i"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;thirdAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][4]/td[@class = 'decision']"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;forthAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][4]/td[@class = 'answer']//textarea"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;forthAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//tr[@class = 'answerView'][4]/td[@class = 'delete']//i"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;forthAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//td[@class = 'delete']//h4"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;deleteOptionTitle&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//td[@class = 'delete']//button[1]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;deleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//td[@class = 'delete']//button[2]"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;cancelDeleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//div[@class = 'menuHolder']//li[1]/a"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;selection&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@FindBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;XPATH&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"//iframe[@id = 'iframe_decisionSim']"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebElement&lt;/span&gt; &lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getPrompt&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;prompt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;studentPrompt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;prompt&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getTableSelctionHead&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;selectionHeader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;answerViewTableSelectionHead&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;selectionHeader&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getTableExplanationHead&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;explanationHeader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;answerViewTableExplanationHead&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;explanationHeader&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;clickDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;firstAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;addOption&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;optionNumber&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;optionNames&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s"&gt;"Option One"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"Option Two"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"Option Three"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"Option Four"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"Option Five"&lt;/span&gt;&lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;studentOptionArea&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;optionNames&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;optionNumber&lt;/span&gt;&lt;span class="o"&gt;]);&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;studentOptionArea&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Keys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;DOWN&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;selection&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;deleteOption&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;firstAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;deleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getDeletOptionWindowTitle&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//      firstAnswerViewDeleteIcon.click();&lt;/span&gt;
+&lt;span class="c1"&gt;//      PageHelper.waitPageLoad(driver, PageHelper.SHORT_TIME);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;deleteOptionTitle&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getDeleteOptionWindowButtonText&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//      firstAnswerViewDeleteIcon.click();&lt;/span&gt;
+&lt;span class="c1"&gt;//      PageHelper.waitPageLoad(driver, PageHelper.SHORT_TIME);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;deleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;clickCancelDeleteOption&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//      new Actions(driver).moveToElement(cancelDeleteOptionButton).click().perform();&lt;/span&gt;
+        &lt;span class="n"&gt;cancelDeleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;cancelDeleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getDeleteOptionWindowCancelText&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;firstAnswerViewDeleteIcon&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitPageLoad&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SHORT_TIME&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cancelDeleteOptionButton&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;addOptionDescription&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;des&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;optionDescriptions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;firstAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;secondAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;thirdAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;forthAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;optionDescriptions&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;optionDescriptions&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;des&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;answerViewTableExplanationHead&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getDecisionText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;decisions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;firstAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;secondAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;thirdAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;forthAnswerViewDecision&lt;/span&gt;&lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;decisions&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getDecisionDescriptionText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="n"&gt;WebElement&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;descriptions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;firstAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;secondAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;thirdAnswerViewExplanation&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;forthAnswerViewExplanation&lt;/span&gt; &lt;span class="o"&gt;};&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;iframe&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;descriptions&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;optionLine&lt;/span&gt;&lt;span class="o"&gt;].&lt;/span&gt;&lt;span class="na"&gt;getText&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;switchTo&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;defaultContent&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;DecisionScreenWithFeedback&lt;/span&gt; &lt;span class="n"&gt;clickNextToFeedbackPage&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+        &lt;span class="n"&gt;nextButton&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;click&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;PageHelper&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;waitQuestionChange&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;DecisionScreenWithFeedback&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;</description>
+      <author>askaneverend</author>
+      <pubDate>Wed, 08 Jan 2014 14:49:14 +0800</pubDate>
+      <link>http://testerhome.com/topics/380</link>
+      <guid>http://testerhome.com/topics/380</guid>
+    </item>
+    <item>
+      <title>appium selendroid 下遇到的问题</title>
+      <description>&lt;p&gt;ele = driver.find_element_by_xpath("//ImageButton[&lt;a href="/id" class="at_user" title="@id"&gt;&lt;i&gt;@&lt;/i&gt;id&lt;/a&gt;='tab0']")&lt;br&gt;
+ele.click()&lt;br&gt;
+time.sleep(5)&lt;br&gt;
+TouchActions(driver).flick(0, 100).perform()&lt;br&gt;
+代码如上，flick滑屏无反映，采用Scroll进行滑屏，整体屏幕可见元素在动，向下延伸都是空白，后台服务不报错；&lt;br&gt;
+求解决&lt;/p&gt;</description>
+      <author>skytiger0419</author>
+      <pubDate>Tue, 10 Dec 2013 15:56:18 +0800</pubDate>
+      <link>http://testerhome.com/topics/268</link>
+      <guid>http://testerhome.com/topics/268</guid>
+    </item>
+    <item>
+      <title>接口测试方法</title>
+      <description>&lt;p&gt;昨天受朋友邀请, 去他们公司交流技术. 顺便把ppt分享给大家.&lt;br&gt;
+简单介绍了下接口测试的方法&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://vdisk.weibo.com/s/aii55uMs7-ZAe" rel="nofollow" target="_blank"&gt;http://vdisk.weibo.com/s/aii55uMs7-ZAe&lt;/a&gt;  &lt;/p&gt;</description>
+      <author>seveniruby</author>
+      <pubDate>Fri, 29 Nov 2013 10:26:32 +0800</pubDate>
+      <link>http://testerhome.com/topics/232</link>
+      <guid>http://testerhome.com/topics/232</guid>
+    </item>
+    <item>
+      <title>灵异事件之二 (重新整理)</title>
+      <description>&lt;p&gt;&lt;img src="/photo/c11de268eb0b635a8d315e63721d4984.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;一组test suite有4个case&lt;br&gt;
+单独跑  都通过， 串跑的话，就会遇到这个问题。 &lt;/p&gt;
+
+&lt;p&gt;百思不得其解 &lt;/p&gt;
+
+&lt;p&gt;后来重新单个跑，单个确认。 &lt;/p&gt;
+
+&lt;p&gt;情况如下&lt;br&gt;
+存在一个test case A， 单独跑，没有任何问题。 当它和其他任何一个case串跑（B跑完 然后跑A）， case A就会诡异的停止运行。 &lt;/p&gt;
+
+&lt;p&gt;在&lt;a href="/after" class="at_user" title="@after"&gt;&lt;i&gt;@&lt;/i&gt;after&lt;/a&gt; 里面 如果用 close（）方法， 浏览器不会关闭 报这个错误&lt;br&gt;&lt;img src="/photo/c11de268eb0b635a8d315e63721d4984.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;如果在 &lt;a href="/after" class="at_user" title="@after"&gt;&lt;i&gt;@&lt;/i&gt;after&lt;/a&gt; 里面使用 quit（）方法，浏览器同样不会关闭 报更诡异的错误 &lt;br&gt;&lt;img src="/photo/f5e4dfb284667ee4e8d69d28ec7d6dbe.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;driver.quit() 是 最后一句代码，我实在不明白 还有什么代码在他之后运行 ？ &lt;/p&gt;</description>
+      <author>askaneverend</author>
+      <pubDate>Thu, 07 Nov 2013 13:02:22 +0800</pubDate>
+      <link>http://testerhome.com/topics/186</link>
+      <guid>http://testerhome.com/topics/186</guid>
+    </item>
+    <item>
+      <title>最近遇到的 webdriver 的灵异事件</title>
+      <description>&lt;p&gt;&lt;img src="/photo/b2801a0a3dc8465f89bc6cf95132cb7e.jpg" alt=""&gt;&lt;br&gt;&lt;img src="/photo/31c5aa49ce6044ae31ca67be41326c09.jpg" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;如图所示，用户登陆之后会在Home这个tab，然后点击Lessons或者Loops，就会跳转到相应页面。&lt;br&gt;
+之前用于定位 Lessons 和Loops 的方式是 用 name&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="/FindBy" class="at_user" title="@FindBy"&gt;&lt;i&gt;@&lt;/i&gt;FindBy&lt;/a&gt;(how = How.XPATH, using = "lessons")&lt;br&gt;
+    private WebElement lessons;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="/FindBy" class="at_user" title="@FindBy"&gt;&lt;i&gt;@&lt;/i&gt;FindBy&lt;/a&gt;(how = How.NAME, using = "loops")&lt;br&gt;
+    private WebElement loops;&lt;/p&gt;
+
+&lt;p&gt;点击操作为  lessons.click()  loops.click()&lt;br&gt;
+脚本运行一直良好。&lt;/p&gt;
+
+&lt;p&gt;今天调试，突然跑不过，跑来跑去跑不过。 然后 把点击操作改成强制鼠标移动到那个位置点击，依然无效。&lt;/p&gt;
+
+&lt;p&gt;然后，只能改用xpath去定位。 第一次改为 &lt;br&gt;
+       &lt;a href="/FindBy" class="at_user" title="@FindBy"&gt;&lt;i&gt;@&lt;/i&gt;FindBy&lt;/a&gt;(how = How.XPATH, using = "//div[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt; = 'menuElem lessons']")&lt;br&gt;
+    private WebElement lessons;&lt;br&gt;
+调试依然不通过。&lt;/p&gt;
+
+&lt;p&gt;必须改为 &lt;br&gt;
+       &lt;a href="/FindBy" class="at_user" title="@FindBy"&gt;&lt;i&gt;@&lt;/i&gt;FindBy&lt;/a&gt;(how = How.XPATH, using = "//div[&lt;a href="/class" class="at_user" title="@class"&gt;&lt;i&gt;@&lt;/i&gt;class&lt;/a&gt; = 'menuElem lessons']/a")&lt;br&gt;
+    private WebElement lessons;&lt;br&gt;
+才能点击到。  &lt;/p&gt;
+
+&lt;p&gt;这是否意味着 以后 xpath无法写的过于笼统，必须精确到最后一层？&lt;/p&gt;
+
+&lt;p&gt;疑问是，之前用name一点问题都没有，最近为什么就不行了呢？ &lt;/p&gt;</description>
+      <author>askaneverend</author>
+      <pubDate>Thu, 07 Nov 2013 09:13:37 +0800</pubDate>
+      <link>http://testerhome.com/topics/183</link>
+      <guid>http://testerhome.com/topics/183</guid>
+    </item>
+    <item>
+      <title>在 Webdriver 中 Element 怎样算不可见？</title>
+      <description>&lt;p&gt;今天，一个澳洲的同事发了个网址给我，&lt;a href="https://aelp.smartsparrow.com/v/open/6dfe73e971d745519cb35d7f740cab9d" rel="nofollow" target="_blank"&gt;https://aelp.smartsparrow.com/v/open/6dfe73e971d745519cb35d7f740cab9d&lt;/a&gt;， 他说他的 webdriver 找不到 next button。 让我试试看，我试验了一遍，发现也没法解决，最后用 jquery 跳过。但是百思不得其解。于是向大家求教。&lt;/p&gt;
+
+&lt;p&gt;这个 case 的步骤是:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;选择 option1&lt;/li&gt;
+&lt;li&gt;点击蓝色 next&lt;/li&gt;
+&lt;li&gt;在弹出的框里点击红色的 next&lt;/li&gt;
+&lt;li&gt;然后再选择 option 3&lt;/li&gt;
+&lt;li&gt;再点击蓝色 next &lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;第五步就找不到这个蓝色的 next 了。&lt;/p&gt;
+
+&lt;p&gt;我找了 selenium 的文档，认为 element 可见的情景有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;visibility != hidden&lt;/li&gt;
+&lt;li&gt;display != none (is also checked against every parent element)&lt;/li&gt;
+&lt;li&gt;opacity != 0 (in rc2 this is no longer checked for clicking an element)&lt;/li&gt;
+&lt;li&gt;height and width are both &amp;gt; 0&lt;/li&gt;
+&lt;li&gt;for an input, the attribute type != hidden&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;我将这些属性用 getCssValue 输出，都显示是可见的。&lt;/p&gt;
+
+&lt;p&gt;另外附上： 低音钢琴—久其 的总结：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt; 超出屏幕范围；&lt;/li&gt;
+&lt;li&gt; hidden类型的元素&lt;/li&gt;
+&lt;li&gt; 放到td，span里的HTML元素；&lt;/li&gt;
+&lt;li&gt; 页面中存在多个相同标识的对象，但是脚本找到的对象却是已被隐藏的对象，例如点击下一步后，那么之前的页面对象都不可视&lt;/li&gt;
+&lt;li&gt; 由于页面刷新导致脚本已获取的对象不可用，需要重新获取；&lt;/li&gt;
+&lt;li&gt; 页面进程处于挂起状态&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;这些是以前做自动化测试时碰到的元素不可见或者不可识别的一些原因&lt;/p&gt;
+
+&lt;p&gt;低音钢琴—久其(41744770)  下午 05:34:41&lt;br&gt;
+对于RFT是这样的，他的find方法默认是false，不查找td和span里的元素，不过这个参数只是影响查找，不会报元素不可视的异常，刚才是一起给你列出来了，呵呵&lt;/p&gt;
+
+&lt;p&gt;低音钢琴—久其(41744770)  下午 05:37:48&lt;br&gt;
+想查的话，可以把每个元素的rectangle属性打印出来，可见的属性应该是 x &amp;gt; 2,y &amp;gt; 2 并且width 和height 都大于0，对于RFT来说，只要符合这个条件就能操作。但是不知道webdrive会不会有区别。&lt;/p&gt;
+
+&lt;p&gt;低音钢琴—久其(41744770)  下午 05:38:12&lt;br&gt;
+我刚才列的那些，可以让你的同事参考一下，呵呵，那是我们做自动化测试时，碰到的最多的几种情况。&lt;/p&gt;
+
+&lt;p&gt;我都试验了下，还是无解。希望大家一起来讨论下。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Mon, 04 Nov 2013 17:52:39 +0800</pubDate>
+      <link>http://testerhome.com/topics/176</link>
+      <guid>http://testerhome.com/topics/176</guid>
+    </item>
+    <item>
+      <title>Ten tips for writing better Cucumber steps</title>
+      <description>&lt;p&gt;原文：&lt;a href="http://coryschires.com/ten-tips-for-writing-better-cucumber-steps/" rel="nofollow" target="_blank"&gt;http://coryschires.com/ten-tips-for-writing-better-cucumber-steps/&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;灵活使用单复数&lt;/h4&gt;
+&lt;p&gt;紧接着在以 &lt;code&gt;s&lt;/code&gt; 结尾的复数后面加一个&lt;code&gt;?&lt;/code&gt;，比如&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^the users? should receive an email$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这个 &lt;code&gt;?&lt;/code&gt; 其实就是正则表达式的问号，可以表示重复前面内容的0次或一次，也就要么不出现，要么出现一次。所以上面的例子可以匹配 &lt;code&gt;user&lt;/code&gt; 和 &lt;code&gt;users&lt;/code&gt;。&lt;/p&gt;
+&lt;h4&gt;使用不必被捕获的元组，可以使 steps 读起来更自然&lt;/h4&gt;
+&lt;p&gt;在元组前面加 &lt;code&gt;?:&lt;/code&gt;， 比如： &lt;code&gt;(?:some text)&lt;/code&gt;。 匹配 some text, 但不捕获匹配的文本，也不给此分组分配组号。这表示这个括号里的东西不会被当作参数传递给你的 &lt;code&gt;step definition&lt;/code&gt;。 比如&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;And&lt;/span&gt; &lt;span class="sr"&gt;/^once the files? (?:have|has) finished processing$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这可以匹配：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;once the file have finished processing (不合理)
+once the files have finished processing
+once the file has finished processing
+once the files has finished processing (不合理)
+&lt;/pre&gt;
+&lt;p&gt;或者&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="sr"&gt;/^(?:I|they) create a profile$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这可以匹配：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;I create a profile
+they create a profile
+&lt;/pre&gt;&lt;h4&gt;捕获一个选择性的元组来合并 step definition&lt;/h4&gt;
+&lt;p&gt;我们常常会用到 &lt;code&gt;是&lt;/code&gt; 或者 &lt;code&gt;不是&lt;/code&gt; 的判断。 比如&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;I should see the message
+I should not see the message
+&lt;/pre&gt;
+&lt;p&gt;那其实我们可以把 not 做为一个供选择的元组，合并这两个 step。比如：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^I should( not)? see the following columns: "([^"]*)"$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;negate&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;columns&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;within&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'table thead tr'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;columns&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;', '&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;column&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;negate&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;should_not&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;have_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;column&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;should&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;have_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;column&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;h4&gt;不要把所有的要匹配的短语都用括号括起来&lt;/h4&gt;
+&lt;p&gt;常常看到这样的 step：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="s2"&gt;"potatoes"&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;my&lt;/span&gt; &lt;span class="n"&gt;cart&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这个括号很形象直观，突出了 potatoes 是我要传递的参数。但是：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="s2"&gt;"7"&lt;/span&gt; &lt;span class="n"&gt;items&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;my&lt;/span&gt; &lt;span class="n"&gt;cart&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这样就很糟糕了。数字类型的还是建议不需要用括号括起来。&lt;/p&gt;
+&lt;h4&gt;使用 &lt;code&gt;transforms&lt;/code&gt; 写出更加聪明干净的正则表达式&lt;/h4&gt;
+&lt;p&gt;对于数字的处理，我们一般会这样：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^I have (\d+) items? in my cart$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;item_count&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;item_count&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;times&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Cucumber 把任何东西当成字符串传递。所以你必须谨记，在传递数字并进行比较的时候，要用 &lt;code&gt;to_i&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;但是，自己来转就会很容易忘记。所以 Cucumber 提供了  &lt;code&gt;Transform&lt;/code&gt;。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;CAPTURE_A_NUMBER&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Transform&lt;/span&gt; &lt;span class="sr"&gt;/^\d+$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;number&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;number&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_i&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^I have (&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="no"&gt;CAPTURE_A_NUMBER&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sr"&gt;) items? in my cart$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;item_count&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;item_count&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;times&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这样我们就不用主动的调用 &lt;code&gt;to_i&lt;/code&gt; 方法，而且因为 &lt;code&gt;CAPTURE_A_NUMBER&lt;/code&gt;  的抽离，我们也更好维护这段匹配。&lt;/p&gt;
+&lt;h4&gt;定义方法来压缩 step definition&lt;/h4&gt;
+&lt;p&gt;去冗的一个方法就是把重复的步骤或者重复的定义变成一个方法。比如，得到当前用户：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;current_user&lt;/span&gt;
+  &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_by_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'current_user@example.com'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;或者把有想通逻辑的步骤包装起来。比如：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;within_lightbox&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;opts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="nb"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;opts&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:sleep&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;within_frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"prettyPhotoIframe"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这样我们的 step 定义就可以干净优美：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^some stuff should be visible in the lightbox$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;within_lightbox&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;should&lt;/span&gt; &lt;span class="n"&gt;have_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Some Stuff'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;我们可以把这些方法加入到 &lt;code&gt;features/support/[whatever].rb&lt;/code&gt;  里去， cucumber 在运行的时候，会把这些方法读入到它的 &lt;code&gt;world&lt;/code&gt; 中去。&lt;/p&gt;
+
+&lt;p&gt;当然，有得必有失，你封装了逻辑，也就使得步骤不是那么直观了，想要明白它在做什么，就必须到你定义的方法里去找。所以利弊要自己权衡。&lt;/p&gt;
+&lt;h4&gt;在 step 里面使用 step&lt;/h4&gt;
+&lt;p&gt;比如：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;
+&lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="sr"&gt;/^the request for an expedited decision should be canceled$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;manuscript&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;should_not&lt;/span&gt; &lt;span class="n"&gt;be_expedited&lt;/span&gt;
+  &lt;span class="n"&gt;step&lt;/span&gt; &lt;span class="sx"&gt;%{"#{current_user.email}" should receive an email with subject "Expedited decision request canceled"}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;/pre&gt;
+&lt;p&gt;但也不要乱用，比如：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;When&lt;/span&gt; &lt;span class="sr"&gt;/^I update the email template to read "([^"]*)"$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;fill_in&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"email_template[text], with: text)
+  click_button("&lt;/span&gt;&lt;span class="no"&gt;Save&lt;/span&gt; &lt;span class="n"&gt;changes&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="s2"&gt;")
+  # Rather than...
+  # step %{I fill in "&lt;/span&gt;&lt;span class="n"&gt;email_template&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="s2"&gt;" with "&lt;/span&gt;&lt;span class="c1"&gt;#{text}"}&lt;/span&gt;
+  &lt;span class="c1"&gt;# step %{I press "Save changes and close"}&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;h4&gt;不需要一定要使用 &lt;code&gt;^&lt;/code&gt; 或者 &lt;code&gt;$&lt;/code&gt; 来匹配&lt;/h4&gt;
+&lt;p&gt;通常我们会这样写：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="sr"&gt;/^I am an admin user$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;item_count&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;我们使用&lt;code&gt;^&lt;/code&gt; 或者 &lt;code&gt;$&lt;/code&gt; 来固定我们要匹配的东西。上面的例子就是完全匹配 &lt;code&gt;I am an admin user&lt;/code&gt;， 多一个少一个都不行。大多数情况下，这样很好。但是：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Then&lt;/span&gt; &lt;span class="sr"&gt;/^wait (\d+) seconds/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;seconds&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="nb"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seconds&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;有时候，其实不必要固定结尾。这样，上面的语句就可以匹配：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;Then wait 2 seconds for the revenue statistics to finish loading
+Then wait 5 seconds while the document is converted
+&lt;/pre&gt;&lt;h4&gt;尽量使用 table 来包含你的数据&lt;/h4&gt;
+&lt;p&gt;一旦，测试数据很大，就请使用 table，否则等待你的就是重复的步骤。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="s2"&gt;"Frankie's Hams"&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;selling&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="vg"&gt;$25&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="no"&gt;And&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;following&lt;/span&gt; &lt;span class="n"&gt;orders&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;been&lt;/span&gt; &lt;span class="ss"&gt;placed:
+&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;buyer&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;      &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;quantity&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;eddy&lt;/span&gt;&lt;span class="vi"&gt;@example&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;com&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;        &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;matt&lt;/span&gt;&lt;span class="vi"&gt;@example&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;com&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;        &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;/pre&gt;&lt;h4&gt;使用小技巧可以，但是不要得不偿失&lt;/h4&gt;
+&lt;p&gt;Cucumber 有很多小技巧，但是请记住，你去掉了重复，就必然增加了复杂。比如&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="sr"&gt;/^(?:I|they) have opened (?:a|an) ([^\s]+) invitation$/&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;invitation_type&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="n"&gt;invitation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Factory&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;invitation_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;_invitation"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_sym&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;recipient: &lt;/span&gt;&lt;span class="n"&gt;current_user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;to: &lt;/span&gt;&lt;span class="n"&gt;current_user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;email&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;reset_mailer&lt;/span&gt;
+&lt;span class="nb"&gt;eval&lt;/span&gt; &lt;span class="s2"&gt;"ApplicationMailer.invite_&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;invitation_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;(invitation).deliver"&lt;/span&gt;
+&lt;span class="n"&gt;open_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;current_user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;email&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;上面的语句可以匹配：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;opened&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;reviewer&lt;/span&gt; &lt;span class="n"&gt;invitation&lt;/span&gt;
+&lt;span class="no"&gt;Given&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;opened&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;editor&lt;/span&gt; &lt;span class="n"&gt;invitation&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;但是这个表达式实在过于复杂，理解起来也很困难，不如拆开成两个更好。&lt;/p&gt;
+
+&lt;p&gt;这篇文章写的不错，在我在公司项目实践中都运用到了。不过不得不说一句，测试工具再好，也需要开发的配合。如果代码本身就复杂或者重复实现，那你也没办法。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Mon, 04 Nov 2013 13:33:25 +0800</pubDate>
+      <link>http://testerhome.com/topics/175</link>
+      <guid>http://testerhome.com/topics/175</guid>
+    </item>
+    <item>
+      <title>Cucumber-Regular-Expressions-Cheat-Sheet</title>
+      <description>&lt;p&gt;&lt;img src="/photo/9332399406d22c3397c950e256969dde.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.richardlawrence.info/wp-content/uploads/2011/08/Cucumber-Regular-Expressions-Cheat-Sheet.pdf" rel="nofollow" target="_blank"&gt;http://www.richardlawrence.info/wp-content/uploads/2011/08/Cucumber-Regular-Expressions-Cheat-Sheet.pdf&lt;/a&gt;&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Thu, 31 Oct 2013 16:17:44 +0800</pubDate>
+      <link>http://testerhome.com/topics/170</link>
+      <guid>http://testerhome.com/topics/170</guid>
+    </item>
+    <item>
+      <title>cucumber 和 mini_test 一起工作时候遇到 invalid option 的解决方法</title>
+      <description>&lt;p&gt;公司的一个项目一直用 &lt;code&gt;cucumber&lt;/code&gt; 做验收自动化测试。 不知道是哪一次的 &lt;code&gt;Gem&lt;/code&gt; 升级之后，发现每次运行，比如&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;➜  project_a git:&lt;span class="o"&gt;(&lt;/span&gt;master&lt;span class="o"&gt;)&lt;/span&gt; bundle &lt;span class="nb"&gt;exec &lt;/span&gt;cucumber -r features features/manage_users/login.feature
+&lt;/pre&gt;
+&lt;p&gt;结束的时候总是会抛出异常：&lt;/p&gt;
+&lt;pre class="highlight shell"&gt;/home/xxx/.rbenv/versions/1.9.3-p448/lib/ruby/gems/1.9.1/gems/minitest-4.7.5/lib/minitest/unit.rb:1037:in &lt;span class="sb"&gt;`&lt;/span&gt;block &lt;span class="k"&gt;in &lt;/span&gt;process_args&lt;span class="s1"&gt;': invalid option: -r (OptionParser::InvalidOption)
+    from /home/lihuazhang/.rbenv/versions/1.9.3-p448/lib/ruby/gems/1.9.1/gems/minitest-4.7.5/lib/minitest/unit.rb:1016:in `new'&lt;/span&gt;
+    from /home/lihuazhang/.rbenv/versions/1.9.3-p448/lib/ruby/gems/1.9.1/gems/minitest-4.7.5/lib/minitest/unit.rb:1016:in &lt;span class="sb"&gt;`&lt;/span&gt;process_args&lt;span class="s1"&gt;'
+    from /home/lihuazhang/.rbenv/versions/1.9.3-p448/lib/ruby/gems/1.9.1/gems/minitest-4.7.5/lib/minitest/unit.rb:1066:in `_run'&lt;/span&gt;
+    from /home/lihuazhang/.rbenv/versions/1.9.3-p448/lib/ruby/gems/1.9.1/gems/minitest-4.7.5/lib/minitest/unit.rb:1059:in &lt;span class="sb"&gt;`&lt;/span&gt;run&lt;span class="s1"&gt;'
+    from /home/lihuazhang/.rbenv/versions/1.9.3-p448/lib/ruby/gems/1.9.1/gems/minitest-4.7.5/lib/minitest/unit.rb:795:in `block in autorun'&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;而其实 feature 是全部通过的。这在平时命令行下运行或调试影响不大，但是如果集成到 &lt;code&gt;Jenkins&lt;/code&gt; 里就会一直告诉你失败。因为 &lt;code&gt;Jenkins&lt;/code&gt; 是通过命令执行的结果来判断成功与否。如下：&lt;/p&gt;
+
+&lt;p&gt;Execte Shell:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;RAILS_ENV=test CUCUMBER_OPTS="--require features" 
+RAILS_ENV=test rake ci:setup:cucumber
+RAILS_ENV=test bundle exec cucumber -r features features --format CI::Reporter::Cucumber # 这里结束会抛出 invalid option 的 error 就会导致 Jenkins 认为整个 step 都是失败的。
+&lt;/pre&gt;
+&lt;p&gt;在 stackoverflow 上找到方法说，在命令行末尾加  &lt;code&gt;echo $?&lt;/code&gt;， 试用了下，也工作的挺好，但总不是治本的方法。在搜索无果的情况给老板写了封邮件，老板不出五分钟就回信了：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;It looks like a bug in cucumber/multi_test.&lt;/p&gt;
+
+&lt;p&gt;according to &lt;a href="https://github.com/cucumber/cucumber-rails/issues/252" rel="nofollow" target="_blank"&gt;https://github.com/cucumber/cucumber-rails/issues/252&lt;/a&gt;&lt;br&gt;
+autorun of some other tests is triggered if some options are passed to cucumber, in this case "-r features".&lt;/p&gt;
+
+&lt;p&gt;This is turned off by disabling autorun of mini_test, which can be done in features/support, according to&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://github.com/cucumber/multi_test/pull/2" rel="nofollow" target="_blank"&gt;https://github.com/cucumber/multi_test/pull/2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Following what was suggested there, I added a file features/support/minitest_disable.rb.  Minitest is not autorun after cucumber, even when args are passed to cucumber.&lt;/p&gt;
+
+&lt;p&gt;Please pull and try it.  I also updated some gems, so you will need to bundle install.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其实就是在， &lt;code&gt;features/support/&lt;/code&gt; 下面添加一个minitest_disable.rb， 放两句话：&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'multi_test'&lt;/span&gt;
+&lt;span class="no"&gt;MultiTest&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;disable_autorun&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;这两句话其实可以在 cucumber 最近的几个版本的 &lt;code&gt;core_ext/disable_mini_and_test_unit_autorun.rb&lt;/code&gt; 里发现，其实我检查过，我用的版本里也有，不知道为什么不起作用。 不过全部把它扔到 cucumber 的 world 里， 一劳永逸算了。&lt;/p&gt;</description>
+      <author>lihuazhang</author>
+      <pubDate>Wed, 30 Oct 2013 15:58:55 +0800</pubDate>
+      <link>http://testerhome.com/topics/164</link>
+      <guid>http://testerhome.com/topics/164</guid>
+    </item>
+    <item>
+      <title>Guiceberry+Webdriver+TestNG</title>
+      <description>&lt;p&gt;&lt;strong&gt;1. Guiceberry&lt;/strong&gt;&lt;br&gt;
+Leverage Guice to achieve Dependency Injection on your JUnit tests&lt;br&gt;&lt;a href="https://code.google.com/p/guiceberry/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/guiceberry/&lt;/a&gt;&lt;br&gt;
+GuiceBerry brings the joys of dependency injection to your test cases and test infrastructure. It leverages Guice to accomplish this. It allows you to use a composition model for the services your test needs, rather than the traditional extends MyTestCase approach.&lt;br&gt;
+GuiceBerry does not supplant your JUnit testing framework -- it builds on top of it (and works around it, when necessary), so you can run your tests normally, from your favorite command line or IDE environment.&lt;/p&gt;
+
+&lt;p&gt;简单来说，通过注入和绑定，可以利用Guiceberry实现依赖边缘化，Guiceberry是基于Google的guice框架实现的。&lt;br&gt;
+所以在UI的自动化中，使用Guiceberry来管理例如现在流行的webdriver以及浏览器运行环境，测试人员可以将更多的精力投入到具体的项目功能或业务的自动化测试中。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2. Guiceberry相关文档视频&lt;/strong&gt;&lt;br&gt;
+Guiceberry 2.0 Slide&lt;br&gt;&lt;a href="https://docs.google.com/presentation/d/122ckAvyqg5UQA7nUd21t8_T9606d_sL0DGWl3_acdtc/edit?pli=1#slide=id.i0" rel="nofollow" target="_blank"&gt;https://docs.google.com/presentation/d/122ckAvyqg5UQA7nUd21t8_T9606d_sL0DGWl3_acdtc/edit?pli=1#slide=id.i0&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;A walk-through video of this tutorial by Zorzella&lt;br&gt;
+Video：&lt;a href="http://www.youtube.com/watch?v=yqre07YfPXQ" rel="nofollow" target="_blank"&gt;http://www.youtube.com/watch?v=yqre07YfPXQ&lt;/a&gt;&lt;br&gt;
+Slide：&lt;a href="https://docs.google.com/presentation/d/1098aqrmz45rtbeA_X71rfbFa4qqjXKs8LtLVBjqP1kc/present#slide=id.i0" rel="nofollow" target="_blank"&gt;https://docs.google.com/presentation/d/1098aqrmz45rtbeA_X71rfbFa4qqjXKs8LtLVBjqP1kc/present#slide=id.i0&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;现在Guiceberry发布了3.3.1版本，下载地址见这里&lt;a href="https://code.google.com/p/guiceberry/downloads/list" rel="nofollow" target="_blank"&gt;https://code.google.com/p/guiceberry/downloads/list&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3. Google guice&lt;/strong&gt;&lt;br&gt;
+Google用于Java开发的开放源码依赖项注入框架。它不需要您自己编写工厂，从而提供更好的测试性和模块性。&lt;br&gt;&lt;a href="https://code.google.com/p/google-guice/" rel="nofollow" target="_blank"&gt;https://code.google.com/p/google-guice/&lt;/a&gt;&lt;br&gt;&lt;a href="http://tech.it168.com/zt/guice/" rel="nofollow" target="_blank"&gt;http://tech.it168.com/zt/guice/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;4. Demo&lt;/strong&gt;&lt;br&gt;
+Eclipse上创建一个Maven项目，添加以下依赖&lt;/p&gt;
+&lt;pre class="highlight xml"&gt; 1   &lt;span class="nt"&gt;&amp;lt;dependencies&amp;gt;&lt;/span&gt;
+ 2     &lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+ 3         &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.testng&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+ 4         &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;testng&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+ 5         &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;6.8.7&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+ 6         &lt;span class="nt"&gt;&amp;lt;type&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/type&amp;gt;&lt;/span&gt;
+ 7         &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;test&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
+ 8     &lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+ 9     &lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+10         &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.seleniumhq.selenium&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+11         &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;selenium-java&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+12         &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;2.32.0&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+13         &lt;span class="nt"&gt;&amp;lt;type&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/type&amp;gt;&lt;/span&gt;
+14         &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;compile&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
+15     &lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+16     &lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+17         &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.google.guiceberry&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+18         &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;guiceberry&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+19         &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.3.1&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+20         &lt;span class="nt"&gt;&amp;lt;type&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/type&amp;gt;&lt;/span&gt;
+21         &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;compile&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
+22     &lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+23     &lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+24         &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.google.inject&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+25         &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;guice&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+26         &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.0&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+27         &lt;span class="nt"&gt;&amp;lt;type&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/type&amp;gt;&lt;/span&gt;
+28         &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;compile&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
+29     &lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+30   &lt;span class="nt"&gt;&amp;lt;/dependencies&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Env class&lt;/p&gt;
+&lt;pre class="highlight java"&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;foo&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;2&lt;/span&gt; 
+ &lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.common.testing.TearDownAccepter&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.guiceberry.GuiceBerryModule&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.guiceberry.TestScoped&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.inject.AbstractModule&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.inject.Provides&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;9&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.firefox.FirefoxDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;10&lt;/span&gt; 
+&lt;span class="mi"&gt;11&lt;/span&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;WebDriverEnv&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;AbstractModule&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;12&lt;/span&gt;     &lt;span class="nd"&gt;@Override&lt;/span&gt;
+&lt;span class="mi"&gt;13&lt;/span&gt;     &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;14&lt;/span&gt;         &lt;span class="n"&gt;install&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;GuiceBerryModule&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+&lt;span class="mi"&gt;15&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;16&lt;/span&gt; 
+&lt;span class="mi"&gt;17&lt;/span&gt;     &lt;span class="nd"&gt;@Provides&lt;/span&gt;
+&lt;span class="mi"&gt;18&lt;/span&gt;     &lt;span class="nd"&gt;@TestScoped&lt;/span&gt;
+&lt;span class="mi"&gt;19&lt;/span&gt;     &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;getWebDriver&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;20&lt;/span&gt;         &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;FirefoxDriver&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;21&lt;/span&gt;         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;22&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;23&lt;/span&gt; 
+&lt;span class="mi"&gt;24&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Page class&lt;/p&gt;
+&lt;pre class="highlight java"&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;foo&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;2&lt;/span&gt; 
+ &lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;static&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testng&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Assert&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;assertTrue&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;4&lt;/span&gt; 
+ &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.By&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebElement&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.support.ui.LoadableComponent&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;9&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.inject.Inject&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;10&lt;/span&gt; 
+&lt;span class="mi"&gt;11&lt;/span&gt; 
+&lt;span class="mi"&gt;12&lt;/span&gt; 
+&lt;span class="mi"&gt;13&lt;/span&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;GooglePage&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;LoadableComponent&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;GooglePage&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;14&lt;/span&gt;     &lt;span class="nd"&gt;@Inject&lt;/span&gt;
+&lt;span class="mi"&gt;15&lt;/span&gt;     &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;16&lt;/span&gt;     
+&lt;span class="mi"&gt;17&lt;/span&gt;     &lt;span class="nd"&gt;@Override&lt;/span&gt;
+&lt;span class="mi"&gt;18&lt;/span&gt;     &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;load&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;19&lt;/span&gt;         &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"http://www.google.com/ncr"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="mi"&gt;20&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;21&lt;/span&gt; 
+&lt;span class="mi"&gt;22&lt;/span&gt;     &lt;span class="nd"&gt;@Override&lt;/span&gt;
+&lt;span class="mi"&gt;23&lt;/span&gt;     &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;isLoaded&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Error&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;24&lt;/span&gt;         &lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getTitle&lt;/span&gt;&lt;span class="o"&gt;()).&lt;/span&gt;&lt;span class="na"&gt;contains&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Google"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+&lt;span class="mi"&gt;25&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;26&lt;/span&gt; 
+&lt;span class="mi"&gt;27&lt;/span&gt;     &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;28&lt;/span&gt;         &lt;span class="n"&gt;searchField&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;By&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"gbqfq"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+&lt;span class="mi"&gt;29&lt;/span&gt;         &lt;span class="n"&gt;searchField&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;clear&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;30&lt;/span&gt;         &lt;span class="n"&gt;searchField&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sendKeys&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="mi"&gt;31&lt;/span&gt;         &lt;span class="n"&gt;searchField&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;submit&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;32&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;33&lt;/span&gt;     
+&lt;span class="mi"&gt;34&lt;/span&gt;     &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;getSearchResult&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;35&lt;/span&gt;         &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPageSource&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;36&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;37&lt;/span&gt; 
+&lt;span class="mi"&gt;38&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Test class&lt;/p&gt;
+&lt;pre class="highlight java"&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="n"&gt;foo&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;2&lt;/span&gt; 
+ &lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.openqa.selenium.WebDriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.inject.Inject&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.testng.annotations.Test&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+ &lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.common.testing.TearDown&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+ &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;com.google.guiceberry.testng.TestNgGuiceBerry&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+ &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.testng.annotations.AfterMethod&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+ &lt;span class="mi"&gt;9&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.testng.annotations.BeforeMethod&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.lang.reflect.Method&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;11&lt;/span&gt; 
+&lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SearchGoogleTest&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;13&lt;/span&gt;     &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;TearDown&lt;/span&gt; &lt;span class="n"&gt;toTearDown&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
+&lt;span class="mi"&gt;14&lt;/span&gt;     &lt;span class="nd"&gt;@BeforeMethod&lt;/span&gt; 
+&lt;span class="mi"&gt;15&lt;/span&gt;     &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;setUp&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Method&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt; 
+&lt;span class="mi"&gt;16&lt;/span&gt;         &lt;span class="n"&gt;toTearDown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TestNgGuiceBerry&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setUp&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; 
+&lt;span class="mi"&gt;17&lt;/span&gt;                 &lt;span class="n"&gt;WebDriverEnv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt; 
+&lt;span class="mi"&gt;18&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt; 
+&lt;span class="mi"&gt;19&lt;/span&gt; 
+&lt;span class="mi"&gt;20&lt;/span&gt;     &lt;span class="nd"&gt;@AfterMethod&lt;/span&gt; 
+&lt;span class="mi"&gt;21&lt;/span&gt;     &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;tearDown&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt; 
+&lt;span class="mi"&gt;22&lt;/span&gt;         &lt;span class="n"&gt;toTearDown&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tearDown&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt; 
+&lt;span class="mi"&gt;23&lt;/span&gt;         &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;close&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;24&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt; 
+&lt;span class="mi"&gt;25&lt;/span&gt;     
+&lt;span class="mi"&gt;26&lt;/span&gt;     &lt;span class="nd"&gt;@Inject&lt;/span&gt;
+&lt;span class="mi"&gt;27&lt;/span&gt;     &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;webdriver&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;28&lt;/span&gt; 
+&lt;span class="mi"&gt;29&lt;/span&gt;     &lt;span class="nd"&gt;@Inject&lt;/span&gt;
+&lt;span class="mi"&gt;30&lt;/span&gt;     &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;GooglePage&lt;/span&gt; &lt;span class="n"&gt;googlePage&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="mi"&gt;31&lt;/span&gt;     
+&lt;span class="mi"&gt;32&lt;/span&gt;     &lt;span class="nd"&gt;@Test&lt;/span&gt;
+&lt;span class="mi"&gt;33&lt;/span&gt;     &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;testGoogleHomePageTitle&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="mi"&gt;34&lt;/span&gt;         &lt;span class="n"&gt;googlePage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;load&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;35&lt;/span&gt;         &lt;span class="n"&gt;googlePage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;isLoaded&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;36&lt;/span&gt;     &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="mi"&gt;37&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;PS：github真是好东西，看到个更好的例子：&lt;a href="https://github.com/abendt/uitest-webdriver-guiceberry" rel="nofollow" target="_blank"&gt;https://github.com/abendt/uitest-webdriver-guiceberry&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;我们知道Webdriver可以支持IE,Firefox,Chrome等浏览器+各种操作系统组合，在Env class中专注构建各种环境，而Test class只需要指定我使用哪个浏览器就可以了，不用关心运行环境是如何配置的&lt;/p&gt;
+&lt;pre class="highlight java"&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;Capabilities&lt;/span&gt; &lt;span class="n"&gt;ie&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;internetExplorer&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;Capabilities&lt;/span&gt; &lt;span class="n"&gt;firefox&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;firefox&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="n"&gt;Capabilities&lt;/span&gt; &lt;span class="n"&gt;chrome&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DesiredCapabilities&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;chrome&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="mi"&gt;4&lt;/span&gt; 
+&lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="n"&gt;WebDriver&lt;/span&gt; &lt;span class="n"&gt;driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WebDriverBuilder&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+&lt;span class="mi"&gt;6&lt;/span&gt;     &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;of&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ie&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;firefox&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;chrome&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="mi"&gt;7&lt;/span&gt;     &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;preferHeadless&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+&lt;span class="mi"&gt;8&lt;/span&gt;     &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;/pre&gt;</description>
+      <author>oscarxie</author>
+      <pubDate>Sat, 26 Oct 2013 19:51:27 +0800</pubDate>
+      <link>http://testerhome.com/topics/154</link>
+      <guid>http://testerhome.com/topics/154</guid>
+    </item>
+  </channel>
+</rss>

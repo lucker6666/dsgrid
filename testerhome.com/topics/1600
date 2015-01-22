@@ -1,0 +1,510 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 使用 Gearman+Calabash 并行测试手机 APP &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">使用 Gearman+Calabash 并行测试手机 APP</h1>
+  <div class="info leader">
+    <a class="node" href="node35">Calabash</a>
+     · 
+    <a data-author="true" data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+     · 
+    于<abbr class="timeago" title="2014-11-19T21:54:41+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="htmlbiji" href="../htmlbiji">htmlbiji</a> 于<abbr class="timeago" title="2014-11-21T11:24:44+08:00"></abbr>回复
+     · 
+    530次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p><strong>摘要</strong>：使用任务分发系统Gearman分布式执行Calabash的自动化测试用例，可以达到并行测试手机APP的目的。</p>
+<h4>背景介绍</h4><h4>Gearman</h4>
+<blockquote>
+<p>Gearman是一个分发任务的程序框架，可以用在各种场合，与Hadoop相比，Gearman更偏向于任务分发功能。它的 任务分布非常简单，简单得可以只需要用脚本即可完成。</p>
+</blockquote>
+
+<p><img src="http://www.oschina.net/uploads/img/201002/05001154_UcCt.png" alt="下载ruby"></p>
+<h4>Calabash</h4>
+<blockquote>
+<p>Calabash-android是支持android的UI自动化测试框架，PC端使用了cucumber框架，通过http和json与模拟器和真机上安装的测试apk通信，测试apk调用robotium的方法来进行UI自动化测试，支持webview操作。</p>
+</blockquote>
+
+<p>calabash脚本以 <a href="http://my.oschina.net/fitnessefan/blog/308893" target="_blank">使用calabash测试开源中国Android客户端</a> 为例。</p>
+<h4>Gearman安装和执行测试</h4><h4>Ubuntu上安装Gearman</h4><pre class="highlight plaintext">$ sudo apt-get install gearman-job-server
+$ gearmand -V
+
+gearmand 1.0.6 - https://bugs.launchpad.net/gearmand 
+
+$ sudo apt-get install gearman-tools
+$ gearman -H
+</pre>
+<h4>运行Gearman并发执行Calabash测试用例</h4>
+<p>启动gearman job server，作为后台服务运行:</p>
+<pre class="highlight plaintext">$ gearmand -d
+</pre>
+
+<p>启动两个worker，每个woker代表一个手机测试设备(tester)，woker始终不退出，且没有任何打印:</p>
+<pre class="highlight plaintext">$ gearman -w -f tester -- ./test-case.sh NEXUS-7 testdata-aa.bashrc
+$ gearman -w -f tester -- ./test-case.sh HUAHEI-8860 testdata-bb.bashrc
+</pre>
+
+<p>分发测试用例到各个worker，收集到所有测试打印后，即完成测试：</p>
+<pre class="highlight plaintext">./run-suite.sh @BVT
+</pre>
+
+<p>实时查看测试结果，任何一个worker测试完一个用例，测试结果会立即打印出来：</p>
+<pre class="highlight plaintext">tail -f /tmp/test-result
+</pre>
+
+<p><strong>并发测试的效果：</strong><br>
+理论上如果顺序执行测试所有用例要10个小时，那么只要准备10个手机，每个手机对应启动一个worker:tester，测试时间将缩短到最少1个小时。</p>
+
+<p>下面的脚本是在同一台Ubuntu电脑上，利用多个USB口连接多个手机来并发测试，<br>
+如果要在多台电脑上执行并发测试，那要考虑这多台电脑如何获取同一份apk和calabash脚本，可以考虑从一个公共的url去wget。</p>
+<h4>Gearman测试脚本</h4><h4>test-case.sh</h4>
+<p>从stdin接收到的calabash测试脚本文件路径，调用calabash-android完成测试，再作为client调用printer</p>
+<pre class="highlight shell"><span class="c">#!/bin/bash</span>
+<span class="k">if</span> <span class="o">[</span> x<span class="nv">$2</span> <span class="o">==</span> x <span class="o">]</span>
+<span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"usage: </span><span class="nv">$0</span><span class="s2"> device-id testdata-xx.bashrc"</span>
+  <span class="nb">echo</span> <span class="s2">"      device-id get from: adb devices"</span>
+  <span class="nb">exit </span>1
+<span class="k">fi
+</span><span class="nb">read </span>line
+<span class="nb">echo</span> <span class="nv">$0</span> <span class="nv">$1</span> <span class="nv">$2</span>
+<span class="nv">uuid</span><span class="o">=</span><span class="sb">`</span>uuidgen<span class="sb">`</span>
+<span class="nv">d1</span><span class="o">=</span><span class="sb">`</span>date +%T<span class="sb">`</span>
+<span class="nv">suite_path</span><span class="o">=</span><span class="nv">$HOME</span>/git/oschina/android-app/calabash
+<span class="nv">apk_path</span><span class="o">=</span><span class="nv">$HOME</span>/git/oschina/android-app/bin/oschina-android-app.apk
+<span class="nb">echo</span> <span class="s2">"test result in /tmp/</span><span class="k">${</span><span class="nv">uuid</span><span class="k">}</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="nv">$d1</span> at <span class="sb">`</span>hostname<span class="sb">`</span>:<span class="nv">$1</span> &gt;&gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+mkdir -p <span class="nv">$HOME</span>/<span class="nv">$1</span>
+<span class="nb">cd</span> <span class="nv">$HOME</span>/<span class="nv">$1</span>
+<span class="nb">export </span><span class="nv">ADB_DEVICE_ARG</span><span class="o">=</span><span class="nv">$1</span>
+. <span class="nv">$src</span>/<span class="nv">$2</span>
+calabash-android run <span class="nv">$apk_path</span> -r <span class="nv">$suite_path</span>/features/ <span class="nv">$line</span> 2&gt;&amp;1 | tee -a /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+<span class="nv">d2</span><span class="o">=</span><span class="sb">`</span>date +%T<span class="sb">`</span>
+<span class="nb">echo</span> <span class="nv">$d2</span> at <span class="sb">`</span>hostname<span class="sb">`</span>:<span class="nv">$1</span> &gt;&gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+<span class="nv">failed</span><span class="o">=</span><span class="sb">`</span>grep <span class="s2">"Failing Scenarios"</span> /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span> | wc -l<span class="sb">`</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$failed</span> <span class="o">==</span> 0 <span class="o">]</span>
+<span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"===PASS=== : </span><span class="nv">$line</span><span class="s2">"</span> &gt;&gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+<span class="k">else
+  </span><span class="nb">echo</span> <span class="s2">"===FAIL=== : </span><span class="nv">$line</span><span class="s2">"</span> &gt;&gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+<span class="k">fi
+</span>gearman -f printer &lt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+rm -f /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+</pre>
+<h4>print-result.sh </h4>
+<p>从stdin接收测试结果，并添加到文件/tmp/test-result</p>
+<pre class="highlight shell"><span class="c">#!/bin/bash</span>
+<span class="k">while </span><span class="nb">read </span>line 
+<span class="k">do
+  </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$line</span><span class="s2">"</span> &gt;&gt; /tmp/test-result
+<span class="k">done
+</span><span class="nv">case_count</span><span class="o">=</span><span class="sb">`</span>cat /tmp/case_count<span class="sb">`</span>
+<span class="nv">finished</span><span class="o">=</span><span class="sb">`</span>egrep <span class="s2">"===(PASS|FAIL)==="</span> /tmp/test-result | wc -l<span class="sb">`</span>
+<span class="nb">echo</span> -n <span class="s2">"Progress:"</span> <span class="nv">$finished</span> <span class="s2">"/ </span><span class="nv">$case_count</span><span class="s2">  ["</span> &gt;&gt; /tmp/test-result
+
+<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>0; i&lt;<span class="nv">$finished</span>; i++ <span class="o">))</span>
+<span class="k">do
+  </span><span class="nb">echo</span> -n <span class="s2">"&gt;"</span> &gt;&gt; /tmp/test-result
+<span class="k">done
+</span><span class="nb">let </span><span class="nv">unfinished</span><span class="o">=</span><span class="nv">$case_count</span>-<span class="nv">$finished</span>
+<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>0; i&lt;<span class="nv">$unfinished</span>; i++ <span class="o">))</span>
+<span class="k">do
+  </span><span class="nb">echo</span> -n <span class="s2">"."</span> &gt;&gt; /tmp/test-result
+<span class="k">done
+</span><span class="nb">echo</span> -en <span class="s2">"]</span><span class="se">\n</span><span class="s2">"</span> &gt;&gt; /tmp/test-result
+</pre>
+<h4>run-suite.sh </h4>
+<p>作为client，后台一次分发所有calabash脚本到tester，并启动woker: printer，直到收到所有测试结果打印才退出</p>
+<pre class="highlight shell"><span class="c">#!/bin/bash</span>
+<span class="k">if</span> <span class="o">[</span> x<span class="nv">$1</span> <span class="o">==</span> x <span class="o">]</span>
+<span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"usage:"</span> <span class="nv">$0</span> <span class="s2">"@BVT|@nightly|all|failed"</span>
+  <span class="nb">exit </span>1
+<span class="k">fi
+
+</span><span class="nv">suite_path</span><span class="o">=</span><span class="nv">$HOME</span>/git/oschina/android-app/calabash
+<span class="nv">uuid</span><span class="o">=</span><span class="sb">`</span>uuidgen<span class="sb">`</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">==</span> <span class="s2">"all"</span> <span class="o">]</span>
+<span class="k">then
+  </span>find <span class="nv">$suite_path</span> -name <span class="s2">"*.feature"</span> &gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+<span class="k">elif</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">==</span> <span class="s2">"failed"</span> <span class="o">]</span>
+<span class="k">then
+  if</span> <span class="o">[</span> -f /tmp/failed <span class="o">]</span>
+  <span class="k">then
+    </span>cat /tmp/failed &gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+  <span class="k">else
+    </span>touch /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+  <span class="k">fi
+elif</span> <span class="o">[[</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">==</span> @<span class="k">*</span> <span class="o">]]</span>
+<span class="k">then
+  </span>grep <span class="nv">$1</span> <span class="nv">$suite_path</span> -rl | grep <span class="s2">".feature$"</span> &gt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+<span class="k">fi
+
+</span><span class="nv">case_count</span><span class="o">=</span><span class="sb">`</span>cat /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span> | wc -l<span class="sb">`</span>
+<span class="nb">echo</span> <span class="nv">$case_count</span> &gt; /tmp/case_count
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$case_count</span> <span class="o">==</span> 0 <span class="o">]</span>
+<span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"NO case to run, exit."</span> | tee /tmp/test-result
+  rm -f /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+  <span class="nb">exit </span>1
+<span class="k">fi
+
+</span><span class="nb">echo</span> <span class="s2">"total </span><span class="nv">$case_count</span><span class="s2"> cases."</span> | tee /tmp/test-result
+
+<span class="nv">i</span><span class="o">=</span>0
+<span class="k">while </span><span class="nb">read </span>line 
+<span class="k">do
+  </span><span class="nb">let </span>i+<span class="o">=</span>1
+  <span class="nb">echo</span> <span class="s2">"send No.</span><span class="nv">$i</span><span class="s2"> case --- </span><span class="nv">$line</span><span class="s2">"</span>
+  <span class="nb">echo</span> <span class="nv">$line</span> | gearman -b -f runcase
+<span class="k">done</span> &lt; /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+rm -f /tmp/<span class="k">${</span><span class="nv">uuid</span><span class="k">}</span>
+
+gearman -w -c <span class="nv">$case_count</span> -f printer -- ./print-result.sh <span class="nv">$case_count</span>
+cat /tmp/test-result
+grep <span class="s2">"===FAIL==="</span> /tmp/test-result | awk <span class="s1">'{print $3}'</span> &gt; /tmp/failed
+<span class="nb">echo</span> <span class="s2">""</span> &gt; /tmp/summary
+<span class="nb">echo</span> <span class="s2">"=================test result summary================"</span> 2&gt;&amp;1 | tee -a /tmp/summary
+grep <span class="s2">"===PASS==="</span> /tmp/test-result 2&gt;&amp;1 | tee -a /tmp/summary
+grep <span class="s2">"===FAIL==="</span> /tmp/test-result 2&gt;&amp;1 | tee -a /tmp/summary
+<span class="nv">fails</span><span class="o">=</span><span class="sb">`</span>grep <span class="s2">"===FAIL==="</span> /tmp/test-result | wc -l<span class="sb">`</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$fails</span> <span class="o">==</span> 0 <span class="o">]</span> 
+<span class="k">then
+  </span><span class="nb">echo</span> -e <span class="s2">"</span><span class="se">\0</span><span class="s2">33[32;1;7mPASS</span><span class="se">\0</span><span class="s2">33[0m :"</span> <span class="sb">`</span>grep <span class="s2">"===PASS==="</span> /tmp/test-result | wc -l<span class="sb">`</span> 2&gt;&amp;1 | tee -a /tmp/summary
+<span class="k">else
+  </span><span class="nb">echo</span> -e <span class="s2">"</span><span class="se">\0</span><span class="s2">33[31;1;7mFAIL</span><span class="se">\0</span><span class="s2">33[0m :"</span> <span class="sb">`</span>grep <span class="s2">"===FAIL==="</span> /tmp/test-result | wc -l<span class="sb">`</span> 2&gt;&amp;1 | tee -a /tmp/summary
+<span class="k">fi
+</span><span class="nb">echo</span> <span class="s2">"TOTAL: </span><span class="nv">$case_count</span><span class="s2">"</span> 2&gt;&amp;1 | tee -a /tmp/summary
+cat /tmp/summary &gt;&gt; /tmp/test-result
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='使用 Gearman+Calabash 并行测试手机 APP via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1600#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1600#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1600#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1600#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1600#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1600#reply1">1楼</a> · <abbr class="timeago" title="2014-11-20T03:09:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9929" data-state="" data-type="Reply" href="1600#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1600/replies/9929/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="seveniruby" href="1600#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>gearman跟jenkins的作用差不多吧? 好像优势不是特别大.<br>
+我记得IBM当初还发布过STAF工具. </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1600#reply2">2楼</a> · <abbr class="timeago" title="2014-11-20T14:23:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9950" data-state="" data-type="Reply" href="1600#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1600/replies/9950/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="htmlbiji" href="1600#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1600#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> <br>
+正好对jenkins和staf都有所了解，所以说一下这三个工具的关系：<br>
+jenkins是持续集成工具，正好在编译出apk后可以调用run-suite.sh脚本，达到BVT的目的。<br>
+staf是端到端的自动化测试框架，用来测试端到端应用，如scp等，也可以用来跨机部署等替换手工ssh登录，scp等步骤。与任务分发系统是两个领域的工具。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="deleted">3楼 已删除.</div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../anikikun"><img alt="114" class="uface" src="../user/large_avatar/114.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="黄伟东" href="../anikikun">anikikun</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1600#reply4">4楼</a> · <abbr class="timeago" title="2014-11-21T10:46:22+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9962" data-state="" data-type="Reply" href="1600#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="114" href="http://testerhome.com/topics/1600/replies/9962/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="anikikun" href="1600#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>想马上尝试一下了..</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../htmlbiji"><img alt="1418" class="uface" src="../user/large_avatar/1418.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="超爱fitnesse" href="../htmlbiji">htmlbiji</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1600#reply5">5楼</a> · <abbr class="timeago" title="2014-11-21T11:24:44+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9963" data-state="" data-type="Reply" href="1600#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1418" href="http://testerhome.com/topics/1600/replies/9963/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="htmlbiji" href="1600#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1600#reply4" class="at_floor" data-floor="4">#4楼</a> <a href="../anikikun" class="at_user" title="@anikikun"><i>@</i>anikikun</a> <br>
+gogogo</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    关爱至亲的人
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1817" title="Calabash+Gearman 实现多手机同步测试机制">Calabash+Gearman 实现多手机同步测试机制</a></li>
+    <li><a href="1803" title="求助：calabash-android 如何 touch fragment 中 textView">求助：calabash-android 如何 touc...</a></li>
+    <li><a href="1600" title="使用 Gearman+Calabash 并行测试手机 APP">使用 Gearman+Calabash 并行测试手机 APP</a></li>
+    <li><a href="1568" title="Ubuntu 14.04 64 位安装 calabash-android 问题汇总">Ubuntu 14.04 64 位安装 calabas...</a></li>
+    <li><a href="1528" title="calabash iOS 新建项目流程">calabash iOS 新建项目流程</a></li>
+    <li><a href="1522" title="Calabash for Mac 在搭环境的小细节...">Calabash for Mac 在搭环境的小细节...</a></li>
+    <li><a href="1520" title="Calabash 模拟多手机同步测试">Calabash 模拟多手机同步测试</a></li>
+    <li><a href="1396" title="如何解决 Calabash-ios &quot;Connection refused &quot;？">如何解决 Calabash-ios &quot;Connecti...</a></li>
+    <li><a href="1384" title="Calabash-ios framework 的安装过程">Calabash-ios framework 的安装过程</a></li>
+    <li><a href="1347" title="使用 calabash 测试开源中国 Android 客户端">使用 calabash 测试开源中国 Android 客户端</a></li>
+    <li><a href="1323" title="calabash-android 测试问题收集">calabash-android 测试问题收集</a></li>
+    <li><a href="1296" title="中文 Win7 下成功安装 calabash-android 步骤">中文 Win7 下成功安装 calabash-andr...</a></li>
+    <li><a href="1180" title="Calabash 的那些坑">Calabash 的那些坑</a></li>
+    <li><a href="1173" title="Calabash 学习经验小结">Calabash 学习经验小结</a></li>
+    <li><a href="1165" title="用原生 Cucumber 跑 Calabash-Android 测试">用原生 Cucumber 跑 Calabash-And...</a></li>
+    <li><a href="1164" title="Calabash 使用经验 - 安装稳定版本">Calabash 使用经验 - 安装稳定版本</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1600#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

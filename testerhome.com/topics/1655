@@ -1,0 +1,599 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Robotium 专题（二）： Robotium 只有 apk 文件时进行测试 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Robotium 专题（二）： Robotium 只有 apk 文件时进行测试</h1>
+  <div class="info leader">
+    <a class="node" href="node39">Robotium</a>
+     · 
+    <a data-author="true" data-name="" href="../bill">bill</a>
+     · 
+    于<abbr class="timeago" title="2014-12-04T11:09:59+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="april46" href="../april46">april46</a> 于<abbr class="timeago" title="2014-12-18T18:22:00+08:00"></abbr>回复
+     · 
+    700次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>这个只有APK的时候进行测试，是我亲身实践后，觉得这篇文章比较有用，所以就发在这里了！<br>
+昨天看到一个帖子写了对自动化的一些茫然，说句实话，我也觉得自动化现在用处不是特别大，但我觉得将来自动化是一个比较好得趋势，移动端虽然产品迭代快，但对一般性的回归测试，我觉得自动化还是能省一些时间的。<br>
+另外，还看到一些对测试感觉茫然的朋友，其实我想说，在现有的环境下，无论做什么事情或者什么工作，都会有厌烦的时候，但一定不要一感到厌烦就想放弃，然后找各种借口去给自己留后路，我个人认为只要勤奋、肯学习，无论是技术还是管理，用心坚持去做，都能做出一番自己的事业！<br>
+好了，长话短说，既然现在选择做测试，那么就把现有的测试做好，做精，做专，这样即使转行，也可以给自己一个好的交代！</p>
+
+
+
+
+
+<p>首先：设置环境变量</p>
+
+<ol>
+<li>配置ANDROID_HOME为android sdk的安卓目录，例如：D:\android-sdk</li>
+<li><p>在path下添加这两个：<br>
+%ANDROID_HOME%\tools;%ANDROID_HOME%\platform-tools;<br>
+其次： 安装签名文件</p></li>
+<li><p>因为robotium要求被测应用和测试代码要有一致的签名, 所以我们需要把下载到的apk，通过re-sign.jar来产生debug key的apk，这个重新生成的apk就会跟测试项目签名一致了<br>
+re-sign.jar可以从这里下载到：<br>
+<a href="http://www.troido.de/re-sign.jar" rel="nofollow" target="_blank">http://www.troido.de/re-sign.jar</a></p></li>
+<li><p>下载完后，在命令行下 通过 java -jar re-sign.jar就会出现一个节目，然后将apk拖到这个节目，就会自动生成一个debug key的apk<br>
+产生新apk的过程中会弹出一个信息框，记得截下图，因为里面有两个信息我们等会的代码中需要用到</p></li>
+<li><p>安装产生的apk。然后打开模拟器（模拟器器一定要打开才能安装成功），然后打开命令行  adb install mitalk_debug.apk(新生成apk的名称) ， 或者双击apk文件也可以安装<br>
+安装成功就可以再模拟器里看到该应用的图标了<br>
+然后：创建项目(使用米聊apk)</p></li>
+<li><p>打开Eclipse，点击File-&gt;New一个Android Test Project  ApkTest, 然后点击下一步的时候选择This project(因为我们没有米聊应用的源码)，然后选择要在哪个android版本上测试</p></li>
+<li><p>在该项目下创建一个包，com.mitalk.test,在该包下创建LoginTest类，如下</p></li>
+</ol>
+<pre class="highlight java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">mitalk</span><span class="o">.</span><span class="na">test</span><span class="o">;</span>
+<span class="c1">//需要导入的包</span>
+<span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.test.ActivityInstrumentationTestCase2</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.jayway.android.robotium.solo.Solo</span><span class="o">;</span>
+<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"rawtypes"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginTest</span> <span class="kd">extends</span> <span class="n">ActivityInstrumentationTestCase2</span> <span class="o">{</span>
+       <span class="c1">//定义变量</span>
+<span class="kd">public</span> <span class="n">Solo</span> <span class="n">solo</span><span class="o">;</span>
+<span class="kd">public</span> <span class="n">Activity</span> <span class="n">activity</span><span class="o">;</span>
+<span class="kd">private</span> <span class="kd">static</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">launchActivityClass</span><span class="o">;</span>
+<span class="c1">//对应re-sign.jar生成出来的信息框里的两个值</span>
+<span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">mainActiviy</span> <span class="o">=</span> <span class="s">"com.xiaomi.channel.ui.ChannelLauncherActivity"</span><span class="o">;</span>
+<span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">packageName</span> <span class="o">=</span> <span class="s">"com.xiaomi.channel"</span><span class="o">;</span>
+         <span class="kd">static</span> <span class="o">{</span>
+                  <span class="k">try</span> <span class="o">{</span>
+                      <span class="n">launchActivityClass</span> <span class="o">=</span> <span class="n">Class</span>
+<span class="o">.</span>                     <span class="n">forName</span><span class="o">(</span><span class="n">mainActiviy</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span>
+                   <span class="o">{</span>
+                  <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+                  <span class="o">}</span>
+                 <span class="o">}</span>
+<span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"unchecked"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nf">LoginTest</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span> 
+<span class="kd">super</span><span class="o">(</span><span class="n">packageName</span><span class="o">,</span> <span class="n">launchActivityClass</span><span class="o">);</span>
+                          <span class="o">}</span>
+<span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<span class="kd">super</span><span class="o">.</span><span class="na">setUp</span><span class="o">();</span>
+<span class="k">this</span><span class="o">.</span><span class="na">activity</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getActivity</span><span class="o">();</span>
+<span class="k">this</span><span class="o">.</span><span class="na">solo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Solo</span><span class="o">(</span><span class="n">getInstrumentation</span><span class="o">(),</span> <span class="n">getActivity</span><span class="o">());</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testLoginWithIncorrentUsernameAndPassword</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>
+              <span class="c1">//一定时间内等待text出现，否则就出错</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">waitForText</span><span class="o">(</span><span class="s">"Log In"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">10000</span><span class="o">);</span>
+              <span class="c1">//点击text “Log In”</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">clickOnText</span><span class="o">(</span><span class="s">"Log In"</span><span class="o">);</span>
+              <span class="c1">//一定时间内等待text出现，否则就出错</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">waitForText</span><span class="o">(</span><span class="s">"OK"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2000</span><span class="o">);</span>
+              <span class="c1">//输入text</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">enterText</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">"13559494170"</span><span class="o">);</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">enterText</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"123456"</span><span class="o">);</span>
+              <span class="c1">//点击text “OK”</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">clickOnText</span><span class="o">(</span><span class="s">"OK"</span><span class="o">);</span>
+              <span class="c1">//等待出现下面的text后，进行验证</span>
+              <span class="n">solo</span><span class="o">.</span><span class="na">waitForText</span><span class="o">(</span><span class="s">"Incorrect ID number or password."</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">10000</span><span class="o">);</span>
+              <span class="n">assertTrue</span><span class="o">(</span><span class="n">solo</span><span class="o">.</span><span class="na">searchText</span><span class="o">(</span><span class="s">"Incorrect ID number or password."</span><span class="o">,</span><span class="kc">true</span><span class="o">));</span>
+<span class="o">}</span>
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">tearDown</span><span class="p">(</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<span class="k">try</span> <span class="o">{</span>
+<span class="k">this</span><span class="o">.</span><span class="na">solo</span><span class="o">.</span><span class="na">finishOpenedActivities</span><span class="o">();</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Throwable</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="k">this</span><span class="o">.</span><span class="na">activity</span><span class="o">.</span><span class="na">finish</span><span class="o">();</span>
+<span class="kd">super</span><span class="o">.</span><span class="na">tearDown</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="o">}</span>
+</pre>
+
+<ol>
+<li><p>右键该项目，选择property然后选择java build path, 选择 Add External JARs,选择下到的robotium.jar</p></li>
+<li>
+<p>在跑测试用例之前，还需要修改下AndroidManifest.xml文件的android:targetPackage为被测应用的根的包名<br>
+&lt;instrumentation<br>
+    android:name="android.test.InstrumentationTestRunner"<br>
+    android:targetPackage="com.xiaomi.channel" /&gt;</p>
+
+<p>最后： run as android junit test，就可以进行测试了</p>
+</li>
+</ol>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Robotium 专题（二）： Robotium 只有 apk 文件时进行测试 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1655#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1655#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1655#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1655#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1655#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>11</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../chin"><img alt="1747" class="uface" src="../user/large_avatar/1747.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="chin" href="../chin">chin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply1">1楼</a> · <abbr class="timeago" title="2014-12-04T16:20:47+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10297" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1747" href="http://testerhome.com/topics/1655/replies/10297/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="chin" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>只需要最后一步做断言吗？我是做几个关键步骤就断言的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply2">2楼</a> · <abbr class="timeago" title="2014-12-04T16:54:08+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10300" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1655/replies/10300/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="bill" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1655#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../chin" class="at_user" title="@chin"><i>@</i>chin</a> 这个就看自己的习惯啦！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply3">3楼</a> · <abbr class="timeago" title="2014-12-04T20:55:20+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10310" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/1655/replies/10310/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="seveniruby" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>你把代码格式化下。 适用markdown语法</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply4">4楼</a> · <abbr class="timeago" title="2014-12-04T21:47:02+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10312" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1655/replies/10312/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="bill" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1655#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../seveniruby" class="at_user" title="@seveniruby"><i>@</i>seveniruby</a> 已经修改，谢谢提醒！</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../sunflower_minmin"><img alt="87c1c719826281cf108c3dee317a5a95" class="uface" src="../avatar/87c1c719826281cf108c3dee317a5a95.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="小敏" href="../sunflower_minmin">sunflower_minmin</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply5">5楼</a> · <abbr class="timeago" title="2014-12-06T23:04:27+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10356" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2036" href="http://testerhome.com/topics/1655/replies/10356/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="sunflower_minmin" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我不太明白   他这里说的 超时就会报错，如果超时出错是直接这条用例不往下执行了吗？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../april46"><img alt="1742" class="uface" src="../user/large_avatar/1742.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="SongBoya" href="../april46">april46</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply6">6楼</a> · <abbr class="timeago" title="2014-12-18T11:31:17+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10676" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1742" href="http://testerhome.com/topics/1655/replies/10676/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="april46" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我是测试小白。。。提需求要代码和数据分离。。可以提示一下，Robotium怎么办到呢？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply7">7楼</a> · <abbr class="timeago" title="2014-12-18T17:02:55+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10688" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1655/replies/10688/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="bill" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1655#reply5" class="at_floor" data-floor="5">#5楼</a> <a href="../sunflower_minmin" class="at_user" title="@sunflower_minmin"><i>@</i>sunflower_minmin</a> 是的，应该是不执行了，然后提示你哪里有错误。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply8">8楼</a> · <abbr class="timeago" title="2014-12-18T17:03:29+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10689" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1655/replies/10689/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="bill" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1655#reply6" class="at_floor" data-floor="6">#6楼</a> <a href="../april46" class="at_user" title="@april46"><i>@</i>april46</a> 没太明白你的意思啊，什么叫代码和数据分离？？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../april46"><img alt="1742" class="uface" src="../user/large_avatar/1742.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="SongBoya" href="../april46">april46</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply9">9楼</a> · <abbr class="timeago" title="2014-12-18T17:38:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10690" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1742" href="http://testerhome.com/topics/1655/replies/10690/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="april46" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../bill" class="at_user" title="@bill"><i>@</i>bill</a> 我也不太懂。。。就我所知，比如说测登录吧，要成功的case，还要各种失败的case。这些用户名和密码什么的都是写在excel表格里的，直接拿出来用。我最近在想要怎么实现这个。我只会写简单的程序。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../bill"><img alt="338" class="uface" src="../user/large_avatar/338.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../bill">bill</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply10">10楼</a> · <abbr class="timeago" title="2014-12-18T17:46:12+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10691" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="338" href="http://testerhome.com/topics/1655/replies/10691/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="bill" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1655#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../april46" class="at_user" title="@april46"><i>@</i>april46</a> 那就得看下如何从EXCEL表格读取数据了，然后循环读取数据后放到相应的控件中去，这样就可以操作了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../april46"><img alt="1742" class="uface" src="../user/large_avatar/1742.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="SongBoya" href="../april46">april46</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1655#reply11">11楼</a> · <abbr class="timeago" title="2014-12-18T18:22:00+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10692" data-state="" data-type="Reply" href="1655#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1742" href="http://testerhome.com/topics/1655/replies/10692/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="april46" href="1655#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1655#reply10" class="at_floor" data-floor="10">#10楼</a> <a href="../bill" class="at_user" title="@bill"><i>@</i>bill</a> 谢谢，我研究一下</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @xiaomayi0323: 我想去大海边旅游！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1901" title="求大神支招，获取相同 id 的控件。">求大神支招，获取相同 id 的控件。</a></li>
+    <li><a href="1898" title="在运行测试时遇到 Test run failed: Instrumentation run failed due to &#39;Process crashed.&#39;，有人遇到过吗，求解答">在运行测试时遇到 Test run failed: I...</a></li>
+    <li><a href="1876" title="哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么执行 ADB SHELL 的命令啊？">哪位大侠有空来解救一下吧。ROBOTIUM 虚拟机怎么...</a></li>
+    <li><a href="1874" title="求助 Listview 定义中有子类，然后获取 id，view 定义出错的情况">求助 Listview 定义中有子类，然后获取 id，...</a></li>
+    <li><a href="1870" title="ROBOTIUM LISTVIEW 中元素不等高且超过一屏的遍历方法。供参考~">ROBOTIUM LISTVIEW 中元素不等高且超过...</a></li>
+    <li><a href="1852" title="一点疑惑，请问大侠们，你们都在同时维护 APPIUM 和 ROBOTIUM 两套代码么？">一点疑惑，请问大侠们，你们都在同时维护 APPIUM ...</a></li>
+    <li><a href="1837" title="android studio 下可以进行 robotium 测试吗？">android studio 下可以进行 roboti...</a></li>
+    <li><a href="1826" title=" 史上最简单 Robotium 跨进程操作实践——基于 ADB 框架"> 史上最简单 Robotium 跨进程操作实践——基于...</a></li>
+    <li><a href="1786" title="robotium 在同一个布局里面，第一个控件可以访问，第二个空间却不能访问">robotium 在同一个布局里面，第一个控件可以访问...</a></li>
+    <li><a href="1783" title="怎么触发多个层级嵌套下的最底层控件(id 一样时)，且没有源码">怎么触发多个层级嵌套下的最底层控件(id 一样时)，且...</a></li>
+    <li><a href="1746" title="ROBOTIUM 实现简单的图像识别。~">ROBOTIUM 实现简单的图像识别。~</a></li>
+    <li><a href="1745" title="请问如何访问 listviewinscrollview 这个控件">请问如何访问 listviewinscrollview...</a></li>
+    <li><a href="1722" title="有没有大神在 ROBOTIUM 上做过图片相似度对比的内容？请教一下啊？">有没有大神在 ROBOTIUM 上做过图片相似度对比的...</a></li>
+    <li><a href="1715" title="使用 robotium 执行测试用例时提示 &#39;java.lang.ClassNotFoundException&#39;">使用 robotium 执行测试用例时提示 &#39;java...</a></li>
+    <li><a href="1714" title="求教，ROBOTIUM 下的 GETWEBELEMENTS 方法的使用~多谢！">求教，ROBOTIUM 下的 GETWEBELEMEN...</a></li>
+    <li><a href="1705" title="robotium 怎么获取多层布局嵌套下的控件呢？">robotium 怎么获取多层布局嵌套下的控件呢？</a></li>
+    <li><a href="1701" title="Robotium 专题（五）：Robotium 升级到 5.1 后的一些改进">Robotium 专题（五）：Robotium 升级到...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1655#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

@@ -1,0 +1,1462 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | QualityCenter 案例导出工具源码 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../lion"><img alt="C78621705e288b4a3668239a00e397cf" class="uface" src="../avatar/c78621705e288b4a3668239a00e397cf.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">QualityCenter 案例导出工具源码</h1>
+  <div class="info leader">
+    <a class="node" href="node2">自动化测试工具</a>
+     · 
+    <a data-author="true" data-name="rywu" href="../lion">lion</a>
+     · 
+    于<abbr class="timeago" title="2014-05-15T10:00:05+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="lion" href="../lion">lion</a> 于<abbr class="timeago" title="2014-07-29T01:08:41+08:00"></abbr>回复
+     · 
+    347次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>涉及表包含  testcycl、test、cycl_fold 等</p>
+<pre class="highlight java">
+<span class="err">主体代码</span> <span class="mi">1</span> 
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">sunyard</span><span class="o">.</span><span class="na">DBStatistics</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.broada.spring.DB.DbProxoolUtil</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.broada.spring.DB.DbProxoolUtilTestDB</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.sunyard.commons.Html2StringUtil</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">testCycl2excel</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">String</span> <span class="n">projectstr</span> <span class="o">=</span><span class="s">"渠道产品开发中心_移0"</span><span class="o">;</span>
+    <span class="cm">/**
+    *根据测试实验室进行案例导出。
+    *module为要导出的目录结构，module.get(0),为要统计的根目录，需要确保唯一性！！！
+    *
+    */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>     
+
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">module</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="c1">//设置要统计的底层目录</span>
+
+        <span class="n">module</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"树根--0"</span><span class="o">);</span>
+        <span class="n">module</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"树枝--1"</span><span class="o">);</span>
+        <span class="c1">//获取需要统计的目录（）</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&gt;</span> <span class="n">cfItemPaths</span> <span class="o">=</span> <span class="o">(</span><span class="n">ArrayList</span><span class="o">)</span> <span class="n">DbProxoolUtilTestDB</span><span class="o">.</span><span class="na">query</span><span class="o">(</span><span class="s">"select  cf_item_path from "</span><span class="o">+</span><span class="n">projectstr</span> <span class="o">+</span><span class="s">".td.cycl_fold where cf_item_name like '"</span><span class="o">+</span><span class="n">module</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">)+</span><span class="s">"'"</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+
+
+        <span class="n">String</span> <span class="n">cfItemPath</span><span class="o">=</span><span class="n">cfItemPaths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span><span class="c1">//测试目录路径 </span>
+
+
+
+        <span class="c1">//清空数据库</span>
+        <span class="n">DbProxoolUtil</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="s">"truncate table test.mobile_test_data"</span><span class="o">);</span>
+
+        <span class="c1">// 找到test表中，可以与all_lists表关联查询的id，</span>
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&gt;</span> <span class="n">alldatas</span> <span class="o">=</span> <span class="o">(</span><span class="n">ArrayList</span><span class="o">)</span> <span class="n">DbProxoolUtilTestDB</span>
+                <span class="o">.</span><span class="na">query</span><span class="o">(</span><span class="s">"select mm.ts_test_id,mm.cf_item_name+'/'+mm.cy_cycle ,mm.ts_name,  case when tdd.DS_DESCRIPTION is null then mm.ts_description else tdd.DS_DESCRIPTION end steps ,tdd.DS_EXPECTED, mm.cf_item_id ,mm.tc_status,mt. st_actual  from "</span>
+                        <span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.dessteps tdd ,(select  tt.TS_TEST_ID,tt.TS_NAME,tt.ts_description,tcf.cf_item_name ,tc.cy_cycle,tcf.cf_item_id,ttc.tc_status from "</span>
+                        <span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.cycle tc,"</span>
+                        <span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.cycl_fold tcf ,"</span>
+                        <span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.testcycl ttc,"</span>
+                        <span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.test  tt where  ttc.TC_TEST_ID=tt.ts_test_id and ttc.tc_cycle_id=tc.cy_cycle_id and tc.cy_folder_id=tcf.cf_item_id and tcf.cf_item_path like '"</span><span class="o">+</span><span class="n">cfItemPath</span><span class="o">+</span><span class="s">"%' and tc.cy_cycle like'%精选商品%') mm   ,(select  te.ts_test_id,st.st_status,st.st_actual  from "</span><span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.step st,"</span>
+                        <span class="o">+</span> <span class="n">projectstr</span>
+                        <span class="o">+</span> <span class="s">".td.test te  where te.ts_test_id =st.st_test_id)  mt   where tdd.DS_TEST_ID=mm.TS_TEST_ID  and mt.ts_test_id=mm.ts_test_id"</span><span class="o">,</span>
+                        <span class="mi">0</span><span class="o">);</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="n">ArrayList</span> <span class="n">shopRole2</span> <span class="o">:</span> <span class="n">alldatas</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">id</span> <span class="o">=</span> <span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span><span class="c1">// test—id</span>
+            <span class="n">String</span> <span class="n">catalogue</span> <span class="o">=</span> <span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span><span class="c1">// 测试实验室目录</span>
+            <span class="n">String</span> <span class="n">testName</span> <span class="o">=</span> <span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span><span class="c1">// 测试名</span>
+            <span class="n">String</span> <span class="n">description</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span><span class="c1">// 测试描述</span>
+            <span class="n">String</span> <span class="n">expecations</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span><span class="c1">// 测试预期</span>
+
+
+
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&gt;</span> <span class="n">catalogues</span> <span class="o">=(</span><span class="n">ArrayList</span><span class="o">)</span> <span class="n">DbProxoolUtilTestDB</span><span class="o">.</span><span class="na">query</span><span class="o">(</span>  <span class="s">"with subqry(cf_item_id,cf_item_name,cf_father_id) as (select cf_item_id,cf_item_name,cf_father_id from "</span>
+                    <span class="o">+</span> <span class="n">projectstr</span> 
+                    <span class="o">+</span> <span class="s">".td.cycl_fold  where cf_item_id = "</span>
+                <span class="o">+</span> <span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+                    <span class="o">+</span> <span class="s">" union all select "</span>
+                    <span class="o">+</span> <span class="n">projectstr</span> 
+                    <span class="o">+</span> <span class="s">".td.cycl_fold.cf_item_id, "</span>
+                    <span class="o">+</span> <span class="n">projectstr</span>
+                    <span class="o">+</span> <span class="s">".td.cycl_fold.cf_item_name,"</span>
+                    <span class="o">+</span> <span class="n">projectstr</span>
+                    <span class="o">+</span> <span class="s">".td.cycl_fold.cf_father_id from "</span>
+                    <span class="o">+</span> <span class="n">projectstr</span>
+                    <span class="o">+</span> <span class="s">".td.cycl_fold,subqry  where "</span>
+                    <span class="o">+</span> <span class="n">projectstr</span>
+                    <span class="o">+</span> <span class="s">".td.cycl_fold.cf_item_id = subqry.cf_father_id ) select  cf_item_name from subqry order by cf_item_id asc;"</span>
+                    <span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+
+            <span class="c1">//转换ArrayList&lt;ArrayList&gt;为ArrayList&lt;String&gt;</span>
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">tempList</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+            <span class="k">for</span><span class="o">(</span><span class="n">ArrayList</span> <span class="nl">l:</span><span class="n">catalogues</span><span class="o">){</span>    
+
+                <span class="n">tempList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">l</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">tempList</span><span class="o">.</span><span class="na">containsAll</span><span class="o">(</span><span class="n">module</span><span class="o">)){</span>
+
+            <span class="n">StringBuffer</span> <span class="n">fathernames</span><span class="o">=</span><span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">tempList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">size</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="o">){</span>
+                    <span class="n">fathernames</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">tempList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">toString</span><span class="o">()+</span><span class="s">"/"</span><span class="o">);</span>
+                <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+                    <span class="n">fathernames</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">tempList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+                <span class="o">}</span>
+            <span class="o">}</span>   
+            <span class="c1">// 处理description html标签</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">Html2StringUtil</span><span class="o">.</span><span class="na">getToString</span><span class="o">(</span><span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+            <span class="c1">// 处理expecations html标签</span>
+            <span class="n">expecations</span> <span class="o">=</span> <span class="n">Html2StringUtil</span><span class="o">.</span><span class="na">getToString</span><span class="o">(</span><span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+            <span class="n">String</span> <span class="n">actualResult</span> <span class="o">=</span> <span class="n">Html2StringUtil</span><span class="o">.</span><span class="na">getToString</span><span class="o">(</span><span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">7</span><span class="o">));</span>
+             <span class="n">String</span> <span class="n">tcStatus</span><span class="o">=</span><span class="n">shopRole2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">6</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span>
+            <span class="c1">// 将目录、案例名称等放到表中</span>
+            <span class="n">String</span> <span class="n">insertSql2</span> <span class="o">=</span> <span class="s">"insert into test.mobile_test_data(id,catalogue,main_points,description,expecations,tc_status,actual_result) values('"</span>
+                    <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> <span class="c1">// id</span>
+                    <span class="s">"','"</span> <span class="o">+</span> <span class="n">fathernames</span> <span class="o">+</span> <span class="c1">// 目录</span>
+                    <span class="s">"','"</span> <span class="o">+</span> <span class="n">testName</span> <span class="o">+</span> <span class="c1">// 测试要点</span>
+                    <span class="s">"','"</span> <span class="o">+</span> <span class="n">description</span> <span class="o">+</span> <span class="c1">// 步骤描述</span>
+                    <span class="s">"','"</span> <span class="o">+</span> <span class="n">expecations</span> <span class="o">+</span> <span class="c1">// 预期结果</span>
+                    <span class="s">"','"</span> <span class="o">+</span> <span class="n">tcStatus</span> <span class="o">+</span><span class="c1">//执行结果</span>
+                    <span class="s">"','"</span> <span class="o">+</span> <span class="n">actualResult</span> <span class="o">+</span><span class="c1">//执行结果</span>
+                    <span class="s">"')"</span><span class="o">;</span>
+
+            <span class="n">DbProxoolUtil</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">insertSql2</span><span class="o">);</span>
+
+
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="err">主体代码</span><span class="mi">2</span> <span class="err">消除</span><span class="n">html</span><span class="err">标签</span>
+
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">sunyard</span><span class="o">.</span><span class="na">commons</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Html2StringUtil</span> <span class="o">{</span>
+
+
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getToString</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">){</span>
+
+        <span class="n">String</span> <span class="n">ReturnhtmlString</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">tmp1</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>   
+        <span class="k">if</span><span class="o">(</span><span class="n">object</span><span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="n">ReturnhtmlString</span> <span class="o">=</span> <span class="s">"空"</span><span class="o">;</span>
+        <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+
+            <span class="n">tmp1</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"[']"</span><span class="o">,</span> <span class="s">"''"</span><span class="o">).</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">";"</span><span class="o">,</span> <span class="s">"."</span><span class="o">);</span>
+            <span class="n">String</span> <span class="n">a</span> <span class="o">=</span> <span class="n">tmp1</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">"&lt;br&gt;"</span><span class="o">,</span> <span class="s">"\n"</span><span class="o">);</span>
+<span class="c1">//          String b = a.replaceAll("[&lt;]+[a-z]+[&gt;]", "");</span>
+<span class="c1">//          String buzhou2 = buzhou.replaceAll("&lt;[^&lt;/]*&gt;", "");</span>
+<span class="c1">//          String buzhou3 = buzhou2.replaceAll("&lt;/[^&lt;]*&gt;", "");</span>
+            <span class="n">String</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"&lt;div [^&gt;]*&gt;"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+
+            <span class="n">String</span> <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"[&lt;/]+[a-z]+[&gt;]"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+            <span class="n">String</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"&lt;font [^&gt;]*&gt;"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+            <span class="n">String</span> <span class="n">c3</span> <span class="o">=</span> <span class="n">c2</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"&lt;span [^&gt;]*&gt;"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+            <span class="n">ReturnhtmlString</span> <span class="o">=</span> <span class="n">c3</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"&lt;br *+/&gt;"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">ReturnhtmlString</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+
+<span class="err">主体代码</span> <span class="mi">3</span> <span class="n">db</span>
+
+
+
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">broada</span><span class="o">.</span><span class="na">spring</span><span class="o">.</span><span class="na">DB</span><span class="o">;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.PreparedStatement</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.ResultSetMetaData</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.SQLException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.Statement</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.Log</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.LogFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.broada.spring.DB.DbConnectionNoContainer</span><span class="o">;</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DbProxoolUtil</span> 
+<span class="o">{</span>
+       <span class="kd">private</span> <span class="kd">static</span> <span class="n">Log</span> <span class="n">log</span> <span class="o">=</span> <span class="n">LogFactory</span><span class="o">.</span><span class="na">getLog</span><span class="o">(</span><span class="n">DbProxoolUtil</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="cm">/**
+     * 执行sql更新语句
+     * @since 2013.06.25
+     * @param sql 语句 sql
+     * @return int 成功:返回更新的记录数目;失败:-1
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">update</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Statement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"更新数据库表记录时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>            
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表记录时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql删除语句
+     * @since 2013.06.25
+     * @param sql 语句
+     * @return int 成功:返回删除的记录数目;失败:-1
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">delete</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Statement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"删除数据库表记录时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"删除数据库表时记录发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql插入语句
+     * @since 2013.06.25
+     * @param sql 语句 sql
+     * @return int 成功:返回插入的记录数目;失败:-1
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">insert</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Statement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"插入数据库表记录时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"插入数据库表时记录发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 批量执行sql插入语句
+     * @since 2013.06.25
+     * @param sqlList 语句集 sqlList
+     * @return int 成功:返回插入的记录数目;失败:-1。一条插入失败所有都失败
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">batchInsert</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">sqlList</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Statement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="k">for</span><span class="o">(</span><span class="n">String</span> <span class="nl">sql:</span><span class="n">sqlList</span><span class="o">)</span>
+            <span class="o">{</span>               
+                <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">connection</span><span class="o">.</span><span class="na">commit</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">sqlList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">rollback</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"批量插入数据库表时发生异常"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">rollback</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"批量插入数据库表时发生异常"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>           
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql查询语句
+     * @since 2013.06.25
+     * @param sql 语句
+     * @param returnType 返回结果集类型,0:返回list结果集;1:返回hashmap结果集;其他同0 returnType
+     * @return List&lt;Object&gt; 查询结果集 resultList元素为list&lt;value&gt;或HashMap&lt;ColName,value&gt;
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">query</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="kt">int</span> <span class="n">returnType</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Statement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ResultSet</span> <span class="n">set</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//log.error("12334");</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+
+            <span class="n">ResultSetMetaData</span> <span class="n">rsmd</span><span class="o">=</span><span class="n">set</span><span class="o">.</span><span class="na">getMetaData</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">colCount</span><span class="o">=</span><span class="n">rsmd</span><span class="o">.</span><span class="na">getColumnCount</span><span class="o">();</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">resultList</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">returnType</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+                <span class="o">{</span>
+                    <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">temp</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">colCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="n">resultList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">else</span>
+            <span class="o">{</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+                <span class="o">{</span>
+                    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">temp</span><span class="o">=</span><span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Object</span><span class="o">&gt;();</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">colCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">rsmd</span><span class="o">.</span><span class="na">getColumnName</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">).</span><span class="na">toUpperCase</span><span class="o">(),</span><span class="n">set</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="n">resultList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">resultList</span><span class="o">;</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>       
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="c1">//System.out.println("1233ww4");</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeResultSet</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql查询语句
+     * @since 2013.06.25
+     * @param sql 语句 sql
+     * @param returnType 返回结果集类型,0:返回list结果集;1:返回hashmap结果集;其他同0 returnType
+     * @return List&lt;Object&gt;  查询结果集 resultList元素为list&lt;value&gt;或HashMap&lt;ColName,value&gt;
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">query</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="kt">int</span> <span class="n">returnType</span> <span class="o">,</span><span class="n">String</span> <span class="n">parm</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ResultSet</span> <span class="n">set</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">SQLStament</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">parm</span><span class="o">);</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="n">ResultSetMetaData</span> <span class="n">rsmd</span><span class="o">=</span><span class="n">set</span><span class="o">.</span><span class="na">getMetaData</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">colCount</span><span class="o">=</span><span class="n">rsmd</span><span class="o">.</span><span class="na">getColumnCount</span><span class="o">();</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">resultList</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">returnType</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+                <span class="o">{</span>
+                    <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">temp</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">colCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="n">resultList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">resultList</span><span class="o">;</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeResultSet</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql查询语句
+     * @since 2013.06.25
+     * @param sql 语句 sql
+     * @param returnType 返回结果集类型,0:返回list结果集;1:返回hashmap结果集;其他同0 returnType
+     * @return  List&lt;Object&gt; 查询结果集 resultList元素为list&lt;value&gt;或HashMap&lt;ColName,value&gt;
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">query</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="kt">int</span> <span class="n">returnType</span> <span class="o">,</span><span class="kt">int</span> <span class="n">parm</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ResultSet</span> <span class="n">set</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">SQLStament</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">parm</span><span class="o">);</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="n">ResultSetMetaData</span> <span class="n">rsmd</span><span class="o">=</span><span class="n">set</span><span class="o">.</span><span class="na">getMetaData</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">colCount</span><span class="o">=</span><span class="n">rsmd</span><span class="o">.</span><span class="na">getColumnCount</span><span class="o">();</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">resultList</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">returnType</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+                <span class="o">{</span>
+                    <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">temp</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">colCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="n">resultList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">resultList</span><span class="o">;</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeResultSet</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql查询语句
+     * @since 2013.06.25
+     * @param sql 语句 sql
+     * @param returnType 返回结果集类型,0:返回list结果集;1:返回hashmap结果集;其他同0 returnType
+     * @return List&lt;Object&gt; 查询结果集 resultList元素为list&lt;value&gt;或HashMap&lt;ColName,value&gt;
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">query</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="kt">int</span> <span class="n">returnType</span> <span class="o">,</span><span class="n">Object</span> <span class="n">x</span><span class="o">,</span><span class="n">Object</span> <span class="n">y</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ResultSet</span> <span class="n">set</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">x</span><span class="o">);</span>
+            <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="n">ResultSetMetaData</span> <span class="n">rsmd</span><span class="o">=</span><span class="n">set</span><span class="o">.</span><span class="na">getMetaData</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">colCount</span><span class="o">=</span><span class="n">rsmd</span><span class="o">.</span><span class="na">getColumnCount</span><span class="o">();</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">resultList</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">returnType</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+                <span class="o">{</span>
+                    <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">temp</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">colCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="n">resultList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">resultList</span><span class="o">;</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeResultSet</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 执行sql查询语句
+     * @since 2013.06.25
+     * @param sql 语句 sql
+     * @param list 返回结果集类型,0:返回list结果集;1:返回hashmap结果集;其他同0 returnType
+     * @return 查询结果集 resultList元素为list&lt;value&gt;或HashMap&lt;ColName,value&gt;
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">query</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="kt">int</span> <span class="n">returnType</span> <span class="o">,</span><span class="n">List</span> <span class="n">list</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ResultSet</span> <span class="n">set</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++){</span>
+                <span class="n">SQLStament</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)==</span><span class="kc">null</span><span class="o">?</span><span class="s">""</span><span class="o">:</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+            <span class="o">}</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="n">ResultSetMetaData</span> <span class="n">rsmd</span><span class="o">=</span><span class="n">set</span><span class="o">.</span><span class="na">getMetaData</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">colCount</span><span class="o">=</span><span class="n">rsmd</span><span class="o">.</span><span class="na">getColumnCount</span><span class="o">();</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">resultList</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">returnType</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+                <span class="o">{</span>
+                    <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">temp</span><span class="o">=</span><span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;();</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">colCount</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span>
+                    <span class="o">{</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">getObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">));</span>
+                    <span class="o">}</span>
+                    <span class="n">resultList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">temp</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="k">return</span> <span class="n">resultList</span><span class="o">;</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"查询数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeResultSet</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+
+    <span class="cm">/**
+     * 获取当前可插入表中的记录编号
+     * @since 2013.06.25
+     * @param table  表名
+     * @param idName 记录主键
+     * @param baseId 记录基本值
+     * @return 对于原来记录主键为按数字型排序的返回当前最大记录+1，如果为-1表示不能获取最大记录
+     * */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">getId</span><span class="o">(</span><span class="n">String</span> <span class="n">table</span><span class="o">,</span><span class="n">String</span> <span class="n">idName</span><span class="o">,</span><span class="kt">int</span> <span class="n">baseId</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">table</span><span class="o">==</span><span class="kc">null</span><span class="o">||</span><span class="n">table</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">)||</span><span class="n">idName</span><span class="o">==</span><span class="kc">null</span><span class="o">||</span><span class="n">idName</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">""</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Statement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ResultSet</span> <span class="n">set</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="n">sql</span><span class="o">=</span><span class="s">"SELECT MAX("</span><span class="o">+</span><span class="n">idName</span><span class="o">+</span><span class="s">") tempvalue FROM "</span><span class="o">+</span><span class="n">table</span><span class="o">;</span>
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createStatement</span><span class="o">();</span>
+            <span class="n">set</span> <span class="o">=</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">set</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">set</span><span class="o">.</span><span class="na">next</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">set</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"tempvalue"</span><span class="o">))+</span><span class="mi">1</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">baseId</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>       
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"获取当前可插入表中的记录编号发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>            
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>       
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeResultSet</span><span class="o">(</span><span class="n">set</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 从数据库查询到的结果集中获取指定列的值
+     * @since 2013.06.25
+     * @param resultList 查询结果list 
+     * @param rowNum 第几条数据 
+     * @param colName 列的名称 
+     * @return value 列的值 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="n">getValue</span><span class="o">(</span><span class="n">List</span> <span class="n">resultList</span><span class="o">,</span><span class="kt">int</span> <span class="n">rowNum</span><span class="o">,</span><span class="n">String</span> <span class="n">colName</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">tempMap</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;)</span><span class="n">resultList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">rowNum</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">tempMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">colName</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>           
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"从数据库查询到的结果集中获取指定列的值发生异常，结果集size["</span><span class="o">+</span><span class="n">resultList</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="s">"]请求行["</span><span class="o">+</span><span class="n">rowNum</span><span class="o">+</span><span class="s">"]请求列"</span><span class="o">+</span><span class="n">colName</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>        
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 从数据库查询到的结果集中获取指定列的值
+     * @since 2013.06.25
+     * @param resultList 查询结果list 
+     * @param rowNum 第几条数据 
+     * @param colNum 第几列 
+     * @return value 列的值 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="n">getValue</span><span class="o">(</span><span class="n">List</span> <span class="n">resultList</span><span class="o">,</span><span class="kt">int</span> <span class="n">rowNum</span><span class="o">,</span><span class="kt">int</span> <span class="n">colNum</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">tempList</span> <span class="o">=</span> <span class="o">(</span><span class="n">ArrayList</span><span class="o">)</span><span class="n">resultList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">rowNum</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">tempList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">colNum</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"从数据库查询到的结果集中获取指定列的值发生异常，结果集size["</span><span class="o">+</span><span class="n">resultList</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="s">"]请求行["</span><span class="o">+</span><span class="n">rowNum</span><span class="o">+</span><span class="s">"]请求列"</span><span class="o">+</span><span class="n">colNum</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>     
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 从数据库查询到的结果集中获取指定列的值
+     * @since 2013.06.25
+     * @param resultList 查询结果list 
+     * @param colNum 第几列 
+     * @return value 列的值 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">getValue</span><span class="o">(</span><span class="n">List</span> <span class="n">resultList</span><span class="o">,</span><span class="kt">int</span> <span class="n">colNum</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="k">return</span> <span class="n">getValue</span><span class="o">(</span><span class="n">resultList</span><span class="o">,</span><span class="mi">0</span><span class="o">,</span><span class="n">colNum</span><span class="o">)==</span><span class="kc">null</span><span class="o">?</span><span class="s">""</span><span class="o">:</span><span class="n">getValue</span><span class="o">(</span><span class="n">resultList</span><span class="o">,</span><span class="mi">0</span><span class="o">,</span><span class="n">colNum</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"从数据库查询到的结果集中获取指定列的值发生异常，结果集size["</span><span class="o">+</span><span class="n">resultList</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="s">"]请求列"</span><span class="o">+</span><span class="n">colNum</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>      
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">preparedInsert</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="n">List</span> <span class="n">list</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)==</span><span class="kc">null</span><span class="o">?</span><span class="s">""</span><span class="o">:</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"插入数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"插入数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">preparedupdate</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="n">List</span> <span class="n">list</span><span class="o">,</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)==</span><span class="kc">null</span><span class="o">?</span><span class="s">""</span><span class="o">:</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+            <span class="o">}</span>
+            <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="mi">1</span><span class="o">,</span><span class="n">key</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="c1">//增加提交是多个的更新操作</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">preparedupdate</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="n">List</span> <span class="n">list</span><span class="o">,</span><span class="n">List</span> <span class="n">keyValue</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)==</span><span class="kc">null</span><span class="o">?</span><span class="s">""</span><span class="o">:</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+            <span class="o">}</span>
+            <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">keyValue</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">j</span><span class="o">++)</span>
+            <span class="o">{</span>
+                <span class="n">SQLStament</span><span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">keyValue</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">)==</span><span class="kc">null</span><span class="o">?</span><span class="s">""</span><span class="o">:</span><span class="n">keyValue</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">));</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">preparedupdate</span><span class="o">(</span><span class="n">String</span> <span class="n">sql</span><span class="o">,</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span>
+    <span class="o">{</span>       
+        <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">PreparedStatement</span> <span class="n">SQLStament</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>           
+            <span class="n">connection</span> <span class="o">=</span> <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SQLStament</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">SQLStament</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="n">key</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">SQLStament</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"更新数据库表时发生异常,SQL语句为："</span><span class="o">+</span><span class="n">sql</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>         
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">finally</span>
+        <span class="o">{</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">closeStatement</span><span class="o">(</span><span class="n">SQLStament</span><span class="o">);</span>
+            <span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">releaseConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">);</span>
+        <span class="o">}</span> 
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="err">主体代码</span> <span class="mi">4</span>  
+
+<span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">broada</span><span class="o">.</span><span class="na">spring</span><span class="o">.</span><span class="na">DB</span><span class="o">;</span>
+
+
+
+<span class="cm">/**
+ *通过proxool数据库连接池访问数据库
+ *
+ *@author wury
+ *@version  1.0.0
+ *@satement
+ * 
+ * */</span>
+
+<span class="kn">import</span> <span class="nn">java.sql.Connection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.SQLException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.Statement</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.Log</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.LogFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.logicalcobwebs.proxool.ProxoolDataSource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.logicalcobwebs.proxool.ProxoolException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.logicalcobwebs.proxool.ProxoolFacade</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.logicalcobwebs.proxool.admin.SnapshotIF</span><span class="o">;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">com.broada.spring.utils.SilencerProperties</span><span class="o">;</span>
+
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DbConnectionNoContainer</span> 
+<span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span>  <span class="n">SilencerProperties</span> <span class="n">silencerProperties</span> <span class="o">=</span> <span class="n">SilencerProperties</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Log</span> <span class="n">log</span> <span class="o">=</span> <span class="n">LogFactory</span><span class="o">.</span><span class="na">getLog</span><span class="o">(</span><span class="n">DbConnectionNoContainer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">ProxoolDataSource</span> <span class="n">pool</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">activeCountstr</span> <span class="o">=</span> <span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"activeCount"</span><span class="o">);</span> 
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">dbAlias</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"dbAlias"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">dbDriver</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"dbDriver"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">dbUrl</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"dbUrl"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">dbUser</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"dbUser"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">dbPwd</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"dbPwd"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">minConnstr</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"minConn"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">maxConnstr</span><span class="o">=</span><span class="n">silencerProperties</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"maxConn"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">activeCount</span> <span class="o">=</span><span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">activeCountstr</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">minConn</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">minConnstr</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">maxConn</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">maxConnstr</span><span class="o">);</span>
+
+
+    <span class="cm">/**
+     * 创建poxool连接池
+     * @author wury
+     * @since 2013.06.25
+     **/</span>
+    <span class="kd">static</span> 
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(!</span><span class="n">connectionAuth</span><span class="o">())</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"连接数据库失败!"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">connectionAuth</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="n">pool</span><span class="o">=</span><span class="k">new</span> <span class="n">ProxoolDataSource</span><span class="o">();</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setAlias</span><span class="o">(</span><span class="n">dbAlias</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setDriver</span><span class="o">(</span><span class="n">dbDriver</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setDriverUrl</span><span class="o">(</span><span class="n">dbUrl</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setUser</span><span class="o">(</span><span class="n">dbUser</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">dbPwd</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setDelegateProperties</span><span class="o">(</span><span class="s">"user="</span><span class="o">+</span><span class="n">dbUser</span><span class="o">+</span><span class="s">",password="</span><span class="o">+</span><span class="n">dbPwd</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setMinimumConnectionCount</span><span class="o">(</span><span class="n">minConn</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setMaximumConnectionCount</span><span class="o">(</span><span class="n">maxConn</span><span class="o">);</span>    
+            <span class="n">pool</span><span class="o">.</span><span class="na">setHouseKeepingSleepTime</span><span class="o">(</span><span class="mi">900000</span><span class="o">);</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">setHouseKeepingTestSql</span><span class="o">(</span><span class="s">"select 1 from dual"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>           
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"初始化proxool连接池失败:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 从数据库连接池中获取一个连接
+     * @since 2013.06.25
+     * @return 成功:数据库连接;失败:null
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Connection</span> <span class="n">getConnection</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="n">Connection</span> <span class="n">conn</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="n">conn</span><span class="o">=</span><span class="n">pool</span><span class="o">.</span><span class="na">getConnection</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="cm">/*异常重新链接*/</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">connectionAuth</span><span class="o">())</span>
+            <span class="o">{</span>
+                <span class="k">try</span>
+                <span class="o">{</span>
+                    <span class="n">conn</span><span class="o">=</span><span class="n">pool</span><span class="o">.</span><span class="na">getConnection</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="k">catch</span><span class="o">(</span><span class="n">SQLException</span> <span class="n">ex</span><span class="o">)</span>
+                <span class="o">{</span>
+                    <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"重新连接时发生异常"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+                <span class="o">}</span>               
+            <span class="o">}</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"从数据库连接池中获取一个连接时发生异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span> 
+        <span class="k">return</span> <span class="n">conn</span><span class="o">;</span>
+    <span class="o">}</span>   
+
+    <span class="cm">/**
+     * 从数据库连接池中获取一个连接
+     * @since 2013.06.25
+     * @param autoCommit 是否自动commit autoConmmit
+     * @return 成功:数据库连接;失败:null
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Connection</span> <span class="n">getConnection</span><span class="o">(</span> <span class="kt">boolean</span> <span class="n">autoCommit</span> <span class="o">)</span> 
+    <span class="o">{</span>   
+        <span class="n">Connection</span> <span class="n">conn</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">getConnection</span><span class="o">();</span>
+            <span class="n">conn</span><span class="o">.</span><span class="na">setAutoCommit</span><span class="o">(</span> <span class="n">autoCommit</span> <span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span> <span class="n">SQLException</span> <span class="n">e</span> <span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"从数据库连接池中获取一个连接时发生异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">conn</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 数据库连接rollback
+     * @since 2013.06.25
+     * @param p_connection 数据库连接
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">rollback</span><span class="o">(</span><span class="n">Connection</span> <span class="n">p_connection</span> <span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="n">p_connection</span><span class="o">.</span><span class="na">rollback</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span> <span class="n">SQLException</span> <span class="n">e</span> <span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"回滚SQL语句异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 数据库连接commit
+     * @since 2013.06.25
+     * @param p_connection 数据库连接 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">commit</span><span class="o">(</span> <span class="n">Connection</span> <span class="n">p_connection</span> <span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="n">p_connection</span><span class="o">.</span><span class="na">commit</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span> <span class="n">SQLException</span> <span class="n">e</span> <span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"提交数据库SQL语句异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 数据库连接release
+     * @since 2013.06.25
+     * @param p_connection 数据库连接 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">releaseConnection</span><span class="o">(</span> <span class="n">Connection</span> <span class="n">p_connection</span> <span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span> <span class="n">p_connection</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">)</span> 
+            <span class="o">{</span>
+                <span class="n">p_connection</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span> <span class="n">SQLException</span> <span class="n">e</span> <span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"释放数据库连接异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 关闭resultset
+     * @since 2013.06.25
+     * @param a_resultSet 结果集 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">closeResultSet</span><span class="o">(</span><span class="n">ResultSet</span> <span class="n">a_resultSet</span><span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">try</span>
+        <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">a_resultSet</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">a_resultSet</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"关闭数据库查数据集异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 关闭数据库操作声明(Statement)
+     * @since 2013.06.25
+     * @param a_pstmSQL 数据库操作声明 
+     **/</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">closeStatement</span><span class="o">(</span><span class="n">Statement</span> <span class="n">a_pstmSQL</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">try</span> 
+        <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">a_pstmSQL</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">a_pstmSQL</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span> 
+        <span class="k">catch</span> <span class="o">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span> <span class="s">"关闭数据库操作声明异常:"</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>    
+
+    <span class="cm">/**
+     * 获取proxool连接池属性并在后台打印(此函数仅供参考)
+     * @since 2013.06.25
+     **/</span>      
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">showSnapshotInfo</span><span class="o">()</span>
+    <span class="o">{</span>           
+        <span class="k">try</span>
+        <span class="o">{</span>           
+            <span class="n">SnapshotIF</span> <span class="n">snapshot</span> <span class="o">=</span> <span class="n">ProxoolFacade</span><span class="o">.</span><span class="na">getSnapshot</span><span class="o">(</span><span class="n">dbAlias</span><span class="o">,</span><span class="kc">true</span><span class="o">);</span> 
+            <span class="kt">int</span> <span class="n">curActiveCount</span><span class="o">=</span><span class="n">snapshot</span><span class="o">.</span><span class="na">getActiveConnectionCount</span><span class="o">();</span><span class="c1">//获得活动连接数 </span>
+            <span class="kt">int</span> <span class="n">availableCount</span><span class="o">=</span><span class="n">snapshot</span><span class="o">.</span><span class="na">getAvailableConnectionCount</span><span class="o">();</span><span class="c1">//获得可得到的连接数 </span>
+            <span class="kt">int</span> <span class="n">maxCount</span><span class="o">=</span><span class="n">snapshot</span><span class="o">.</span><span class="na">getMaximumConnectionCount</span><span class="o">()</span> <span class="o">;</span><span class="c1">//获得总连接数</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">curActiveCount</span><span class="o">!=</span><span class="n">activeCount</span><span class="o">)</span><span class="c1">//当活动连接数变化时输出的信息 </span>
+            <span class="o">{</span>           
+                <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"active DB connect account:"</span><span class="o">+</span><span class="n">curActiveCount</span><span class="o">+</span><span class="s">"(active)"</span><span class="o">);</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"available connect account:"</span><span class="o">+</span><span class="n">availableCount</span><span class="o">+</span><span class="s">"(available)"</span><span class="o">);</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"max connect account:"</span><span class="o">+</span><span class="n">maxCount</span><span class="o">+</span><span class="s">"(max)"</span><span class="o">);</span>
+
+                <span class="n">activeCount</span><span class="o">=</span><span class="n">curActiveCount</span><span class="o">;</span>           
+            <span class="o">}</span>   
+            <span class="k">else</span>
+            <span class="o">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span><span class="o">(</span><span class="n">ProxoolException</span> <span class="n">e</span><span class="o">)</span>
+        <span class="o">{</span>           
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>     
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>           
+    <span class="o">}</span> 
+<span class="o">}</span>
+
+
+
+</pre>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='QualityCenter 案例导出工具源码 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="862#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="862#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="862#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="862#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="862#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../pinghailinfeng"><img alt="896" class="uface" src="../user/large_avatar/896.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jeff" href="../pinghailinfeng">pinghailinfeng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="862#reply1">1楼</a> · <abbr class="timeago" title="2014-05-16T12:52:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4898" data-state="" data-type="Reply" href="862#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="896" href="http://testerhome.com/topics/862/replies/4898/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="pinghailinfeng" href="862#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mark下,好东东</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../pinghailinfeng"><img alt="896" class="uface" src="../user/large_avatar/896.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jeff" href="../pinghailinfeng">pinghailinfeng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="862#reply2">2楼</a> · <abbr class="timeago" title="2014-05-16T12:52:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4899" data-state="" data-type="Reply" href="862#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="896" href="http://testerhome.com/topics/862/replies/4899/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="pinghailinfeng" href="862#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>mark下,好东东<img src="../assets/emojis/smile.png" class="emoji" title=":smile:" alt=""></p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../rissen"><img alt="9d5bbf475a58375320dbaf9a6ee1fa87" class="uface" src="../avatar/9d5bbf475a58375320dbaf9a6ee1fa87.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Jun" href="../rissen">rissen</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="862#reply3">3楼</a> · <abbr class="timeago" title="2014-06-02T22:07:23+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="5437" data-state="" data-type="Reply" href="862#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="345" href="http://testerhome.com/topics/862/replies/5437/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="rissen" href="862#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>几年前用过一个开源的java lib <a href="http://qctools4j.sourceforge.net/" rel="nofollow" target="_blank">http://qctools4j.sourceforge.net/</a> 不过这项目好像没更新了，还停留在Quality Center 9.2</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../lion"><img alt="C78621705e288b4a3668239a00e397cf" class="uface" src="../avatar/c78621705e288b4a3668239a00e397cf.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="rywu" href="../lion">lion</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="862#reply4">4楼</a> · <abbr class="timeago" title="2014-07-29T01:08:41+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6987" data-state="" data-type="Reply" href="862#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="297" href="http://testerhome.com/topics/862/replies/6987/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="lion" href="862#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="862#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../rissen" class="at_user" title="@rissen"><i>@</i>rissen</a> 非常好!谢谢</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1892" title="JUnit4---实践：运行指定类的某些测试方法(可用于单独运行失败的方法)">JUnit4---实践：运行指定类的某些测试方法(可用...</a></li>
+    <li><a href="1887" title="uiautomatorviewer 新增功能 compressed 之 Device 端细节">uiautomatorviewer 新增功能 comp...</a></li>
+    <li><a href="1873" title="UiAutomator 报告如何转换成 xml 格式">UiAutomator 报告如何转换成 xml 格式</a></li>
+    <li><a href="1871" title="了解 uiautomatorviewer 新增的 dump --compressed 功能">了解 uiautomatorviewer 新增的 du...</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="862#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

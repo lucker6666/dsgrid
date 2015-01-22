@@ -1,0 +1,469 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Swift 第二个 app &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Swift 第二个 app</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-10-10T18:35:17+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-10-11T10:46:37+08:00"></abbr>回复
+     · 
+    349次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>我们继续第二个app</p>
+
+<ul>
+<li><p>我们首先先创建一个新的swift的project<br>
+<img src="../photo/2014/bf9ade200a886dfeac7d4f8e3ef86f33.png" alt=""></p></li>
+<li><p>我们在storyboard中增加一个PickerView，然后将PickerView控件和ViewController.swift做绑定，具体操作可以参见第一篇swift文章，同时我们增加这个Picker中的内容列表<br>
+<img src="../photo/2014/c6dfeeced9d31ebe372992ebb8d95097.png" alt=""></p></li>
+<li><p>我们继续添加应用启动时候需要加载的内容，如下代码</p></li>
+</ul>
+<pre class="highlight ruby">    <span class="n">override</span> <span class="n">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="sr">//</span> <span class="no">Do</span> <span class="n">any</span> <span class="n">additional</span> <span class="n">setup</span> <span class="n">after</span> <span class="n">loading</span> <span class="n">the</span> <span class="n">view</span><span class="p">,</span> <span class="n">typically</span> <span class="n">from</span> <span class="n">a</span> <span class="n">nib</span><span class="o">.</span>
+
+        <span class="no">MyPickerView</span><span class="p">.</span><span class="nf">dataSource</span> <span class="o">=</span> <span class="nb">self</span>
+        <span class="no">MyPickerView</span><span class="p">.</span><span class="nf">delegate</span> <span class="o">=</span> <span class="nb">self</span>
+    <span class="p">}</span>
+</pre>
+
+<p>在这里，我们看到了左边有两个error，这是因为我们picker的data和delegate都还没有做实现，之后我们会添加的</p>
+
+<p>*接着我们需要对于ViewController文件做一个扩展，我们新增加一个swift文件，该文件中我们需要去实现data和delegate，我们先查看UIPickerViewDataSource这个协议下面有哪些方法。如下：</p>
+<pre class="highlight ruby"><span class="n">protocol</span> <span class="no">UIPickerViewDataSource</span> <span class="p">:</span> <span class="no">NSObjectProtocol</span> <span class="p">{</span>
+
+    <span class="sr">//</span> <span class="n">returns</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="s1">'columns'</span> <span class="n">to</span> <span class="nb">display</span><span class="o">.</span>
+    <span class="n">func</span> <span class="n">numberOfComponentsInPickerView</span><span class="p">(</span><span class="ss">pickerView: </span><span class="no">UIPickerView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Int</span>
+
+    <span class="sr">//</span> <span class="n">returns</span> <span class="n">the</span> <span class="c1"># of rows in each component..</span>
+    <span class="n">func</span> <span class="n">pickerView</span><span class="p">(</span><span class="ss">pickerView: </span><span class="no">UIPickerView</span><span class="p">,</span> <span class="n">numberOfRowsInComponent</span> <span class="ss">component: </span><span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Int</span>
+<span class="p">}</span>
+</pre>
+
+<p>在这里，两个方法都不是可选的，故而我们都需要去重写这两个方法。新文件代码如下：</p>
+<pre class="highlight ruby"><span class="sr">//</span>
+<span class="sr">//</span>  <span class="no">ViewControllerExtension</span><span class="p">.</span><span class="nf">swift</span>
+<span class="sr">//</span> 
+<span class="o">/</span><span class="sr">/
+/</span><span class="o">/</span>  <span class="no">Created</span> <span class="n">by</span> <span class="no">Monkey</span> <span class="n">on</span> <span class="mi">14</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span>
+<span class="sr">//</span>  <span class="no">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2014</span><span class="err">年</span> <span class="no">Monkey</span><span class="o">.</span> <span class="no">All</span> <span class="n">rights</span> <span class="n">reserved</span><span class="o">.</span>
+<span class="sr">//</span>
+
+
+
+<span class="n">import</span> <span class="no">UIKit</span>
+
+<span class="n">extension</span> <span class="no">ViewController</span><span class="p">:</span> <span class="no">UIPickerViewDataSource</span> <span class="p">{</span>
+    <span class="sr">//</span> <span class="n">returns</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="s1">'columns'</span> <span class="n">to</span> <span class="nb">display</span><span class="o">.</span>
+    <span class="n">func</span> <span class="n">numberOfComponentsInPickerView</span><span class="p">(</span><span class="ss">pickerView: </span><span class="no">UIPickerView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Int</span><span class="p">{</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="p">}</span>
+
+    <span class="sr">//</span> <span class="n">returns</span> <span class="n">the</span> <span class="c1"># of rows in each component..</span>
+    <span class="n">func</span> <span class="n">pickerView</span><span class="p">(</span><span class="ss">pickerView: </span><span class="no">UIPickerView</span><span class="p">,</span> <span class="n">numberOfRowsInComponent</span> <span class="ss">component: </span><span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Int</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="no">ListNames</span><span class="p">.</span><span class="nf">count</span>
+
+    <span class="p">}</span>
+
+
+
+
+<span class="p">}</span>
+
+<span class="n">extension</span> <span class="no">ViewController</span><span class="p">:</span> <span class="no">UIPickerViewDelegate</span><span class="p">{</span>
+
+    <span class="n">func</span> <span class="n">pickerView</span><span class="p">(</span><span class="ss">pickerView: </span><span class="no">UIPickerView</span><span class="p">,</span> <span class="n">titleForRow</span> <span class="ss">row: </span><span class="no">Int</span><span class="p">,</span> <span class="n">forComponent</span> <span class="ss">component: </span><span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">String</span><span class="o">!</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="no">ListNames</span><span class="o">[</span><span class="n">row</span><span class="o">]</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre>
+
+<p>*我们需要新建一个ViewController，然后让第一个View的按钮和第二个View做跳转绑定。我们选择第二项。<br>
+<img src="../photo/2014/40deeb1a1f7c5e58fcd29e8b5b56447a.png" alt=""><br>
+同样的，我们还需要在第二个界面上添加一个labelView，从而来接受第一个界面选择的字符串</p>
+
+<p>*我们接着需要在第一个ViewController中实现按钮的跳转，并将值去传到第二个界面上面。</p>
+<pre class="highlight ruby">    <span class="n">override</span> <span class="n">func</span> <span class="n">prepareForSegue</span><span class="p">(</span><span class="ss">segue: </span><span class="no">UIStoryboardSegue</span><span class="p">,</span> <span class="ss">sender: </span><span class="no">AnyObject</span><span class="sc">?)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">segue</span><span class="p">.</span><span class="nf">identifier</span> <span class="o">==</span> <span class="s2">"GoToSecondView"</span> <span class="p">{</span>
+            <span class="n">let</span> <span class="n">index</span> <span class="o">=</span> <span class="no">MyPickerView</span><span class="p">.</span><span class="nf">selectedRowInComponent</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">var</span> <span class="no">NickName</span><span class="p">:</span> <span class="no">String</span><span class="p">?</span>
+            <span class="n">switch</span> <span class="n">index</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="no">NickName</span> <span class="o">=</span> <span class="s2">"恒温"</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="no">NickName</span> <span class="o">=</span> <span class="s2">"Monkey"</span>
+            <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="no">NickName</span> <span class="o">=</span> <span class="s2">"思寒"</span>
+            <span class="k">case</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="no">NickName</span> <span class="o">=</span> <span class="s2">"mingway"</span>
+            <span class="k">case</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="no">NickName</span> <span class="o">=</span> <span class="s2">"国文"</span>
+            <span class="ss">default:
+                </span><span class="no">NickName</span> <span class="o">=</span> <span class="kp">nil</span>
+        <span class="p">}</span>
+            <span class="sr">//</span><span class="err">这里我们需要定义这个动作是要跳转到第二个界面，并且将第一个界面上面的字符串传给第二个界面的一个对象</span>
+            <span class="n">var</span> <span class="n">vc</span> <span class="o">=</span> <span class="n">segue</span><span class="p">.</span><span class="nf">destinationViewController</span> <span class="n">as</span> <span class="no">SecondViewController</span>
+            <span class="n">vc</span><span class="o">.</span><span class="no">NickName</span> <span class="o">=</span> <span class="no">NickName</span>
+    <span class="p">}</span>
+</pre>
+
+<p>*同时我们第二个界面也需要实现，如下</p>
+<pre class="highlight ruby"><span class="sr">//</span>
+<span class="sr">//</span>  <span class="no">SecondViewController</span><span class="p">.</span><span class="nf">swift</span>
+<span class="sr">//</span> 
+<span class="o">/</span><span class="sr">/
+/</span><span class="o">/</span>  <span class="no">Created</span> <span class="n">by</span> <span class="no">Monkey</span> <span class="n">on</span> <span class="mi">14</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span>
+<span class="sr">//</span>  <span class="no">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2014</span><span class="err">年</span> <span class="no">Monkey</span><span class="o">.</span> <span class="no">All</span> <span class="n">rights</span> <span class="n">reserved</span><span class="o">.</span>
+<span class="sr">//</span>
+
+<span class="n">import</span> <span class="no">UIKit</span>
+
+<span class="k">class</span> <span class="nc">SecondViewController</span><span class="p">:</span> <span class="no">UIViewController</span> <span class="p">{</span>
+
+
+    <span class="vi">@IBOutlet</span> <span class="n">weak</span> <span class="n">var</span> <span class="no">ReslutLabel</span><span class="p">:</span> <span class="no">UILabel</span><span class="o">!</span>
+
+    <span class="n">var</span> <span class="no">NickName</span><span class="p">:</span> <span class="no">String</span><span class="p">?</span>
+    <span class="n">override</span> <span class="n">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="no">NickName</span> <span class="o">!=</span> <span class="kp">nil</span><span class="p">{</span>
+            <span class="no">ReslutLabel</span><span class="p">.</span><span class="nf">text</span> <span class="o">=</span> <span class="no">NickName</span><span class="o">!+</span><span class="s2">"和Testerhome一起努力～"</span>
+        <span class="p">}</span>
+
+
+        <span class="sr">//</span> <span class="no">Do</span> <span class="n">any</span> <span class="n">additional</span> <span class="n">setup</span> <span class="n">after</span> <span class="n">loading</span> <span class="n">the</span> <span class="n">view</span><span class="p">,</span> <span class="n">typically</span> <span class="n">from</span> <span class="n">a</span> <span class="n">nib</span><span class="o">.</span>
+    <span class="p">}</span>
+
+    <span class="n">override</span> <span class="n">func</span> <span class="n">didReceiveMemoryWarning</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="nf">didReceiveMemoryWarning</span><span class="p">()</span>
+        <span class="sr">//</span> <span class="no">Dispose</span> <span class="n">of</span> <span class="n">any</span> <span class="n">resources</span> <span class="n">that</span> <span class="n">can</span> <span class="n">be</span> <span class="n">recreated</span><span class="o">.</span>
+    <span class="p">}</span>
+
+
+
+<span class="p">}</span>
+</pre>
+
+<p>最后我们来看下我们运行的效果<br>
+<img src="../photo/2014/758f76e9988ed8498f773f9abbe3e946.png" alt=""><br>
+<img src="../photo/2014/3adb64e287353afec7b330c753e6864e.png" alt=""></p>
+
+<p>第二个View显示不完整，稍微调整下即可。</p>
+
+<p>未完待续，by Monkey</p>
+      </div>
+
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Swift 第二个 app via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1465#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1465#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1465#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1465#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1465#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1465#reply1">1楼</a> · <abbr class="timeago" title="2014-10-11T07:44:54+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9078" data-state="" data-type="Reply" href="1465#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/1465/replies/9078/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="1465#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>貌似写开发的教程，这里没人有兴趣。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1465#reply2">2楼</a> · <abbr class="timeago" title="2014-10-11T10:06:59+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9082" data-state="" data-type="Reply" href="1465#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1465/replies/9082/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="1465#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1465#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 草。。他们难道不知道。。测试的东西要基于开发么。。＝ ＝。。直接写UT。。很多人就云里雾里了。。。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../beerbox"><img alt="909" class="uface" src="../user/large_avatar/909.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="西门吹牛" href="../beerbox">beerbox</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1465#reply3">3楼</a> · <abbr class="timeago" title="2014-10-11T10:13:04+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9085" data-state="" data-type="Reply" href="1465#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="909" href="http://testerhome.com/topics/1465/replies/9085/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="beerbox" href="1465#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Monkey你这是要转开发的节奏啊</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1465#reply4">4楼</a> · <abbr class="timeago" title="2014-10-11T10:46:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="9088" data-state="" data-type="Reply" href="1465#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1465/replies/9088/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="1465#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1465#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../beerbox" class="at_user" title="@beerbox"><i>@</i>beerbox</a> 木有。。。就是写单元测试。。＝ ＝</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @mingway_hu: 希望TesterHome越办越好~
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1465#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

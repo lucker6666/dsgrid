@@ -1,0 +1,512 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | 自由的使用 gradle 构建你的应用 &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">自由的使用 gradle 构建你的应用</h1>
+  <div class="info leader">
+    <a class="node" href="node33">移动测试基础</a>
+     · 
+    <a data-author="true" data-name="monkey" href="../Monkey">monkey</a>
+     · 
+    于<abbr class="timeago" title="2014-08-04T19:58:44+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="monkey" href="../Monkey">monkey</a> 于<abbr class="timeago" title="2014-12-11T10:39:46+08:00"></abbr>回复
+     · 
+    1021次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>如果你还没有听说过gradle，那么你已经落伍了。gradle是新一代的android构建工具。Android Studio一个全新的android开发ide。gradle在帮助我们构建应用的时候非常的仿版和自由，你甚至可以在不改变你android project结构的情况下去设置你应用的一些配置。</p>
+
+<p><strong>解析AndroidManifest.xml</strong><br>
+gradle支持使用Groovy这样的语言来做应用的配置，在应用配置中可以插入如下的代码，你可以在android的工程中的manifest.xml中获取到你想要的信息</p>
+<pre class="highlight ruby"><span class="k">def</span> <span class="nf">manifestVersionName</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">def</span> <span class="nf">manifestFile</span> <span class="o">=</span> <span class="n">file</span><span class="p">(</span><span class="n">project</span><span class="p">.</span><span class="nf">projectDir</span><span class="p">.</span><span class="nf">absolutePath</span> <span class="o">+</span> <span class="s1">'/src/main/AndroidManifest.xml'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ns</span> <span class="o">=</span> <span class="kp">new</span> <span class="n">groovy</span><span class="p">.</span><span class="nf">xml</span><span class="o">.</span><span class="no">Namespace</span><span class="p">(</span><span class="s2">"http://schemas.android.com/apk/res/android"</span><span class="p">,</span> <span class="s2">"android"</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">xml</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">XmlParser</span><span class="p">().</span><span class="nf">parse</span><span class="p">(</span><span class="n">manifestFile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xml</span><span class="p">.</span><span class="nf">attributes</span><span class="p">()</span><span class="o">[</span><span class="n">ns</span><span class="p">.</span><span class="nf">versionName</span><span class="o">]</span><span class="p">.</span><span class="nf">toString</span><span class="p">()</span>
+<span class="p">}</span>
+</pre>
+
+<p><strong>控制版本</strong><br>
+我们在这里可以使用一种灵活的方式，比如我们可以使用多个脚本来创建多个我们想要的应用。很多时候的apk文件是需要完整的保留的，比如每次项目迭代之后的历史版本。但是我从来不用去担心那些apk是对应哪些版本号。如下代码，你可以使用gradle来自动的配置你的应用的后缀，比如一些版本名称，这样可以最终显示在生成的apk中。</p>
+<pre class="highlight ruby">
+<span class="n">project</span><span class="p">.</span><span class="nf">ext</span><span class="p">.</span><span class="nf">versionName</span> <span class="o">=</span> <span class="n">manifestVersionName</span><span class="p">()</span>
+
+<span class="n">android</span> <span class="p">{</span>
+    <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+    <span class="n">defaultConfig</span> <span class="p">{</span>
+        <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+        <span class="n">applicationVariants</span><span class="p">.</span><span class="nf">all</span> <span class="p">{</span> <span class="n">variant</span> <span class="o">-&gt;</span>
+            <span class="k">def</span> <span class="nf">file</span> <span class="o">=</span> <span class="n">variant</span><span class="p">.</span><span class="nf">outputFile</span>
+            <span class="n">variant</span><span class="p">.</span><span class="nf">outputFile</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">File</span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="nf">parent</span><span class="p">,</span> <span class="n">file</span><span class="p">.</span><span class="nf">name</span><span class="p">.</span><span class="nf">replace</span><span class="p">(</span><span class="s2">".apk"</span><span class="p">,</span> <span class="s2">"-"</span> <span class="o">+</span> <span class="n">buildSuffix</span> <span class="o">+</span> <span class="s2">".apk"</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+
+<p><strong>增强你的构建配置</strong><br>
+当你使用fradle进行构建的时候，我们可以有能力去添加一些通用的字段在我们的配置类中，比如一些服务器的地址，或者是应用的一些属性等等。我们来看如下代码：</p>
+<pre class="highlight ruby"><span class="err">在</span><span class="n">build</span><span class="p">.</span><span class="nf">gradle</span><span class="err">中</span>
+
+<span class="n">android</span> <span class="p">{</span>
+    <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+    <span class="n">buildTypes</span> <span class="p">{</span>
+        <span class="n">debug</span> <span class="p">{</span>
+            <span class="n">buildConfigField</span> <span class="s2">"boolean"</span><span class="err"></span><span class="p">,</span> <span class="s2">"REPORT_CRASHES"</span><span class="err"></span><span class="p">,</span> <span class="s2">"true"</span>
+        <span class="p">}</span>
+        <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+    <span class="p">}</span>    
+<span class="p">}</span>
+</pre>
+<pre class="highlight ruby"><span class="err">在</span><span class="n">java</span><span class="err">代码中</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="no">BuildConfig</span><span class="o">.</span><span class="no">REPORT_CRASHES</span><span class="p">)</span> <span class="p">{</span>
+    <span class="no">Crashlytics</span><span class="p">.</span><span class="nf">start</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
+<span class="p">}</span>
+</pre>
+
+<p><strong>设置多个构建类型</strong></p>
+
+<p>为了更好的利用我们刚刚提到的这样一个能够灵活的设置配置文件的功能，你可以创建多个不同类型的应用。比如说，我们可以创建debug的应用给我们的developer，release的版本最终上传到google play的商店作为可以让最终用户使用的版本。主要原因在于我们有很多的信息不能放在release的版本中，比如说我们的开发日志，敏感信息等等</p>
+<pre class="highlight ruby">
+<span class="n">android</span> <span class="p">{</span>
+    <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+    <span class="n">buildTypes</span> <span class="p">{</span>
+        <span class="k">def</span> <span class="nf">BOOLEAN</span> <span class="o">=</span> <span class="s2">"boolean"</span>
+        <span class="k">def</span> <span class="nf">TRUE</span> <span class="o">=</span> <span class="s2">"true"</span>
+        <span class="k">def</span> <span class="nf">FALSE</span> <span class="o">=</span> <span class="s2">"false"</span>
+        <span class="k">def</span> <span class="nf">LOG_HTTP_REQUESTS</span> <span class="o">=</span> <span class="s2">"LOG_HTTP_REQUESTS"</span>
+        <span class="k">def</span> <span class="nf">REPORT_CRASHES</span> <span class="o">=</span> <span class="s2">"REPORT_CRASHES"</span>
+        <span class="k">def</span> <span class="nf">ENABLE_VIEW_SERVER</span> <span class="o">=</span> <span class="s2">"ENABLE_VIEW_SERVER"</span>
+        <span class="k">def</span> <span class="nf">ENABLE_SHARING</span> <span class="o">=</span> <span class="s2">"ENABLE_SHARING"</span>
+        <span class="k">def</span> <span class="nf">DEBUG_IMAGES</span> <span class="o">=</span> <span class="s2">"DEBUG_IMAGES"</span>
+
+        <span class="n">debug</span> <span class="p">{</span>
+            <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">LOG_HTTP_REQUESTS</span><span class="p">,</span> <span class="no">TRUE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">REPORT_CRASHES</span><span class="p">,</span> <span class="no">FALSE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">ENABLE_VIEW_SERVER</span><span class="p">,</span> <span class="no">TRUE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">ENABLE_SHARING</span><span class="p">,</span> <span class="no">TRUE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">DEBUG_IMAGES</span><span class="p">,</span> <span class="no">TRUE</span>
+        <span class="p">}</span>
+
+        <span class="n">client</span> <span class="p">{</span>
+            <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">LOG_HTTP_REQUESTS</span><span class="p">,</span> <span class="no">TRUE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">REPORT_CRASHES</span><span class="p">,</span> <span class="no">TRUE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">ENABLE_VIEW_SERVER</span><span class="p">,</span> <span class="no">FALSE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">ENABLE_SHARING</span><span class="p">,</span> <span class="no">FALSE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">DEBUG_IMAGES</span><span class="p">,</span> <span class="no">FALSE</span>
+        <span class="p">}</span>
+
+        <span class="n">release</span> <span class="p">{</span>
+            <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">LOG_HTTP_REQUESTS</span><span class="p">,</span> <span class="no">FALSE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">REPORT_CRASHES</span><span class="p">,</span> <span class="no">TRUE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">ENABLE_VIEW_SERVER</span><span class="p">,</span> <span class="no">FALSE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">ENABLE_SHARING</span><span class="p">,</span> <span class="no">FALSE</span>
+            <span class="n">buildConfigField</span> <span class="no">BOOLEAN</span><span class="p">,</span> <span class="no">DEBUG_IMAGES</span><span class="p">,</span> <span class="no">FALSE</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</pre>
+
+<p><strong>控制不同的签名版本</strong><br>
+当你去编译多个apk的时候，也许你会考虑到另外一件事情，那么就是apk 签名的问题。比如说我们会去使用一个公开的debug的签名文件对我们的产品进行加密。我们也有不能公开的release签名。显而易见的，你肯定不希望check in你的公钥，但是你又不希望每次在用gradle编译的时候去修改你的脚本。你可以使用下面的代码进行区分和提示：</p>
+<pre class="highlight ruby">
+<span class="n">android</span> <span class="p">{</span>
+    <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+    <span class="n">signingConfigs</span> <span class="p">{</span>
+        <span class="n">debug</span> <span class="p">{</span>
+            <span class="n">storeFile</span> <span class="n">file</span><span class="p">(</span><span class="s2">"debug.keystore"</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">release</span> <span class="p">{</span>
+            <span class="n">storeFile</span> <span class="n">file</span><span class="p">(</span><span class="s2">"release.keystore"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">buildTypes</span> <span class="p">{</span>
+        <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+
+        <span class="n">debug</span> <span class="p">{</span>
+            <span class="n">signingConfig</span> <span class="n">signingConfigs</span><span class="p">.</span><span class="nf">debug</span>
+            <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+        <span class="p">}</span>
+
+        <span class="n">client</span> <span class="p">{</span>
+            <span class="n">signingConfig</span> <span class="n">signingConfigs</span><span class="p">.</span><span class="nf">debug</span>
+            <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+        <span class="p">}</span>
+
+        <span class="n">release</span> <span class="p">{</span>
+            <span class="n">signingConfig</span> <span class="n">signingConfigs</span><span class="p">.</span><span class="nf">release</span>
+            <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">runTasks</span> <span class="o">=</span> <span class="n">gradle</span><span class="p">.</span><span class="nf">startParameter</span><span class="p">.</span><span class="nf">taskNames</span>
+<span class="k">if</span> <span class="p">(</span><span class="s1">'assemble'</span> <span class="k">in</span> <span class="n">runTasks</span> <span class="o">||</span> <span class="s1">'assembleRelease'</span> <span class="k">in</span> <span class="n">runTasks</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">android</span><span class="p">.</span><span class="nf">signingConfigs</span><span class="p">.</span><span class="nf">release</span><span class="p">.</span><span class="nf">storePassword</span> <span class="o">=</span> <span class="no">System</span><span class="p">.</span><span class="nf">console</span><span class="p">().</span><span class="nf">readPassword</span><span class="p">(</span><span class="s1">'\nKeyStore Password: '</span><span class="p">)</span>
+    <span class="n">android</span><span class="p">.</span><span class="nf">signingConfigs</span><span class="p">.</span><span class="nf">release</span><span class="p">.</span><span class="nf">keyAlias</span> <span class="o">=</span> <span class="no">System</span><span class="p">.</span><span class="nf">console</span><span class="p">().</span><span class="nf">readPassword</span><span class="p">(</span><span class="s1">'Alias Name: '</span><span class="p">)</span>
+    <span class="n">android</span><span class="p">.</span><span class="nf">signingConfigs</span><span class="p">.</span><span class="nf">release</span><span class="p">.</span><span class="nf">keyPassword</span> <span class="o">=</span> <span class="no">System</span><span class="p">.</span><span class="nf">console</span><span class="p">().</span><span class="nf">readPassword</span><span class="p">(</span><span class="s1">'Alias Password: '</span><span class="p">)</span>
+<span class="p">}</span>
+
+
+<span class="sb">```ruby
+
+**检查风格的插件**
+checkstyle的插件相信很多人都用过。我们在mvn中我们是这样定义的
+
+```</span><span class="n">ruby</span>
+<span class="o">&lt;</span><span class="n">project</span><span class="o">&gt;</span>  
+  <span class="p">.</span><span class="nf">.</span><span class="o">.</span>  
+  <span class="o">&lt;</span><span class="n">build</span><span class="o">&gt;</span>  
+    <span class="o">&lt;</span><span class="n">plugins</span><span class="o">&gt;</span>  
+      <span class="o">&lt;</span><span class="n">plugin</span><span class="o">&gt;</span>  
+        <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="p">.</span><span class="nf">apache</span><span class="p">.</span><span class="nf">maven</span><span class="p">.</span><span class="nf">plugins</span><span class="o">&lt;</span><span class="sr">/groupId&gt;  
+        &lt;artifactId&gt;maven-checkstyle-plugin&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>  
+        <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="o">&lt;</span><span class="sr">/version&gt;  
+      &lt;/</span><span class="n">plugin</span><span class="o">&gt;</span>  
+    <span class="o">&lt;</span><span class="sr">/plugins&gt;  
+  &lt;/</span><span class="n">build</span><span class="o">&gt;</span>  
+  <span class="p">.</span><span class="nf">.</span><span class="o">.</span>  
+<span class="o">&lt;</span><span class="sr">/project&gt;  
+
+</span></pre>
+
+<p>我们在gradle中也允许使用这个插件，你必须在你的构建依赖中增加checkstyle，这样可以确保无论你什么时候进行构建，gradle都会自动的帮你去执行checkstyle这样一个插件，如果找到问题则会停止构建。。。</p>
+<pre class="highlight ruby">
+<span class="n">task</span> <span class="n">checkstyle</span><span class="p">(</span><span class="ss">type: </span><span class="no">Checkstyle</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">source</span> <span class="s1">'src'</span>
+    <span class="kp">include</span> <span class="s1">'**/*.java'</span>
+    <span class="n">exclude</span> <span class="s1">'**/gen/**'</span>
+    <span class="n">exclude</span> <span class="s1">'**/R.java'</span>
+    <span class="n">exclude</span> <span class="s1">'**/BuildConfig.java'</span>
+
+    <span class="k">def</span> <span class="nf">configProps</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'proj.module.dir'</span><span class="p">:</span> <span class="n">projectDir</span><span class="p">.</span><span class="nf">absolutePath</span><span class="o">]</span>
+    <span class="n">configProperties</span> <span class="n">configProps</span>
+
+    <span class="sr">//</span> <span class="n">empty</span> <span class="n">classpath</span>
+    <span class="n">classpath</span> <span class="o">=</span> <span class="n">files</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="n">preBuild</span><span class="p">.</span><span class="nf">dependsOn</span><span class="p">(</span><span class="s1">'checkstyle'</span><span class="p">)</span>
+</pre>
+
+<p>希望这些对你是有帮助的。。＝ ＝</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='自由的使用 gradle 构建你的应用 via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="1221#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="1221#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="1221#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="1221#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="1221#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>4</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../pinghailinfeng"><img alt="896" class="uface" src="../user/large_avatar/896.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="jeff" href="../pinghailinfeng">pinghailinfeng</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1221#reply1">1楼</a> · <abbr class="timeago" title="2014-08-14T12:17:40+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7666" data-state="" data-type="Reply" href="1221#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="896" href="http://testerhome.com/topics/1221/replies/7666/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="pinghailinfeng" href="1221#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>这个帖子为啥没人看呢？顶</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1221#reply2">2楼</a> · <abbr class="timeago" title="2014-08-14T14:58:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="7670" data-state="" data-type="Reply" href="1221#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1221/replies/7670/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="monkey" href="1221#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1221#reply1" class="at_floor" data-floor="1">#1楼</a> <a href="../pinghailinfeng" class="at_user" title="@pinghailinfeng"><i>@</i>pinghailinfeng</a> 哈哈，感谢感谢～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../davidyang"><img alt="0bad52bc3e1632c83922f8f654553ca7" class="uface" src="../avatar/0bad52bc3e1632c83922f8f654553ca7.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="daivd" href="../davidyang">davidyang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1221#reply3">3楼</a> · <abbr class="timeago" title="2014-12-11T10:00:16+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10486" data-state="" data-type="Reply" href="1221#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1925" href="http://testerhome.com/topics/1221/replies/10486/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="davidyang" href="1221#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>嗯，感谢分享，用google 自身的构建工具还是比较好的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="1221#reply4">4楼</a> · <abbr class="timeago" title="2014-12-11T10:39:46+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="10489" data-state="" data-type="Reply" href="1221#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/1221/replies/10489/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="1221#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="1221#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../davidyang" class="at_user" title="@davidyang"><i>@</i>davidyang</a> 希望大家多分享点出来～～～</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @oscar: 每个人都有每个人的追求和生活方式；我们可以什么都没有，没房、没车、没脑瓜，但是我们得有做人的尊严。
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1867" title="适合新手的 gradle 自学教程合集">适合新手的 gradle 自学教程合集</a></li>
+    <li><a href="1850" title="关于 AndroidManifest.xml ">关于 AndroidManifest.xml </a></li>
+    <li><a href="1799" title="Android 测试框架整理">Android 测试框架整理</a></li>
+    <li><a href="1756" title="Gradle 中的 task 依赖">Gradle 中的 task 依赖</a></li>
+    <li><a href="1730" title="关于 Android 和 iOS 兼容性环境的搭建">关于 Android 和 iOS 兼容性环境的搭建</a></li>
+    <li><a href="1718" title="Gradle 学习专辑">Gradle 学习专辑</a></li>
+    <li><a href="1711" title="Gradle 编译交互小技巧">Gradle 编译交互小技巧</a></li>
+    <li><a href="1708" title="gradle 集成修改 Android Manifest.xml 打多个包实践">gradle 集成修改 Android Manifes...</a></li>
+    <li><a href="1700" title="Groovy 初探（一）">Groovy 初探（一）</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="1221#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>

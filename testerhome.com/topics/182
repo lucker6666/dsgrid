@@ -1,0 +1,732 @@
+<!--
+  App Environments:
+  --------------------------------------------------------
+  Ruby:  2.1.2-p95
+  Rails: 4.1.1
+  Thanks to RubyChina
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TesterHome | Linux 下运行 Appium 的 sample &raquo; 社区</title>
+  <meta charset='utf-8' />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <link data-turbolinks-track="true" href="../assets/front-7f214c07ef8cbdd59ba99f0ea4b052b9.css" media="screen" rel="stylesheet" />
+    <link href="../assets/mobile-4fb33e42cee242735db607f08badd48a.css" media="screen and (max-width: 798px)" rel="stylesheet" />
+  <link rel="shortcut icon" href="../assets/big_logo-e45f9cf8961e479b209d942f449d3b7b.png" />
+  <link href="feed" rel="alternate" title="订阅最新帖" type="application/rss+xml" />
+  <script data-turbolinks-track="true" src="../assets/app-d8b8d53b12135c77eba5ce7899b456b3.js"></script>
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="n6IluQs+rvFYzOtLM2JildRgsvcNIwvZOjb84Ctm9Jg=" name="csrf-token" />
+  
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?bfca03d31121ff43bab8f1bf58dcb58b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body data-offset="50" data-controller-name="topics">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <h3>
+          <a href="../index.html" class="site-logo"></a>
+        </h3>
+        <ul class="nav"><li class="first"><a href="../index.html">首页</a></li><li class="active"><a href="../notes/2">社区</a></li><li><a href="../wiki">Wiki</a></li><li><a href="../jobs">招聘</a></li><li class="last"><a href="../sites">酷站</a></li></ul>
+        <span class="pull-right">
+          <form action="http://testerhome.com/search" class="navbar-search" method="get">
+            <input type="text" name="q" class="search-query" value="" placeholder="搜索" />
+          </form>
+
+            <ul class="nav pull-right" id="userbar"><li class="first"><a href="../account/sign_up">注册</a></li><li class="last"><a href="../account/password/edit">登录</a></li></ul>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    
+    <div id="main" class="container-fluid">
+      
+<div class="content">
+  <div id="topic_show" class="topics box hfeed">
+    <div class="topic hentry">
+      <div class="infos">
+  <div class="pull-right avatar_large">
+    <a href="../summer"><img alt="174" class="uface" src="../user/large_avatar/174.png" style="width:48px;height:48px;" /></a>
+  </div>
+  <h1 class="entry-title">Linux 下运行 Appium 的 sample</h1>
+  <div class="info leader">
+    <a class="node" href="node23">Appium</a>
+     · 
+    <a data-author="true" data-name="" href="../summer">summer</a>
+     · 
+    于<abbr class="timeago" title="2013-11-06T19:06:09+08:00"></abbr>发布
+       · 
+      最后由 <a data-name="zhoujie_ee" href="http://testerhome.com/zhoujie_ee">zhoujie_ee</a> 于<abbr class="timeago" title="2015-01-07T11:42:01+08:00"></abbr>回复
+     · 
+    1675次阅读
+  </div>
+</div>
+
+      
+      <div class="body entry-content">
+        <p>在开始之前，配置好android的开发环境，这个不多说。<br>
+1.首先安装nodejs，因为我用的是ubuntu10.04，所以要先添加一下ppa源</p>
+<pre class="highlight plaintext">sudo apt-get update
+sudo apt-get install -y python-software-properties python g++ make
+sudo add-apt-repository ppa:chris-lea/node.js
+</pre>
+<p>然后update一下：</p>
+<pre class="highlight plaintext">sudo apt-get update
+sudo apt-get install nodejs
+</pre>
+<p>2.然后安装appium并启动appium</p>
+<pre class="highlight plaintext">npm install -g appium
+appium
+</pre>
+<p>3.启动完成后如图<br><img src="../photo/1d03c338d339a0531ba6b5fa894f4a14.jpg" alt=""><br>
+4.appium启动后保持这个窗口不关，将android手机连接到电脑，然后另开一个终端窗口。在此窗口里直接运行sample里的python脚本(先自行将github上的源码下到本地)：</p>
+<pre class="highlight plaintext">sudo python ~/appium-master/sample-code/examples/python/android_contacts.py
+</pre>
+<p>这时可以看到启动了appium的那个窗口开始打印信息：<br><img src="../photo/57a0f123289424b328e053d9985e6e63.jpg" alt=""><br>
+同时手机已经开始测试了：<br><img src="../photo/2cb6c387d4c784d93fff1d4b4d76b41d.jpg" alt=""><br>
+从android_contacts.py这个脚本里看到测试的apk是~/appium-master/sample-code/apps/ContactManager下的ContactManager.apk<br>
+备注：<br>
+如果python提示找不到selenium模块的错误，按以下步骤解决：<br>
+1.去<a href="https://pypi.python.org/pypi/setuptools" rel="nofollow" target="_blank">https://pypi.python.org/pypi/setuptools</a><br>
+下载setuptools-1.3.tar.gz然后解压，运行命令</p>
+<pre class="highlight plaintext">cd setuptools-1.3/
+sudo python setup.py build
+sudo python setup.py install
+</pre>
+<p>2.去<a href="https://pypi.python.org/pypi/selenium" rel="nofollow" target="_blank">https://pypi.python.org/pypi/selenium</a><br>
+下载selenium-2.37.2.tar.gz然后解压，运行命令</p>
+<pre class="highlight plaintext">cd selenium-2.37.2/
+sudo python setup.py install
+</pre>
+<p>如果想运行java版的脚本：<br>
+1.安装maven<br>
+去<a href="http://maven.apache.org/download.cgi" rel="nofollow" target="_blank">http://maven.apache.org/download.cgi</a><br>
+找个最新的版本下下来，然后将apache-maven/bin添加到环境变量<br>
+2.保持appium启动后的窗口不关，运行命令</p>
+<pre class="highlight plaintext">cd ~/appium-master/sample-code/examples/java/junit
+mvn test
+</pre>
+<p>测试后如图：<br><img src="../photo/f111a8dacc43b9d9f2b12c1fc2a4aa0c.jpg" alt=""><br>
+出现很多错误是因为code里面的一些测试脚本对应的apk没有，可以将~/appium-master/sample-code/examples/java/junit/src/test/java/com/saucelabs/appium下的java脚本仅保留AndroidContactsTest.java<br>
+删掉其它java脚本后将~/appium-master/sample-code/examples/java/junit/target文件夹也删掉，然后再测一次<br><img src="../photo/b4e35d916be72ffce436465a14fa3f4f.jpg" alt=""><br>
+现在可以看到build成功了，同时可以看到手机也已经开始运行脚本</p>
+      </div>
+
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华帖！
+      </div>
+
+      
+
+      <div class="tools pull-right">
+  
+  <a class="likeable" href="../account/password/edit"><i class="icon small_like"></i> <span>喜欢</span></a>
+  
+  <a href="http://cli.im/api/qrcode"><i class="icon icon-qrcode"></i>二维码</a>
+</div>
+<div class='social-share-button' data-title='Linux 下运行 Appium 的 sample via: @testerhome ' data-img='' data-url=''>
+<a class="social-share-button-twitter" data-site="twitter" href="182#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Twitter"></a>
+<a class="social-share-button-facebook" data-site="facebook" href="182#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Facebook"></a>
+<a class="social-share-button-google_plus" data-site="google_plus" href="182#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到Google+"></a>
+<a class="social-share-button-weibo" data-site="weibo" href="182#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到新浪微博"></a>
+<a class="social-share-button-douban" data-site="douban" href="182#" onclick="return SocialShareButton.share(this);" rel="nofollow " title="分享到豆瓣"></a>
+</div>
+
+    </div>
+  </div>
+
+    <div id="replies" class="box box_gray">
+      <div class="total">
+        共收到 <b>18</b> 条回复
+      </div>
+      <div class="items">
+        
+          <div class="reply" id="reply1">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply1">1楼</a> · <abbr class="timeago" title="2013-11-06T19:27:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="501" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/182/replies/501/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="1" data-login="lihuazhang" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>我突然想到，报表其实可以用 xUnit 直系列的</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply2">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply2">2楼</a> · <abbr class="timeago" title="2013-11-06T19:29:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="502" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/182/replies/502/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="2" data-login="lihuazhang" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>sudo python ~/appium-master/sample-code/examples/python/android_contacts.py</p>
+
+<p>为啥sudo?</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply3">
+    <div class="pull-left face"><a href="../summer"><img alt="174" class="uface" src="../user/large_avatar/174.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="" href="../summer">summer</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply3">3楼</a> · <abbr class="timeago" title="2013-11-06T21:44:35+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="503" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="174" href="http://testerhome.com/topics/182/replies/503/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="3" data-login="summer" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="182#reply2" class="at_floor" data-floor="2">#2楼</a> <a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 我的不加sudo就会提示权限不够</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply4">
+    <div class="pull-left face"><a href="../Monkey"><img alt="118" class="uface" src="../user/large_avatar/118.png" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="monkey" href="../Monkey">monkey</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply4">4楼</a> · <abbr class="timeago" title="2013-11-06T23:54:50+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="504" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="118" href="http://testerhome.com/topics/182/replies/504/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="4" data-login="monkey" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="182#reply3" class="at_floor" data-floor="3">#3楼</a> <a href="../summer" class="at_user" title="@summer"><i>@</i>summer</a> 提示啥权限不够？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply5">
+    <div class="pull-left face"><a href="../seveniruby"><img alt="104" class="uface" src="../user/large_avatar/104.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="思寒" href="../seveniruby">seveniruby</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply5">5楼</a> · <abbr class="timeago" title="2013-11-07T08:43:15+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="507" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="104" href="http://testerhome.com/topics/182/replies/507/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="5" data-login="seveniruby" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>理论上是不需要sudo的  可以看看相应的权限设置 </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply6">
+    <div class="pull-left face"><a href="../qddegtya"><img alt="403574cd2a42e73c9f34b2b14e2bf9b4" class="uface" src="../avatar/403574cd2a42e73c9f34b2b14e2bf9b4.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Archer_小A" href="../qddegtya">qddegtya</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply6">6楼</a> · <abbr class="timeago" title="2013-11-11T16:18:52+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="577" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="182" href="http://testerhome.com/topics/182/replies/577/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="6" data-login="qddegtya" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>Appium的教程还是很少的，感谢贡献和分享~</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply7">
+    <div class="pull-left face"><a href="../kiki"><img alt="197" class="uface" src="../user/large_avatar/197.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="琪琪" href="../kiki">kiki</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply7">7楼</a> · <abbr class="timeago" title="2013-11-19T11:18:48+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="746" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="197" href="http://testerhome.com/topics/182/replies/746/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="7" data-login="kiki" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <h4>求助 ，我执行脚本后，就一直停在下面的界面不往下走了。</h4>
+<p>root@ubuntu:/home/administrator/appium-master/bin# appium<br>
+.....................................................................................<br>
+info: Creating new appium session cb8bd9ae-55c8-4985-85ba-bfb70e15f7cc<br>
+info: Starting android appium<br>
+debug: Using fast reset? true<br>
+info: Preparing device for session<br>
+info: Checking whether app is actually present</p>
+<h4>info: Checking whether adb is present</h4>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply8">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply8">8楼</a> · <abbr class="timeago" title="2013-11-19T11:24:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="747" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/182/replies/747/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="8" data-login="lihuazhang" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="182#reply7" class="at_floor" data-floor="7">#7楼</a> <a href="../kiki" class="at_user" title="@kiki"><i>@</i>kiki</a> </p>
+
+<ul>
+<li>adb 在环境变量里有没？</li>
+<li>模拟器打开了没？或者 真机连接上了吗？</li>
+</ul>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply9">
+    <div class="pull-left face"><a href="../kiki"><img alt="197" class="uface" src="../user/large_avatar/197.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="琪琪" href="../kiki">kiki</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply9">9楼</a> · <abbr class="timeago" title="2013-11-19T11:32:56+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="748" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="197" href="http://testerhome.com/topics/182/replies/748/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="9" data-login="kiki" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> adb配置了，真机也连上了。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply10">
+    <div class="pull-left face"><a href="../lihuazhang"><img alt="110" class="uface" src="../user/large_avatar/110.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="恒温" href="../lihuazhang">lihuazhang</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply10">10楼</a> · <abbr class="timeago" title="2013-11-19T11:37:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="749" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="110" href="http://testerhome.com/topics/182/replies/749/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="10" data-login="lihuazhang" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="182#reply9" class="at_floor" data-floor="9">#9楼</a> <a href="../kiki" class="at_user" title="@kiki"><i>@</i>kiki</a> 能运行下 <code>adb devices -l</code> 看看结果不？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply11">
+    <div class="pull-left face"><a href="../kiki"><img alt="197" class="uface" src="../user/large_avatar/197.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="琪琪" href="../kiki">kiki</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply11">11楼</a> · <abbr class="timeago" title="2013-11-19T11:46:58+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="750" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="197" href="http://testerhome.com/topics/182/replies/750/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="11" data-login="kiki" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> <br>
+root@ubuntu:/home/administrator/appium-master# adb devices -l<br>
+adb server is out of date.  killing...<br>
+* daemon started successfully *<br>
+List of devices attached <br>
+HC36SW102702    device</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply12">
+    <div class="pull-left face"><a href="../kiki"><img alt="197" class="uface" src="../user/large_avatar/197.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="琪琪" href="../kiki">kiki</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply12">12楼</a> · <abbr class="timeago" title="2013-11-19T13:40:13+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="752" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="197" href="http://testerhome.com/topics/182/replies/752/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="12" data-login="kiki" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../lihuazhang" class="at_user" title="@lihuazhang"><i>@</i>lihuazhang</a> 找到问题了，android sdk路径没配置好。谢谢你 (<em>^__^</em>) </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply13">
+    <div class="pull-left face"><a href="../cjtcwyk"><img alt="306" class="uface" src="../user/large_avatar/306.jpg" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="Vincent" href="../cjtcwyk">cjtcwyk</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply13">13楼</a> · <abbr class="timeago" title="2013-12-31T17:02:36+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="1751" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="306" href="http://testerhome.com/topics/182/replies/1751/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="13" data-login="cjtcwyk" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="182#reply12" class="at_floor" data-floor="12">#12楼</a> <a href="../kiki" class="at_user" title="@kiki"><i>@</i>kiki</a> 我也遇到一样的问题，我sdk路径应该是没问题的，请问你是怎样解决的？</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply14">
+    <div class="pull-left face"><a href="../yjxj1ban"><img alt="232456397bfe72849e398434f7e76af5" class="uface" src="../avatar/232456397bfe72849e398434f7e76af5.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="yang" href="../yjxj1ban">yjxj1ban</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply14">14楼</a> · <abbr class="timeago" title="2014-04-29T14:14:24+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4311" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="797" href="http://testerhome.com/topics/182/replies/4311/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="14" data-login="yjxj1ban" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>python ~/appium-master/sample-code/examples/python/android_contacts.py</p>
+
+<p>Traceback (most recent call last):<br>
+  File "/home/yangjuan/appium-master/sample-code/examples/python/android_contacts.py", line 2, in &lt;module&gt;<br>
+    from selenium import webdriver<br>
+ImportError: No module named selenium</p>
+
+<p>-----&gt;我用npm install -g selenium,按张了selenium还是会出现问题 ，<a href="../summer" class="at_user" title="@summer"><i>@</i>summer</a>怎么破？<br>
+我有按官网npm install </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply15">
+    <div class="pull-left face"><a href="../yjxj1ban"><img alt="232456397bfe72849e398434f7e76af5" class="uface" src="../avatar/232456397bfe72849e398434f7e76af5.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="yang" href="../yjxj1ban">yjxj1ban</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply15">15楼</a> · <abbr class="timeago" title="2014-04-29T14:14:42+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4312" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="797" href="http://testerhome.com/topics/182/replies/4312/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="15" data-login="yjxj1ban" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>npm install wd</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply16">
+    <div class="pull-left face"><a href="../yjxj1ban"><img alt="232456397bfe72849e398434f7e76af5" class="uface" src="../avatar/232456397bfe72849e398434f7e76af5.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="yang" href="../yjxj1ban">yjxj1ban</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply16">16楼</a> · <abbr class="timeago" title="2014-04-29T15:42:37+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="4316" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="797" href="http://testerhome.com/topics/182/replies/4316/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="16" data-login="yjxj1ban" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>sorry，这个问题也解决了，安装python版的selenium 我这边需要root权限。</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply17">
+    <div class="pull-left face"><a href="../18500977112"><img alt="0b803c34ad695d0991dde9639a23f203" class="uface" src="../avatar/0b803c34ad695d0991dde9639a23f203.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="杜真" href="../18500977112">18500977112</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply17">17楼</a> · <abbr class="timeago" title="2014-07-05T16:23:11+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="6525" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="1218" href="http://testerhome.com/topics/182/replies/6525/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="17" data-login="18500977112" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p><a href="../summer" class="at_user" title="@summer"><i>@</i>summer</a>   求助，npm install -g appium 安装过程中提示<br>
+c:\users\duz-pc.node-gyp\0.10.29\deps\uv\include\uv-private/uv-win.h(32): fata<br>
+l error C1083: 无法打开包括文件: “winsock2.h”: No such file or directory [C:\U<br>
+sers\duz-<br>
+pc\AppData\Roaming\npm\node_modules\appium\node_modules\ws\build\bufferutil.vcx<br>
+proj]</p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+<div class="reply" id="reply18">
+    <div class="pull-left face"><a href="../Guest"><img alt="A107d40806fd40b050a7985d20f09aa8" class="uface" src="../avatar/a107d40806fd40b050a7985d20f09aa8.png?s=96&amp;d=404" style="width:48px;height:48px;" /></a></div>
+    <div class="infos">
+      <div class="info">
+        <span class="name">
+          <a data-name="ares" href="../Guest">Guest</a>
+        </span>
+        <span class="time">
+          <a class="reply-floor" href="182#reply18">18楼</a> · <abbr class="timeago" title="2015-01-07T11:42:01+08:00"></abbr>
+        </span>
+        <span class="opts">
+            <a class="likeable" data-count="0" data-id="11234" data-state="" data-type="Reply" href="182#" onclick="return App.likeable(this);" rel="twipsy" title="喜欢"><i class="icon small_like"></i> <span>喜欢</span></a>
+            <a class="edit icon small_edit" data-uid="2195" href="http://testerhome.com/topics/182/replies/11234/edit" title="修改回帖"></a>
+            <a class="icon small_reply" data-floor="18" data-login="Guest" href="182#" title="回复此楼"></a>
+        </span>
+      </div>
+      <div class="body">
+        <p>ubuntu下按步骤安装完成后没有出现文中的启动界面，不知为何？求解！<br>
+root@Inspiron-660s:~# appium<br>
+root@Inspiron-660s:~# </p>
+      </div>
+      <span class="opts">
+      </span>
+    </div>
+</div>
+
+      </div>
+      
+    </div>
+
+      <div id="reply" class="form box">
+    <div style="padding:20px;">
+    需要 <a class="btn btn-primary" href="../account/password/edit">登录</a> 后回复方可回复, 如果你还没有账号你可以 <a class="btn btn-danger" href="../account/sign_up">注册</a> 一个帐号。
+    </div>
+</div>
+</div>
+
+  <div class="sidebar">
+    
+    <div class="box">
+  <h2 class="title">小帖士</h2>
+  <div class="content">
+    @lemonyue 希望新的工作一切顺利！
+  </div>
+</div>
+    <div class="box clearfix">
+  <h2 class="title">节点下其他话题</h2>
+  <ul>
+    <li><a href="1917" title="Appium">Appium</a></li>
+    <li><a href="1912" title="如何测试微信公众号里面的页面">如何测试微信公众号里面的页面</a></li>
+    <li><a href="1910" title="appium 对 ios 自动化测试：IOS 元素如何精确定位？元素 id 如何获得？用 xpath 不合适，经常会变化">appium 对 ios 自动化测试：IOS 元素如何...</a></li>
+    <li><a href="1907" title="Appium 框架中，是如何做延时处理的？">Appium 框架中，是如何做延时处理的？</a></li>
+    <li><a href="1906" title="安卓怎么用 Appium 定位元素呢">安卓怎么用 Appium 定位元素呢</a></li>
+    <li><a href="1904" title="iOS pullFile 接口获取 iOS 真机设备文件提示没有实现">iOS pullFile 接口获取 iOS 真机设备文...</a></li>
+    <li><a href="1903" title="Appium 已支持中文输入（给还不知道已支持中文输入的同学）">Appium 已支持中文输入（给还不知道已支持中文输入...</a></li>
+    <li><a href="1902" title="Appium 偶尔会找不到 iOS 上的控件">Appium 偶尔会找不到 iOS 上的控件</a></li>
+  </ul>
+</div>
+
+  </div>
+
+    </div>
+  </div>
+
+  <a class="go_top" href="182#"><i class="icon icons_go_top"></i></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="container">
+      <div class="pull-right" style="width:200px; text-align:right;">
+<a href="http://www.ucloud.cn/?ref=testerhome.com" target="_blank" rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="本站服务器由 Ucloud 赞助"><img src="../photo/2014/ace04e205ff40be04f47de439d253b59.png" style="height:28px"></a>
+</div>
+
+<div>
+<div class="pull-left" style="margin-right:10px;">
+<img src="../photo/2015/7b5b57bb91762429809a9f95255392ad.png" style="width:48px;">
+</div>
+<p class="links">
+
+<a href="143">关于</a> | 
+<a href="http://weibo.com/u/3871514412">微博</a> | 
+<a href="../users.1">活跃用户</a> | 
+<a href="node13">反馈</a> | 
+<a href="https://github.com/testerhome">Github</a> |
+<a href="../wiki/spreadtesterhome">帮助推广</a> |  
+<a href="http://www.miibeian.gov.cn/">京ICP备13049862号</a>
+
+
+</p>
+<p class="copyright">
+TesterHome 移动测试社区，由众多移动测试工作者维护，致力于推进国内测试技术。
+</p>
+<p class="copyright">
+友情链接
+
+<a href="http://ruby-china.org/"  rel="twipsy" style="display:inline-block;margin-right:5px;" data-original-title="感谢RubyChina提供建站代码">Ruby-China</a> | 
+<a href="http://www.diggerplus.org/">DiggerPlus</a> | 
+<a href="http://www.testwo.com/">测试窝</a> | 
+<a href="http://www.kootest.com/">酷测</a> | 
+<a href="http://itest.info/">重定向科技</a> |
+<a href="http://www.robotium.cn/">Robotium 中国</a> |
+<a href="http://cafe.testin.cn/">Testin开发者社区</a>
+<script src="http://s4.cnzz.com/z_stat.php?id=1000474281&web_id=1000474281" language="JavaScript"></script>
+
+</p>
+
+</div>
+    </div>
+
+
+
+
+
+
+    </div>
+  </footer>
+  <script type="text/javascript" data-turbolinks-eval=false>
+    App.root_url = "http://testerhome.com/";
+    App.asset_url = "http://testerhome.com";
+    App.faye_client_url = "http://testerhome.com:8080/faye";
+    if (App.faye_client_url) {
+      App.initNotificationSubscribe();
+    }
+  </script>
+    <script type="text/javascript">
+    Topics.replies_per_page = 50;
+    $(document).ready(function(){
+    })
+  </script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-45014075-1']);
+      _gaq.push(['_setSiteSpeedSampleRate', 100]);
+      _gaq.push(['_trackPageview']);
+      u=document.getElementById("user_menu");
+      ur="";
+      if(u) ur=document.getElementById("user_menu").innerText.split(" ")[0]
+      _gaq.push(['_setCustomVar', 1,'user',ur,1]);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+
+  <div class="zoom-overlay"></div>
+</body>
+</html>
